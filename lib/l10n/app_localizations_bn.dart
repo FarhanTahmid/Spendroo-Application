@@ -39,6 +39,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get continueWithGoogle => 'Google দিয়ে চালিয়ে যান';
 
   @override
+  String get googleSignInFailed =>
+      'Google দিয়ে সাইন ইন করা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
   String get tagline => 'আপনার টাকা আর আপনার দোকান, এক অ্যাপে।';
 
   @override

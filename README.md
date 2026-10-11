@@ -35,7 +35,8 @@ require HTTPS. Dev and staging builds can be pointed at any server from
 **Settings → Server**; prod builds cannot.
 
 Google sign-in is shown only when `GOOGLE_SERVER_CLIENT_ID` is set (the web
-OAuth client the API verifies tokens against).
+OAuth client the API verifies tokens against; the API's `WEB_OAUTH2_CLIENT_ID`).
+See "Accounts that must match the ID" in `docs/release.md` for the Google Cloud side.
 
 ## After changing code
 

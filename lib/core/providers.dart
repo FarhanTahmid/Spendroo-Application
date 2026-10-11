@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'api/api_client.dart';
 import 'auth/auth_repository.dart';
+import 'auth/google_identity.dart';
 import 'config.dart';
 import 'db/database.dart';
 import 'db/local_store.dart';
@@ -47,6 +48,8 @@ final apiClientProvider = Provider<ApiClient>(
 );
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepository(ref.watch(apiClientProvider)));
+
+final googleIdentityProvider = Provider<GoogleIdentity>((ref) => GoogleSignInIdentity(AppConfig.googleServerClientId));
 
 final localStoreProvider = Provider<LocalStore>(
   (ref) => LocalStore(
@@ -126,8 +129,22 @@ class AuthController extends Notifier<AuthState> {
   Future<String?> changePassword({String? current, required String next}) =>
       _run(() => _auth.changePassword(current: current, next: next), email: state.email);
 
-  Future<String?> logInWithGoogle({required String idToken, required String clientId}) =>
-      _run(() => _auth.logInWithGoogle(idToken: idToken, clientId: clientId));
+  /// Google says who the user is, the server opens the session. An account is made on the first sign-in.
+  Future<String?> logInWithGoogle() async {
+    final google = ref.read(googleIdentityProvider);
+    final String? idToken;
+    try {
+      idToken = await google.idToken();
+    } on GoogleIdentityException {
+      return 'google_failed';
+    }
+    if (idToken == null) return null; // backed out of Google's sheet
+    return _run(() async {
+      final result = await _auth.logInWithGoogle(idToken: idToken!, clientId: google.clientId);
+      // Signed out with nothing said: the server asks for a step this app has no screen for
+      return result.step == AuthStep.signedOut ? AuthResult(null, error: 'google_failed') : result;
+    });
+  }
 
   Future<String?> verifyEmail(String code) => _run(() => _auth.verifyEmail(code), email: state.email);
 
@@ -141,6 +158,8 @@ class AuthController extends Notifier<AuthState> {
 
   Future<void> logOut() async {
     await _auth.logOut();
+    // So "Continue with Google" asks which account to use next time
+    await ref.read(googleIdentityProvider).signOut();
     await _signedOutCleanup();
     state = const AuthState(AuthStep.signedOut);
   }

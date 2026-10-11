@@ -11,6 +11,7 @@
   "haveAccount": "Already have an account? Log in",
   "forgotPassword": "Forgot password?",
   "continueWithGoogle": "Continue with Google",
+  "googleSignInFailed": "Could not sign in with Google. Try again.",
   "tagline": "Your money and your shop, in one app.",
   "enterEmail": "Enter a valid email",
   "passwordTooShort": "Use at least 8 characters",

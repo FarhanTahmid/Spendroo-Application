@@ -35,9 +35,13 @@ class FakeServer {
   /// Default currency of the personal workspace; a PATCH changes it.
   var personalCurrency = 'BDT';
 
-  /// Bodies sent to /auth/login and /auth/signup.
+  /// Bodies sent to /auth/login, /auth/signup and /auth/provider/token.
   final logins = <Map<String, dynamic>>[];
   final signups = <Map<String, dynamic>>[];
+  final googleLogins = <Map<String, dynamic>>[];
+
+  /// What /auth/provider/token answers to a good ID token; 401 is a step the app has no screen for.
+  var googleStatus = 200;
 
   // The profile behind /api/v1/me/
   var username = 'alice';
@@ -96,6 +100,22 @@ class FakeServer {
       }
       loggedIn = true;
       return json({'status': 200, 'meta': {'is_authenticated': true, 'session_token': 'token-1'}});
+    }
+    if (path.endsWith('/auth/provider/token')) {
+      final body = (jsonDecode(request.body) as Map).cast<String, dynamic>();
+      googleLogins.add(body);
+      if ((body['token'] as Map)['id_token'] != 'good-id-token') {
+        return json({'status': 400, 'errors': [{'message': 'The token is invalid.', 'code': 'invalid_token', 'param': 'token'}]}, 400);
+      }
+      if (googleStatus == 401) {
+        return json({'status': 401, 'data': {'flows': [{'id': 'mfa_authenticate', 'is_pending': true}]}, 'meta': {'is_authenticated': false}}, 401);
+      }
+      loggedIn = true;
+      return json({'status': 200, 'meta': {'is_authenticated': true, 'session_token': 'token-1'}});
+    }
+    if (path.endsWith('/auth/session') && request.method == 'DELETE') {
+      loggedIn = false;
+      return json({'status': 401, 'meta': {'is_authenticated': false}}, 401);
     }
     if (request.headers['X-Session-Token'] != 'token-1') return json({'detail': 'no'}, 401);
     if (path == '/api/v1/me/') {

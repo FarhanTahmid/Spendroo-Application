@@ -65,9 +65,14 @@ upload, even to a test track. Before that upload it can still be changed:
 - **Google sign-in:** create Android OAuth clients in Google Cloud for
   `<id>`, `<id>.stg` and `<id>.dev`, each with the SHA-1 of the key that signs
   it (`keytool -list -v -keystore <keystore>`; for Play builds also add the
-  Play App Signing SHA-1 from Play Console). Put the web client ID in
-  `GOOGLE_SERVER_CLIENT_ID` in the config files and the API's
-  `WEB_OAUTH2_CLIENT_ID`/`ANDROID_OAUTH2_CLIENT_ID`.
+  Play App Signing SHA-1 from Play Console). The Android clients only have to
+  exist, in the same Google Cloud project as a **Web application** client: the
+  app asks for a token made for the web client. Put that web client ID in
+  `GOOGLE_SERVER_CLIENT_ID` in the config files and in the API's
+  `WEB_OAUTH2_CLIENT_ID`; the two must be the same value.
+  A missing or wrong SHA-1 shows up as the Google sheet closing at once, as if
+  the user had backed out. iOS also needs its own client ID as `GIDClientID`
+  and the reversed ID as a URL scheme in `ios/Runner/Info.plist`.
 - **Firebase (push, Phase 3+):** register the new IDs and download fresh
   `google-services.json` / `GoogleService-Info.plist`. The ones on disk are for
   the old placeholder ID (`com.example.casharoo`), so they are not used.

@@ -11,6 +11,7 @@
   "haveAccount": "আগে থেকেই অ্যাকাউন্ট আছে? লগ ইন করুন",
   "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
   "continueWithGoogle": "Google দিয়ে চালিয়ে যান",
+  "googleSignInFailed": "Google দিয়ে সাইন ইন করা যায়নি। আবার চেষ্টা করুন।",
   "tagline": "আপনার টাকা আর আপনার দোকান, এক অ্যাপে।",
   "enterEmail": "সঠিক ইমেইল লিখুন",
   "passwordTooShort": "কমপক্ষে ৮টি অক্ষর দিন",

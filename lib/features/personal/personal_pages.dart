@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,8 +11,11 @@ import '../../core/ui.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
+import 'budget_widgets.dart';
 import 'ledger_repository.dart';
+import 'overview_charts.dart';
 import 'spending_breakdown.dart';
+import 'transaction_sheets.dart';
 
 String accountKindLabel(BuildContext context, String kind) => switch (kind) {
       'bank' => context.l10n.kindBank,
@@ -50,32 +52,39 @@ final monthlyTotalsProvider = StreamProvider.family<List<MonthTotals>, (String, 
       ref.watch(ledgerRepositoryProvider).watchMonthlyTotals(key.$1, ref.watch(selectedMonthProvider), key.$2),
 );
 
-/// Balances, the selected month's income and expense, how spending is pacing
-/// against the budgets, where the money went and how the last six months compare.
+/// Balances, the selected month's income and expense, how spending is adding
+/// up against last month and the budgets, where the money went and how the
+/// last six months compare. Every chart opens what it is made of on a tap.
 /// Figures are in the workspace currency; accounts in other currencies are listed, not added up.
 class OverviewPage extends ConsumerWidget {
-  const OverviewPage({super.key, required this.workspace});
+  const OverviewPage({super.key, required this.workspace, this.onOpenBudgets});
 
   final Workspace workspace;
+
+  /// Moves to the budgets screen; without it the overview offers no way there.
+  final VoidCallback? onOpenBudgets;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
+    final colors = context.colors;
     final currency = workspace.defaultCurrency;
     final key = (workspace.id, currency);
-    final accounts = ref.watch(accountsProvider(workspace.id)).value ?? const <AccountBalance>[];
-    final total = accounts
-        .where((a) => a.account.currency == currency && !a.account.isArchived)
-        .fold<int>(0, (sum, a) => sum + a.balanceMinor);
+    final accounts = (ref.watch(accountsProvider(workspace.id)).value ?? const <AccountBalance>[])
+        .where((a) => !a.account.isArchived)
+        .toList();
+    final total =
+        accounts.where((a) => a.account.currency == currency).fold<int>(0, (sum, a) => sum + a.balanceMinor);
     final month = ref.watch(monthSummaryProvider(key)).value;
     final trend = ref.watch(monthlyTotalsProvider(key)).value ?? const <MonthTotals>[];
-    final budgets = ref.watch(budgetsProvider(workspace.id)).value ?? const <BudgetProgress>[];
-    final budgetTotal =
-        budgets.where((b) => b.budget.currency == currency).fold<int>(0, (sum, b) => sum + b.budget.amountMinor);
+    final budgets = (ref.watch(budgetsProvider(workspace.id)).value ?? const <BudgetProgress>[])
+        .where((b) => b.budget.currency == currency)
+        .toList();
+    final budgetTotal = budgets.fold<int>(0, (sum, b) => sum + b.budget.amountMinor);
     final selectedMonth = ref.watch(selectedMonthProvider);
-    final now = DateTime.now();
-    final isCurrentMonth = now.year == selectedMonth.year && now.month == selectedMonth.month;
+    final net = month == null ? 0 : month.incomeMinor - month.expenseMinor;
+    final saved = month == null || month.incomeMinor <= 0 || net < 0 ? null : (net * 100 / month.incomeMinor).round();
 
     return PassbookBody(
       header: Column(
@@ -93,76 +102,97 @@ class OverviewPage extends ConsumerWidget {
           children: [
             if (month != null) ...[
               Entrance(
-                child: SectionCard(children: [
-                  Row(
-                    children: [
-                      StatTile(
-                        label: l10n.income,
-                        amountMinor: month.incomeMinor,
-                        currency: currency,
-                        color: context.amountColor(true),
-                        icon: Icons.south_west_rounded,
-                      ),
-                      StatTile(
-                        label: l10n.expense,
-                        amountMinor: month.expenseMinor,
-                        currency: currency,
-                        color: context.amountColor(false),
-                        icon: Icons.north_east_rounded,
-                      ),
-                      StatTile(
-                        label: l10n.net,
-                        amountMinor: month.incomeMinor - month.expenseMinor,
-                        currency: currency,
-                        color: context.amountColor(month.incomeMinor >= month.expenseMinor),
-                        icon: Icons.drag_handle_rounded,
-                      ),
-                    ],
-                  ),
-                ]),
+                child: SectionCard(
+                  title: MaterialLocalizations.of(context).formatMonthYear(selectedMonth),
+                  trailing: saved == null
+                      ? null
+                      : Text(l10n.savedPercent(localDigits(context, '$saved')),
+                          style: text.bodySmall?.copyWith(color: colors.muted)),
+                  children: [
+                    Row(
+                      children: [
+                        StatTile(
+                          label: l10n.income,
+                          amountMinor: month.incomeMinor,
+                          currency: currency,
+                          color: context.amountColor(true),
+                          icon: Icons.south_west_rounded,
+                        ),
+                        StatTile(
+                          label: l10n.expense,
+                          amountMinor: month.expenseMinor,
+                          currency: currency,
+                          color: context.amountColor(false),
+                          icon: Icons.north_east_rounded,
+                        ),
+                      ],
+                    ),
+                    const Divider(height: AppSpace.lg * 2),
+                    Row(
+                      children: [
+                        Expanded(child: Text(l10n.netRemaining, style: text.bodyMedium)),
+                        MoneyText(net, currency,
+                            style: text.titleMedium?.copyWith(color: context.amountColor(net >= 0))),
+                      ],
+                    ),
+                  ],
+                ),
               ),
+              Entrance(child: SpendingPaceCard(workspace: workspace, budgetMinor: budgetTotal)),
               if (budgetTotal > 0)
                 Entrance(
                   index: 1,
-                  child: SectionCard(children: [
-                    PaceBar(
-                      spentMinor: month.expenseMinor,
-                      limitMinor: budgetTotal,
-                      currency: currency,
-                      dayFraction: isCurrentMonth ? now.day / daysInMonth(selectedMonth) : null,
-                    ),
-                  ]),
+                  child: BudgetHealthCard(
+                    budgets: budgets,
+                    pace: SpendPace(month: selectedMonth, spentMinor: month.expenseMinor, limitMinor: budgetTotal),
+                    currency: currency,
+                    onOpenAll: onOpenBudgets,
+                    onOpenBudget: (item) => showBudgetDetail(context, ref, workspace, item, month: selectedMonth),
+                  ),
                 ),
               Entrance(
                 index: 2,
                 child: SectionCard(title: l10n.spendingByCategory, children: [
                   if (month.byCategory.isEmpty)
-                    Text(l10n.noSpendingYet, style: text.bodyMedium?.copyWith(color: context.colors.muted))
+                    Text(l10n.noSpendingYet, style: text.bodyMedium?.copyWith(color: colors.muted))
                   else
-                    SpendingBreakdown(month: month, currency: currency, budgets: budgets),
+                    SpendingBreakdown(
+                      month: month,
+                      currency: currency,
+                      budgets: budgets,
+                      onSeeTransactions: (slice) => showCategoryTransactions(context, workspace,
+                          categoryId: slice.categoryId, title: slice.name ?? l10n.uncategorised),
+                    ),
                 ]),
               ),
             ],
             if (trend.any((m) => m.incomeMinor > 0 || m.expenseMinor > 0))
-              SectionCard(title: l10n.lastSixMonths, children: [_TrendChart(trend: trend, currency: currency)]),
+              CashFlowCard(
+                trend: trend,
+                currency: currency,
+                selectedMonth: selectedMonth,
+                onGoToMonth: ref.read(selectedMonthProvider.notifier).set,
+              ),
             if (accounts.isNotEmpty)
-              SectionCard(title: l10n.accountBalances, children: [
-                for (final item in accounts.where((a) => !a.account.isArchived))
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Row(
-                      children: [
-                        IconBadge(accountKindIcon(item.account.kind), size: 36),
-                        const SizedBox(width: 12),
-                        Expanded(child: Text(item.account.name, overflow: TextOverflow.ellipsis)),
-                        Text(
-                          context.money(item.balanceMinor, item.account.currency),
-                          style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600, fontFeatures: tabularFigures),
-                        ),
-                      ],
+              SectionCard(
+                title: l10n.accountBalances,
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
+                children: [
+                  if (total > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                      child: Text(l10n.shareOfTotalBalance, style: text.bodySmall?.copyWith(color: colors.muted)),
                     ),
-                  ),
-              ]),
+                  for (final item in accounts)
+                    _AccountRow(
+                      item: item,
+                      // A share of the total only means something for money that is there, in its currency
+                      share: item.account.currency == currency && total > 0 && item.balanceMinor > 0
+                          ? item.balanceMinor / total
+                          : null,
+                    ),
+                ],
+              ),
           ],
         ),
       ),
@@ -170,106 +200,73 @@ class OverviewPage extends ConsumerWidget {
   }
 }
 
-/// Income and expense bars for each month, oldest on the left.
-class _TrendChart extends StatelessWidget {
-  const _TrendChart({required this.trend, required this.currency});
+/// An account on the overview: its balance, and how much of the total it holds. Opens the account.
+class _AccountRow extends StatelessWidget {
+  const _AccountRow({required this.item, required this.share});
 
-  final List<MonthTotals> trend;
-  final String currency;
+  final AccountBalance item;
+  final double? share;
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.languageCode;
-    final months = MaterialLocalizations.of(context);
     final text = Theme.of(context).textTheme;
-    final highest = trend.fold<int>(1, (max, m) => [max, m.incomeMinor, m.expenseMinor].reduce((a, b) => a > b ? a : b));
-    const top = BorderRadius.vertical(top: Radius.circular(5));
-
-    Widget legend(Color color, String label) => Row(
-          mainAxisSize: MainAxisSize.min,
+    final scheme = Theme.of(context).colorScheme;
+    final share = this.share;
+    return Pressable(
+      scale: 0.98,
+      onTap: () => context.push('/account/${item.account.id}'),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
           children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-            ),
-            const SizedBox(width: 6),
-            Text(label, style: text.bodySmall),
-          ],
-        );
-
-    return Column(
-      children: [
-        SizedBox(
-          height: 180,
-          child: BarChart(
-            BarChartData(
-              maxY: highest * 1.15,
-              alignment: BarChartAlignment.spaceAround,
-              gridData: const FlGridData(show: false),
-              borderData: FlBorderData(show: false),
-              barTouchData: BarTouchData(
-                touchTooltipData: BarTouchTooltipData(
-                  getTooltipColor: (_) => const Color(0xFF0E1B30),
-                  getTooltipItem: (group, _, rod, _) => BarTooltipItem(
-                    Money.format(rod.toY.round(), currency, locale: locale),
-                    const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+            IconBadge(accountKindIcon(item.account.kind), size: 36),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: Text(item.account.name, overflow: TextOverflow.ellipsis)),
+                      Text(
+                        context.money(item.balanceMinor, item.account.currency),
+                        style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600, fontFeatures: tabularFigures),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              titlesData: FlTitlesData(
-                leftTitles: const AxisTitles(),
-                rightTitles: const AxisTitles(),
-                topTitles: const AxisTitles(),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 26,
-                    getTitlesWidget: (value, meta) {
-                      final index = value.toInt();
-                      if (index < 0 || index >= trend.length) return const SizedBox.shrink();
-                      // "Oct" from "October 2026"
-                      final label = months.formatMonthYear(trend[index].month).split(' ').first;
-                      return SideTitleWidget(
-                        meta: meta,
-                        child: Text(label.length > 3 && locale != 'bn' ? label.substring(0, 3) : label,
-                            style: text.labelSmall),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              barGroups: [
-                for (final (index, m) in trend.indexed)
-                  BarChartGroupData(x: index, barsSpace: 4, barRods: [
-                    BarChartRodData(
-                      toY: m.incomeMinor.toDouble(),
-                      color: AppTheme.successColor,
-                      width: 10,
-                      borderRadius: top,
+                  if (share != null) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: LinearProgressIndicator(
+                              value: share.clamp(0.0, 1.0),
+                              minHeight: 4,
+                              color: scheme.primary,
+                              backgroundColor: scheme.surfaceContainerHighest,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 44,
+                          child: Text(
+                            localDigits(context, '${(share * 100).round()}%'),
+                            textAlign: TextAlign.end,
+                            style: text.labelSmall?.copyWith(fontFeatures: tabularFigures),
+                          ),
+                        ),
+                      ],
                     ),
-                    BarChartRodData(
-                      toY: m.expenseMinor.toDouble(),
-                      color: AppTheme.errorColor,
-                      width: 10,
-                      borderRadius: top,
-                    ),
-                  ]),
-              ],
+                  ],
+                ],
+              ),
             ),
-            duration: context.motion(AppMotion.emphasised),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            legend(AppTheme.successColor, context.l10n.income),
-            const SizedBox(width: 20),
-            legend(AppTheme.errorColor, context.l10n.expense),
+            Icon(Icons.chevron_right_rounded, size: 18, color: context.colors.muted),
           ],
         ),
-      ],
+      ),
     );
   }
 }

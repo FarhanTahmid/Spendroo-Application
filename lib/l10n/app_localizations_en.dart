@@ -558,6 +558,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get net => 'Net';
 
   @override
+  String get netRemaining => 'Net remaining balance';
+
+  @override
   String get lastSixMonths => 'Last 6 months';
 
   @override
@@ -570,6 +573,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountBalances => 'Account balances';
+
+  @override
+  String get shareOfTotalBalance =>
+      'Percentages show each account’s share of the total balance.';
 
   @override
   String get server => 'Server';
@@ -1330,4 +1337,165 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportNotSaved =>
       'This phone has no Downloads folder the app can save to. Use Share to keep a copy.';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String savedPercent(String percent) {
+    return 'Saved $percent%';
+  }
+
+  @override
+  String get spendingPace => 'Spending pace';
+
+  @override
+  String spentSoFar(String amount) {
+    return '$amount spent';
+  }
+
+  @override
+  String paceLess(String amount) {
+    return '$amount less than at this point the month before';
+  }
+
+  @override
+  String paceMore(String amount) {
+    return '$amount more than at this point the month before';
+  }
+
+  @override
+  String get dailyAverage => 'Daily average';
+
+  @override
+  String get monthEndForecast => 'By month end';
+
+  @override
+  String get biggestDay => 'Biggest day';
+
+  @override
+  String get noSpendDays => 'No-spend days';
+
+  @override
+  String get budgetEvenPace => 'Budget, spread evenly';
+
+  @override
+  String thatDay(String amount) {
+    return '$amount that day';
+  }
+
+  @override
+  String soFar(String amount) {
+    return '$amount so far';
+  }
+
+  @override
+  String get tapDayHint => 'Tap a day to see its transactions';
+
+  @override
+  String get budgetHealth => 'Budget health';
+
+  @override
+  String percentUsed(String percent) {
+    return '$percent% used';
+  }
+
+  @override
+  String get usedLabel => 'used';
+
+  @override
+  String get safePerDay => 'Safe per day';
+
+  @override
+  String get daysLeft => 'Days left';
+
+  @override
+  String keepsWithin(String amount) {
+    return '$amount a day keeps you within it';
+  }
+
+  @override
+  String keepsWithinBudget(String amount) {
+    return '$amount a day keeps you within budget this month';
+  }
+
+  @override
+  String get allBudgets => 'All budgets';
+
+  @override
+  String spentShare(String percent) {
+    return 'Spent · $percent%';
+  }
+
+  @override
+  String leftShare(String percent) {
+    return 'Left · $percent%';
+  }
+
+  @override
+  String overShare(String percent) {
+    return 'Over · $percent%';
+  }
+
+  @override
+  String limitAmount(String amount) {
+    return 'Limit $amount';
+  }
+
+  @override
+  String get verdictOnTrack => 'On track. Spending is behind the calendar.';
+
+  @override
+  String get verdictAhead => 'Spending is running ahead of the calendar.';
+
+  @override
+  String get verdictWithin => 'You stayed within the budget.';
+
+  @override
+  String get legendWithin => 'Within allowance';
+
+  @override
+  String get legendNear => 'A little over';
+
+  @override
+  String get legendOver => 'Far over';
+
+  @override
+  String get notBudgeted => 'No limit set';
+
+  @override
+  String get setLimit => 'Set limit';
+
+  @override
+  String get dayByDay => 'Day by day';
+
+  @override
+  String get seeTransactions => 'See transactions';
+
+  @override
+  String get noTransactionsHere => 'Nothing recorded here.';
+
+  @override
+  String get cashFlow => 'Cash flow';
+
+  @override
+  String savedInMonths(String saved, String months) {
+    return 'Income beat spending in $saved of $months months.';
+  }
+
+  @override
+  String get tapMonthHint => 'Tap a month for details';
+
+  @override
+  String goToMonth(String month) {
+    return 'Go to $month';
+  }
+
+  @override
+  String keptOfIncome(String percent) {
+    return '$percent% of income kept';
+  }
+
+  @override
+  String get spentMoreThanEarned => 'Spent more than came in';
 }

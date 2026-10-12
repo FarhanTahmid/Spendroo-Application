@@ -45,13 +45,22 @@ class ChangeChip extends StatelessWidget {
 /// opens what there is to know about it: its change on last month, how many
 /// expenses it holds, and how it stands against its budget.
 class SpendingBreakdown extends StatefulWidget {
-  const SpendingBreakdown({super.key, required this.month, required this.currency, this.budgets = const []});
+  const SpendingBreakdown({
+    super.key,
+    required this.month,
+    required this.currency,
+    this.budgets = const [],
+    this.onSeeTransactions,
+  });
 
   final MonthSummary month;
   final String currency;
 
   /// The budgets in force for the month, to show next to the category in focus.
   final List<BudgetProgress> budgets;
+
+  /// Opens the expenses behind the category in focus; without it the panel offers no way to them.
+  final ValueChanged<CategorySpend>? onSeeTransactions;
 
   @override
   State<SpendingBreakdown> createState() => _SpendingBreakdownState();
@@ -200,7 +209,7 @@ class _SpendingBreakdownState extends State<SpendingBreakdown> with TickerProvid
                     children: [
                       Icon(Icons.touch_app_rounded, size: 14, color: colors.muted),
                       const SizedBox(width: 6),
-                      Text(l10n.spendTapHint, style: text.bodySmall),
+                      Flexible(child: Text(l10n.spendTapHint, style: text.bodySmall)),
                     ],
                   ),
                 )
@@ -212,6 +221,9 @@ class _SpendingBreakdownState extends State<SpendingBreakdown> with TickerProvid
                     currency: widget.currency,
                     budget: _budgetOf(slices[selected]),
                     onClose: () => _select(selected),
+                    onSeeTransactions: widget.onSeeTransactions == null
+                        ? null
+                        : () => widget.onSeeTransactions!(slices[selected]),
                   ),
                 ),
         ),
@@ -345,6 +357,7 @@ class _FocusPanel extends StatelessWidget {
     required this.currency,
     required this.budget,
     required this.onClose,
+    this.onSeeTransactions,
   });
 
   final CategorySpend slice;
@@ -352,6 +365,7 @@ class _FocusPanel extends StatelessWidget {
   final String currency;
   final BudgetProgress? budget;
   final VoidCallback onClose;
+  final VoidCallback? onSeeTransactions;
 
   @override
   Widget build(BuildContext context) {
@@ -439,12 +453,27 @@ class _FocusPanel extends StatelessWidget {
                           style: text.bodySmall,
                         ),
                       ),
-                      if (budget.isOver)
-                        Text(l10n.overBudget, style: text.bodySmall?.copyWith(color: colors.moneyOut)),
+                      Text(
+                        budget.isOver
+                            ? l10n.overBudget
+                            : l10n.percentUsed(localDigits(context, '${budget.usedPercent}')),
+                        style: text.bodySmall?.copyWith(color: budget.isOver ? colors.moneyOut : null),
+                      ),
                     ],
                   ),
                 ],
               ),
+            ),
+          if (onSeeTransactions != null)
+            TextButton.icon(
+              onPressed: onSeeTransactions,
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(0, 36),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              icon: const Icon(Icons.receipt_long_outlined, size: 16),
+              label: Text(l10n.seeTransactions),
             ),
         ],
       ),

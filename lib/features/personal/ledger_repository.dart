@@ -44,6 +44,55 @@ class BudgetProgress {
 
   bool get isOverride => budget.month != null;
   bool get isOver => spentMinor > budget.amountMinor;
+
+  /// Spent as a share of the limit; passes 100 once over it.
+  int get usedPercent => budget.amountMinor <= 0 ? 0 : (spentMinor * 100 / budget.amountMinor).round();
+
+  /// Negative once over the limit.
+  int get leftMinor => budget.amountMinor - spentMinor;
+  int get leftPercent => (100 - usedPercent).clamp(0, 100);
+}
+
+/// How a month's spending is going against the calendar and, with [limitMinor], a budget.
+class SpendPace {
+  SpendPace({required this.month, required this.spentMinor, this.limitMinor = 0, DateTime? today})
+      : today = today ?? DateTime.now();
+
+  final DateTime month;
+  final int spentMinor;
+
+  /// Zero: no budget.
+  final int limitMinor;
+  final DateTime today;
+
+  int get days => daysInMonth(month);
+  bool get isCurrent => today.year == month.year && today.month == month.month;
+  bool get _isPast => DateTime(month.year, month.month + 1).isBefore(DateTime(today.year, today.month, today.day + 1));
+
+  /// Days of the month that have begun: all of a past month, none of a coming one.
+  int get elapsedDays => isCurrent ? today.day : (_isPast ? days : 0);
+
+  /// Days still to pay for, today included.
+  int get daysLeft => days - elapsedDays + (isCurrent ? 1 : 0);
+
+  /// How far through the month today is; null outside the current month.
+  double? get dayFraction => isCurrent ? today.day / days : null;
+
+  int get averageMinor => elapsedDays == 0 ? 0 : (spentMinor / elapsedDays).round();
+
+  /// Where the month ends if every remaining day costs the average; null outside the current month.
+  int? get projectedMinor => isCurrent ? (spentMinor / elapsedDays * days).round() : null;
+
+  int get leftMinor => limitMinor - spentMinor;
+  int get usedPercent => limitMinor <= 0 ? 0 : (spentMinor * 100 / limitMinor).round();
+  int get leftPercent => (100 - usedPercent).clamp(0, 100);
+  bool get isOver => limitMinor > 0 && spentMinor > limitMinor;
+
+  /// What each remaining day may cost without going over; zero when nothing is left or no day remains.
+  int get safePerDayMinor => limitMinor <= 0 || leftMinor <= 0 || daysLeft <= 0 ? 0 : leftMinor ~/ daysLeft;
+
+  /// Spending has used a clearly bigger share of the budget than the month has of its days.
+  bool get isAhead => !isOver && dayFraction != null && limitMinor > 0 && spentMinor / limitMinor > dayFraction! + 0.05;
 }
 
 /// Income and expense of one month, both positive.
@@ -129,8 +178,16 @@ class LedgerRepository {
         ..orderBy([(c) => OrderingTerm.asc(c.name)]))
       .watch();
 
-  /// Newest first. Limited to the month of [month], or to the single [day] (ISO date), when given.
-  Stream<List<TransactionView>> watchTransactions(String workspaceId, {DateTime? month, String? day}) {
+  /// Newest first. Limited to the month of [month], or to the single [day] (ISO date), when given;
+  /// and to one [kind], and to one category ([uncategorised] for those without any).
+  Stream<List<TransactionView>> watchTransactions(
+    String workspaceId, {
+    DateTime? month,
+    String? day,
+    String? kind,
+    String? categoryId,
+    bool uncategorised = false,
+  }) {
     final (first, last) =
         day != null ? (day, day) : (month != null ? monthRange(month) : ('0000-01-01', '9999-12-31'));
     return db
@@ -138,8 +195,16 @@ class LedgerRepository {
           'SELECT t.*, a.name AS a_name, c.name AS c_name, c.color AS c_color FROM transactions t '
           'JOIN accounts a ON a.id = t.account_id LEFT JOIN categories c ON c.id = t.category_id AND c.deleted_at IS NULL '
           'WHERE t.workspace_id = ? AND t.deleted_at IS NULL AND t.occurred_on BETWEEN ? AND ? '
+          '${kind == null ? '' : 'AND t.kind = ? '}'
+          '${uncategorised ? 'AND t.category_id IS NULL ' : (categoryId == null ? '' : 'AND t.category_id = ? ')}'
           'ORDER BY t.occurred_on DESC, t.created_at DESC',
-          variables: [Variable<String>(workspaceId), Variable<String>(first), Variable<String>(last)],
+          variables: [
+            Variable<String>(workspaceId),
+            Variable<String>(first),
+            Variable<String>(last),
+            if (kind != null) Variable<String>(kind),
+            if (!uncategorised && categoryId != null) Variable<String>(categoryId),
+          ],
           readsFrom: {db.transactions, db.accounts, db.categories},
         )
         .watch()
@@ -200,18 +265,20 @@ class LedgerRepository {
   }
 
   /// Expense per day of [month] in [currency]: day of month -> amount spent (positive).
-  Stream<Map<int, int>> watchDailySpend(String workspaceId, DateTime month, String currency) {
+  /// With [categoryId], that category's alone.
+  Stream<Map<int, int>> watchDailySpend(String workspaceId, DateTime month, String currency, {String? categoryId}) {
     final (first, last) = monthRange(month);
     return db
         .customSelect(
           'SELECT occurred_on AS day, -SUM(amount_minor) AS spent FROM transactions '
           "WHERE workspace_id = ? AND deleted_at IS NULL AND kind = 'expense' AND currency = ? "
-          'AND occurred_on BETWEEN ? AND ? GROUP BY occurred_on',
+          'AND occurred_on BETWEEN ? AND ? ${categoryId == null ? '' : 'AND category_id = ? '}GROUP BY occurred_on',
           variables: [
             Variable<String>(workspaceId),
             Variable<String>(currency),
             Variable<String>(first),
             Variable<String>(last),
+            if (categoryId != null) Variable<String>(categoryId),
           ],
           readsFrom: {db.transactions},
         )

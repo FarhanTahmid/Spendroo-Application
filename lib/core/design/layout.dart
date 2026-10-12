@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -342,69 +344,6 @@ class LimitBar extends StatelessWidget {
   }
 }
 
-/// The month's spending against its budget, with a tick at today: if the bar
-/// is behind the tick, the month is going fine.
-class PaceBar extends StatelessWidget {
-  const PaceBar({
-    super.key,
-    required this.spentMinor,
-    required this.limitMinor,
-    required this.currency,
-    this.dayFraction,
-  });
-
-  final int spentMinor;
-  final int limitMinor;
-  final String currency;
-
-  /// How far through the month today is; null for a month that is not the current one.
-  final double? dayFraction;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final text = Theme.of(context).textTheme;
-    final left = limitMinor - spentMinor;
-    final value = spentMinor / limitMinor;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: Text(
-                left >= 0 ? l10n.paceLeft(context.money(left, currency)) : l10n.paceOver(context.money(-left, currency)),
-                style: text.titleMedium?.copyWith(color: left >= 0 ? null : context.colors.moneyOut),
-              ),
-            ),
-            if (dayFraction != null) Text(l10n.today, style: text.labelSmall),
-            if (dayFraction != null)
-              Padding(
-                padding: const EdgeInsets.only(left: 4, bottom: 2),
-                child: Container(
-                  width: 3,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        LimitBar(value: value, marker: dayFraction, height: 12),
-        const SizedBox(height: 6),
-        Text(
-          '${l10n.budgetThisMonth}: ${context.money(limitMinor, currency)}',
-          style: text.bodySmall,
-        ),
-      ],
-    );
-  }
-}
-
 /// What an empty screen says, and the one thing to do about it.
 class EmptyState extends StatelessWidget {
   const EmptyState({super.key, required this.icon, required this.message, this.actionLabel, this.onAction});
@@ -499,5 +438,217 @@ class DateField extends StatelessWidget {
           );
           if (picked != null) onChanged(picked.toIso8601String().substring(0, 10));
         },
+      );
+}
+
+/// A ring that fills to [value] (0 to 1) around whatever sits in its middle,
+/// usually the percentage it stands for. With [half] it is a gauge: the upper
+/// half of the ring, filling from left to right.
+class PercentRing extends StatelessWidget {
+  const PercentRing({
+    super.key,
+    required this.value,
+    this.size = 44,
+    this.stroke = 5,
+    this.color,
+    this.marker,
+    this.half = false,
+    this.child,
+  });
+
+  /// May exceed 1; the ring is then full.
+  final double value;
+  final double size;
+  final double stroke;
+
+  /// Without one the ring says how close the limit is, as [LimitBar] does.
+  final Color? color;
+
+  /// Where "today" falls in the period (0 to 1), drawn as a tick across the ring.
+  final double? marker;
+  final bool half;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: value.isFinite ? value.clamp(0.0, 1.0) : 0),
+      duration: context.motion(const Duration(milliseconds: 600)),
+      curve: AppMotion.ease,
+      builder: (context, fill, child) => CustomPaint(
+        painter: _RingPainter(
+          fill: fill,
+          stroke: stroke,
+          color: color ?? LimitBar.colorFor(context, value),
+          track: scheme.surfaceContainerHighest,
+          marker: marker,
+          markerColor: scheme.onSurface,
+          half: half,
+        ),
+        child: child,
+      ),
+      child: SizedBox(
+        width: size,
+        height: half ? size / 2 + stroke / 2 : size,
+        child: child == null
+            ? null
+            : Align(
+                alignment: half ? Alignment.bottomCenter : Alignment.center,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: stroke + 3),
+                  child: FittedBox(fit: BoxFit.scaleDown, child: child),
+                ),
+              ),
+      ),
+    );
+  }
+}
+
+class _RingPainter extends CustomPainter {
+  _RingPainter({
+    required this.fill,
+    required this.stroke,
+    required this.color,
+    required this.track,
+    required this.marker,
+    required this.markerColor,
+    required this.half,
+  });
+
+  final double fill;
+  final double stroke;
+  final Color color;
+  final Color track;
+  final double? marker;
+  final Color markerColor;
+  final bool half;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final radius = size.width / 2 - stroke / 2;
+    final centre = Offset(size.width / 2, half ? size.height - stroke / 2 : size.height / 2);
+    final rect = Rect.fromCircle(center: centre, radius: radius);
+    final start = half ? math.pi : -math.pi / 2;
+    final whole = half ? math.pi : 2 * math.pi;
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round;
+    canvas.drawArc(rect, start, whole, false, paint..color = track);
+    if (fill > 0) canvas.drawArc(rect, start, whole * fill, false, paint..color = color);
+    final at = marker;
+    if (at != null) {
+      final angle = start + whole * at.clamp(0.0, 1.0);
+      final direction = Offset(math.cos(angle), math.sin(angle));
+      canvas.drawLine(
+        centre + direction * (radius - stroke / 2 - 3),
+        centre + direction * (radius + stroke / 2 + 3),
+        Paint()
+          ..color = markerColor
+          ..strokeWidth = 3
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_RingPainter old) =>
+      old.fill != fill || old.color != color || old.track != track || old.marker != marker || old.markerColor != markerColor;
+}
+
+/// A small fact under a chart: what it is, and the figure. Goes in a row of two or three;
+/// with [onTap] it opens what the figure is made of.
+class FactTile extends StatelessWidget {
+  const FactTile({super.key, required this.label, required this.value, this.detail, this.color, this.onTap});
+
+  final String label;
+  final String value;
+  final String? detail;
+  final Color? color;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final colors = context.colors;
+    return Expanded(
+      child: Pressable(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(color: colors.field, borderRadius: BorderRadius.circular(AppRadius.control)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(child: Text(label, style: text.labelSmall, maxLines: 1, overflow: TextOverflow.ellipsis)),
+                  if (onTap != null) Icon(Icons.chevron_right_rounded, size: 14, color: colors.muted),
+                ],
+              ),
+              const SizedBox(height: 4),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  value,
+                  maxLines: 1,
+                  style: text.titleSmall?.copyWith(color: color, fontFeatures: tabularFigures),
+                ),
+              ),
+              if (detail != null)
+                Text(detail!, style: text.labelSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// [FactTile]s side by side, all as tall as the tallest.
+class FactRow extends StatelessWidget {
+  const FactRow({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => IntrinsicHeight(
+        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+      );
+}
+
+/// A coloured key and what it stands for, under a chart.
+class LegendKey extends StatelessWidget {
+  const LegendKey({super.key, required this.color, required this.label, this.dashed = false});
+
+  final Color color;
+  final String label;
+
+  /// Drawn as a broken line rather than a block: a reference line, not a series of bars.
+  final bool dashed;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (dashed)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < 3; i++)
+                  Container(width: 4, height: 2, margin: const EdgeInsets.only(right: 2), color: color),
+              ],
+            )
+          else
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+            ),
+          const SizedBox(width: 6),
+          Flexible(child: Text(label, style: Theme.of(context).textTheme.bodySmall, overflow: TextOverflow.ellipsis)),
+        ],
       );
 }

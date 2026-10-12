@@ -1088,6 +1088,12 @@ abstract class AppLocalizations {
   /// **'Net'**
   String get net;
 
+  /// No description provided for @netRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Net remaining balance'**
+  String get netRemaining;
+
   /// No description provided for @lastSixMonths.
   ///
   /// In en, this message translates to:
@@ -1111,6 +1117,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account balances'**
   String get accountBalances;
+
+  /// No description provided for @shareOfTotalBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentages show each account’s share of the total balance.'**
+  String get shareOfTotalBalance;
 
   /// No description provided for @server.
   ///
@@ -2377,6 +2389,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This phone has no Downloads folder the app can save to. Use Share to keep a copy.'**
   String get reportNotSaved;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @savedPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {percent}%'**
+  String savedPercent(String percent);
+
+  /// No description provided for @spendingPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending pace'**
+  String get spendingPace;
+
+  /// No description provided for @spentSoFar.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} spent'**
+  String spentSoFar(String amount);
+
+  /// No description provided for @paceLess.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} less than at this point the month before'**
+  String paceLess(String amount);
+
+  /// No description provided for @paceMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} more than at this point the month before'**
+  String paceMore(String amount);
+
+  /// No description provided for @dailyAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily average'**
+  String get dailyAverage;
+
+  /// No description provided for @monthEndForecast.
+  ///
+  /// In en, this message translates to:
+  /// **'By month end'**
+  String get monthEndForecast;
+
+  /// No description provided for @biggestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest day'**
+  String get biggestDay;
+
+  /// No description provided for @noSpendDays.
+  ///
+  /// In en, this message translates to:
+  /// **'No-spend days'**
+  String get noSpendDays;
+
+  /// No description provided for @budgetEvenPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget, spread evenly'**
+  String get budgetEvenPace;
+
+  /// No description provided for @thatDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} that day'**
+  String thatDay(String amount);
+
+  /// No description provided for @soFar.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} so far'**
+  String soFar(String amount);
+
+  /// No description provided for @tapDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a day to see its transactions'**
+  String get tapDayHint;
+
+  /// No description provided for @budgetHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget health'**
+  String get budgetHealth;
+
+  /// No description provided for @percentUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% used'**
+  String percentUsed(String percent);
+
+  /// No description provided for @usedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'used'**
+  String get usedLabel;
+
+  /// No description provided for @safePerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe per day'**
+  String get safePerDay;
+
+  /// No description provided for @daysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Days left'**
+  String get daysLeft;
+
+  /// No description provided for @keepsWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a day keeps you within it'**
+  String keepsWithin(String amount);
+
+  /// No description provided for @keepsWithinBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a day keeps you within budget this month'**
+  String keepsWithinBudget(String amount);
+
+  /// No description provided for @allBudgets.
+  ///
+  /// In en, this message translates to:
+  /// **'All budgets'**
+  String get allBudgets;
+
+  /// No description provided for @spentShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent · {percent}%'**
+  String spentShare(String percent);
+
+  /// No description provided for @leftShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Left · {percent}%'**
+  String leftShare(String percent);
+
+  /// No description provided for @overShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Over · {percent}%'**
+  String overShare(String percent);
+
+  /// No description provided for @limitAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit {amount}'**
+  String limitAmount(String amount);
+
+  /// No description provided for @verdictOnTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'On track. Spending is behind the calendar.'**
+  String get verdictOnTrack;
+
+  /// No description provided for @verdictAhead.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending is running ahead of the calendar.'**
+  String get verdictAhead;
+
+  /// No description provided for @verdictWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'You stayed within the budget.'**
+  String get verdictWithin;
+
+  /// No description provided for @legendWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'Within allowance'**
+  String get legendWithin;
+
+  /// No description provided for @legendNear.
+  ///
+  /// In en, this message translates to:
+  /// **'A little over'**
+  String get legendNear;
+
+  /// No description provided for @legendOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Far over'**
+  String get legendOver;
+
+  /// No description provided for @notBudgeted.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit set'**
+  String get notBudgeted;
+
+  /// No description provided for @setLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Set limit'**
+  String get setLimit;
+
+  /// No description provided for @dayByDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day by day'**
+  String get dayByDay;
+
+  /// No description provided for @seeTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'See transactions'**
+  String get seeTransactions;
+
+  /// No description provided for @noTransactionsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded here.'**
+  String get noTransactionsHere;
+
+  /// No description provided for @cashFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash flow'**
+  String get cashFlow;
+
+  /// No description provided for @savedInMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'Income beat spending in {saved} of {months} months.'**
+  String savedInMonths(String saved, String months);
+
+  /// No description provided for @tapMonthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a month for details'**
+  String get tapMonthHint;
+
+  /// No description provided for @goToMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to {month}'**
+  String goToMonth(String month);
+
+  /// No description provided for @keptOfIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of income kept'**
+  String keptOfIncome(String percent);
+
+  /// No description provided for @spentMoreThanEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent more than came in'**
+  String get spentMoreThanEarned;
 }
 
 class _AppLocalizationsDelegate

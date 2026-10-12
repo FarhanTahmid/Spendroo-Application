@@ -555,6 +555,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get net => 'নিট';
 
   @override
+  String get netRemaining => 'নিট অবশিষ্ট ব্যালেন্স';
+
+  @override
   String get lastSixMonths => 'গত ৬ মাস';
 
   @override
@@ -567,6 +570,10 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get accountBalances => 'অ্যাকাউন্টের ব্যালেন্স';
+
+  @override
+  String get shareOfTotalBalance =>
+      'শতাংশ দেখায় মোট ব্যালেন্সের কত অংশ প্রতিটি অ্যাকাউন্টে আছে।';
 
   @override
   String get server => 'সার্ভার';
@@ -1292,4 +1299,165 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get reportNotSaved =>
       'এই ফোনে অ্যাপ সেভ করতে পারে এমন Downloads ফোল্ডার নেই। কপি রাখতে শেয়ার ব্যবহার করুন।';
+
+  @override
+  String get edit => 'সম্পাদনা';
+
+  @override
+  String savedPercent(String percent) {
+    return 'সঞ্চয় $percent%';
+  }
+
+  @override
+  String get spendingPace => 'খরচের গতি';
+
+  @override
+  String spentSoFar(String amount) {
+    return '$amount খরচ হয়েছে';
+  }
+
+  @override
+  String paceLess(String amount) {
+    return 'আগের মাসের এই সময়ের চেয়ে $amount কম';
+  }
+
+  @override
+  String paceMore(String amount) {
+    return 'আগের মাসের এই সময়ের চেয়ে $amount বেশি';
+  }
+
+  @override
+  String get dailyAverage => 'দৈনিক গড়';
+
+  @override
+  String get monthEndForecast => 'মাস শেষে';
+
+  @override
+  String get biggestDay => 'সবচেয়ে বেশি খরচের দিন';
+
+  @override
+  String get noSpendDays => 'খরচহীন দিন';
+
+  @override
+  String get budgetEvenPace => 'বাজেট, সমানভাবে ভাগ করা';
+
+  @override
+  String thatDay(String amount) {
+    return 'সেদিন $amount';
+  }
+
+  @override
+  String soFar(String amount) {
+    return 'এ পর্যন্ত $amount';
+  }
+
+  @override
+  String get tapDayHint => 'লেনদেন দেখতে একটি দিনে চাপ দিন';
+
+  @override
+  String get budgetHealth => 'বাজেটের অবস্থা';
+
+  @override
+  String percentUsed(String percent) {
+    return '$percent% ব্যবহৃত';
+  }
+
+  @override
+  String get usedLabel => 'ব্যবহৃত';
+
+  @override
+  String get safePerDay => 'দিনপ্রতি নিরাপদ';
+
+  @override
+  String get daysLeft => 'বাকি দিন';
+
+  @override
+  String keepsWithin(String amount) {
+    return 'দিনে $amount খরচ করলে সীমার মধ্যে থাকবেন';
+  }
+
+  @override
+  String keepsWithinBudget(String amount) {
+    return 'এ মাসে দিনে $amount খরচ করলে বাজেটের মধ্যে থাকবেন';
+  }
+
+  @override
+  String get allBudgets => 'সব বাজেট';
+
+  @override
+  String spentShare(String percent) {
+    return 'খরচ · $percent%';
+  }
+
+  @override
+  String leftShare(String percent) {
+    return 'বাকি · $percent%';
+  }
+
+  @override
+  String overShare(String percent) {
+    return 'অতিরিক্ত · $percent%';
+  }
+
+  @override
+  String limitAmount(String amount) {
+    return 'সীমা $amount';
+  }
+
+  @override
+  String get verdictOnTrack => 'ঠিক পথে আছেন। খরচ মাসের গতির চেয়ে কম।';
+
+  @override
+  String get verdictAhead => 'খরচ মাসের গতির চেয়ে দ্রুত হচ্ছে।';
+
+  @override
+  String get verdictWithin => 'আপনি বাজেটের মধ্যে ছিলেন।';
+
+  @override
+  String get legendWithin => 'বরাদ্দের মধ্যে';
+
+  @override
+  String get legendNear => 'কিছুটা বেশি';
+
+  @override
+  String get legendOver => 'অনেক বেশি';
+
+  @override
+  String get notBudgeted => 'সীমা নেই';
+
+  @override
+  String get setLimit => 'সীমা দিন';
+
+  @override
+  String get dayByDay => 'দিন অনুযায়ী';
+
+  @override
+  String get seeTransactions => 'লেনদেন দেখুন';
+
+  @override
+  String get noTransactionsHere => 'এখানে কিছু লেখা হয়নি।';
+
+  @override
+  String get cashFlow => 'আয়-ব্যয়ের ধারা';
+
+  @override
+  String savedInMonths(String saved, String months) {
+    return '$months মাসের মধ্যে $saved মাসে আয় খরচের চেয়ে বেশি ছিল।';
+  }
+
+  @override
+  String get tapMonthHint => 'বিস্তারিত দেখতে একটি মাসে চাপ দিন';
+
+  @override
+  String goToMonth(String month) {
+    return '$month-এ যান';
+  }
+
+  @override
+  String keptOfIncome(String percent) {
+    return 'আয়ের $percent% জমা আছে';
+  }
+
+  @override
+  String get spentMoreThanEarned => 'আয়ের চেয়ে খরচ বেশি';
 }

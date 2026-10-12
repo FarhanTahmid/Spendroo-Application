@@ -189,7 +189,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final personal = workspace.kind == 'personal';
     final pages = personal
         ? [
-            OverviewPage(workspace: workspace),
+            OverviewPage(workspace: workspace, onOpenBudgets: () => setState(() => _tab = 2)),
             TransactionsPage(workspace: workspace),
             BudgetCalendarPage(workspace: workspace),
             AccountsPage(workspace: workspace),

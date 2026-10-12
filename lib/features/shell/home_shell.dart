@@ -15,6 +15,8 @@ import '../personal/personal_pages.dart';
 import '../plan/offer_banner.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
+import '../reports/report_repository.dart';
+import '../reports/report_sheet.dart';
 
 /// Creating and deleting workspaces happens on the server, so these need a connection.
 class WorkspaceActions {
@@ -201,6 +203,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         title: _WorkspaceSwitcher(current: workspace, onSwitched: () => setState(() => _tab = 0)),
         actions: [
           const _SyncIndicator(),
+          if (personal)
+            ReportButton(scope: ReportScope.personal, workspace: workspace)
+          else if (canDownloadBusinessReport(workspace))
+            ReportButton(
+              scope: ReportScope.business,
+              workspace: workspace,
+              subjectId: workspace.id,
+              subjectName: workspaceLabel(context, workspace),
+            ),
           IconButton(
             tooltip: l10n.settings,
             icon: const Icon(Icons.settings_outlined),

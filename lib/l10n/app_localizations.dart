@@ -1727,13 +1727,13 @@ abstract class AppLocalizations {
   /// No description provided for @featureReportRange.
   ///
   /// In en, this message translates to:
-  /// **'Reports for any dates'**
+  /// **'Custom reports: any dates, types and categories'**
   String get featureReportRange;
 
   /// No description provided for @featureReportExport.
   ///
   /// In en, this message translates to:
-  /// **'Reports as PDF and Excel'**
+  /// **'Reports as Excel'**
   String get featureReportExport;
 
   /// No description provided for @featureAuditTrail.
@@ -2089,6 +2089,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'In and out, in detail'**
   String get inAndOutDetails;
+
+  /// No description provided for @reportDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download report'**
+  String get reportDownload;
+
+  /// No description provided for @reportTitlePersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal report'**
+  String get reportTitlePersonal;
+
+  /// No description provided for @reportTitleAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account statement'**
+  String get reportTitleAccount;
+
+  /// No description provided for @reportTitleCashbook.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashbook report'**
+  String get reportTitleCashbook;
+
+  /// No description provided for @reportTitleBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business report'**
+  String get reportTitleBusiness;
+
+  /// No description provided for @reportCoversPersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'All your personal accounts together.'**
+  String get reportCoversPersonal;
+
+  /// No description provided for @reportCoversAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the account {name}.'**
+  String reportCoversAccount(String name);
+
+  /// No description provided for @reportCoversCashbook.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the cashbook {name}.'**
+  String reportCoversCashbook(String name);
+
+  /// No description provided for @reportCoversBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Every cashbook of {name} together.'**
+  String reportCoversBusiness(String name);
+
+  /// No description provided for @reportInside.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s inside'**
+  String get reportInside;
+
+  /// No description provided for @reportInsidePersonal1.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening and closing balance of every account'**
+  String get reportInsidePersonal1;
+
+  /// No description provided for @reportInsidePersonal2.
+  ///
+  /// In en, this message translates to:
+  /// **'Income and spending by category'**
+  String get reportInsidePersonal2;
+
+  /// No description provided for @reportInsidePersonal3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every transaction, with transfers listed on their own'**
+  String get reportInsidePersonal3;
+
+  /// No description provided for @reportInsideAccount1.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening and closing balance'**
+  String get reportInsideAccount1;
+
+  /// No description provided for @reportInsideAccount2.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending and income by category'**
+  String get reportInsideAccount2;
+
+  /// No description provided for @reportInsideAccount3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every transaction, with the balance after it'**
+  String get reportInsideAccount3;
+
+  /// No description provided for @reportInsideCashbook1.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening and closing balance'**
+  String get reportInsideCashbook1;
+
+  /// No description provided for @reportInsideCashbook2.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals by category and by payment method'**
+  String get reportInsideCashbook2;
+
+  /// No description provided for @reportInsideCashbook3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every entry, with the balance after it'**
+  String get reportInsideCashbook3;
+
+  /// No description provided for @reportInsideBusiness1.
+  ///
+  /// In en, this message translates to:
+  /// **'Your cashbooks side by side'**
+  String get reportInsideBusiness1;
+
+  /// No description provided for @reportInsideBusiness2.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals by category and by payment method'**
+  String get reportInsideBusiness2;
+
+  /// No description provided for @reportInsideBusiness3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every entry of every cashbook'**
+  String get reportInsideBusiness3;
+
+  /// No description provided for @reportPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get reportPeriod;
+
+  /// No description provided for @reportFileType.
+  ///
+  /// In en, this message translates to:
+  /// **'File type'**
+  String get reportFileType;
+
+  /// No description provided for @reportPdfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to read, print or share'**
+  String get reportPdfHint;
+
+  /// No description provided for @reportExcelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A spreadsheet you can sort and add up'**
+  String get reportExcelHint;
+
+  /// No description provided for @reportFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get reportFree;
+
+  /// No description provided for @reportPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid plan'**
+  String get reportPaid;
+
+  /// No description provided for @reportDownloadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get reportDownloadPdf;
+
+  /// No description provided for @reportDownloadExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Excel'**
+  String get reportDownloadExcel;
+
+  /// No description provided for @reportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Made online from everything you have saved.'**
+  String get reportHint;
+
+  /// No description provided for @reportOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet to download a report.'**
+  String get reportOffline;
+
+  /// No description provided for @reportTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'This period has too many lines for one file (up to {limit}). Choose a shorter period.'**
+  String reportTooLarge(int limit);
+
+  /// No description provided for @reportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The report could not be made. Try again.'**
+  String get reportFailed;
+
+  /// No description provided for @reportThrottled.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many downloads. Try again in a little while.'**
+  String get reportThrottled;
+
+  /// No description provided for @reportReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Your report is ready'**
+  String get reportReady;
+
+  /// No description provided for @reportReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference {reference}'**
+  String reportReference(String reference);
+
+  /// No description provided for @reportOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get reportOpen;
+
+  /// No description provided for @reportShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get reportShare;
+
+  /// No description provided for @reportNoApp.
+  ///
+  /// In en, this message translates to:
+  /// **'No app on this phone can open this file. Use Share or save.'**
+  String get reportNoApp;
+
+  /// No description provided for @reportAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Download another'**
+  String get reportAnother;
+
+  /// No description provided for @reportCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom report'**
+  String get reportCustomTitle;
+
+  /// No description provided for @reportCustomDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get reportCustomDates;
+
+  /// No description provided for @reportCustomTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get reportCustomTypes;
+
+  /// No description provided for @reportCustomAllHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose none to include all.'**
+  String get reportCustomAllHint;
+
+  /// No description provided for @reportCustomNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A filtered report adds up only the lines that match. It shows money in, money out and the difference, without opening or closing balances.'**
+  String get reportCustomNote;
+
+  /// No description provided for @reportSavedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on your phone in {folder}'**
+  String reportSavedTo(String folder);
+
+  /// No description provided for @reportNotSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone has no Downloads folder the app can save to. Use Share to keep a copy.'**
+  String get reportNotSaved;
 }
 
 class _AppLocalizationsDelegate

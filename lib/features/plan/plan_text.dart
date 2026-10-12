@@ -14,6 +14,8 @@ const shownFeatures = [
   F.budgetMonthOverride,
   F.businessWorkspaces,
   F.businessCashbooks,
+  F.reportsExcel,
+  F.reportsCustomRange,
 ];
 
 /// A feature's name in the user's language. [fallback] is the server's English
@@ -31,8 +33,8 @@ String featureLabel(AppLocalizations l10n, String feature, [String? fallback]) =
       F.businessWorkspaces => l10n.featureBusinesses,
       F.businessCashbooks => l10n.featureCashbooks,
       F.teamSeats => l10n.featureTeamSeats,
-      F.reportRange => l10n.featureReportRange,
-      F.reportExport => l10n.featureReportExport,
+      F.reportsCustomRange => l10n.featureReportRange,
+      F.reportsExcel => l10n.featureReportExport,
       F.auditTrail => l10n.featureAuditTrail,
       F.customFields => l10n.featureCustomFields,
       F.storageMb => l10n.featureStorage,

@@ -949,10 +949,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureTeamSeats => 'Team members';
 
   @override
-  String get featureReportRange => 'Reports for any dates';
+  String get featureReportRange =>
+      'Custom reports: any dates, types and categories';
 
   @override
-  String get featureReportExport => 'Reports as PDF and Excel';
+  String get featureReportExport => 'Reports as Excel';
 
   @override
   String get featureAuditTrail => 'History of every change';
@@ -1164,4 +1165,169 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inAndOutDetails => 'In and out, in detail';
+
+  @override
+  String get reportDownload => 'Download report';
+
+  @override
+  String get reportTitlePersonal => 'Personal report';
+
+  @override
+  String get reportTitleAccount => 'Account statement';
+
+  @override
+  String get reportTitleCashbook => 'Cashbook report';
+
+  @override
+  String get reportTitleBusiness => 'Business report';
+
+  @override
+  String get reportCoversPersonal => 'All your personal accounts together.';
+
+  @override
+  String reportCoversAccount(String name) {
+    return 'Only the account $name.';
+  }
+
+  @override
+  String reportCoversCashbook(String name) {
+    return 'Only the cashbook $name.';
+  }
+
+  @override
+  String reportCoversBusiness(String name) {
+    return 'Every cashbook of $name together.';
+  }
+
+  @override
+  String get reportInside => 'What\'s inside';
+
+  @override
+  String get reportInsidePersonal1 =>
+      'Opening and closing balance of every account';
+
+  @override
+  String get reportInsidePersonal2 => 'Income and spending by category';
+
+  @override
+  String get reportInsidePersonal3 =>
+      'Every transaction, with transfers listed on their own';
+
+  @override
+  String get reportInsideAccount1 => 'Opening and closing balance';
+
+  @override
+  String get reportInsideAccount2 => 'Spending and income by category';
+
+  @override
+  String get reportInsideAccount3 =>
+      'Every transaction, with the balance after it';
+
+  @override
+  String get reportInsideCashbook1 => 'Opening and closing balance';
+
+  @override
+  String get reportInsideCashbook2 =>
+      'Totals by category and by payment method';
+
+  @override
+  String get reportInsideCashbook3 => 'Every entry, with the balance after it';
+
+  @override
+  String get reportInsideBusiness1 => 'Your cashbooks side by side';
+
+  @override
+  String get reportInsideBusiness2 =>
+      'Totals by category and by payment method';
+
+  @override
+  String get reportInsideBusiness3 => 'Every entry of every cashbook';
+
+  @override
+  String get reportPeriod => 'Period';
+
+  @override
+  String get reportFileType => 'File type';
+
+  @override
+  String get reportPdfHint => 'Ready to read, print or share';
+
+  @override
+  String get reportExcelHint => 'A spreadsheet you can sort and add up';
+
+  @override
+  String get reportFree => 'Free';
+
+  @override
+  String get reportPaid => 'Paid plan';
+
+  @override
+  String get reportDownloadPdf => 'Download PDF';
+
+  @override
+  String get reportDownloadExcel => 'Download Excel';
+
+  @override
+  String get reportHint => 'Made online from everything you have saved.';
+
+  @override
+  String get reportOffline => 'Connect to the internet to download a report.';
+
+  @override
+  String reportTooLarge(int limit) {
+    return 'This period has too many lines for one file (up to $limit). Choose a shorter period.';
+  }
+
+  @override
+  String get reportFailed => 'The report could not be made. Try again.';
+
+  @override
+  String get reportThrottled =>
+      'Too many downloads. Try again in a little while.';
+
+  @override
+  String get reportReady => 'Your report is ready';
+
+  @override
+  String reportReference(String reference) {
+    return 'Reference $reference';
+  }
+
+  @override
+  String get reportOpen => 'Open';
+
+  @override
+  String get reportShare => 'Share';
+
+  @override
+  String get reportNoApp =>
+      'No app on this phone can open this file. Use Share or save.';
+
+  @override
+  String get reportAnother => 'Download another';
+
+  @override
+  String get reportCustomTitle => 'Custom report';
+
+  @override
+  String get reportCustomDates => 'Dates';
+
+  @override
+  String get reportCustomTypes => 'Type';
+
+  @override
+  String get reportCustomAllHint => 'Choose none to include all.';
+
+  @override
+  String get reportCustomNote =>
+      'A filtered report adds up only the lines that match. It shows money in, money out and the difference, without opening or closing balances.';
+
+  @override
+  String reportSavedTo(String folder) {
+    return 'Saved on your phone in $folder';
+  }
+
+  @override
+  String get reportNotSaved =>
+      'This phone has no Downloads folder the app can save to. Use Share to keep a copy.';
 }

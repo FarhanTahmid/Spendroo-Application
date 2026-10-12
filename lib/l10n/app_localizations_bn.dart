@@ -922,10 +922,11 @@ class AppLocalizationsBn extends AppLocalizations {
   String get featureTeamSeats => 'দলের সদস্য';
 
   @override
-  String get featureReportRange => 'যেকোনো তারিখের রিপোর্ট';
+  String get featureReportRange =>
+      'কাস্টম রিপোর্ট: যেকোনো তারিখ, ধরন ও ক্যাটাগরি';
 
   @override
-  String get featureReportExport => 'PDF ও Excel রিপোর্ট';
+  String get featureReportExport => 'Excel রিপোর্ট';
 
   @override
   String get featureAuditTrail => 'প্রতিটি পরিবর্তনের ইতিহাস';
@@ -1130,4 +1131,165 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get inAndOutDetails => 'জমা ও খরচের বিস্তারিত';
+
+  @override
+  String get reportDownload => 'রিপোর্ট ডাউনলোড';
+
+  @override
+  String get reportTitlePersonal => 'ব্যক্তিগত রিপোর্ট';
+
+  @override
+  String get reportTitleAccount => 'অ্যাকাউন্ট স্টেটমেন্ট';
+
+  @override
+  String get reportTitleCashbook => 'ক্যাশবুক রিপোর্ট';
+
+  @override
+  String get reportTitleBusiness => 'ব্যবসার রিপোর্ট';
+
+  @override
+  String get reportCoversPersonal => 'আপনার সব ব্যক্তিগত অ্যাকাউন্ট একসাথে।';
+
+  @override
+  String reportCoversAccount(String name) {
+    return 'শুধু $name অ্যাকাউন্ট।';
+  }
+
+  @override
+  String reportCoversCashbook(String name) {
+    return 'শুধু $name ক্যাশবুক।';
+  }
+
+  @override
+  String reportCoversBusiness(String name) {
+    return '$name-এর সব ক্যাশবুক একসাথে।';
+  }
+
+  @override
+  String get reportInside => 'যা যা থাকবে';
+
+  @override
+  String get reportInsidePersonal1 =>
+      'প্রতিটি অ্যাকাউন্টের শুরুর ও শেষ ব্যালেন্স';
+
+  @override
+  String get reportInsidePersonal2 => 'ক্যাটাগরি অনুযায়ী আয় ও খরচ';
+
+  @override
+  String get reportInsidePersonal3 => 'সব লেনদেন, ট্রান্সফার আলাদা করে';
+
+  @override
+  String get reportInsideAccount1 => 'শুরুর ও শেষ ব্যালেন্স';
+
+  @override
+  String get reportInsideAccount2 => 'ক্যাটাগরি অনুযায়ী খরচ ও আয়';
+
+  @override
+  String get reportInsideAccount3 => 'সব লেনদেন, প্রতিটির পরের ব্যালেন্সসহ';
+
+  @override
+  String get reportInsideCashbook1 => 'শুরুর ও শেষ ব্যালেন্স';
+
+  @override
+  String get reportInsideCashbook2 => 'ক্যাটাগরি ও পেমেন্ট পদ্ধতি অনুযায়ী মোট';
+
+  @override
+  String get reportInsideCashbook3 => 'সব এন্ট্রি, প্রতিটির পরের ব্যালেন্সসহ';
+
+  @override
+  String get reportInsideBusiness1 => 'আপনার ক্যাশবুকগুলো পাশাপাশি';
+
+  @override
+  String get reportInsideBusiness2 => 'ক্যাটাগরি ও পেমেন্ট পদ্ধতি অনুযায়ী মোট';
+
+  @override
+  String get reportInsideBusiness3 => 'প্রতিটি ক্যাশবুকের সব এন্ট্রি';
+
+  @override
+  String get reportPeriod => 'সময়কাল';
+
+  @override
+  String get reportFileType => 'ফাইলের ধরন';
+
+  @override
+  String get reportPdfHint => 'পড়া, প্রিন্ট বা শেয়ার করার জন্য তৈরি';
+
+  @override
+  String get reportExcelHint => 'স্প্রেডশিট, যা সাজানো ও যোগ করা যায়';
+
+  @override
+  String get reportFree => 'ফ্রি';
+
+  @override
+  String get reportPaid => 'পেইড প্ল্যান';
+
+  @override
+  String get reportDownloadPdf => 'PDF ডাউনলোড';
+
+  @override
+  String get reportDownloadExcel => 'Excel ডাউনলোড';
+
+  @override
+  String get reportHint => 'আপনার সেভ করা সব তথ্য থেকে অনলাইনে তৈরি হয়।';
+
+  @override
+  String get reportOffline => 'রিপোর্ট ডাউনলোড করতে ইন্টারনেটে যুক্ত হোন।';
+
+  @override
+  String reportTooLarge(int limit) {
+    return 'এই সময়কালে এক ফাইলের জন্য অনেক বেশি লাইন (সর্বোচ্চ $limit)। আরও ছোট সময়কাল বেছে নিন।';
+  }
+
+  @override
+  String get reportFailed => 'রিপোর্ট তৈরি করা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get reportThrottled =>
+      'অনেকবার ডাউনলোড হয়েছে। একটু পরে আবার চেষ্টা করুন।';
+
+  @override
+  String get reportReady => 'আপনার রিপোর্ট তৈরি';
+
+  @override
+  String reportReference(String reference) {
+    return 'রেফারেন্স $reference';
+  }
+
+  @override
+  String get reportOpen => 'খুলুন';
+
+  @override
+  String get reportShare => 'শেয়ার';
+
+  @override
+  String get reportNoApp =>
+      'এই ফোনের কোনো অ্যাপ ফাইলটি খুলতে পারছে না। শেয়ার বা সেভ ব্যবহার করুন।';
+
+  @override
+  String get reportAnother => 'আরেকটি ডাউনলোড';
+
+  @override
+  String get reportCustomTitle => 'কাস্টম রিপোর্ট';
+
+  @override
+  String get reportCustomDates => 'তারিখ';
+
+  @override
+  String get reportCustomTypes => 'ধরন';
+
+  @override
+  String get reportCustomAllHint => 'সব রাখতে কোনোটি বেছে নেবেন না।';
+
+  @override
+  String get reportCustomNote =>
+      'ফিল্টার করা রিপোর্টে শুধু যে লাইনগুলো মেলে সেগুলো যোগ হয়। এতে টাকা এসেছে, টাকা গেছে ও পার্থক্য দেখায়, শুরুর বা শেষ ব্যালেন্স থাকে না।';
+
+  @override
+  String reportSavedTo(String folder) {
+    return 'আপনার ফোনে $folder ফোল্ডারে সেভ হয়েছে';
+  }
+
+  @override
+  String get reportNotSaved =>
+      'এই ফোনে অ্যাপ সেভ করতে পারে এমন Downloads ফোল্ডার নেই। কপি রাখতে শেয়ার ব্যবহার করুন।';
 }

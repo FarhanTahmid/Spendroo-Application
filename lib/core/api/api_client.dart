@@ -62,6 +62,9 @@ class ApiClient {
 
   static const _timeout = Duration(seconds: 20);
 
+  /// A file the server makes on request is laid out while the phone waits
+  static const _downloadTimeout = Duration(seconds: 90);
+
   Future<ApiResponse> get(String path, {Map<String, String>? query}) => _send('GET', path, query: query);
   Future<ApiResponse> post(String path, [Object? body]) => _send('POST', path, body: body);
   Future<ApiResponse> patch(String path, [Object? body]) => _send('PATCH', path, body: body);
@@ -80,6 +83,13 @@ class ApiClient {
     final response = await _fetch(http.Request('GET', Uri.parse('$baseUrl$path')));
     return response.statusCode == 200 ? response.bodyBytes : null;
   }
+
+  /// A file the server makes on request, such as a report. The answer as it
+  /// came: the file on 200, else the server's reason as JSON.
+  Future<http.Response> download(String path, {Map<String, String>? query}) => _fetch(
+        http.Request('GET', Uri.parse('$baseUrl$path').replace(queryParameters: query)),
+        timeout: _downloadTimeout,
+      );
 
   Future<ApiResponse> _send(String method, String path, {Object? body, Map<String, String>? query}) async {
     final uri = Uri.parse('$baseUrl$path').replace(queryParameters: query);
@@ -103,12 +113,12 @@ class ApiClient {
     return ApiResponse(response.statusCode, decoded);
   }
 
-  Future<http.Response> _fetch(http.BaseRequest request) async {
+  Future<http.Response> _fetch(http.BaseRequest request, {Duration timeout = _timeout}) async {
     request.headers['Accept'] = 'application/json';
     final token = await tokenStore.read();
     if (token != null) request.headers['X-Session-Token'] = token;
     try {
-      return await http.Response.fromStream(await _http.send(request).timeout(_timeout));
+      return await http.Response.fromStream(await _http.send(request).timeout(timeout));
     } on SocketException {
       throw const OfflineException();
     } on TimeoutException {

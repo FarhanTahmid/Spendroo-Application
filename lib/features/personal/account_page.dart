@@ -11,6 +11,8 @@ import '../../core/money.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
 import '../plan/upgrade_sheet.dart';
+import '../reports/report_repository.dart';
+import '../reports/report_sheet.dart';
 import 'account_ledger.dart';
 import 'ledger_repository.dart';
 import 'personal_pages.dart';
@@ -172,6 +174,13 @@ class _AccountPageState extends ConsumerState<AccountPage> {
     return PassbookScaffold(
       title: Text(account.name),
       actions: [
+        if (workspace != null)
+          ReportButton(
+            scope: ReportScope.account,
+            workspace: workspace,
+            subjectId: account.id,
+            subjectName: account.name,
+          ),
         if (workspace != null)
           IconButton(
             tooltip: l10n.editAccount,

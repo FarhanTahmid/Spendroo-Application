@@ -98,7 +98,11 @@ class Categories extends Table with SyncColumns {
   TextColumn get color => text().nullable()();
 }
 
-@TableIndex(name: 'transactions_account_date', columns: {#accountId, #occurredOn})
+// The account screen reads an account newest first, a page at a time: the index
+// holds the whole sort order, so a page is a range scan with nothing to sort
+@TableIndex(name: 'transactions_account_feed', columns: {#accountId, #occurredOn, #createdAt, #id})
+// Finds the other leg of a transfer
+@TableIndex(name: 'transactions_transfer_group', columns: {#transferGroupId})
 class Transactions extends Table with SyncColumns {
   TextColumn get accountId => text()();
   TextColumn get categoryId => text().nullable()();
@@ -194,7 +198,7 @@ class AppDatabase extends _$AppDatabase {
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -212,6 +216,12 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(schema.entryCategories, schema.entryCategories.color);
             // A colour chosen on another device may have been pulled without its column: pull again
             await customStatement('DELETE FROM sync_cursors');
+          },
+          from4To5: (m, schema) async {
+            // transactions_account_feed starts with the same two columns
+            await customStatement('DROP INDEX IF EXISTS transactions_account_date');
+            await m.createIndex(schema.transactionsAccountFeed);
+            await m.createIndex(schema.transactionsTransferGroup);
           },
         ),
       );

@@ -9,6 +9,7 @@ import 'core/ui.dart';
 import 'features/auth/auth_pages.dart';
 import 'features/cashbook/cashbook_pages.dart';
 import 'features/onboarding/onboarding_page.dart';
+import 'features/personal/account_page.dart';
 import 'features/personal/categories_page.dart';
 import 'features/plan/keep_page.dart';
 import 'features/plan/plan_page.dart';
@@ -69,6 +70,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const PlanPage(),
         routes: [GoRoute(path: 'keep', builder: (_, _) => const KeepPage())],
       ),
+      GoRoute(path: '/account/:id', builder: (_, state) => AccountPage(accountId: state.pathParameters['id']!)),
       GoRoute(
         path: '/cashbook/:id',
         builder: (_, state) => CashbookPage(bookId: state.pathParameters['id']!),

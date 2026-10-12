@@ -276,7 +276,9 @@ class Harness {
   Future<void> settle() async {
     for (var i = 0; i < 5; i++) {
       await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
-      await tester.pump(const Duration(milliseconds: 100));
+      // A second in all: newer Flutter takes 800 ms over a page transition, and
+      // until it ends the page underneath is still there to be found
+      await tester.pump(const Duration(milliseconds: 200));
     }
   }
 

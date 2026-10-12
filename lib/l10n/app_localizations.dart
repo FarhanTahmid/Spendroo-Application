@@ -1939,6 +1939,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show less'**
   String get showLess;
+
+  /// No description provided for @currentBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Current balance'**
+  String get currentBalance;
+
+  /// No description provided for @periodLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last month'**
+  String get periodLastMonth;
+
+  /// No description provided for @periodLast3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'3 months'**
+  String get periodLast3Months;
+
+  /// No description provided for @periodThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get periodThisYear;
+
+  /// No description provided for @periodAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get periodAllTime;
+
+  /// No description provided for @periodCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get periodCustom;
+
+  /// No description provided for @filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// No description provided for @applyFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get applyFilters;
+
+  /// No description provided for @resetFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get resetFilters;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get clearFilters;
+
+  /// No description provided for @insights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get insights;
+
+  /// No description provided for @transfersIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfers in'**
+  String get transfersIn;
+
+  /// No description provided for @transfersOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfers out'**
+  String get transfersOut;
+
+  /// No description provided for @transferTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To {account}'**
+  String transferTo(String account);
+
+  /// No description provided for @transferFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {account}'**
+  String transferFrom(String account);
+
+  /// No description provided for @closingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing balance'**
+  String get closingBalance;
+
+  /// No description provided for @balanceOverTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance over time'**
+  String get balanceOverTime;
+
+  /// No description provided for @cashInAndOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in and out'**
+  String get cashInAndOut;
+
+  /// No description provided for @whereItWent.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it went'**
+  String get whereItWent;
+
+  /// No description provided for @whereItCameFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it came from'**
+  String get whereItCameFrom;
+
+  /// No description provided for @averagePerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Average per day'**
+  String get averagePerDay;
+
+  /// No description provided for @largestExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Largest expense'**
+  String get largestExpense;
+
+  /// No description provided for @accountGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is no longer here.'**
+  String get accountGone;
+
+  /// No description provided for @nothingInPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in this period.'**
+  String get nothingInPeriod;
+
+  /// No description provided for @inAndOutDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'In and out, in detail'**
+  String get inAndOutDetails;
 }
 
 class _AppLocalizationsDelegate

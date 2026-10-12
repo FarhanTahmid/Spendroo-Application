@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/db/database.dart';
 import '../../core/entitlements/entitlements.dart';
@@ -30,11 +31,14 @@ IconData accountKindIcon(String kind) => switch (kind) {
       _ => Icons.payments_rounded,
     };
 
-/// [date] (ISO) preselects the day of a new transaction, e.g. from the budget calendar.
-void openTransactionForm(BuildContext context, Workspace workspace, {TransactionView? existing, String? date}) =>
+/// [date] (ISO) preselects the day of a new transaction, e.g. from the budget
+/// calendar; [accountId] its account, from that account's screen.
+void openTransactionForm(BuildContext context, Workspace workspace,
+        {TransactionView? existing, String? date, String? accountId}) =>
     Navigator.of(context).push(MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (_) => TransactionFormPage(workspace: workspace, existing: existing, initialDate: date),
+      builder: (_) => TransactionFormPage(
+          workspace: workspace, existing: existing, initialDate: date, initialAccountId: accountId),
     ));
 
 final monthSummaryProvider = StreamProvider.family<MonthSummary, (String, String)>(
@@ -272,11 +276,28 @@ class _TrendChart extends StatelessWidget {
 
 /// One transaction row: what, when, from which account, how much.
 class TransactionTile extends StatelessWidget {
-  const TransactionTile({super.key, required this.view, required this.onTap, this.showDate = true});
+  const TransactionTile({
+    super.key,
+    required this.view,
+    required this.onTap,
+    this.showDate = true,
+    this.showAccount = true,
+    this.transferLabel,
+    this.balance,
+  });
 
   final TransactionView view;
   final VoidCallback onTap;
   final bool showDate;
+
+  /// False on the account's own screen, where every row is on it.
+  final bool showAccount;
+
+  /// Says where a transfer went or came from, in place of "Transfer".
+  final String? transferLabel;
+
+  /// The account's balance after this transaction, already formatted.
+  final String? balance;
 
   @override
   Widget build(BuildContext context) {
@@ -284,7 +305,7 @@ class TransactionTile extends StatelessWidget {
     final t = view.transaction;
     final isTransfer = t.kind == 'transfer';
     final isIn = t.amountMinor > 0;
-    final label = isTransfer ? l10n.transfer : (view.categoryName ?? l10n.uncategorised);
+    final label = isTransfer ? (transferLabel ?? l10n.transfer) : (view.categoryName ?? l10n.uncategorised);
     return MoneyRow(
       icon: isTransfer ? Icons.swap_horiz_rounded : (isIn ? Icons.south_west_rounded : Icons.north_east_rounded),
       // The badge wears the category's colour; the arrow and the amount still say which way the money went
@@ -294,11 +315,12 @@ class TransactionTile extends StatelessWidget {
       title: t.note.isNotEmpty ? t.note : label,
       detail: [
         if (showDate) formatDate(context, t.occurredOn),
-        view.accountName,
+        if (showAccount) view.accountName,
         if (t.note.isNotEmpty) label,
       ].join(' · '),
       amount: context.money(t.amountMinor, t.currency),
       amountColor: isTransfer ? null : context.amountColor(isIn),
+      amountDetail: balance,
       onTap: onTap,
     );
   }
@@ -447,11 +469,13 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
 
 /// Add an expense, income or transfer; or edit the amount, date, category and note of an existing one.
 class TransactionFormPage extends ConsumerStatefulWidget {
-  const TransactionFormPage({super.key, required this.workspace, this.existing, this.initialDate});
+  const TransactionFormPage(
+      {super.key, required this.workspace, this.existing, this.initialDate, this.initialAccountId});
 
   final Workspace workspace;
   final TransactionView? existing;
   final String? initialDate;
+  final String? initialAccountId;
 
   @override
   ConsumerState<TransactionFormPage> createState() => _TransactionFormPageState();
@@ -466,7 +490,7 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
   );
   late final _note = TextEditingController(text: _original?.note ?? '');
   late String _date = _original?.occurredOn ?? widget.initialDate ?? todayIso();
-  late String? _accountId = _original?.accountId;
+  late String? _accountId = _original?.accountId ?? widget.initialAccountId;
   String? _toAccountId;
   late String? _categoryId = _original?.categoryId;
   int _refused = 0;
@@ -529,7 +553,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
         .toList();
     if (accounts.isEmpty) return Scaffold(appBar: AppBar(), body: const Center(child: AppLoader()));
     _accountId ??= accounts.first.account.id;
-    _toAccountId ??= accounts.length > 1 ? accounts[1].account.id : accounts.first.account.id;
+    // The first account that is not the one the money leaves
+    _toAccountId ??= accounts.firstWhere((a) => a.account.id != _accountId, orElse: () => accounts.first).account.id;
     final account = accounts.firstWhere((a) => a.account.id == _accountId, orElse: () => accounts.first).account;
     final editing = _original != null;
     final isTransfer = _kind == 'transfer';
@@ -694,7 +719,8 @@ class AccountsPage extends ConsumerWidget {
                     margin: const EdgeInsets.only(bottom: AppSpace.md),
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
-                      onTap: () => showAccountForm(context, workspace, existing: item.account),
+                      // Its transactions; editing the account is one tap further, on that screen
+                      onTap: () => context.push('/account/${item.account.id}'),
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpace.lg),
                         child: Row(

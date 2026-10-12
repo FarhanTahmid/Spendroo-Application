@@ -1085,4 +1085,83 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showLess => 'Show less';
+
+  @override
+  String get currentBalance => 'Current balance';
+
+  @override
+  String get periodLastMonth => 'Last month';
+
+  @override
+  String get periodLast3Months => '3 months';
+
+  @override
+  String get periodThisYear => 'This year';
+
+  @override
+  String get periodAllTime => 'All time';
+
+  @override
+  String get periodCustom => 'Custom';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get applyFilters => 'Apply';
+
+  @override
+  String get resetFilters => 'Reset';
+
+  @override
+  String get clearFilters => 'Clear filters';
+
+  @override
+  String get insights => 'Insights';
+
+  @override
+  String get transfersIn => 'Transfers in';
+
+  @override
+  String get transfersOut => 'Transfers out';
+
+  @override
+  String transferTo(String account) {
+    return 'To $account';
+  }
+
+  @override
+  String transferFrom(String account) {
+    return 'From $account';
+  }
+
+  @override
+  String get closingBalance => 'Closing balance';
+
+  @override
+  String get balanceOverTime => 'Balance over time';
+
+  @override
+  String get cashInAndOut => 'Cash in and out';
+
+  @override
+  String get whereItWent => 'Where it went';
+
+  @override
+  String get whereItCameFrom => 'Where it came from';
+
+  @override
+  String get averagePerDay => 'Average per day';
+
+  @override
+  String get largestExpense => 'Largest expense';
+
+  @override
+  String get accountGone => 'This account is no longer here.';
+
+  @override
+  String get nothingInPeriod => 'Nothing in this period.';
+
+  @override
+  String get inAndOutDetails => 'In and out, in detail';
 }

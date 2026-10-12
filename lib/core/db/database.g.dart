@@ -8170,9 +8170,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'entries_book_date',
     'CREATE INDEX entries_book_date ON entries (cashbook_id, entry_date)',
   );
-  late final Index transactionsAccountDate = Index(
-    'transactions_account_date',
-    'CREATE INDEX transactions_account_date ON transactions (account_id, occurred_on)',
+  late final Index transactionsAccountFeed = Index(
+    'transactions_account_feed',
+    'CREATE INDEX transactions_account_feed ON transactions (account_id, occurred_on, created_at, id)',
+  );
+  late final Index transactionsTransferGroup = Index(
+    'transactions_transfer_group',
+    'CREATE INDEX transactions_transfer_group ON transactions (transfer_group_id)',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -8194,7 +8198,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncFailures,
     settings,
     entriesBookDate,
-    transactionsAccountDate,
+    transactionsAccountFeed,
+    transactionsTransferGroup,
   ];
 }
 

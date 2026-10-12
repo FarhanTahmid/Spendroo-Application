@@ -1051,4 +1051,83 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get showLess => 'কম দেখান';
+
+  @override
+  String get currentBalance => 'বর্তমান ব্যালেন্স';
+
+  @override
+  String get periodLastMonth => 'গত মাস';
+
+  @override
+  String get periodLast3Months => '৩ মাস';
+
+  @override
+  String get periodThisYear => 'এই বছর';
+
+  @override
+  String get periodAllTime => 'সব সময়';
+
+  @override
+  String get periodCustom => 'নিজে বাছুন';
+
+  @override
+  String get filters => 'ফিল্টার';
+
+  @override
+  String get applyFilters => 'প্রয়োগ করুন';
+
+  @override
+  String get resetFilters => 'মুছে দিন';
+
+  @override
+  String get clearFilters => 'ফিল্টার সরান';
+
+  @override
+  String get insights => 'বিশ্লেষণ';
+
+  @override
+  String get transfersIn => 'স্থানান্তর হয়ে এসেছে';
+
+  @override
+  String get transfersOut => 'স্থানান্তর হয়ে গেছে';
+
+  @override
+  String transferTo(String account) {
+    return '$account-এ';
+  }
+
+  @override
+  String transferFrom(String account) {
+    return '$account থেকে';
+  }
+
+  @override
+  String get closingBalance => 'সমাপনী ব্যালেন্স';
+
+  @override
+  String get balanceOverTime => 'সময়ের সাথে ব্যালেন্স';
+
+  @override
+  String get cashInAndOut => 'জমা ও খরচ';
+
+  @override
+  String get whereItWent => 'কোথায় গেল';
+
+  @override
+  String get whereItCameFrom => 'কোথা থেকে এল';
+
+  @override
+  String get averagePerDay => 'দৈনিক গড়';
+
+  @override
+  String get largestExpense => 'সবচেয়ে বড় খরচ';
+
+  @override
+  String get accountGone => 'এই অ্যাকাউন্টটি আর নেই।';
+
+  @override
+  String get nothingInPeriod => 'এই সময়ে কোনো লেনদেন নেই।';
+
+  @override
+  String get inAndOutDetails => 'জমা ও খরচের বিস্তারিত';
 }

@@ -85,8 +85,7 @@ firebase_options.dart
 *.bak
 *.old
 
-# Firebase related
-**/google-services.json
+# Firebase related (android/app/google-services.json is committed: it holds no secrets)
 **/GoogleService-Info.plist
 
 # Environment files

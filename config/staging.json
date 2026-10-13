@@ -1,6 +1,6 @@
 {
   "FLAVOR": "staging",
   "API_URL": "https://staging-api.spendroo.com",
-  "GOOGLE_SERVER_CLIENT_ID": "",
+  "GOOGLE_SERVER_CLIENT_ID": "1035441867051-1a5eg1m8k35urm125otb74d3skn0219b.apps.googleusercontent.com",
   "FEEDBACK_EMAIL": ""
 }

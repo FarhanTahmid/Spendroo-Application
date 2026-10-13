@@ -73,9 +73,16 @@ upload, even to a test track. Before that upload it can still be changed:
   A missing or wrong SHA-1 shows up as the Google sheet closing at once, as if
   the user had backed out. iOS also needs its own client ID as `GIDClientID`
   and the reversed ID as a URL scheme in `ios/Runner/Info.plist`.
-- **Firebase (push, Phase 3+):** register the new IDs and download fresh
-  `google-services.json` / `GoogleService-Info.plist`. The ones on disk are for
-  the old placeholder ID (`com.example.casharoo`), so they are not used.
+- **Firebase:** the Firebase project is `spendroo-dev`, the same Google Cloud
+  project as the OAuth clients, on the free Spark plan (keep it without a
+  billing account). The three IDs are registered there as Android apps and
+  `android/app/google-services.json` lists all three; it holds no secrets and
+  is committed. The app starts Firebase on Android in `lib/core/firebase.dart`.
+  After adding a signing key (a new upload key, the Play App Signing key), add
+  its SHA-1 and SHA-256 to each app (Firebase console → Project settings →
+  Your apps → Add fingerprint), download `google-services.json` again and
+  replace the file. If the ID ever changes, register the new IDs the same way.
+  iOS is not registered yet.
 - **API:** production is `https://api.spendroo.com` and staging
   `https://staging-api.spendroo.com` (`config/prod.json`, `config/staging.json`);
   set the API's `ALLOWED_HOSTS`/`CSRF_TRUSTED_ORIGINS` to match.
@@ -91,6 +98,17 @@ upload, even to a test track. Before that upload it can still be changed:
    paste the tunnel address, then sign up. Email codes arrive from the
    SMTP account configured for staging.
 4. Set `FEEDBACK_EMAIL` in `config/staging.json` to show a "Send feedback" entry.
+
+Instead of sharing the file by hand, send it through Firebase App Distribution
+(free). Testers get an email with an install link:
+
+```
+npx -y firebase-tools appdistribution:distribute build/app/outputs/flutter-apk/app-staging-release.apk \
+  --project spendroo-dev --app 1:1035441867051:android:a3999ce38cd6e60dfa5d6e \
+  --groups testers --release-notes "<what changed>"
+```
+
+Add testers with `npx -y firebase-tools appdistribution:testers:add --project spendroo-dev --group-alias testers <email> ...`.
 
 The quick-tunnel address changes whenever the tunnel restarts; testers then
 update **Settings → Server**. A named tunnel on a real domain removes this step.

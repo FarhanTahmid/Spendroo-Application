@@ -1,0 +1,129 @@
+{
+  "project_info": {
+    "project_number": "1035441867051",
+    "project_id": "spendroo-dev",
+    "storage_bucket": "spendroo-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035441867051:android:0ae41bb6f573e1c5fa5d6e",
+        "android_client_info": {
+          "package_name": "com.spendroo.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1035441867051-a89i3orehosrhb1ao76e3h56oj1jlu39.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spendroo.app",
+            "certificate_hash": "b2f1a05cead219ae84fab3bc4292f5cebf72e17c"
+          }
+        },
+        {
+          "client_id": "1035441867051-1a5eg1m8k35urm125otb74d3skn0219b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd0wnzJlaqehi3sa9HICz3X39dn9pHJkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1035441867051-1a5eg1m8k35urm125otb74d3skn0219b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035441867051:android:71b7f9b435d15033fa5d6e",
+        "android_client_info": {
+          "package_name": "com.spendroo.app.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1035441867051-32pucjkcbcujevg16bnqut41ijr9434q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spendroo.app.dev",
+            "certificate_hash": "cfbad09d37aa21a03d0a6f53df036b966678a7f9"
+          }
+        },
+        {
+          "client_id": "1035441867051-9iiigcb8f3jrk554dqv0u77vj2nqrent.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spendroo.app.dev",
+            "certificate_hash": "b2f1a05cead219ae84fab3bc4292f5cebf72e17c"
+          }
+        },
+        {
+          "client_id": "1035441867051-1a5eg1m8k35urm125otb74d3skn0219b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd0wnzJlaqehi3sa9HICz3X39dn9pHJkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1035441867051-1a5eg1m8k35urm125otb74d3skn0219b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035441867051:android:a3999ce38cd6e60dfa5d6e",
+        "android_client_info": {
+          "package_name": "com.spendroo.app.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1035441867051-uj06or45vel6tsmeouadjit7t0hqvklu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spendroo.app.stg",
+            "certificate_hash": "b2f1a05cead219ae84fab3bc4292f5cebf72e17c"
+          }
+        },
+        {
+          "client_id": "1035441867051-1a5eg1m8k35urm125otb74d3skn0219b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd0wnzJlaqehi3sa9HICz3X39dn9pHJkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1035441867051-1a5eg1m8k35urm125otb74d3skn0219b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

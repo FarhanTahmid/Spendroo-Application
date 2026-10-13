@@ -33,6 +33,7 @@ class MoneyRow extends StatelessWidget {
     this.detail,
     this.tint,
     this.amountColor,
+    this.amountDetail,
     this.onTap,
   });
 
@@ -44,11 +45,18 @@ class MoneyRow extends StatelessWidget {
   final String amount;
   final Color? tint;
   final Color? amountColor;
+
+  /// A quieter figure under the amount, such as the balance it left.
+  final String? amountDetail;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final figure = Text(
+      amount,
+      style: text.titleMedium?.copyWith(color: amountColor, fontFeatures: tabularFigures),
+    );
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -73,10 +81,16 @@ class MoneyRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Text(
-              amount,
-              style: text.titleMedium?.copyWith(color: amountColor, fontFeatures: tabularFigures),
-            ),
+            if (amountDetail == null)
+              figure
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  figure,
+                  Text(amountDetail!, style: text.bodySmall?.copyWith(fontSize: 12, fontFeatures: tabularFigures)),
+                ],
+              ),
           ],
         ),
       ),

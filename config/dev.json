@@ -1,6 +1,6 @@
 {
   "FLAVOR": "dev",
-  "API_URL": "http://10.0.2.2:8000",
-  "GOOGLE_SERVER_CLIENT_ID": "",
+  "API_URL": "http://10.0.2.2:8200",
+  "GOOGLE_SERVER_CLIENT_ID": "1035441867051-1a5eg1m8k35urm125otb74d3skn0219b.apps.googleusercontent.com",
   "FEEDBACK_EMAIL": ""
 }

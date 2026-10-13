@@ -12,8 +12,12 @@ const shownFeatures = [
   F.personalAccounts,
   F.customCategories,
   F.budgetMonthOverride,
+  F.recurringTransactions,
+  F.remindersStandalone,
   F.businessWorkspaces,
   F.businessCashbooks,
+  F.reportsExcel,
+  F.reportsCustomRange,
 ];
 
 /// A feature's name in the user's language. [fallback] is the server's English
@@ -26,13 +30,14 @@ String featureLabel(AppLocalizations l10n, String feature, [String? fallback]) =
       F.insightsYearReview => l10n.featureYearReview,
       F.insightsTrendMonths => l10n.featureTrendMonths,
       F.recurringTransactions => l10n.featureRecurring,
+      F.remindersStandalone => l10n.featureReminders,
       F.savingsGoals => l10n.featureSavingsGoals,
       F.homeWidget => l10n.featureHomeWidget,
       F.businessWorkspaces => l10n.featureBusinesses,
       F.businessCashbooks => l10n.featureCashbooks,
       F.teamSeats => l10n.featureTeamSeats,
-      F.reportRange => l10n.featureReportRange,
-      F.reportExport => l10n.featureReportExport,
+      F.reportsCustomRange => l10n.featureReportRange,
+      F.reportsExcel => l10n.featureReportExport,
       F.auditTrail => l10n.featureAuditTrail,
       F.customFields => l10n.featureCustomFields,
       F.storageMb => l10n.featureStorage,
@@ -54,6 +59,7 @@ String planLimitText(AppLocalizations l10n, PlanLimitException refusal, String p
     _ => switch (refusal.feature) {
         F.personalAccounts => l10n.limitAccounts(plan, limit),
         F.customCategories => l10n.limitCategories(plan, limit),
+        F.remindersStandalone => l10n.limitReminders(plan, limit),
         F.businessCashbooks => l10n.limitCashbooks(plan, limit),
         F.businessWorkspaces => l10n.limitWorkspaces(plan, limit),
         _ => l10n.limitGeneric(plan),

@@ -39,6 +39,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get continueWithGoogle => 'Google দিয়ে চালিয়ে যান';
 
   @override
+  String get googleSignInFailed =>
+      'Google দিয়ে সাইন ইন করা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
   String get tagline => 'আপনার টাকা আর আপনার দোকান, এক অ্যাপে।';
 
   @override
@@ -551,6 +555,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get net => 'নিট';
 
   @override
+  String get netRemaining => 'নিট অবশিষ্ট ব্যালেন্স';
+
+  @override
   String get lastSixMonths => 'গত ৬ মাস';
 
   @override
@@ -563,6 +570,10 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get accountBalances => 'অ্যাকাউন্টের ব্যালেন্স';
+
+  @override
+  String get shareOfTotalBalance =>
+      'শতাংশ দেখায় মোট ব্যালেন্সের কত অংশ প্রতিটি অ্যাকাউন্টে আছে।';
 
   @override
   String get server => 'সার্ভার';
@@ -918,10 +929,11 @@ class AppLocalizationsBn extends AppLocalizations {
   String get featureTeamSeats => 'দলের সদস্য';
 
   @override
-  String get featureReportRange => 'যেকোনো তারিখের রিপোর্ট';
+  String get featureReportRange =>
+      'কাস্টম রিপোর্ট: যেকোনো তারিখ, ধরন ও ক্যাটাগরি';
 
   @override
-  String get featureReportExport => 'PDF ও Excel রিপোর্ট';
+  String get featureReportExport => 'Excel রিপোর্ট';
 
   @override
   String get featureAuditTrail => 'প্রতিটি পরিবর্তনের ইতিহাস';
@@ -1047,4 +1059,896 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get showLess => 'কম দেখান';
+
+  @override
+  String get currentBalance => 'বর্তমান ব্যালেন্স';
+
+  @override
+  String get periodLastMonth => 'গত মাস';
+
+  @override
+  String get periodLast3Months => '৩ মাস';
+
+  @override
+  String get periodThisYear => 'এই বছর';
+
+  @override
+  String get periodAllTime => 'সব সময়';
+
+  @override
+  String get periodCustom => 'নিজে বাছুন';
+
+  @override
+  String get filters => 'ফিল্টার';
+
+  @override
+  String get applyFilters => 'প্রয়োগ করুন';
+
+  @override
+  String get resetFilters => 'মুছে দিন';
+
+  @override
+  String get clearFilters => 'ফিল্টার সরান';
+
+  @override
+  String get insights => 'বিশ্লেষণ';
+
+  @override
+  String get transfersIn => 'স্থানান্তর হয়ে এসেছে';
+
+  @override
+  String get transfersOut => 'স্থানান্তর হয়ে গেছে';
+
+  @override
+  String transferTo(String account) {
+    return '$account-এ';
+  }
+
+  @override
+  String transferFrom(String account) {
+    return '$account থেকে';
+  }
+
+  @override
+  String get closingBalance => 'সমাপনী ব্যালেন্স';
+
+  @override
+  String get balanceOverTime => 'সময়ের সাথে ব্যালেন্স';
+
+  @override
+  String get cashInAndOut => 'জমা ও খরচ';
+
+  @override
+  String get whereItWent => 'কোথায় গেল';
+
+  @override
+  String get whereItCameFrom => 'কোথা থেকে এল';
+
+  @override
+  String get averagePerDay => 'দৈনিক গড়';
+
+  @override
+  String get largestExpense => 'সবচেয়ে বড় খরচ';
+
+  @override
+  String get accountGone => 'এই অ্যাকাউন্টটি আর নেই।';
+
+  @override
+  String get nothingInPeriod => 'এই সময়ে কোনো লেনদেন নেই।';
+
+  @override
+  String get inAndOutDetails => 'জমা ও খরচের বিস্তারিত';
+
+  @override
+  String get reportDownload => 'রিপোর্ট ডাউনলোড';
+
+  @override
+  String get reportTitlePersonal => 'ব্যক্তিগত রিপোর্ট';
+
+  @override
+  String get reportTitleAccount => 'অ্যাকাউন্ট স্টেটমেন্ট';
+
+  @override
+  String get reportTitleCashbook => 'ক্যাশবুক রিপোর্ট';
+
+  @override
+  String get reportTitleBusiness => 'ব্যবসার রিপোর্ট';
+
+  @override
+  String get reportCoversPersonal => 'আপনার সব ব্যক্তিগত অ্যাকাউন্ট একসাথে।';
+
+  @override
+  String reportCoversAccount(String name) {
+    return 'শুধু $name অ্যাকাউন্ট।';
+  }
+
+  @override
+  String reportCoversCashbook(String name) {
+    return 'শুধু $name ক্যাশবুক।';
+  }
+
+  @override
+  String reportCoversBusiness(String name) {
+    return '$name-এর সব ক্যাশবুক একসাথে।';
+  }
+
+  @override
+  String get reportInside => 'যা যা থাকবে';
+
+  @override
+  String get reportInsidePersonal1 =>
+      'প্রতিটি অ্যাকাউন্টের শুরুর ও শেষ ব্যালেন্স';
+
+  @override
+  String get reportInsidePersonal2 => 'ক্যাটাগরি অনুযায়ী আয় ও খরচ';
+
+  @override
+  String get reportInsidePersonal3 => 'সব লেনদেন, ট্রান্সফার আলাদা করে';
+
+  @override
+  String get reportInsideAccount1 => 'শুরুর ও শেষ ব্যালেন্স';
+
+  @override
+  String get reportInsideAccount2 => 'ক্যাটাগরি অনুযায়ী খরচ ও আয়';
+
+  @override
+  String get reportInsideAccount3 => 'সব লেনদেন, প্রতিটির পরের ব্যালেন্সসহ';
+
+  @override
+  String get reportInsideCashbook1 => 'শুরুর ও শেষ ব্যালেন্স';
+
+  @override
+  String get reportInsideCashbook2 => 'ক্যাটাগরি ও পেমেন্ট পদ্ধতি অনুযায়ী মোট';
+
+  @override
+  String get reportInsideCashbook3 => 'সব এন্ট্রি, প্রতিটির পরের ব্যালেন্সসহ';
+
+  @override
+  String get reportInsideBusiness1 => 'আপনার ক্যাশবুকগুলো পাশাপাশি';
+
+  @override
+  String get reportInsideBusiness2 => 'ক্যাটাগরি ও পেমেন্ট পদ্ধতি অনুযায়ী মোট';
+
+  @override
+  String get reportInsideBusiness3 => 'প্রতিটি ক্যাশবুকের সব এন্ট্রি';
+
+  @override
+  String get reportPeriod => 'সময়কাল';
+
+  @override
+  String get reportFileType => 'ফাইলের ধরন';
+
+  @override
+  String get reportPdfHint => 'পড়া, প্রিন্ট বা শেয়ার করার জন্য তৈরি';
+
+  @override
+  String get reportExcelHint => 'স্প্রেডশিট, যা সাজানো ও যোগ করা যায়';
+
+  @override
+  String get reportFree => 'ফ্রি';
+
+  @override
+  String get reportPaid => 'পেইড প্ল্যান';
+
+  @override
+  String get reportDownloadPdf => 'PDF ডাউনলোড';
+
+  @override
+  String get reportDownloadExcel => 'Excel ডাউনলোড';
+
+  @override
+  String get reportHint => 'আপনার সেভ করা সব তথ্য থেকে অনলাইনে তৈরি হয়।';
+
+  @override
+  String get reportOffline => 'রিপোর্ট ডাউনলোড করতে ইন্টারনেটে যুক্ত হোন।';
+
+  @override
+  String reportTooLarge(int limit) {
+    return 'এই সময়কালে এক ফাইলের জন্য অনেক বেশি লাইন (সর্বোচ্চ $limit)। আরও ছোট সময়কাল বেছে নিন।';
+  }
+
+  @override
+  String get reportFailed => 'রিপোর্ট তৈরি করা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get reportThrottled =>
+      'অনেকবার ডাউনলোড হয়েছে। একটু পরে আবার চেষ্টা করুন।';
+
+  @override
+  String get reportReady => 'আপনার রিপোর্ট তৈরি';
+
+  @override
+  String reportReference(String reference) {
+    return 'রেফারেন্স $reference';
+  }
+
+  @override
+  String get reportOpen => 'খুলুন';
+
+  @override
+  String get reportShare => 'শেয়ার';
+
+  @override
+  String get reportNoApp =>
+      'এই ফোনের কোনো অ্যাপ ফাইলটি খুলতে পারছে না। শেয়ার বা সেভ ব্যবহার করুন।';
+
+  @override
+  String get reportAnother => 'আরেকটি ডাউনলোড';
+
+  @override
+  String get reportCustomTitle => 'কাস্টম রিপোর্ট';
+
+  @override
+  String get reportCustomDates => 'তারিখ';
+
+  @override
+  String get reportCustomTypes => 'ধরন';
+
+  @override
+  String get reportCustomAllHint => 'সব রাখতে কোনোটি বেছে নেবেন না।';
+
+  @override
+  String get reportCustomNote =>
+      'ফিল্টার করা রিপোর্টে শুধু যে লাইনগুলো মেলে সেগুলো যোগ হয়। এতে টাকা এসেছে, টাকা গেছে ও পার্থক্য দেখায়, শুরুর বা শেষ ব্যালেন্স থাকে না।';
+
+  @override
+  String reportSavedTo(String folder) {
+    return 'আপনার ফোনে $folder ফোল্ডারে সেভ হয়েছে';
+  }
+
+  @override
+  String get reportNotSaved =>
+      'এই ফোনে অ্যাপ সেভ করতে পারে এমন Downloads ফোল্ডার নেই। কপি রাখতে শেয়ার ব্যবহার করুন।';
+
+  @override
+  String get edit => 'সম্পাদনা';
+
+  @override
+  String savedPercent(String percent) {
+    return 'সঞ্চয় $percent%';
+  }
+
+  @override
+  String get spendingPace => 'খরচের গতি';
+
+  @override
+  String spentSoFar(String amount) {
+    return '$amount খরচ হয়েছে';
+  }
+
+  @override
+  String paceLess(String amount) {
+    return 'আগের মাসের এই সময়ের চেয়ে $amount কম';
+  }
+
+  @override
+  String paceMore(String amount) {
+    return 'আগের মাসের এই সময়ের চেয়ে $amount বেশি';
+  }
+
+  @override
+  String get dailyAverage => 'দৈনিক গড়';
+
+  @override
+  String get monthEndForecast => 'মাস শেষে';
+
+  @override
+  String get biggestDay => 'সবচেয়ে বেশি খরচের দিন';
+
+  @override
+  String get noSpendDays => 'খরচহীন দিন';
+
+  @override
+  String get budgetEvenPace => 'বাজেট, সমানভাবে ভাগ করা';
+
+  @override
+  String thatDay(String amount) {
+    return 'সেদিন $amount';
+  }
+
+  @override
+  String soFar(String amount) {
+    return 'এ পর্যন্ত $amount';
+  }
+
+  @override
+  String get tapDayHint => 'লেনদেন দেখতে একটি দিনে চাপ দিন';
+
+  @override
+  String get budgetHealth => 'বাজেটের অবস্থা';
+
+  @override
+  String percentUsed(String percent) {
+    return '$percent% ব্যবহৃত';
+  }
+
+  @override
+  String get usedLabel => 'ব্যবহৃত';
+
+  @override
+  String get safePerDay => 'দিনপ্রতি নিরাপদ';
+
+  @override
+  String get daysLeft => 'বাকি দিন';
+
+  @override
+  String keepsWithin(String amount) {
+    return 'দিনে $amount খরচ করলে সীমার মধ্যে থাকবেন';
+  }
+
+  @override
+  String keepsWithinBudget(String amount) {
+    return 'এ মাসে দিনে $amount খরচ করলে বাজেটের মধ্যে থাকবেন';
+  }
+
+  @override
+  String get allBudgets => 'সব বাজেট';
+
+  @override
+  String spentShare(String percent) {
+    return 'খরচ · $percent%';
+  }
+
+  @override
+  String leftShare(String percent) {
+    return 'বাকি · $percent%';
+  }
+
+  @override
+  String overShare(String percent) {
+    return 'অতিরিক্ত · $percent%';
+  }
+
+  @override
+  String limitAmount(String amount) {
+    return 'সীমা $amount';
+  }
+
+  @override
+  String get verdictOnTrack => 'ঠিক পথে আছেন। খরচ মাসের গতির চেয়ে কম।';
+
+  @override
+  String get verdictAhead => 'খরচ মাসের গতির চেয়ে দ্রুত হচ্ছে।';
+
+  @override
+  String get verdictWithin => 'আপনি বাজেটের মধ্যে ছিলেন।';
+
+  @override
+  String get legendWithin => 'বরাদ্দের মধ্যে';
+
+  @override
+  String get legendNear => 'কিছুটা বেশি';
+
+  @override
+  String get legendOver => 'অনেক বেশি';
+
+  @override
+  String get notBudgeted => 'সীমা নেই';
+
+  @override
+  String get setLimit => 'সীমা দিন';
+
+  @override
+  String get dayByDay => 'দিন অনুযায়ী';
+
+  @override
+  String get seeTransactions => 'লেনদেন দেখুন';
+
+  @override
+  String get noTransactionsHere => 'এখানে কিছু লেখা হয়নি।';
+
+  @override
+  String get cashFlow => 'আয়-ব্যয়ের ধারা';
+
+  @override
+  String savedInMonths(String saved, String months) {
+    return '$months মাসের মধ্যে $saved মাসে আয় খরচের চেয়ে বেশি ছিল।';
+  }
+
+  @override
+  String get tapMonthHint => 'বিস্তারিত দেখতে একটি মাসে চাপ দিন';
+
+  @override
+  String goToMonth(String month) {
+    return '$month-এ যান';
+  }
+
+  @override
+  String keptOfIncome(String percent) {
+    return 'আয়ের $percent% জমা আছে';
+  }
+
+  @override
+  String get spentMoreThanEarned => 'আয়ের চেয়ে খরচ বেশি';
+
+  @override
+  String get splitTitle => 'ভাগ';
+
+  @override
+  String get splitAction => 'কয়েকটি ক্যাটাগরিতে ভাগ করুন';
+
+  @override
+  String get splitRemove => 'ভাগ বাদ দিন';
+
+  @override
+  String get splitAddPart => 'আরেকটি অংশ';
+
+  @override
+  String get splitEvenly => 'সমান ভাগ';
+
+  @override
+  String get splitDone => 'পুরোটা ভাগ হয়েছে';
+
+  @override
+  String splitLeft(String amount) {
+    return '$amount ভাগ করা বাকি';
+  }
+
+  @override
+  String splitOver(String amount) {
+    return 'মোট টাকার চেয়ে $amount বেশি';
+  }
+
+  @override
+  String splitMismatch(String amount) {
+    return 'অংশগুলোর যোগফল $amount হতে হবে।';
+  }
+
+  @override
+  String get splitNeedsAmounts => 'প্রতিটি অংশে টাকার পরিমাণ দিন।';
+
+  @override
+  String splitInParts(String count) {
+    return '$count ভাগে';
+  }
+
+  @override
+  String get recurring => 'নিয়মিত';
+
+  @override
+  String get recurringEmpty =>
+      'এখনও কিছু নিয়মিত নেই। ভাড়া, বেতন, বিল: একবার ঠিক করে দিন, সময়মতো নিজেই চলে আসবে।';
+
+  @override
+  String get newRecurring => 'নিয়মিত লেনদেন';
+
+  @override
+  String get newReminder => 'রিমাইন্ডার';
+
+  @override
+  String get editRecurring => 'নিয়মিত লেনদেন বদলান';
+
+  @override
+  String get editReminder => 'রিমাইন্ডার বদলান';
+
+  @override
+  String get repeatThis => 'এটি নিয়মিত করুন';
+
+  @override
+  String get ruleTitle => 'শিরোনাম';
+
+  @override
+  String get ruleTitleRequired => 'একটি শিরোনাম দিন।';
+
+  @override
+  String get repeats => 'কত দিন পরপর';
+
+  @override
+  String get freqOptOnce => 'একবারই';
+
+  @override
+  String get freqOptDaily => 'প্রতিদিন';
+
+  @override
+  String get freqOptWeekly => 'প্রতি সপ্তাহে';
+
+  @override
+  String get freqOptMonthly => 'প্রতি মাসে';
+
+  @override
+  String get freqOptYearly => 'প্রতি বছরে';
+
+  @override
+  String get repeatEvery => 'প্রতি';
+
+  @override
+  String get unitDays => 'দিন';
+
+  @override
+  String get unitWeeks => 'সপ্তাহ';
+
+  @override
+  String get unitMonths => 'মাস';
+
+  @override
+  String get unitYears => 'বছর';
+
+  @override
+  String get freqOnce => 'একবার';
+
+  @override
+  String get freqDaily => 'প্রতিদিন';
+
+  @override
+  String freqDailyN(String n) {
+    return 'প্রতি $n দিনে';
+  }
+
+  @override
+  String get freqWeekly => 'প্রতি সপ্তাহে';
+
+  @override
+  String freqWeeklyN(String n) {
+    return 'প্রতি $n সপ্তাহে';
+  }
+
+  @override
+  String get freqMonthly => 'প্রতি মাসে';
+
+  @override
+  String freqMonthlyN(String n) {
+    return 'প্রতি $n মাসে';
+  }
+
+  @override
+  String get freqYearly => 'প্রতি বছরে';
+
+  @override
+  String freqYearlyN(String n) {
+    return 'প্রতি $n বছরে';
+  }
+
+  @override
+  String get monthlyOn => 'কোন দিনে';
+
+  @override
+  String onDayOfMonth(String n) {
+    return '$n তারিখ';
+  }
+
+  @override
+  String get onLastDay => 'মাসের শেষ দিন';
+
+  @override
+  String get onWeekdayOfMonth => 'মাসের একটি বার';
+
+  @override
+  String theNthWeekday(String ordinal, String weekday) {
+    return '$ordinal $weekday';
+  }
+
+  @override
+  String get whichOne => 'কোনটি';
+
+  @override
+  String get weekday => 'বার';
+
+  @override
+  String get ordinalFirst => 'প্রথম';
+
+  @override
+  String get ordinalSecond => 'দ্বিতীয়';
+
+  @override
+  String get ordinalThird => 'তৃতীয়';
+
+  @override
+  String get ordinalFourth => 'চতুর্থ';
+
+  @override
+  String get ordinalLast => 'শেষ';
+
+  @override
+  String get startsOn => 'শুরু';
+
+  @override
+  String get ends => 'শেষ হবে';
+
+  @override
+  String get endsNever => 'কখনও না';
+
+  @override
+  String get endsOnDate => 'একটি তারিখে';
+
+  @override
+  String get endsAfterTimes => 'নির্দিষ্ট সংখ্যক বারের পর';
+
+  @override
+  String get endsOn => 'শেষ তারিখ';
+
+  @override
+  String get timesCount => 'কত বার';
+
+  @override
+  String get numberRequired => 'শূন্যের বেশি একটি সংখ্যা দিন।';
+
+  @override
+  String nextDates(String dates) {
+    return 'এরপর: $dates';
+  }
+
+  @override
+  String get noMoreDates => 'এই নিয়মে কোনো তারিখ পড়ে না।';
+
+  @override
+  String get recordAutomatically => 'নিজে থেকেই লিখে রাখুন';
+
+  @override
+  String get recordAutomaticallyHint =>
+      'এটি বন্ধ থাকলে আগে আপনাকে জিজ্ঞেস করা হবে, আর পরিমাণ বদলানো যাবে।';
+
+  @override
+  String get remindMe => 'মনে করিয়ে দিন';
+
+  @override
+  String get remindOnTheDay => 'সেই দিনে';
+
+  @override
+  String get remindDayBefore => 'আগের দিন';
+
+  @override
+  String remindDaysBefore(String n) {
+    return '$n দিন আগে';
+  }
+
+  @override
+  String get remindAt => 'সময়';
+
+  @override
+  String get usualTime => 'সাধারণ সময়ে';
+
+  @override
+  String get paused => 'বন্ধ রাখা';
+
+  @override
+  String get pausedHint => 'বন্ধ থাকা অবস্থায় কিছুই আসবে না।';
+
+  @override
+  String get ended => 'শেষ হয়েছে';
+
+  @override
+  String nextOn(String date) {
+    return 'এরপর: $date';
+  }
+
+  @override
+  String dueOn(String date) {
+    return 'তারিখ $date';
+  }
+
+  @override
+  String get waitingForYou => 'আপনার অপেক্ষায়';
+
+  @override
+  String get comingUp => 'সামনে আসছে';
+
+  @override
+  String get everythingThatRepeats => 'যা যা নিয়মিত';
+
+  @override
+  String get recordIt => 'লিখে রাখুন';
+
+  @override
+  String get skipIt => 'বাদ দিন';
+
+  @override
+  String get laterIt => 'পরে';
+
+  @override
+  String get doneIt => 'হয়ে গেছে';
+
+  @override
+  String get snoozeTomorrow => 'আগামীকাল';
+
+  @override
+  String get snoozeThreeDays => '৩ দিন পর';
+
+  @override
+  String get snoozeWeek => 'এক সপ্তাহ পর';
+
+  @override
+  String get deleteRuleConfirm =>
+      'এটি মুছবেন? আগে যা লেখা হয়েছে তা থেকে যাবে।';
+
+  @override
+  String get recordsItself => 'নিজে থেকেই লেখা হয়';
+
+  @override
+  String get asksFirst => 'আগে জিজ্ঞেস করে';
+
+  @override
+  String get weekStartsOn => 'সপ্তাহ শুরু';
+
+  @override
+  String splitKept(String count) {
+    return 'লেনদেনের মতোই $count ভাগে';
+  }
+
+  @override
+  String get featureReminders => 'রিমাইন্ডারসমূহ';
+
+  @override
+  String limitReminders(String plan, int limit) {
+    return 'আপনার $plan প্ল্যানে একসাথে $limitটি রিমাইন্ডার রাখা যায়।';
+  }
+
+  @override
+  String get seeAllRecurring => 'সব দেখুন';
+
+  @override
+  String get addRecurring => 'যোগ করুন';
+
+  @override
+  String get inbox => 'রিমাইন্ডার';
+
+  @override
+  String get inboxEmpty =>
+      'এখনও জানানোর মতো কিছু নেই। কোনটির সময় হয়েছে, আপনার হয়ে কী লেখা হয়েছে আর বাজেটের অবস্থা কেমন, সব এখানে দেখা যাবে।';
+
+  @override
+  String get inboxEarlier => 'আগের';
+
+  @override
+  String get markAllRead => 'সব পড়া হয়েছে';
+
+  @override
+  String inboxUpcoming(String title, String days) {
+    return '$title: আর $days দিন বাকি';
+  }
+
+  @override
+  String inboxUpcomingTomorrow(String title) {
+    return '$title: আগামীকাল';
+  }
+
+  @override
+  String inboxDue(String title) {
+    return '$title: আজ দেওয়ার দিন';
+  }
+
+  @override
+  String inboxOverdue(String title) {
+    return '$title এখনও বাকি আছে';
+  }
+
+  @override
+  String inboxPosted(String title) {
+    return '$title লেখা হয়েছে';
+  }
+
+  @override
+  String inboxIncomeComing(String title, String days) {
+    return '$title আসার কথা $days দিন পর';
+  }
+
+  @override
+  String inboxIncomeTomorrow(String title) {
+    return '$title আসার কথা আগামীকাল';
+  }
+
+  @override
+  String inboxIncomeDue(String title) {
+    return '$title কি এসেছে?';
+  }
+
+  @override
+  String inboxBlocked(String title) {
+    return '$title লেখা যায়নি। এর অ্যাকাউন্টটি দেখুন।';
+  }
+
+  @override
+  String inboxBudget80(String title, String percent) {
+    return '$title: বাজেটের $percent% খরচ হয়েছে';
+  }
+
+  @override
+  String inboxBudgetOver(String title) {
+    return '$title: বাজেট পেরিয়ে গেছে';
+  }
+
+  @override
+  String inboxBudgetDetail(String spent, String limit) {
+    return '$limit-এর মধ্যে $spent';
+  }
+
+  @override
+  String get untitledRule => 'একটি নিয়মিত লেনদেন';
+
+  @override
+  String get notifications => 'নোটিফিকেশন';
+
+  @override
+  String get notifAllow => 'নোটিফিকেশনের অনুমতি দিন';
+
+  @override
+  String get notifBlocked => 'এই ফোন Spendroo-কে নোটিফিকেশন দেখাতে দিচ্ছে না।';
+
+  @override
+  String get notifBlockedHint =>
+      'কিছু না হলে ফোনের সেটিংস থেকে Spendroo-র নোটিফিকেশন চালু করুন।';
+
+  @override
+  String get notifPush => 'পুশ নোটিফিকেশন';
+
+  @override
+  String get notifPushHint => 'অ্যাপ বন্ধ থাকলেও রিমাইন্ডার এই ফোনে পৌঁছাবে।';
+
+  @override
+  String get notifWhat => 'কী জানাব';
+
+  @override
+  String get notifBills => 'বিল ও রিমাইন্ডার';
+
+  @override
+  String get notifBillsHint => 'সামনে আসছে, আজ দেওয়ার দিন আর এখনও বাকি';
+
+  @override
+  String get notifIncome => 'প্রত্যাশিত আয়';
+
+  @override
+  String get notifRecorded => 'আপনার হয়ে লেখা';
+
+  @override
+  String get notifRecordedHint => 'নিয়মিত লেনদেন লেখা হলে, বা লেখা না গেলে';
+
+  @override
+  String get notifBudgets => 'বাজেট সতর্কতা';
+
+  @override
+  String get notifBudgetsHint => 'বাজেটের ৮০% খরচ হলে, আর পেরিয়ে গেলে';
+
+  @override
+  String get notifNudge => 'প্রতিদিনের তাগাদা';
+
+  @override
+  String get notifNudgeHint => 'যেদিন কিছুই লেখা হয়নি';
+
+  @override
+  String get notifNudgeTime => 'তাগাদার সময়';
+
+  @override
+  String get notifWhen => 'কখন';
+
+  @override
+  String get notifReminderTime => 'মনে করানোর সময়';
+
+  @override
+  String get notifReminderTimeHint =>
+      'যে নিয়মিত লেনদেনের নিজের সময় ঠিক করা নেই, তার জন্য।';
+
+  @override
+  String get notifQuiet => 'নীরব সময়';
+
+  @override
+  String get notifQuietHint =>
+      'এই সময়ের মধ্যে কিছু পাঠানো হয় না। সময় শেষ হলে পাঠানো হয়।';
+
+  @override
+  String get notifQuietFrom => 'থেকে';
+
+  @override
+  String get notifQuietTo => 'পর্যন্ত';
+
+  @override
+  String get notifTest => 'পরীক্ষামূলক নোটিফিকেশন পাঠান';
+
+  @override
+  String get notifTestSent => 'পাঠানো হয়েছে। একটু পরেই পৌঁছানোর কথা।';
+
+  @override
+  String get notifTestNoDevice =>
+      'এই ফোন এখনও নোটিফিকেশনের জন্য নিবন্ধিত হয়নি। সংযোগ দেখে আবার চেষ্টা করুন।';
+
+  @override
+  String get notifTestNotSetUp =>
+      'সার্ভার এখনও নোটিফিকেশন পাঠানোর জন্য প্রস্তুত নয়।';
+
+  @override
+  String get notifTestFailed => 'পাঠানো যায়নি। একটু পরে আবার চেষ্টা করুন।';
+
+  @override
+  String get nudgeTitle => 'আজ কিছু খরচ করেছেন?';
+
+  @override
+  String get nudgeBody => 'মনে থাকতে থাকতে লিখে রাখুন।';
 }

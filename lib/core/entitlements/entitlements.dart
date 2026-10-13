@@ -10,13 +10,14 @@ abstract final class F {
   static const insightsYearReview = 'insights.year_review';
   static const insightsTrendMonths = 'insights.trend_months';
   static const recurringTransactions = 'recurring.transactions';
+  static const remindersStandalone = 'reminders.standalone';
   static const savingsGoals = 'goals.savings';
   static const homeWidget = 'widget.home';
   static const businessWorkspaces = 'business.workspaces';
   static const businessCashbooks = 'business.cashbooks';
   static const teamSeats = 'team.seats';
-  static const reportRange = 'cashbook.report_range';
-  static const reportExport = 'cashbook.report_export';
+  static const reportsExcel = 'reports.excel';
+  static const reportsCustomRange = 'reports.custom_range';
   static const auditTrail = 'history.audit_trail';
   static const customFields = 'entries.custom_fields';
   static const storageMb = 'storage.attachments_mb';

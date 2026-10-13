@@ -8,13 +8,17 @@ import '../../core/db/local_store.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/providers.dart';
+import '../../core/push/push_controller.dart';
 import '../../core/ui.dart';
 import '../cashbook/cashbook_pages.dart';
 import '../personal/budget_calendar_page.dart';
 import '../personal/personal_pages.dart';
 import '../plan/offer_banner.dart';
+import '../recurring/inbox.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
+import '../reports/report_repository.dart';
+import '../reports/report_sheet.dart';
 
 /// Creating and deleting workspaces happens on the server, so these need a connection.
 class WorkspaceActions {
@@ -105,7 +109,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   void initState() {
     super.initState();
     // Back in the app: a plan may have been bought, ended or changed meanwhile
-    _lifecycle = AppLifecycleListener(onResume: () => ref.read(entitlementsProvider.notifier).refresh());
+    _lifecycle = AppLifecycleListener(onResume: () {
+      ref.read(entitlementsProvider.notifier).refresh();
+      // The permission may have changed, and a new day may have begun
+      ref.read(pushControllerProvider.notifier).refresh();
+    });
+    // Signed in and on the home screen: the one time the app asks to show notifications by itself
+    WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(pushControllerProvider.notifier).askOnce());
     // Also for a plan that was already known when this screen opened
     ref.listenManual(entitlementsProvider, fireImmediately: true, (_, next) {
       final plan = next.value;
@@ -187,7 +197,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final personal = workspace.kind == 'personal';
     final pages = personal
         ? [
-            OverviewPage(workspace: workspace),
+            OverviewPage(workspace: workspace, onOpenBudgets: () => setState(() => _tab = 2)),
             TransactionsPage(workspace: workspace),
             BudgetCalendarPage(workspace: workspace),
             AccountsPage(workspace: workspace),
@@ -201,6 +211,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         title: _WorkspaceSwitcher(current: workspace, onSwitched: () => setState(() => _tab = 0)),
         actions: [
           const _SyncIndicator(),
+          // What falls due and what was recorded belongs to the personal ledger
+          if (personal) InboxBell(workspace: workspace),
+          if (personal)
+            ReportButton(scope: ReportScope.personal, workspace: workspace)
+          else if (canDownloadBusinessReport(workspace))
+            ReportButton(
+              scope: ReportScope.business,
+              workspace: workspace,
+              subjectId: workspace.id,
+              subjectName: workspaceLabel(context, workspace),
+            ),
           IconButton(
             tooltip: l10n.settings,
             icon: const Icon(Icons.settings_outlined),

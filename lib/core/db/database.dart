@@ -98,7 +98,11 @@ class Categories extends Table with SyncColumns {
   TextColumn get color => text().nullable()();
 }
 
-@TableIndex(name: 'transactions_account_date', columns: {#accountId, #occurredOn})
+// The account screen reads an account newest first, a page at a time: the index
+// holds the whole sort order, so a page is a range scan with nothing to sort
+@TableIndex(name: 'transactions_account_feed', columns: {#accountId, #occurredOn, #createdAt, #id})
+// Finds the other leg of a transfer
+@TableIndex(name: 'transactions_transfer_group', columns: {#transferGroupId})
 class Transactions extends Table with SyncColumns {
   TextColumn get accountId => text()();
   TextColumn get categoryId => text().nullable()();
@@ -109,6 +113,13 @@ class Transactions extends Table with SyncColumns {
   TextColumn get occurredOn => text()();
   TextColumn get note => text().withDefault(const Constant(''))();
   TextColumn get source => text().withDefault(const Constant('manual'))();
+
+  /// Filed under several categories at once: a JSON list of parts that add up
+  /// to the amount (features/personal/allocations.dart). '[]' when not split.
+  TextColumn get splits => text().withDefault(const Constant('[]'))();
+
+  /// The occurrence of a recurring rule this transaction settles.
+  TextColumn get occurrenceId => text().nullable()();
 }
 
 /// No month: the limit for every month. A month (yyyy-MM-01): that month only.
@@ -120,6 +131,77 @@ class Budgets extends Table with SyncColumns {
 }
 
 /// Local changes waiting to be pushed, oldest first.
+/// Something that comes round again: a transaction to record, or a plain
+/// reminder ([kind] 'reminder'). The server works out when each is due.
+class RecurringRules extends Table with SyncColumns {
+  TextColumn get kind => text()();
+  TextColumn get title => text().withDefault(const Constant(''))();
+  TextColumn get accountId => text().nullable()();
+  TextColumn get toAccountId => text().nullable()();
+  TextColumn get categoryId => text().nullable()();
+
+  /// What the user typed, always positive; null for a reminder with no amount.
+  IntColumn get amountMinor => integer().nullable()();
+  TextColumn get currency => text().withDefault(const Constant(''))();
+  TextColumn get note => text().withDefault(const Constant(''))();
+  TextColumn get splits => text().withDefault(const Constant('[]'))();
+
+  /// once, daily, weekly, monthly or yearly, every [interval] of them.
+  TextColumn get freq => text()();
+  IntColumn get interval => integer().withDefault(const Constant(1))();
+
+  /// Days of the week it falls on, Monday as bit 0.
+  IntColumn get weekdayMask => integer().withDefault(const Constant(0))();
+
+  /// 1-31, or -1 for the last day; a month too short uses its last day.
+  IntColumn get monthDay => integer().nullable()();
+
+  /// With [weekdayMask]: the first (1) to fourth (4) or last (-1) such day of the month.
+  IntColumn get setPos => integer().nullable()();
+
+  /// The day weeks start on when counting every [interval] weeks, Monday as 0.
+  IntColumn get weekStart => integer().withDefault(const Constant(5))();
+  TextColumn get startOn => text()();
+  TextColumn get endOn => text().nullable()();
+  IntColumn get maxCount => integer().nullable()();
+
+  /// auto: the server records it. confirm: the user is asked first.
+  TextColumn get mode => text().withDefault(const Constant('confirm'))();
+  IntColumn get remindDaysBefore => integer().withDefault(const Constant(0))();
+
+  /// HH:mm:ss in the user's own time; null uses their usual reminder time.
+  TextColumn get remindAt => text().nullable()();
+  BoolColumn get isPaused => boolean().withDefault(const Constant(false))();
+
+  /// Set by the server.
+  TextColumn get nextDueOn => text().nullable()();
+  IntColumn get doneCount => integer().withDefault(const Constant(0))();
+}
+
+/// One date a rule falls on. Made by the server; the app only moves [status].
+@TableIndex(name: 'recurring_occurrences_due', columns: {#workspaceId, #status, #dueOn})
+class RecurringOccurrences extends Table with SyncColumns {
+  TextColumn get ruleId => text()();
+  TextColumn get dueOn => text()();
+
+  /// upcoming, due, done or skipped.
+  TextColumn get status => text()();
+  TextColumn get snoozedUntil => text().nullable()();
+}
+
+/// What the reminders screen lists. Made by the server; the app only marks them read.
+class InboxItems extends Table with SyncColumns {
+  TextColumn get type => text()();
+
+  /// JSON object the wording is filled from.
+  TextColumn get params => text().withDefault(const Constant('{}'))();
+  TextColumn get subjectTable => text().withDefault(const Constant(''))();
+  TextColumn get subjectId => text().nullable()();
+  TextColumn get dedupeKey => text().withDefault(const Constant(''))();
+  TextColumn get readAt => text().nullable()();
+  TextColumn get resolvedAt => text().nullable()();
+}
+
 class Outbox extends Table {
   IntColumn get seq => integer().autoIncrement()();
   TextColumn get mutationId => text()();
@@ -186,7 +268,8 @@ class Settings extends Table {
 
 @DriftDatabase(tables: [
   Workspaces, Cashbooks, EntryCategories, PaymentMethods, Entries, CashbookMembers,
-  Accounts, Categories, Transactions, Budgets, Outbox, SyncCursors, SyncFailures, Settings,
+  Accounts, Categories, Transactions, Budgets, RecurringRules, RecurringOccurrences, InboxItems,
+  Outbox, SyncCursors, SyncFailures, Settings,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'spendroo'));
@@ -194,7 +277,7 @@ class AppDatabase extends _$AppDatabase {
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -213,13 +296,30 @@ class AppDatabase extends _$AppDatabase {
             // A colour chosen on another device may have been pulled without its column: pull again
             await customStatement('DELETE FROM sync_cursors');
           },
+          from4To5: (m, schema) async {
+            // transactions_account_feed starts with the same two columns
+            await customStatement('DROP INDEX IF EXISTS transactions_account_date');
+            await m.createIndex(schema.transactionsAccountFeed);
+            await m.createIndex(schema.transactionsTransferGroup);
+          },
+          from5To6: (m, schema) async {
+            await m.addColumn(schema.transactions, schema.transactions.splits);
+            await m.addColumn(schema.transactions, schema.transactions.occurrenceId);
+            await m.createTable(schema.recurringRules);
+            await m.createTable(schema.recurringOccurrences);
+            await m.createIndex(schema.recurringOccurrencesDue);
+            await m.createTable(schema.inboxItems);
+            // A split made on another device may have been pulled without its column: pull again
+            await customStatement('DELETE FROM sync_cursors');
+          },
         ),
       );
 
   /// Synced tables in the order rows must be applied: parents before children.
   static const syncedTables = [
     'cashbooks', 'entry_categories', 'payment_methods', 'entries', 'cashbook_members',
-    'accounts', 'categories', 'transactions', 'budgets',
+    'accounts', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions', 'budgets',
+    'inbox_items',
   ];
 
   TableInfo<Table, dynamic> tableByName(String name) => allTables.firstWhere((t) => t.actualTableName == name);

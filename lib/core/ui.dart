@@ -42,8 +42,12 @@ extension ContextX on BuildContext {
   }
 }
 
-/// Turns the 'offline' marker from the auth controller into a sentence.
-String authErrorText(BuildContext context, String error) => error == 'offline' ? context.l10n.offlineError : error;
+/// Turns the markers from the auth controller into sentences; anything else is the server's own message.
+String authErrorText(BuildContext context, String error) => switch (error) {
+      'offline' => context.l10n.offlineError,
+      'google_failed' => context.l10n.googleSignInFailed,
+      _ => error,
+    };
 
 /// Which arrangement of the logo: the wallet alone, or with the name beside or under it.
 enum BrandLayout { mark, horizontal, stacked }

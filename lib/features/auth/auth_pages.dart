@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../core/config.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
 
@@ -98,8 +96,9 @@ mixin _Submitting<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   bool busy = false;
   int _refused = 0;
 
-  Future<bool> submit(Future<String?> Function() action) async {
-    if (!(formKey.currentState?.validate() ?? true)) {
+  /// [validate] is off for actions that do not send the form, such as Google sign-in.
+  Future<bool> submit(Future<String?> Function() action, {bool validate = true}) async {
+    if (validate && !(formKey.currentState?.validate() ?? true)) {
       setState(() => _refused++);
       return false;
     }
@@ -154,19 +153,7 @@ class _LoginPageState extends ConsumerState<LoginPage> with _Submitting {
     );
   }
 
-  Future<void> _google() => submit(() async {
-        try {
-          await GoogleSignIn.instance.initialize(serverClientId: AppConfig.googleServerClientId);
-          final account = await GoogleSignIn.instance.authenticate();
-          final idToken = account.authentication.idToken;
-          if (idToken == null) return 'Google did not return an ID token.';
-          return await ref
-              .read(authControllerProvider.notifier)
-              .logInWithGoogle(idToken: idToken, clientId: AppConfig.googleServerClientId);
-        } on GoogleSignInException catch (error) {
-          return error.code == GoogleSignInExceptionCode.canceled ? null : '${error.description ?? error.code}';
-        }
-      });
+  Future<void> _google() => submit(ref.read(authControllerProvider.notifier).logInWithGoogle, validate: false);
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +219,7 @@ class _LoginPageState extends ConsumerState<LoginPage> with _Submitting {
           const SizedBox(height: 16),
         const SizedBox(height: 4),
         submitButton(widget.signUp ? l10n.signUp : l10n.logIn, _submit),
-        if (AppConfig.googleServerClientId.isNotEmpty) ...[
+        if (ref.watch(googleIdentityProvider).isAvailable) ...[
           const SizedBox(height: 12),
           OutlinedButton.icon(
             onPressed: busy ? null : _google,

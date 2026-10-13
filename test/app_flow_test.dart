@@ -27,6 +27,15 @@ class FakeServer {
   final pushed = <Map<String, dynamic>>[];
   var loggedIn = false;
 
+  /// Push: the phones registered, in the order things were asked, and the preferences kept.
+  final devices = <Map<String, dynamic>>[];
+  final pushCalls = <String>[];
+  final notificationSettings = <String, dynamic>{
+    'push_enabled': true, 'bills': true, 'income': true, 'recorded': true, 'budgets': true, 'daily_nudge': true,
+    'nudge_time': '21:00:00', 'reminder_time': '09:00:00', 'quiet_from': null, 'quiet_to': null,
+  };
+  var pushTests = 0;
+
   /// What /api/v1/me/ reports; set when the account was onboarded on another phone.
   String? onboardedAt;
   String? primaryMode;
@@ -35,9 +44,13 @@ class FakeServer {
   /// Default currency of the personal workspace; a PATCH changes it.
   var personalCurrency = 'BDT';
 
-  /// Bodies sent to /auth/login and /auth/signup.
+  /// Bodies sent to /auth/login, /auth/signup and /auth/provider/token.
   final logins = <Map<String, dynamic>>[];
   final signups = <Map<String, dynamic>>[];
+  final googleLogins = <Map<String, dynamic>>[];
+
+  /// What /auth/provider/token answers to a good ID token; 401 is a step the app has no screen for.
+  var googleStatus = 200;
 
   // The profile behind /api/v1/me/
   var username = 'alice';
@@ -97,7 +110,46 @@ class FakeServer {
       loggedIn = true;
       return json({'status': 200, 'meta': {'is_authenticated': true, 'session_token': 'token-1'}});
     }
+    if (path.endsWith('/auth/provider/token')) {
+      final body = (jsonDecode(request.body) as Map).cast<String, dynamic>();
+      googleLogins.add(body);
+      if ((body['token'] as Map)['id_token'] != 'good-id-token') {
+        return json({'status': 400, 'errors': [{'message': 'The token is invalid.', 'code': 'invalid_token', 'param': 'token'}]}, 400);
+      }
+      if (googleStatus == 401) {
+        return json({'status': 401, 'data': {'flows': [{'id': 'mfa_authenticate', 'is_pending': true}]}, 'meta': {'is_authenticated': false}}, 401);
+      }
+      loggedIn = true;
+      return json({'status': 200, 'meta': {'is_authenticated': true, 'session_token': 'token-1'}});
+    }
+    if (path.endsWith('/auth/session') && request.method == 'DELETE') {
+      pushCalls.add('logout');
+      loggedIn = false;
+      return json({'status': 401, 'meta': {'is_authenticated': false}}, 401);
+    }
     if (request.headers['X-Session-Token'] != 'token-1') return json({'detail': 'no'}, 401);
+    if (path == '/api/v1/me/devices/') {
+      final body = (jsonDecode(request.body) as Map).cast<String, dynamic>();
+      devices
+        ..removeWhere((device) => device['token'] == body['token'])
+        ..add(body);
+      pushCalls.add('register');
+      return http.Response('', 204);
+    }
+    if (path == '/api/v1/me/devices/forget/') {
+      final token = (jsonDecode(request.body) as Map)['token'];
+      devices.removeWhere((device) => device['token'] == token);
+      pushCalls.add('forget');
+      return http.Response('', 204);
+    }
+    if (path == '/api/v1/me/notification-settings/') {
+      if (request.method == 'PATCH') notificationSettings.addAll((jsonDecode(request.body) as Map).cast());
+      return json(notificationSettings);
+    }
+    if (path == '/api/v1/me/notification-settings/test/') {
+      pushTests++;
+      return json({'configured': true, 'devices': devices.length, 'sent': devices.length});
+    }
     if (path == '/api/v1/me/') {
       if (request.method == 'PATCH') {
         final body = jsonDecode(request.body) as Map<String, dynamic>;
@@ -256,7 +308,9 @@ class Harness {
   Future<void> settle() async {
     for (var i = 0; i < 5; i++) {
       await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
-      await tester.pump(const Duration(milliseconds: 100));
+      // A second in all: newer Flutter takes 800 ms over a page transition, and
+      // until it ends the page underneath is still there to be found
+      await tester.pump(const Duration(milliseconds: 200));
     }
   }
 
@@ -310,6 +364,9 @@ void main() {
     await tester.tap(find.byIcon(Icons.settings_outlined));
     await app.settle();
     await tester.scrollUntilVisible(find.text('Server'), 100);
+    // Visible is not yet tappable: the row may only be peeking over the edge
+    await tester.ensureVisible(find.text('Server'));
+    await app.settle();
     await tester.tap(find.text('Server'));
     await app.settle();
     await tester.enterText(find.byType(TextFormField), 'ftp://nope');

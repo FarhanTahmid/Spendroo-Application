@@ -4,6 +4,7 @@ import 'package:spendroo/core/db/database.dart';
 import 'package:spendroo/core/db/local_store.dart';
 import 'package:spendroo/core/design/category_color.dart';
 import 'package:spendroo/features/cashbook/cashbook_repository.dart';
+import 'package:spendroo/features/personal/allocations.dart';
 import 'package:spendroo/features/personal/ledger_repository.dart';
 import 'package:flutter/painting.dart' show Color;
 import 'package:flutter_test/flutter_test.dart';
@@ -191,6 +192,75 @@ void main() {
       final budgets = await repo.watchBudgets('ws1', DateTime(2026, 10, 15)).first;
       expect(budgets.single.budget.amountMinor, 4800);
       expect((budgets.single.spentMinor, budgets.single.isOver), (5000, true));
+    });
+
+    test('a split is counted part by part, and its parts travel with the amount', () async {
+      final foodId = await repo.addCategory('ws1', 'Food', 'expense');
+      final transportId = await repo.addCategory('ws1', 'Transport', 'expense');
+      await repo.addTransaction(cash, kind: 'expense', amountMinor: 45000, occurredOn: '2026-10-02', categoryId: foodId);
+      await repo.addTransaction(cash, kind: 'expense', amountMinor: 30000, occurredOn: '2026-10-02', note: 'Rickshaw');
+      // Cash taken out and spent on several things
+      final atmId = await repo.addTransaction(cash,
+          kind: 'expense',
+          amountMinor: 50000,
+          occurredOn: '2026-10-06',
+          note: 'ATM cash',
+          categoryId: foodId,
+          splits: [SplitPart(foodId, 20000), SplitPart(transportId, 10000), const SplitPart(null, 20000)]);
+      Future<Transaction> atm() async =>
+          (await repo.watchTransactions('ws1').first).firstWhere((t) => t.transaction.id == atmId).transaction;
+
+      // The whole amount left the account, and a split has no category of its own
+      expect((await balances())['Cash'], 100000 - 125000);
+      expect(((await atm()).categoryId, (await atm()).parts.length), (null, 3));
+      final created = jsonDecode((await outbox()).last.data) as Map<String, dynamic>;
+      expect((created['amount_minor'], created['category_id']), (-50000, null));
+      expect(created['splits'], [
+        {'category_id': foodId, 'amount_minor': 20000, 'note': ''},
+        {'category_id': transportId, 'amount_minor': 10000, 'note': ''},
+        {'category_id': null, 'amount_minor': 20000, 'note': ''},
+      ]);
+
+      final month = DateTime(2026, 10, 15);
+      final summary = await repo.watchMonth('ws1', month, 'BDT').first;
+      expect(summary.expenseMinor, 125000);
+      expect(summary.byCategory.map((e) => (e.name, e.amountMinor, e.count, e.largestMinor)).toList(),
+          [('Food', 65000, 2, 45000), (null, 50000, 2, 30000), ('Transport', 10000, 1, 10000)]);
+
+      await repo.setBudget('ws1', foodId, 60000, 'BDT');
+      final budget = (await repo.watchBudgets('ws1', month).first).single;
+      expect((budget.spentMinor, budget.isOver), (65000, true));
+      expect(await repo.watchDailySpend('ws1', month, 'BDT').first, {2: 75000, 6: 50000});
+      expect(await repo.watchDailySpend('ws1', month, 'BDT', categoryId: foodId).first, {2: 45000, 6: 20000});
+
+      Future<List<String>> listed({String? categoryId, bool uncategorised = false}) async => [
+            for (final t in await repo.watchTransactions('ws1', categoryId: categoryId, uncategorised: uncategorised).first)
+              t.transaction.note,
+          ];
+      expect(await listed(categoryId: transportId), ['ATM cash']);
+      expect(await listed(uncategorised: true), ['ATM cash', 'Rickshaw']);
+      expect(await repo.transactionCount(foodId), 2);
+
+      // A new amount goes with its parts, in one change; a note goes alone
+      await repo.updateTransaction(await atm(),
+          amountMinor: 40000,
+          occurredOn: '2026-10-06',
+          note: 'ATM cash',
+          splits: [SplitPart(foodId, 30000), SplitPart(transportId, 10000)]);
+      expect((jsonDecode((await outbox()).last.data) as Map).keys.toSet(), {'amount_minor', 'splits'});
+      final same = (await atm()).parts;
+      await repo.updateTransaction(await atm(), amountMinor: 40000, occurredOn: '2026-10-06', note: 'Bazar', splits: same);
+      expect((jsonDecode((await outbox()).last.data) as Map).keys.toSet(), {'note'});
+
+      // A deleted category leaves its part behind, uncategorised
+      final transport = (await repo.watchCategories('ws1').first).firstWhere((c) => c.id == transportId);
+      await repo.deleteCategory(transport);
+      expect((await atm()).parts, [SplitPart(foodId, 30000), const SplitPart(null, 10000)]);
+
+      // Back to one category
+      await repo.updateTransaction(await atm(), amountMinor: 40000, occurredOn: '2026-10-06', note: 'Bazar', categoryId: foodId);
+      expect(((await atm()).isSplit, (await atm()).categoryId), (false, foodId));
+      expect(jsonDecode((await outbox()).last.data), {'category_id': foodId, 'splits': []});
     });
 
     test('a category colour follows the category everywhere, and clearing it is queued', () async {

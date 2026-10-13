@@ -14,6 +14,8 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // Reads google-services.json, which lists all three flavours
+    id("com.google.gms.google-services")
 }
 
 // The one place the app ID lives. Flavours add a suffix so dev, staging and
@@ -28,6 +30,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        // flutter_local_notifications uses java.time on Android below 8
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -105,4 +109,8 @@ gradle.taskGraph.whenReady {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

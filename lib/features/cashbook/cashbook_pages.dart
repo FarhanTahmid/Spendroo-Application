@@ -12,6 +12,8 @@ import '../../core/ui.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
+import '../reports/report_repository.dart';
+import '../reports/report_sheet.dart';
 import 'cashbook_repository.dart';
 
 /// Light enough to read as "money out" on the navy header.
@@ -236,6 +238,13 @@ class CashbookPage extends ConsumerWidget {
               icon: const Icon(Icons.pie_chart_outline_rounded),
               onPressed: () => context.push('/cashbook/$bookId/report'),
             ),
+            if (workspace != null)
+              ReportButton(
+                scope: ReportScope.cashbook,
+                workspace: workspace,
+                subjectId: bookId,
+                subjectName: book.bookName,
+              ),
             if (canEdit)
               PopupMenuButton<String>(
                 onSelected: (action) async {
@@ -707,8 +716,21 @@ class CashbookReportPage extends ConsumerWidget {
           },
         );
 
+    final workspace = (ref.watch(workspacesProvider).value ?? const <Workspace>[])
+        .where((w) => w.id == summary.book.workspaceId)
+        .firstOrNull;
+
     return PassbookScaffold(
       title: Text('${l10n.report}: ${summary.book.bookName}'),
+      actions: [
+        if (workspace != null)
+          ReportButton(
+            scope: ReportScope.cashbook,
+            workspace: workspace,
+            subjectId: bookId,
+            subjectName: summary.book.bookName,
+          ),
+      ],
       header: _BalanceHeader(summary: summary),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.xl),

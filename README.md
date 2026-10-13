@@ -6,7 +6,7 @@ local SQLite database (Drift) and synced with the API in the background.
 | Folder | Holds |
 |---|---|
 | `lib/core/` | Config, API client, auth, Drift database, sync engine, Riverpod providers, money formatting, theme |
-| `lib/features/` | Screens: auth, onboarding, personal (overview and stats, transactions, budget calendar, accounts, categories), cashbook, settings, shell |
+| `lib/features/` | Screens: auth, onboarding, personal (overview and stats, transactions, budget calendar, accounts, categories), cashbook, reports (the one Download report sheet), settings, shell |
 | `lib/l10n/` | English and Bangla strings (`app_en.arb`, `app_bn.arb`); Dart files are generated from them |
 | `config/` | Per-flavour settings: `FLAVOR`, `API_URL`, `GOOGLE_SERVER_CLIENT_ID`, `FEEDBACK_EMAIL` |
 | `drift_schemas/` | Snapshot of every database schema version, for migrations and their tests |
@@ -35,7 +35,8 @@ require HTTPS. Dev and staging builds can be pointed at any server from
 **Settings → Server**; prod builds cannot.
 
 Google sign-in is shown only when `GOOGLE_SERVER_CLIENT_ID` is set (the web
-OAuth client the API verifies tokens against).
+OAuth client the API verifies tokens against; the API's `WEB_OAUTH2_CLIENT_ID`).
+See "Accounts that must match the ID" in `docs/release.md` for the Google Cloud side.
 
 ## After changing code
 
@@ -76,6 +77,8 @@ LIVE_API_URL=http://localhost:8000 LIVE_EMAIL=... LIVE_PASSWORD=... flutter test
 - **Ids** are UUIDv7, made on the device.
 - **Every user-visible string** is in both `.arb` files; `test/l10n_test.dart` fails otherwise.
 - **The personal screens share one month** (`selectedMonthProvider`): overview, transactions and the budget calendar move together.
+- **Reports** are made by the server and need a connection. Every download goes through `showReportSheet`
+  (`lib/features/reports/`); PDF is free, Excel and chosen dates are the plan flags `reports.excel` and `reports.custom_range`.
 - **Budgets**: one recurring limit per expense category, plus optional one-month overrides (`month` = `yyyy-MM-01`).
 
 ## Branding

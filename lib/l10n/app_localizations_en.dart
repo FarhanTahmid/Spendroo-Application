@@ -39,6 +39,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueWithGoogle => 'Continue with Google';
 
   @override
+  String get googleSignInFailed => 'Could not sign in with Google. Try again.';
+
+  @override
   String get tagline => 'Your money and your shop, in one app.';
 
   @override
@@ -555,6 +558,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get net => 'Net';
 
   @override
+  String get netRemaining => 'Net remaining balance';
+
+  @override
   String get lastSixMonths => 'Last 6 months';
 
   @override
@@ -567,6 +573,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountBalances => 'Account balances';
+
+  @override
+  String get shareOfTotalBalance =>
+      'Percentages show each account’s share of the total balance.';
 
   @override
   String get server => 'Server';
@@ -946,10 +956,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureTeamSeats => 'Team members';
 
   @override
-  String get featureReportRange => 'Reports for any dates';
+  String get featureReportRange =>
+      'Custom reports: any dates, types and categories';
 
   @override
-  String get featureReportExport => 'Reports as PDF and Excel';
+  String get featureReportExport => 'Reports as Excel';
 
   @override
   String get featureAuditTrail => 'History of every change';
@@ -1082,4 +1093,909 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showLess => 'Show less';
+
+  @override
+  String get currentBalance => 'Current balance';
+
+  @override
+  String get periodLastMonth => 'Last month';
+
+  @override
+  String get periodLast3Months => '3 months';
+
+  @override
+  String get periodThisYear => 'This year';
+
+  @override
+  String get periodAllTime => 'All time';
+
+  @override
+  String get periodCustom => 'Custom';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get applyFilters => 'Apply';
+
+  @override
+  String get resetFilters => 'Reset';
+
+  @override
+  String get clearFilters => 'Clear filters';
+
+  @override
+  String get insights => 'Insights';
+
+  @override
+  String get transfersIn => 'Transfers in';
+
+  @override
+  String get transfersOut => 'Transfers out';
+
+  @override
+  String transferTo(String account) {
+    return 'To $account';
+  }
+
+  @override
+  String transferFrom(String account) {
+    return 'From $account';
+  }
+
+  @override
+  String get closingBalance => 'Closing balance';
+
+  @override
+  String get balanceOverTime => 'Balance over time';
+
+  @override
+  String get cashInAndOut => 'Cash in and out';
+
+  @override
+  String get whereItWent => 'Where it went';
+
+  @override
+  String get whereItCameFrom => 'Where it came from';
+
+  @override
+  String get averagePerDay => 'Average per day';
+
+  @override
+  String get largestExpense => 'Largest expense';
+
+  @override
+  String get accountGone => 'This account is no longer here.';
+
+  @override
+  String get nothingInPeriod => 'Nothing in this period.';
+
+  @override
+  String get inAndOutDetails => 'In and out, in detail';
+
+  @override
+  String get reportDownload => 'Download report';
+
+  @override
+  String get reportTitlePersonal => 'Personal report';
+
+  @override
+  String get reportTitleAccount => 'Account statement';
+
+  @override
+  String get reportTitleCashbook => 'Cashbook report';
+
+  @override
+  String get reportTitleBusiness => 'Business report';
+
+  @override
+  String get reportCoversPersonal => 'All your personal accounts together.';
+
+  @override
+  String reportCoversAccount(String name) {
+    return 'Only the account $name.';
+  }
+
+  @override
+  String reportCoversCashbook(String name) {
+    return 'Only the cashbook $name.';
+  }
+
+  @override
+  String reportCoversBusiness(String name) {
+    return 'Every cashbook of $name together.';
+  }
+
+  @override
+  String get reportInside => 'What\'s inside';
+
+  @override
+  String get reportInsidePersonal1 =>
+      'Opening and closing balance of every account';
+
+  @override
+  String get reportInsidePersonal2 => 'Income and spending by category';
+
+  @override
+  String get reportInsidePersonal3 =>
+      'Every transaction, with transfers listed on their own';
+
+  @override
+  String get reportInsideAccount1 => 'Opening and closing balance';
+
+  @override
+  String get reportInsideAccount2 => 'Spending and income by category';
+
+  @override
+  String get reportInsideAccount3 =>
+      'Every transaction, with the balance after it';
+
+  @override
+  String get reportInsideCashbook1 => 'Opening and closing balance';
+
+  @override
+  String get reportInsideCashbook2 =>
+      'Totals by category and by payment method';
+
+  @override
+  String get reportInsideCashbook3 => 'Every entry, with the balance after it';
+
+  @override
+  String get reportInsideBusiness1 => 'Your cashbooks side by side';
+
+  @override
+  String get reportInsideBusiness2 =>
+      'Totals by category and by payment method';
+
+  @override
+  String get reportInsideBusiness3 => 'Every entry of every cashbook';
+
+  @override
+  String get reportPeriod => 'Period';
+
+  @override
+  String get reportFileType => 'File type';
+
+  @override
+  String get reportPdfHint => 'Ready to read, print or share';
+
+  @override
+  String get reportExcelHint => 'A spreadsheet you can sort and add up';
+
+  @override
+  String get reportFree => 'Free';
+
+  @override
+  String get reportPaid => 'Paid plan';
+
+  @override
+  String get reportDownloadPdf => 'Download PDF';
+
+  @override
+  String get reportDownloadExcel => 'Download Excel';
+
+  @override
+  String get reportHint => 'Made online from everything you have saved.';
+
+  @override
+  String get reportOffline => 'Connect to the internet to download a report.';
+
+  @override
+  String reportTooLarge(int limit) {
+    return 'This period has too many lines for one file (up to $limit). Choose a shorter period.';
+  }
+
+  @override
+  String get reportFailed => 'The report could not be made. Try again.';
+
+  @override
+  String get reportThrottled =>
+      'Too many downloads. Try again in a little while.';
+
+  @override
+  String get reportReady => 'Your report is ready';
+
+  @override
+  String reportReference(String reference) {
+    return 'Reference $reference';
+  }
+
+  @override
+  String get reportOpen => 'Open';
+
+  @override
+  String get reportShare => 'Share';
+
+  @override
+  String get reportNoApp =>
+      'No app on this phone can open this file. Use Share or save.';
+
+  @override
+  String get reportAnother => 'Download another';
+
+  @override
+  String get reportCustomTitle => 'Custom report';
+
+  @override
+  String get reportCustomDates => 'Dates';
+
+  @override
+  String get reportCustomTypes => 'Type';
+
+  @override
+  String get reportCustomAllHint => 'Choose none to include all.';
+
+  @override
+  String get reportCustomNote =>
+      'A filtered report adds up only the lines that match. It shows money in, money out and the difference, without opening or closing balances.';
+
+  @override
+  String reportSavedTo(String folder) {
+    return 'Saved on your phone in $folder';
+  }
+
+  @override
+  String get reportNotSaved =>
+      'This phone has no Downloads folder the app can save to. Use Share to keep a copy.';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String savedPercent(String percent) {
+    return 'Saved $percent%';
+  }
+
+  @override
+  String get spendingPace => 'Spending pace';
+
+  @override
+  String spentSoFar(String amount) {
+    return '$amount spent';
+  }
+
+  @override
+  String paceLess(String amount) {
+    return '$amount less than at this point the month before';
+  }
+
+  @override
+  String paceMore(String amount) {
+    return '$amount more than at this point the month before';
+  }
+
+  @override
+  String get dailyAverage => 'Daily average';
+
+  @override
+  String get monthEndForecast => 'By month end';
+
+  @override
+  String get biggestDay => 'Biggest day';
+
+  @override
+  String get noSpendDays => 'No-spend days';
+
+  @override
+  String get budgetEvenPace => 'Budget, spread evenly';
+
+  @override
+  String thatDay(String amount) {
+    return '$amount that day';
+  }
+
+  @override
+  String soFar(String amount) {
+    return '$amount so far';
+  }
+
+  @override
+  String get tapDayHint => 'Tap a day to see its transactions';
+
+  @override
+  String get budgetHealth => 'Budget health';
+
+  @override
+  String percentUsed(String percent) {
+    return '$percent% used';
+  }
+
+  @override
+  String get usedLabel => 'used';
+
+  @override
+  String get safePerDay => 'Safe per day';
+
+  @override
+  String get daysLeft => 'Days left';
+
+  @override
+  String keepsWithin(String amount) {
+    return '$amount a day keeps you within it';
+  }
+
+  @override
+  String keepsWithinBudget(String amount) {
+    return '$amount a day keeps you within budget this month';
+  }
+
+  @override
+  String get allBudgets => 'All budgets';
+
+  @override
+  String spentShare(String percent) {
+    return 'Spent · $percent%';
+  }
+
+  @override
+  String leftShare(String percent) {
+    return 'Left · $percent%';
+  }
+
+  @override
+  String overShare(String percent) {
+    return 'Over · $percent%';
+  }
+
+  @override
+  String limitAmount(String amount) {
+    return 'Limit $amount';
+  }
+
+  @override
+  String get verdictOnTrack => 'On track. Spending is behind the calendar.';
+
+  @override
+  String get verdictAhead => 'Spending is running ahead of the calendar.';
+
+  @override
+  String get verdictWithin => 'You stayed within the budget.';
+
+  @override
+  String get legendWithin => 'Within allowance';
+
+  @override
+  String get legendNear => 'A little over';
+
+  @override
+  String get legendOver => 'Far over';
+
+  @override
+  String get notBudgeted => 'No limit set';
+
+  @override
+  String get setLimit => 'Set limit';
+
+  @override
+  String get dayByDay => 'Day by day';
+
+  @override
+  String get seeTransactions => 'See transactions';
+
+  @override
+  String get noTransactionsHere => 'Nothing recorded here.';
+
+  @override
+  String get cashFlow => 'Cash flow';
+
+  @override
+  String savedInMonths(String saved, String months) {
+    return 'Income beat spending in $saved of $months months.';
+  }
+
+  @override
+  String get tapMonthHint => 'Tap a month for details';
+
+  @override
+  String goToMonth(String month) {
+    return 'Go to $month';
+  }
+
+  @override
+  String keptOfIncome(String percent) {
+    return '$percent% of income kept';
+  }
+
+  @override
+  String get spentMoreThanEarned => 'Spent more than came in';
+
+  @override
+  String get splitTitle => 'Split';
+
+  @override
+  String get splitAction => 'Split into categories';
+
+  @override
+  String get splitRemove => 'Remove split';
+
+  @override
+  String get splitAddPart => 'Add a part';
+
+  @override
+  String get splitEvenly => 'Share equally';
+
+  @override
+  String get splitDone => 'All of it is filed';
+
+  @override
+  String splitLeft(String amount) {
+    return '$amount left to file';
+  }
+
+  @override
+  String splitOver(String amount) {
+    return '$amount more than the amount';
+  }
+
+  @override
+  String splitMismatch(String amount) {
+    return 'The parts must add up to $amount.';
+  }
+
+  @override
+  String get splitNeedsAmounts => 'Give every part an amount.';
+
+  @override
+  String splitInParts(String count) {
+    return 'Split in $count';
+  }
+
+  @override
+  String get recurring => 'Recurring';
+
+  @override
+  String get recurringEmpty =>
+      'Nothing repeats yet. Rent, salary, a bill: set it once and it comes round by itself.';
+
+  @override
+  String get newRecurring => 'Recurring transaction';
+
+  @override
+  String get newReminder => 'Reminder';
+
+  @override
+  String get editRecurring => 'Edit recurring transaction';
+
+  @override
+  String get editReminder => 'Edit reminder';
+
+  @override
+  String get repeatThis => 'Make this repeat';
+
+  @override
+  String get ruleTitle => 'Title';
+
+  @override
+  String get ruleTitleRequired => 'Give it a title.';
+
+  @override
+  String get repeats => 'Repeats';
+
+  @override
+  String get freqOptOnce => 'Does not repeat';
+
+  @override
+  String get freqOptDaily => 'Daily';
+
+  @override
+  String get freqOptWeekly => 'Weekly';
+
+  @override
+  String get freqOptMonthly => 'Monthly';
+
+  @override
+  String get freqOptYearly => 'Yearly';
+
+  @override
+  String get repeatEvery => 'Every';
+
+  @override
+  String get unitDays => 'days';
+
+  @override
+  String get unitWeeks => 'weeks';
+
+  @override
+  String get unitMonths => 'months';
+
+  @override
+  String get unitYears => 'years';
+
+  @override
+  String get freqOnce => 'Once';
+
+  @override
+  String get freqDaily => 'Every day';
+
+  @override
+  String freqDailyN(String n) {
+    return 'Every $n days';
+  }
+
+  @override
+  String get freqWeekly => 'Every week';
+
+  @override
+  String freqWeeklyN(String n) {
+    return 'Every $n weeks';
+  }
+
+  @override
+  String get freqMonthly => 'Every month';
+
+  @override
+  String freqMonthlyN(String n) {
+    return 'Every $n months';
+  }
+
+  @override
+  String get freqYearly => 'Every year';
+
+  @override
+  String freqYearlyN(String n) {
+    return 'Every $n years';
+  }
+
+  @override
+  String get monthlyOn => 'Falls on';
+
+  @override
+  String onDayOfMonth(String n) {
+    return 'Day $n';
+  }
+
+  @override
+  String get onLastDay => 'The last day';
+
+  @override
+  String get onWeekdayOfMonth => 'A weekday of the month';
+
+  @override
+  String theNthWeekday(String ordinal, String weekday) {
+    return 'The $ordinal $weekday';
+  }
+
+  @override
+  String get whichOne => 'Which';
+
+  @override
+  String get weekday => 'Weekday';
+
+  @override
+  String get ordinalFirst => 'first';
+
+  @override
+  String get ordinalSecond => 'second';
+
+  @override
+  String get ordinalThird => 'third';
+
+  @override
+  String get ordinalFourth => 'fourth';
+
+  @override
+  String get ordinalLast => 'last';
+
+  @override
+  String get startsOn => 'Starts on';
+
+  @override
+  String get ends => 'Ends';
+
+  @override
+  String get endsNever => 'Never';
+
+  @override
+  String get endsOnDate => 'On a date';
+
+  @override
+  String get endsAfterTimes => 'After a number of times';
+
+  @override
+  String get endsOn => 'Ends on';
+
+  @override
+  String get timesCount => 'How many times';
+
+  @override
+  String get numberRequired => 'Enter a number above zero.';
+
+  @override
+  String nextDates(String dates) {
+    return 'Next: $dates';
+  }
+
+  @override
+  String get noMoreDates => 'No date falls on this schedule.';
+
+  @override
+  String get recordAutomatically => 'Record automatically';
+
+  @override
+  String get recordAutomaticallyHint =>
+      'Without it you are asked first, and can change the amount.';
+
+  @override
+  String get remindMe => 'Remind me';
+
+  @override
+  String get remindOnTheDay => 'On the day';
+
+  @override
+  String get remindDayBefore => 'The day before';
+
+  @override
+  String remindDaysBefore(String n) {
+    return '$n days before';
+  }
+
+  @override
+  String get remindAt => 'At';
+
+  @override
+  String get usualTime => 'The usual time';
+
+  @override
+  String get paused => 'Paused';
+
+  @override
+  String get pausedHint => 'Nothing falls due while it is paused.';
+
+  @override
+  String get ended => 'Ended';
+
+  @override
+  String nextOn(String date) {
+    return 'Next: $date';
+  }
+
+  @override
+  String dueOn(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String get waitingForYou => 'Waiting for you';
+
+  @override
+  String get comingUp => 'Coming up';
+
+  @override
+  String get everythingThatRepeats => 'Everything that repeats';
+
+  @override
+  String get recordIt => 'Record';
+
+  @override
+  String get skipIt => 'Skip';
+
+  @override
+  String get laterIt => 'Later';
+
+  @override
+  String get doneIt => 'Done';
+
+  @override
+  String get snoozeTomorrow => 'Tomorrow';
+
+  @override
+  String get snoozeThreeDays => 'In 3 days';
+
+  @override
+  String get snoozeWeek => 'In a week';
+
+  @override
+  String get deleteRuleConfirm =>
+      'Delete this? What it has already recorded stays.';
+
+  @override
+  String get recordsItself => 'Recorded automatically';
+
+  @override
+  String get asksFirst => 'Asks first';
+
+  @override
+  String get weekStartsOn => 'Week starts on';
+
+  @override
+  String splitKept(String count) {
+    return 'Split in $count, as in the transaction';
+  }
+
+  @override
+  String get featureReminders => 'Reminders';
+
+  @override
+  String limitReminders(String plan, int limit) {
+    String _temp0 = intl.Intl.pluralLogic(
+      limit,
+      locale: localeName,
+      other: '$limit reminders',
+      one: '1 reminder',
+    );
+    return 'Your $plan plan allows $_temp0 at a time.';
+  }
+
+  @override
+  String get seeAllRecurring => 'See all';
+
+  @override
+  String get addRecurring => 'Add';
+
+  @override
+  String get inbox => 'Reminders';
+
+  @override
+  String get inboxEmpty =>
+      'Nothing to tell you yet. What falls due, what was recorded for you and how your budgets are doing will show up here.';
+
+  @override
+  String get inboxEarlier => 'Earlier';
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String inboxUpcoming(String title, String days) {
+    return '$title is due in $days days';
+  }
+
+  @override
+  String inboxUpcomingTomorrow(String title) {
+    return '$title is due tomorrow';
+  }
+
+  @override
+  String inboxDue(String title) {
+    return '$title is due today';
+  }
+
+  @override
+  String inboxOverdue(String title) {
+    return '$title is still waiting';
+  }
+
+  @override
+  String inboxPosted(String title) {
+    return '$title was recorded';
+  }
+
+  @override
+  String inboxIncomeComing(String title, String days) {
+    return '$title is expected in $days days';
+  }
+
+  @override
+  String inboxIncomeTomorrow(String title) {
+    return '$title is expected tomorrow';
+  }
+
+  @override
+  String inboxIncomeDue(String title) {
+    return 'Has $title come in?';
+  }
+
+  @override
+  String inboxBlocked(String title) {
+    return '$title could not be recorded. Check its account.';
+  }
+
+  @override
+  String inboxBudget80(String title, String percent) {
+    return '$title: $percent% of the budget is spent';
+  }
+
+  @override
+  String inboxBudgetOver(String title) {
+    return '$title is over its budget';
+  }
+
+  @override
+  String inboxBudgetDetail(String spent, String limit) {
+    return '$spent of $limit';
+  }
+
+  @override
+  String get untitledRule => 'A recurring transaction';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notifAllow => 'Allow notifications';
+
+  @override
+  String get notifBlocked =>
+      'This phone is not letting Spendroo show notifications.';
+
+  @override
+  String get notifBlockedHint =>
+      'If nothing happens, allow them for Spendroo in the phone\'s settings.';
+
+  @override
+  String get notifPush => 'Push notifications';
+
+  @override
+  String get notifPushHint =>
+      'Reminders reach this phone even when the app is closed.';
+
+  @override
+  String get notifWhat => 'What to tell you';
+
+  @override
+  String get notifBills => 'Bills and reminders';
+
+  @override
+  String get notifBillsHint => 'Coming up, due today and still waiting';
+
+  @override
+  String get notifIncome => 'Expected income';
+
+  @override
+  String get notifRecorded => 'Recorded for you';
+
+  @override
+  String get notifRecordedHint =>
+      'When a recurring transaction is recorded, or could not be';
+
+  @override
+  String get notifBudgets => 'Budget alerts';
+
+  @override
+  String get notifBudgetsHint => 'At 80% of a budget, and when it is passed';
+
+  @override
+  String get notifNudge => 'Daily nudge';
+
+  @override
+  String get notifNudgeHint => 'On days you have written nothing down';
+
+  @override
+  String get notifNudgeTime => 'Nudge at';
+
+  @override
+  String get notifWhen => 'When';
+
+  @override
+  String get notifReminderTime => 'Remind me at';
+
+  @override
+  String get notifReminderTimeHint =>
+      'For recurring transactions without a time of their own.';
+
+  @override
+  String get notifQuiet => 'Quiet hours';
+
+  @override
+  String get notifQuietHint =>
+      'Nothing is sent between these hours. It waits until they end.';
+
+  @override
+  String get notifQuietFrom => 'From';
+
+  @override
+  String get notifQuietTo => 'Until';
+
+  @override
+  String get notifTest => 'Send a test notification';
+
+  @override
+  String get notifTestSent => 'Sent. It should arrive in a moment.';
+
+  @override
+  String get notifTestNoDevice =>
+      'This phone is not registered for notifications yet. Check the connection and try again.';
+
+  @override
+  String get notifTestNotSetUp =>
+      'The server is not set up to send notifications yet.';
+
+  @override
+  String get notifTestFailed => 'It could not be sent. Try again in a while.';
+
+  @override
+  String get nudgeTitle => 'Did you spend anything today?';
+
+  @override
+  String get nudgeBody => 'Write it down while you remember.';
 }

@@ -5482,6 +5482,27 @@ class $TransactionsTable extends Transactions
     requiredDuringInsert: false,
     defaultValue: const Constant('manual'),
   );
+  static const VerificationMeta _splitsMeta = const VerificationMeta('splits');
+  @override
+  late final GeneratedColumn<String> splits = GeneratedColumn<String>(
+    'splits',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _occurrenceIdMeta = const VerificationMeta(
+    'occurrenceId',
+  );
+  @override
+  late final GeneratedColumn<String> occurrenceId = GeneratedColumn<String>(
+    'occurrence_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -5500,6 +5521,8 @@ class $TransactionsTable extends Transactions
     occurredOn,
     note,
     source,
+    splits,
+    occurrenceId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5633,6 +5656,21 @@ class $TransactionsTable extends Transactions
         source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
       );
     }
+    if (data.containsKey('splits')) {
+      context.handle(
+        _splitsMeta,
+        splits.isAcceptableOrUnknown(data['splits']!, _splitsMeta),
+      );
+    }
+    if (data.containsKey('occurrence_id')) {
+      context.handle(
+        _occurrenceIdMeta,
+        occurrenceId.isAcceptableOrUnknown(
+          data['occurrence_id']!,
+          _occurrenceIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -5706,6 +5744,14 @@ class $TransactionsTable extends Transactions
         DriftSqlType.string,
         data['${effectivePrefix}source'],
       )!,
+      splits: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}splits'],
+      )!,
+      occurrenceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}occurrence_id'],
+      ),
     );
   }
 
@@ -5732,6 +5778,13 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final String occurredOn;
   final String note;
   final String source;
+
+  /// Filed under several categories at once: a JSON list of parts that add up
+  /// to the amount (features/personal/allocations.dart). '[]' when not split.
+  final String splits;
+
+  /// The occurrence of a recurring rule this transaction settles.
+  final String? occurrenceId;
   const Transaction({
     required this.id,
     required this.workspaceId,
@@ -5749,6 +5802,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     required this.occurredOn,
     required this.note,
     required this.source,
+    required this.splits,
+    this.occurrenceId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5775,6 +5830,10 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     map['occurred_on'] = Variable<String>(occurredOn);
     map['note'] = Variable<String>(note);
     map['source'] = Variable<String>(source);
+    map['splits'] = Variable<String>(splits);
+    if (!nullToAbsent || occurrenceId != null) {
+      map['occurrence_id'] = Variable<String>(occurrenceId);
+    }
     return map;
   }
 
@@ -5802,6 +5861,10 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       occurredOn: Value(occurredOn),
       note: Value(note),
       source: Value(source),
+      splits: Value(splits),
+      occurrenceId: occurrenceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(occurrenceId),
     );
   }
 
@@ -5827,6 +5890,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       occurredOn: serializer.fromJson<String>(json['occurredOn']),
       note: serializer.fromJson<String>(json['note']),
       source: serializer.fromJson<String>(json['source']),
+      splits: serializer.fromJson<String>(json['splits']),
+      occurrenceId: serializer.fromJson<String?>(json['occurrenceId']),
     );
   }
   @override
@@ -5849,6 +5914,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'occurredOn': serializer.toJson<String>(occurredOn),
       'note': serializer.toJson<String>(note),
       'source': serializer.toJson<String>(source),
+      'splits': serializer.toJson<String>(splits),
+      'occurrenceId': serializer.toJson<String?>(occurrenceId),
     };
   }
 
@@ -5869,6 +5936,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     String? occurredOn,
     String? note,
     String? source,
+    String? splits,
+    Value<String?> occurrenceId = const Value.absent(),
   }) => Transaction(
     id: id ?? this.id,
     workspaceId: workspaceId ?? this.workspaceId,
@@ -5888,6 +5957,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     occurredOn: occurredOn ?? this.occurredOn,
     note: note ?? this.note,
     source: source ?? this.source,
+    splits: splits ?? this.splits,
+    occurrenceId: occurrenceId.present ? occurrenceId.value : this.occurrenceId,
   );
   Transaction copyWithCompanion(TransactionsCompanion data) {
     return Transaction(
@@ -5917,6 +5988,10 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           : this.occurredOn,
       note: data.note.present ? data.note.value : this.note,
       source: data.source.present ? data.source.value : this.source,
+      splits: data.splits.present ? data.splits.value : this.splits,
+      occurrenceId: data.occurrenceId.present
+          ? data.occurrenceId.value
+          : this.occurrenceId,
     );
   }
 
@@ -5938,7 +6013,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('transferGroupId: $transferGroupId, ')
           ..write('occurredOn: $occurredOn, ')
           ..write('note: $note, ')
-          ..write('source: $source')
+          ..write('source: $source, ')
+          ..write('splits: $splits, ')
+          ..write('occurrenceId: $occurrenceId')
           ..write(')'))
         .toString();
   }
@@ -5961,6 +6038,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     occurredOn,
     note,
     source,
+    splits,
+    occurrenceId,
   );
   @override
   bool operator ==(Object other) =>
@@ -5981,7 +6060,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.transferGroupId == this.transferGroupId &&
           other.occurredOn == this.occurredOn &&
           other.note == this.note &&
-          other.source == this.source);
+          other.source == this.source &&
+          other.splits == this.splits &&
+          other.occurrenceId == this.occurrenceId);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
@@ -6001,6 +6082,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<String> occurredOn;
   final Value<String> note;
   final Value<String> source;
+  final Value<String> splits;
+  final Value<String?> occurrenceId;
   final Value<int> rowid;
   const TransactionsCompanion({
     this.id = const Value.absent(),
@@ -6019,6 +6102,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.occurredOn = const Value.absent(),
     this.note = const Value.absent(),
     this.source = const Value.absent(),
+    this.splits = const Value.absent(),
+    this.occurrenceId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TransactionsCompanion.insert({
@@ -6038,6 +6123,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     required String occurredOn,
     this.note = const Value.absent(),
     this.source = const Value.absent(),
+    this.splits = const Value.absent(),
+    this.occurrenceId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        workspaceId = Value(workspaceId),
@@ -6065,6 +6152,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Expression<String>? occurredOn,
     Expression<String>? note,
     Expression<String>? source,
+    Expression<String>? splits,
+    Expression<String>? occurrenceId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -6084,6 +6173,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       if (occurredOn != null) 'occurred_on': occurredOn,
       if (note != null) 'note': note,
       if (source != null) 'source': source,
+      if (splits != null) 'splits': splits,
+      if (occurrenceId != null) 'occurrence_id': occurrenceId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -6105,6 +6196,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Value<String>? occurredOn,
     Value<String>? note,
     Value<String>? source,
+    Value<String>? splits,
+    Value<String?>? occurrenceId,
     Value<int>? rowid,
   }) {
     return TransactionsCompanion(
@@ -6124,6 +6217,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       occurredOn: occurredOn ?? this.occurredOn,
       note: note ?? this.note,
       source: source ?? this.source,
+      splits: splits ?? this.splits,
+      occurrenceId: occurrenceId ?? this.occurrenceId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -6179,6 +6274,12 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (source.present) {
       map['source'] = Variable<String>(source.value);
     }
+    if (splits.present) {
+      map['splits'] = Variable<String>(splits.value);
+    }
+    if (occurrenceId.present) {
+      map['occurrence_id'] = Variable<String>(occurrenceId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -6204,6 +6305,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
           ..write('occurredOn: $occurredOn, ')
           ..write('note: $note, ')
           ..write('source: $source, ')
+          ..write('splits: $splits, ')
+          ..write('occurrenceId: $occurrenceId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6867,6 +6970,3103 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
           ..write('amountMinor: $amountMinor, ')
           ..write('currency: $currency, ')
           ..write('month: $month, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RecurringRulesTable extends RecurringRules
+    with TableInfo<$RecurringRulesTable, RecurringRule> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecurringRulesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _serverSeqMeta = const VerificationMeta(
+    'serverSeq',
+  );
+  @override
+  late final GeneratedColumn<int> serverSeq = GeneratedColumn<int>(
+    'server_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<String> updatedAt = GeneratedColumn<String>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<String> deletedAt = GeneratedColumn<String>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+    'account_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _toAccountIdMeta = const VerificationMeta(
+    'toAccountId',
+  );
+  @override
+  late final GeneratedColumn<String> toAccountId = GeneratedColumn<String>(
+    'to_account_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<String> categoryId = GeneratedColumn<String>(
+    'category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _amountMinorMeta = const VerificationMeta(
+    'amountMinor',
+  );
+  @override
+  late final GeneratedColumn<int> amountMinor = GeneratedColumn<int>(
+    'amount_minor',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _currencyMeta = const VerificationMeta(
+    'currency',
+  );
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+    'currency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _splitsMeta = const VerificationMeta('splits');
+  @override
+  late final GeneratedColumn<String> splits = GeneratedColumn<String>(
+    'splits',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _freqMeta = const VerificationMeta('freq');
+  @override
+  late final GeneratedColumn<String> freq = GeneratedColumn<String>(
+    'freq',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _intervalMeta = const VerificationMeta(
+    'interval',
+  );
+  @override
+  late final GeneratedColumn<int> interval = GeneratedColumn<int>(
+    'interval',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _weekdayMaskMeta = const VerificationMeta(
+    'weekdayMask',
+  );
+  @override
+  late final GeneratedColumn<int> weekdayMask = GeneratedColumn<int>(
+    'weekday_mask',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _monthDayMeta = const VerificationMeta(
+    'monthDay',
+  );
+  @override
+  late final GeneratedColumn<int> monthDay = GeneratedColumn<int>(
+    'month_day',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _setPosMeta = const VerificationMeta('setPos');
+  @override
+  late final GeneratedColumn<int> setPos = GeneratedColumn<int>(
+    'set_pos',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weekStartMeta = const VerificationMeta(
+    'weekStart',
+  );
+  @override
+  late final GeneratedColumn<int> weekStart = GeneratedColumn<int>(
+    'week_start',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(5),
+  );
+  static const VerificationMeta _startOnMeta = const VerificationMeta(
+    'startOn',
+  );
+  @override
+  late final GeneratedColumn<String> startOn = GeneratedColumn<String>(
+    'start_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endOnMeta = const VerificationMeta('endOn');
+  @override
+  late final GeneratedColumn<String> endOn = GeneratedColumn<String>(
+    'end_on',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxCountMeta = const VerificationMeta(
+    'maxCount',
+  );
+  @override
+  late final GeneratedColumn<int> maxCount = GeneratedColumn<int>(
+    'max_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _modeMeta = const VerificationMeta('mode');
+  @override
+  late final GeneratedColumn<String> mode = GeneratedColumn<String>(
+    'mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('confirm'),
+  );
+  static const VerificationMeta _remindDaysBeforeMeta = const VerificationMeta(
+    'remindDaysBefore',
+  );
+  @override
+  late final GeneratedColumn<int> remindDaysBefore = GeneratedColumn<int>(
+    'remind_days_before',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _remindAtMeta = const VerificationMeta(
+    'remindAt',
+  );
+  @override
+  late final GeneratedColumn<String> remindAt = GeneratedColumn<String>(
+    'remind_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isPausedMeta = const VerificationMeta(
+    'isPaused',
+  );
+  @override
+  late final GeneratedColumn<bool> isPaused = GeneratedColumn<bool>(
+    'is_paused',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_paused" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _nextDueOnMeta = const VerificationMeta(
+    'nextDueOn',
+  );
+  @override
+  late final GeneratedColumn<String> nextDueOn = GeneratedColumn<String>(
+    'next_due_on',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _doneCountMeta = const VerificationMeta(
+    'doneCount',
+  );
+  @override
+  late final GeneratedColumn<int> doneCount = GeneratedColumn<int>(
+    'done_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    kind,
+    title,
+    accountId,
+    toAccountId,
+    categoryId,
+    amountMinor,
+    currency,
+    note,
+    splits,
+    freq,
+    interval,
+    weekdayMask,
+    monthDay,
+    setPos,
+    weekStart,
+    startOn,
+    endOn,
+    maxCount,
+    mode,
+    remindDaysBefore,
+    remindAt,
+    isPaused,
+    nextDueOn,
+    doneCount,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'recurring_rules';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RecurringRule> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('server_seq')) {
+      context.handle(
+        _serverSeqMeta,
+        serverSeq.isAcceptableOrUnknown(data['server_seq']!, _serverSeqMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    }
+    if (data.containsKey('to_account_id')) {
+      context.handle(
+        _toAccountIdMeta,
+        toAccountId.isAcceptableOrUnknown(
+          data['to_account_id']!,
+          _toAccountIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    }
+    if (data.containsKey('amount_minor')) {
+      context.handle(
+        _amountMinorMeta,
+        amountMinor.isAcceptableOrUnknown(
+          data['amount_minor']!,
+          _amountMinorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('currency')) {
+      context.handle(
+        _currencyMeta,
+        currency.isAcceptableOrUnknown(data['currency']!, _currencyMeta),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('splits')) {
+      context.handle(
+        _splitsMeta,
+        splits.isAcceptableOrUnknown(data['splits']!, _splitsMeta),
+      );
+    }
+    if (data.containsKey('freq')) {
+      context.handle(
+        _freqMeta,
+        freq.isAcceptableOrUnknown(data['freq']!, _freqMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_freqMeta);
+    }
+    if (data.containsKey('interval')) {
+      context.handle(
+        _intervalMeta,
+        interval.isAcceptableOrUnknown(data['interval']!, _intervalMeta),
+      );
+    }
+    if (data.containsKey('weekday_mask')) {
+      context.handle(
+        _weekdayMaskMeta,
+        weekdayMask.isAcceptableOrUnknown(
+          data['weekday_mask']!,
+          _weekdayMaskMeta,
+        ),
+      );
+    }
+    if (data.containsKey('month_day')) {
+      context.handle(
+        _monthDayMeta,
+        monthDay.isAcceptableOrUnknown(data['month_day']!, _monthDayMeta),
+      );
+    }
+    if (data.containsKey('set_pos')) {
+      context.handle(
+        _setPosMeta,
+        setPos.isAcceptableOrUnknown(data['set_pos']!, _setPosMeta),
+      );
+    }
+    if (data.containsKey('week_start')) {
+      context.handle(
+        _weekStartMeta,
+        weekStart.isAcceptableOrUnknown(data['week_start']!, _weekStartMeta),
+      );
+    }
+    if (data.containsKey('start_on')) {
+      context.handle(
+        _startOnMeta,
+        startOn.isAcceptableOrUnknown(data['start_on']!, _startOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startOnMeta);
+    }
+    if (data.containsKey('end_on')) {
+      context.handle(
+        _endOnMeta,
+        endOn.isAcceptableOrUnknown(data['end_on']!, _endOnMeta),
+      );
+    }
+    if (data.containsKey('max_count')) {
+      context.handle(
+        _maxCountMeta,
+        maxCount.isAcceptableOrUnknown(data['max_count']!, _maxCountMeta),
+      );
+    }
+    if (data.containsKey('mode')) {
+      context.handle(
+        _modeMeta,
+        mode.isAcceptableOrUnknown(data['mode']!, _modeMeta),
+      );
+    }
+    if (data.containsKey('remind_days_before')) {
+      context.handle(
+        _remindDaysBeforeMeta,
+        remindDaysBefore.isAcceptableOrUnknown(
+          data['remind_days_before']!,
+          _remindDaysBeforeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('remind_at')) {
+      context.handle(
+        _remindAtMeta,
+        remindAt.isAcceptableOrUnknown(data['remind_at']!, _remindAtMeta),
+      );
+    }
+    if (data.containsKey('is_paused')) {
+      context.handle(
+        _isPausedMeta,
+        isPaused.isAcceptableOrUnknown(data['is_paused']!, _isPausedMeta),
+      );
+    }
+    if (data.containsKey('next_due_on')) {
+      context.handle(
+        _nextDueOnMeta,
+        nextDueOn.isAcceptableOrUnknown(data['next_due_on']!, _nextDueOnMeta),
+      );
+    }
+    if (data.containsKey('done_count')) {
+      context.handle(
+        _doneCountMeta,
+        doneCount.isAcceptableOrUnknown(data['done_count']!, _doneCountMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RecurringRule map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RecurringRule(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      serverSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_seq'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_id'],
+      ),
+      toAccountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}to_account_id'],
+      ),
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_id'],
+      ),
+      amountMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount_minor'],
+      ),
+      currency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      splits: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}splits'],
+      )!,
+      freq: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}freq'],
+      )!,
+      interval: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}interval'],
+      )!,
+      weekdayMask: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}weekday_mask'],
+      )!,
+      monthDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}month_day'],
+      ),
+      setPos: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}set_pos'],
+      ),
+      weekStart: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}week_start'],
+      )!,
+      startOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}start_on'],
+      )!,
+      endOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}end_on'],
+      ),
+      maxCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_count'],
+      ),
+      mode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mode'],
+      )!,
+      remindDaysBefore: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remind_days_before'],
+      )!,
+      remindAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remind_at'],
+      ),
+      isPaused: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_paused'],
+      )!,
+      nextDueOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}next_due_on'],
+      ),
+      doneCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}done_count'],
+      )!,
+    );
+  }
+
+  @override
+  $RecurringRulesTable createAlias(String alias) {
+    return $RecurringRulesTable(attachedDatabase, alias);
+  }
+}
+
+class RecurringRule extends DataClass implements Insertable<RecurringRule> {
+  final String id;
+  final String workspaceId;
+  final int version;
+  final int serverSeq;
+  final String createdAt;
+  final String updatedAt;
+  final String? deletedAt;
+  final String kind;
+  final String title;
+  final String? accountId;
+  final String? toAccountId;
+  final String? categoryId;
+
+  /// What the user typed, always positive; null for a reminder with no amount.
+  final int? amountMinor;
+  final String currency;
+  final String note;
+  final String splits;
+
+  /// once, daily, weekly, monthly or yearly, every [interval] of them.
+  final String freq;
+  final int interval;
+
+  /// Days of the week it falls on, Monday as bit 0.
+  final int weekdayMask;
+
+  /// 1-31, or -1 for the last day; a month too short uses its last day.
+  final int? monthDay;
+
+  /// With [weekdayMask]: the first (1) to fourth (4) or last (-1) such day of the month.
+  final int? setPos;
+
+  /// The day weeks start on when counting every [interval] weeks, Monday as 0.
+  final int weekStart;
+  final String startOn;
+  final String? endOn;
+  final int? maxCount;
+
+  /// auto: the server records it. confirm: the user is asked first.
+  final String mode;
+  final int remindDaysBefore;
+
+  /// HH:mm:ss in the user's own time; null uses their usual reminder time.
+  final String? remindAt;
+  final bool isPaused;
+
+  /// Set by the server.
+  final String? nextDueOn;
+  final int doneCount;
+  const RecurringRule({
+    required this.id,
+    required this.workspaceId,
+    required this.version,
+    required this.serverSeq,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.kind,
+    required this.title,
+    this.accountId,
+    this.toAccountId,
+    this.categoryId,
+    this.amountMinor,
+    required this.currency,
+    required this.note,
+    required this.splits,
+    required this.freq,
+    required this.interval,
+    required this.weekdayMask,
+    this.monthDay,
+    this.setPos,
+    required this.weekStart,
+    required this.startOn,
+    this.endOn,
+    this.maxCount,
+    required this.mode,
+    required this.remindDaysBefore,
+    this.remindAt,
+    required this.isPaused,
+    this.nextDueOn,
+    required this.doneCount,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['version'] = Variable<int>(version);
+    map['server_seq'] = Variable<int>(serverSeq);
+    map['created_at'] = Variable<String>(createdAt);
+    map['updated_at'] = Variable<String>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<String>(deletedAt);
+    }
+    map['kind'] = Variable<String>(kind);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || accountId != null) {
+      map['account_id'] = Variable<String>(accountId);
+    }
+    if (!nullToAbsent || toAccountId != null) {
+      map['to_account_id'] = Variable<String>(toAccountId);
+    }
+    if (!nullToAbsent || categoryId != null) {
+      map['category_id'] = Variable<String>(categoryId);
+    }
+    if (!nullToAbsent || amountMinor != null) {
+      map['amount_minor'] = Variable<int>(amountMinor);
+    }
+    map['currency'] = Variable<String>(currency);
+    map['note'] = Variable<String>(note);
+    map['splits'] = Variable<String>(splits);
+    map['freq'] = Variable<String>(freq);
+    map['interval'] = Variable<int>(interval);
+    map['weekday_mask'] = Variable<int>(weekdayMask);
+    if (!nullToAbsent || monthDay != null) {
+      map['month_day'] = Variable<int>(monthDay);
+    }
+    if (!nullToAbsent || setPos != null) {
+      map['set_pos'] = Variable<int>(setPos);
+    }
+    map['week_start'] = Variable<int>(weekStart);
+    map['start_on'] = Variable<String>(startOn);
+    if (!nullToAbsent || endOn != null) {
+      map['end_on'] = Variable<String>(endOn);
+    }
+    if (!nullToAbsent || maxCount != null) {
+      map['max_count'] = Variable<int>(maxCount);
+    }
+    map['mode'] = Variable<String>(mode);
+    map['remind_days_before'] = Variable<int>(remindDaysBefore);
+    if (!nullToAbsent || remindAt != null) {
+      map['remind_at'] = Variable<String>(remindAt);
+    }
+    map['is_paused'] = Variable<bool>(isPaused);
+    if (!nullToAbsent || nextDueOn != null) {
+      map['next_due_on'] = Variable<String>(nextDueOn);
+    }
+    map['done_count'] = Variable<int>(doneCount);
+    return map;
+  }
+
+  RecurringRulesCompanion toCompanion(bool nullToAbsent) {
+    return RecurringRulesCompanion(
+      id: Value(id),
+      workspaceId: Value(workspaceId),
+      version: Value(version),
+      serverSeq: Value(serverSeq),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      kind: Value(kind),
+      title: Value(title),
+      accountId: accountId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accountId),
+      toAccountId: toAccountId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toAccountId),
+      categoryId: categoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryId),
+      amountMinor: amountMinor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(amountMinor),
+      currency: Value(currency),
+      note: Value(note),
+      splits: Value(splits),
+      freq: Value(freq),
+      interval: Value(interval),
+      weekdayMask: Value(weekdayMask),
+      monthDay: monthDay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(monthDay),
+      setPos: setPos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(setPos),
+      weekStart: Value(weekStart),
+      startOn: Value(startOn),
+      endOn: endOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endOn),
+      maxCount: maxCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxCount),
+      mode: Value(mode),
+      remindDaysBefore: Value(remindDaysBefore),
+      remindAt: remindAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remindAt),
+      isPaused: Value(isPaused),
+      nextDueOn: nextDueOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextDueOn),
+      doneCount: Value(doneCount),
+    );
+  }
+
+  factory RecurringRule.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RecurringRule(
+      id: serializer.fromJson<String>(json['id']),
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      version: serializer.fromJson<int>(json['version']),
+      serverSeq: serializer.fromJson<int>(json['serverSeq']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      deletedAt: serializer.fromJson<String?>(json['deletedAt']),
+      kind: serializer.fromJson<String>(json['kind']),
+      title: serializer.fromJson<String>(json['title']),
+      accountId: serializer.fromJson<String?>(json['accountId']),
+      toAccountId: serializer.fromJson<String?>(json['toAccountId']),
+      categoryId: serializer.fromJson<String?>(json['categoryId']),
+      amountMinor: serializer.fromJson<int?>(json['amountMinor']),
+      currency: serializer.fromJson<String>(json['currency']),
+      note: serializer.fromJson<String>(json['note']),
+      splits: serializer.fromJson<String>(json['splits']),
+      freq: serializer.fromJson<String>(json['freq']),
+      interval: serializer.fromJson<int>(json['interval']),
+      weekdayMask: serializer.fromJson<int>(json['weekdayMask']),
+      monthDay: serializer.fromJson<int?>(json['monthDay']),
+      setPos: serializer.fromJson<int?>(json['setPos']),
+      weekStart: serializer.fromJson<int>(json['weekStart']),
+      startOn: serializer.fromJson<String>(json['startOn']),
+      endOn: serializer.fromJson<String?>(json['endOn']),
+      maxCount: serializer.fromJson<int?>(json['maxCount']),
+      mode: serializer.fromJson<String>(json['mode']),
+      remindDaysBefore: serializer.fromJson<int>(json['remindDaysBefore']),
+      remindAt: serializer.fromJson<String?>(json['remindAt']),
+      isPaused: serializer.fromJson<bool>(json['isPaused']),
+      nextDueOn: serializer.fromJson<String?>(json['nextDueOn']),
+      doneCount: serializer.fromJson<int>(json['doneCount']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'version': serializer.toJson<int>(version),
+      'serverSeq': serializer.toJson<int>(serverSeq),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
+      'deletedAt': serializer.toJson<String?>(deletedAt),
+      'kind': serializer.toJson<String>(kind),
+      'title': serializer.toJson<String>(title),
+      'accountId': serializer.toJson<String?>(accountId),
+      'toAccountId': serializer.toJson<String?>(toAccountId),
+      'categoryId': serializer.toJson<String?>(categoryId),
+      'amountMinor': serializer.toJson<int?>(amountMinor),
+      'currency': serializer.toJson<String>(currency),
+      'note': serializer.toJson<String>(note),
+      'splits': serializer.toJson<String>(splits),
+      'freq': serializer.toJson<String>(freq),
+      'interval': serializer.toJson<int>(interval),
+      'weekdayMask': serializer.toJson<int>(weekdayMask),
+      'monthDay': serializer.toJson<int?>(monthDay),
+      'setPos': serializer.toJson<int?>(setPos),
+      'weekStart': serializer.toJson<int>(weekStart),
+      'startOn': serializer.toJson<String>(startOn),
+      'endOn': serializer.toJson<String?>(endOn),
+      'maxCount': serializer.toJson<int?>(maxCount),
+      'mode': serializer.toJson<String>(mode),
+      'remindDaysBefore': serializer.toJson<int>(remindDaysBefore),
+      'remindAt': serializer.toJson<String?>(remindAt),
+      'isPaused': serializer.toJson<bool>(isPaused),
+      'nextDueOn': serializer.toJson<String?>(nextDueOn),
+      'doneCount': serializer.toJson<int>(doneCount),
+    };
+  }
+
+  RecurringRule copyWith({
+    String? id,
+    String? workspaceId,
+    int? version,
+    int? serverSeq,
+    String? createdAt,
+    String? updatedAt,
+    Value<String?> deletedAt = const Value.absent(),
+    String? kind,
+    String? title,
+    Value<String?> accountId = const Value.absent(),
+    Value<String?> toAccountId = const Value.absent(),
+    Value<String?> categoryId = const Value.absent(),
+    Value<int?> amountMinor = const Value.absent(),
+    String? currency,
+    String? note,
+    String? splits,
+    String? freq,
+    int? interval,
+    int? weekdayMask,
+    Value<int?> monthDay = const Value.absent(),
+    Value<int?> setPos = const Value.absent(),
+    int? weekStart,
+    String? startOn,
+    Value<String?> endOn = const Value.absent(),
+    Value<int?> maxCount = const Value.absent(),
+    String? mode,
+    int? remindDaysBefore,
+    Value<String?> remindAt = const Value.absent(),
+    bool? isPaused,
+    Value<String?> nextDueOn = const Value.absent(),
+    int? doneCount,
+  }) => RecurringRule(
+    id: id ?? this.id,
+    workspaceId: workspaceId ?? this.workspaceId,
+    version: version ?? this.version,
+    serverSeq: serverSeq ?? this.serverSeq,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    kind: kind ?? this.kind,
+    title: title ?? this.title,
+    accountId: accountId.present ? accountId.value : this.accountId,
+    toAccountId: toAccountId.present ? toAccountId.value : this.toAccountId,
+    categoryId: categoryId.present ? categoryId.value : this.categoryId,
+    amountMinor: amountMinor.present ? amountMinor.value : this.amountMinor,
+    currency: currency ?? this.currency,
+    note: note ?? this.note,
+    splits: splits ?? this.splits,
+    freq: freq ?? this.freq,
+    interval: interval ?? this.interval,
+    weekdayMask: weekdayMask ?? this.weekdayMask,
+    monthDay: monthDay.present ? monthDay.value : this.monthDay,
+    setPos: setPos.present ? setPos.value : this.setPos,
+    weekStart: weekStart ?? this.weekStart,
+    startOn: startOn ?? this.startOn,
+    endOn: endOn.present ? endOn.value : this.endOn,
+    maxCount: maxCount.present ? maxCount.value : this.maxCount,
+    mode: mode ?? this.mode,
+    remindDaysBefore: remindDaysBefore ?? this.remindDaysBefore,
+    remindAt: remindAt.present ? remindAt.value : this.remindAt,
+    isPaused: isPaused ?? this.isPaused,
+    nextDueOn: nextDueOn.present ? nextDueOn.value : this.nextDueOn,
+    doneCount: doneCount ?? this.doneCount,
+  );
+  RecurringRule copyWithCompanion(RecurringRulesCompanion data) {
+    return RecurringRule(
+      id: data.id.present ? data.id.value : this.id,
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      version: data.version.present ? data.version.value : this.version,
+      serverSeq: data.serverSeq.present ? data.serverSeq.value : this.serverSeq,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      title: data.title.present ? data.title.value : this.title,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      toAccountId: data.toAccountId.present
+          ? data.toAccountId.value
+          : this.toAccountId,
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      amountMinor: data.amountMinor.present
+          ? data.amountMinor.value
+          : this.amountMinor,
+      currency: data.currency.present ? data.currency.value : this.currency,
+      note: data.note.present ? data.note.value : this.note,
+      splits: data.splits.present ? data.splits.value : this.splits,
+      freq: data.freq.present ? data.freq.value : this.freq,
+      interval: data.interval.present ? data.interval.value : this.interval,
+      weekdayMask: data.weekdayMask.present
+          ? data.weekdayMask.value
+          : this.weekdayMask,
+      monthDay: data.monthDay.present ? data.monthDay.value : this.monthDay,
+      setPos: data.setPos.present ? data.setPos.value : this.setPos,
+      weekStart: data.weekStart.present ? data.weekStart.value : this.weekStart,
+      startOn: data.startOn.present ? data.startOn.value : this.startOn,
+      endOn: data.endOn.present ? data.endOn.value : this.endOn,
+      maxCount: data.maxCount.present ? data.maxCount.value : this.maxCount,
+      mode: data.mode.present ? data.mode.value : this.mode,
+      remindDaysBefore: data.remindDaysBefore.present
+          ? data.remindDaysBefore.value
+          : this.remindDaysBefore,
+      remindAt: data.remindAt.present ? data.remindAt.value : this.remindAt,
+      isPaused: data.isPaused.present ? data.isPaused.value : this.isPaused,
+      nextDueOn: data.nextDueOn.present ? data.nextDueOn.value : this.nextDueOn,
+      doneCount: data.doneCount.present ? data.doneCount.value : this.doneCount,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurringRule(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('kind: $kind, ')
+          ..write('title: $title, ')
+          ..write('accountId: $accountId, ')
+          ..write('toAccountId: $toAccountId, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('amountMinor: $amountMinor, ')
+          ..write('currency: $currency, ')
+          ..write('note: $note, ')
+          ..write('splits: $splits, ')
+          ..write('freq: $freq, ')
+          ..write('interval: $interval, ')
+          ..write('weekdayMask: $weekdayMask, ')
+          ..write('monthDay: $monthDay, ')
+          ..write('setPos: $setPos, ')
+          ..write('weekStart: $weekStart, ')
+          ..write('startOn: $startOn, ')
+          ..write('endOn: $endOn, ')
+          ..write('maxCount: $maxCount, ')
+          ..write('mode: $mode, ')
+          ..write('remindDaysBefore: $remindDaysBefore, ')
+          ..write('remindAt: $remindAt, ')
+          ..write('isPaused: $isPaused, ')
+          ..write('nextDueOn: $nextDueOn, ')
+          ..write('doneCount: $doneCount')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    kind,
+    title,
+    accountId,
+    toAccountId,
+    categoryId,
+    amountMinor,
+    currency,
+    note,
+    splits,
+    freq,
+    interval,
+    weekdayMask,
+    monthDay,
+    setPos,
+    weekStart,
+    startOn,
+    endOn,
+    maxCount,
+    mode,
+    remindDaysBefore,
+    remindAt,
+    isPaused,
+    nextDueOn,
+    doneCount,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RecurringRule &&
+          other.id == this.id &&
+          other.workspaceId == this.workspaceId &&
+          other.version == this.version &&
+          other.serverSeq == this.serverSeq &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.kind == this.kind &&
+          other.title == this.title &&
+          other.accountId == this.accountId &&
+          other.toAccountId == this.toAccountId &&
+          other.categoryId == this.categoryId &&
+          other.amountMinor == this.amountMinor &&
+          other.currency == this.currency &&
+          other.note == this.note &&
+          other.splits == this.splits &&
+          other.freq == this.freq &&
+          other.interval == this.interval &&
+          other.weekdayMask == this.weekdayMask &&
+          other.monthDay == this.monthDay &&
+          other.setPos == this.setPos &&
+          other.weekStart == this.weekStart &&
+          other.startOn == this.startOn &&
+          other.endOn == this.endOn &&
+          other.maxCount == this.maxCount &&
+          other.mode == this.mode &&
+          other.remindDaysBefore == this.remindDaysBefore &&
+          other.remindAt == this.remindAt &&
+          other.isPaused == this.isPaused &&
+          other.nextDueOn == this.nextDueOn &&
+          other.doneCount == this.doneCount);
+}
+
+class RecurringRulesCompanion extends UpdateCompanion<RecurringRule> {
+  final Value<String> id;
+  final Value<String> workspaceId;
+  final Value<int> version;
+  final Value<int> serverSeq;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
+  final Value<String?> deletedAt;
+  final Value<String> kind;
+  final Value<String> title;
+  final Value<String?> accountId;
+  final Value<String?> toAccountId;
+  final Value<String?> categoryId;
+  final Value<int?> amountMinor;
+  final Value<String> currency;
+  final Value<String> note;
+  final Value<String> splits;
+  final Value<String> freq;
+  final Value<int> interval;
+  final Value<int> weekdayMask;
+  final Value<int?> monthDay;
+  final Value<int?> setPos;
+  final Value<int> weekStart;
+  final Value<String> startOn;
+  final Value<String?> endOn;
+  final Value<int?> maxCount;
+  final Value<String> mode;
+  final Value<int> remindDaysBefore;
+  final Value<String?> remindAt;
+  final Value<bool> isPaused;
+  final Value<String?> nextDueOn;
+  final Value<int> doneCount;
+  final Value<int> rowid;
+  const RecurringRulesCompanion({
+    this.id = const Value.absent(),
+    this.workspaceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.title = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.toAccountId = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.amountMinor = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.note = const Value.absent(),
+    this.splits = const Value.absent(),
+    this.freq = const Value.absent(),
+    this.interval = const Value.absent(),
+    this.weekdayMask = const Value.absent(),
+    this.monthDay = const Value.absent(),
+    this.setPos = const Value.absent(),
+    this.weekStart = const Value.absent(),
+    this.startOn = const Value.absent(),
+    this.endOn = const Value.absent(),
+    this.maxCount = const Value.absent(),
+    this.mode = const Value.absent(),
+    this.remindDaysBefore = const Value.absent(),
+    this.remindAt = const Value.absent(),
+    this.isPaused = const Value.absent(),
+    this.nextDueOn = const Value.absent(),
+    this.doneCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RecurringRulesCompanion.insert({
+    required String id,
+    required String workspaceId,
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    required String createdAt,
+    required String updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String kind,
+    this.title = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.toAccountId = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.amountMinor = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.note = const Value.absent(),
+    this.splits = const Value.absent(),
+    required String freq,
+    this.interval = const Value.absent(),
+    this.weekdayMask = const Value.absent(),
+    this.monthDay = const Value.absent(),
+    this.setPos = const Value.absent(),
+    this.weekStart = const Value.absent(),
+    required String startOn,
+    this.endOn = const Value.absent(),
+    this.maxCount = const Value.absent(),
+    this.mode = const Value.absent(),
+    this.remindDaysBefore = const Value.absent(),
+    this.remindAt = const Value.absent(),
+    this.isPaused = const Value.absent(),
+    this.nextDueOn = const Value.absent(),
+    this.doneCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workspaceId = Value(workspaceId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       kind = Value(kind),
+       freq = Value(freq),
+       startOn = Value(startOn);
+  static Insertable<RecurringRule> custom({
+    Expression<String>? id,
+    Expression<String>? workspaceId,
+    Expression<int>? version,
+    Expression<int>? serverSeq,
+    Expression<String>? createdAt,
+    Expression<String>? updatedAt,
+    Expression<String>? deletedAt,
+    Expression<String>? kind,
+    Expression<String>? title,
+    Expression<String>? accountId,
+    Expression<String>? toAccountId,
+    Expression<String>? categoryId,
+    Expression<int>? amountMinor,
+    Expression<String>? currency,
+    Expression<String>? note,
+    Expression<String>? splits,
+    Expression<String>? freq,
+    Expression<int>? interval,
+    Expression<int>? weekdayMask,
+    Expression<int>? monthDay,
+    Expression<int>? setPos,
+    Expression<int>? weekStart,
+    Expression<String>? startOn,
+    Expression<String>? endOn,
+    Expression<int>? maxCount,
+    Expression<String>? mode,
+    Expression<int>? remindDaysBefore,
+    Expression<String>? remindAt,
+    Expression<bool>? isPaused,
+    Expression<String>? nextDueOn,
+    Expression<int>? doneCount,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (version != null) 'version': version,
+      if (serverSeq != null) 'server_seq': serverSeq,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (kind != null) 'kind': kind,
+      if (title != null) 'title': title,
+      if (accountId != null) 'account_id': accountId,
+      if (toAccountId != null) 'to_account_id': toAccountId,
+      if (categoryId != null) 'category_id': categoryId,
+      if (amountMinor != null) 'amount_minor': amountMinor,
+      if (currency != null) 'currency': currency,
+      if (note != null) 'note': note,
+      if (splits != null) 'splits': splits,
+      if (freq != null) 'freq': freq,
+      if (interval != null) 'interval': interval,
+      if (weekdayMask != null) 'weekday_mask': weekdayMask,
+      if (monthDay != null) 'month_day': monthDay,
+      if (setPos != null) 'set_pos': setPos,
+      if (weekStart != null) 'week_start': weekStart,
+      if (startOn != null) 'start_on': startOn,
+      if (endOn != null) 'end_on': endOn,
+      if (maxCount != null) 'max_count': maxCount,
+      if (mode != null) 'mode': mode,
+      if (remindDaysBefore != null) 'remind_days_before': remindDaysBefore,
+      if (remindAt != null) 'remind_at': remindAt,
+      if (isPaused != null) 'is_paused': isPaused,
+      if (nextDueOn != null) 'next_due_on': nextDueOn,
+      if (doneCount != null) 'done_count': doneCount,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RecurringRulesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workspaceId,
+    Value<int>? version,
+    Value<int>? serverSeq,
+    Value<String>? createdAt,
+    Value<String>? updatedAt,
+    Value<String?>? deletedAt,
+    Value<String>? kind,
+    Value<String>? title,
+    Value<String?>? accountId,
+    Value<String?>? toAccountId,
+    Value<String?>? categoryId,
+    Value<int?>? amountMinor,
+    Value<String>? currency,
+    Value<String>? note,
+    Value<String>? splits,
+    Value<String>? freq,
+    Value<int>? interval,
+    Value<int>? weekdayMask,
+    Value<int?>? monthDay,
+    Value<int?>? setPos,
+    Value<int>? weekStart,
+    Value<String>? startOn,
+    Value<String?>? endOn,
+    Value<int?>? maxCount,
+    Value<String>? mode,
+    Value<int>? remindDaysBefore,
+    Value<String?>? remindAt,
+    Value<bool>? isPaused,
+    Value<String?>? nextDueOn,
+    Value<int>? doneCount,
+    Value<int>? rowid,
+  }) {
+    return RecurringRulesCompanion(
+      id: id ?? this.id,
+      workspaceId: workspaceId ?? this.workspaceId,
+      version: version ?? this.version,
+      serverSeq: serverSeq ?? this.serverSeq,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      kind: kind ?? this.kind,
+      title: title ?? this.title,
+      accountId: accountId ?? this.accountId,
+      toAccountId: toAccountId ?? this.toAccountId,
+      categoryId: categoryId ?? this.categoryId,
+      amountMinor: amountMinor ?? this.amountMinor,
+      currency: currency ?? this.currency,
+      note: note ?? this.note,
+      splits: splits ?? this.splits,
+      freq: freq ?? this.freq,
+      interval: interval ?? this.interval,
+      weekdayMask: weekdayMask ?? this.weekdayMask,
+      monthDay: monthDay ?? this.monthDay,
+      setPos: setPos ?? this.setPos,
+      weekStart: weekStart ?? this.weekStart,
+      startOn: startOn ?? this.startOn,
+      endOn: endOn ?? this.endOn,
+      maxCount: maxCount ?? this.maxCount,
+      mode: mode ?? this.mode,
+      remindDaysBefore: remindDaysBefore ?? this.remindDaysBefore,
+      remindAt: remindAt ?? this.remindAt,
+      isPaused: isPaused ?? this.isPaused,
+      nextDueOn: nextDueOn ?? this.nextDueOn,
+      doneCount: doneCount ?? this.doneCount,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (serverSeq.present) {
+      map['server_seq'] = Variable<int>(serverSeq.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<String>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<String>(deletedAt.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (toAccountId.present) {
+      map['to_account_id'] = Variable<String>(toAccountId.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<String>(categoryId.value);
+    }
+    if (amountMinor.present) {
+      map['amount_minor'] = Variable<int>(amountMinor.value);
+    }
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (splits.present) {
+      map['splits'] = Variable<String>(splits.value);
+    }
+    if (freq.present) {
+      map['freq'] = Variable<String>(freq.value);
+    }
+    if (interval.present) {
+      map['interval'] = Variable<int>(interval.value);
+    }
+    if (weekdayMask.present) {
+      map['weekday_mask'] = Variable<int>(weekdayMask.value);
+    }
+    if (monthDay.present) {
+      map['month_day'] = Variable<int>(monthDay.value);
+    }
+    if (setPos.present) {
+      map['set_pos'] = Variable<int>(setPos.value);
+    }
+    if (weekStart.present) {
+      map['week_start'] = Variable<int>(weekStart.value);
+    }
+    if (startOn.present) {
+      map['start_on'] = Variable<String>(startOn.value);
+    }
+    if (endOn.present) {
+      map['end_on'] = Variable<String>(endOn.value);
+    }
+    if (maxCount.present) {
+      map['max_count'] = Variable<int>(maxCount.value);
+    }
+    if (mode.present) {
+      map['mode'] = Variable<String>(mode.value);
+    }
+    if (remindDaysBefore.present) {
+      map['remind_days_before'] = Variable<int>(remindDaysBefore.value);
+    }
+    if (remindAt.present) {
+      map['remind_at'] = Variable<String>(remindAt.value);
+    }
+    if (isPaused.present) {
+      map['is_paused'] = Variable<bool>(isPaused.value);
+    }
+    if (nextDueOn.present) {
+      map['next_due_on'] = Variable<String>(nextDueOn.value);
+    }
+    if (doneCount.present) {
+      map['done_count'] = Variable<int>(doneCount.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurringRulesCompanion(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('kind: $kind, ')
+          ..write('title: $title, ')
+          ..write('accountId: $accountId, ')
+          ..write('toAccountId: $toAccountId, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('amountMinor: $amountMinor, ')
+          ..write('currency: $currency, ')
+          ..write('note: $note, ')
+          ..write('splits: $splits, ')
+          ..write('freq: $freq, ')
+          ..write('interval: $interval, ')
+          ..write('weekdayMask: $weekdayMask, ')
+          ..write('monthDay: $monthDay, ')
+          ..write('setPos: $setPos, ')
+          ..write('weekStart: $weekStart, ')
+          ..write('startOn: $startOn, ')
+          ..write('endOn: $endOn, ')
+          ..write('maxCount: $maxCount, ')
+          ..write('mode: $mode, ')
+          ..write('remindDaysBefore: $remindDaysBefore, ')
+          ..write('remindAt: $remindAt, ')
+          ..write('isPaused: $isPaused, ')
+          ..write('nextDueOn: $nextDueOn, ')
+          ..write('doneCount: $doneCount, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RecurringOccurrencesTable extends RecurringOccurrences
+    with TableInfo<$RecurringOccurrencesTable, RecurringOccurrence> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecurringOccurrencesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _serverSeqMeta = const VerificationMeta(
+    'serverSeq',
+  );
+  @override
+  late final GeneratedColumn<int> serverSeq = GeneratedColumn<int>(
+    'server_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<String> updatedAt = GeneratedColumn<String>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<String> deletedAt = GeneratedColumn<String>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ruleIdMeta = const VerificationMeta('ruleId');
+  @override
+  late final GeneratedColumn<String> ruleId = GeneratedColumn<String>(
+    'rule_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dueOnMeta = const VerificationMeta('dueOn');
+  @override
+  late final GeneratedColumn<String> dueOn = GeneratedColumn<String>(
+    'due_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _snoozedUntilMeta = const VerificationMeta(
+    'snoozedUntil',
+  );
+  @override
+  late final GeneratedColumn<String> snoozedUntil = GeneratedColumn<String>(
+    'snoozed_until',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    ruleId,
+    dueOn,
+    status,
+    snoozedUntil,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'recurring_occurrences';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RecurringOccurrence> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('server_seq')) {
+      context.handle(
+        _serverSeqMeta,
+        serverSeq.isAcceptableOrUnknown(data['server_seq']!, _serverSeqMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('rule_id')) {
+      context.handle(
+        _ruleIdMeta,
+        ruleId.isAcceptableOrUnknown(data['rule_id']!, _ruleIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ruleIdMeta);
+    }
+    if (data.containsKey('due_on')) {
+      context.handle(
+        _dueOnMeta,
+        dueOn.isAcceptableOrUnknown(data['due_on']!, _dueOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dueOnMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('snoozed_until')) {
+      context.handle(
+        _snoozedUntilMeta,
+        snoozedUntil.isAcceptableOrUnknown(
+          data['snoozed_until']!,
+          _snoozedUntilMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RecurringOccurrence map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RecurringOccurrence(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      serverSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_seq'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      ruleId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rule_id'],
+      )!,
+      dueOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}due_on'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      snoozedUntil: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}snoozed_until'],
+      ),
+    );
+  }
+
+  @override
+  $RecurringOccurrencesTable createAlias(String alias) {
+    return $RecurringOccurrencesTable(attachedDatabase, alias);
+  }
+}
+
+class RecurringOccurrence extends DataClass
+    implements Insertable<RecurringOccurrence> {
+  final String id;
+  final String workspaceId;
+  final int version;
+  final int serverSeq;
+  final String createdAt;
+  final String updatedAt;
+  final String? deletedAt;
+  final String ruleId;
+  final String dueOn;
+
+  /// upcoming, due, done or skipped.
+  final String status;
+  final String? snoozedUntil;
+  const RecurringOccurrence({
+    required this.id,
+    required this.workspaceId,
+    required this.version,
+    required this.serverSeq,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.ruleId,
+    required this.dueOn,
+    required this.status,
+    this.snoozedUntil,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['version'] = Variable<int>(version);
+    map['server_seq'] = Variable<int>(serverSeq);
+    map['created_at'] = Variable<String>(createdAt);
+    map['updated_at'] = Variable<String>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<String>(deletedAt);
+    }
+    map['rule_id'] = Variable<String>(ruleId);
+    map['due_on'] = Variable<String>(dueOn);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || snoozedUntil != null) {
+      map['snoozed_until'] = Variable<String>(snoozedUntil);
+    }
+    return map;
+  }
+
+  RecurringOccurrencesCompanion toCompanion(bool nullToAbsent) {
+    return RecurringOccurrencesCompanion(
+      id: Value(id),
+      workspaceId: Value(workspaceId),
+      version: Value(version),
+      serverSeq: Value(serverSeq),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      ruleId: Value(ruleId),
+      dueOn: Value(dueOn),
+      status: Value(status),
+      snoozedUntil: snoozedUntil == null && nullToAbsent
+          ? const Value.absent()
+          : Value(snoozedUntil),
+    );
+  }
+
+  factory RecurringOccurrence.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RecurringOccurrence(
+      id: serializer.fromJson<String>(json['id']),
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      version: serializer.fromJson<int>(json['version']),
+      serverSeq: serializer.fromJson<int>(json['serverSeq']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      deletedAt: serializer.fromJson<String?>(json['deletedAt']),
+      ruleId: serializer.fromJson<String>(json['ruleId']),
+      dueOn: serializer.fromJson<String>(json['dueOn']),
+      status: serializer.fromJson<String>(json['status']),
+      snoozedUntil: serializer.fromJson<String?>(json['snoozedUntil']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'version': serializer.toJson<int>(version),
+      'serverSeq': serializer.toJson<int>(serverSeq),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
+      'deletedAt': serializer.toJson<String?>(deletedAt),
+      'ruleId': serializer.toJson<String>(ruleId),
+      'dueOn': serializer.toJson<String>(dueOn),
+      'status': serializer.toJson<String>(status),
+      'snoozedUntil': serializer.toJson<String?>(snoozedUntil),
+    };
+  }
+
+  RecurringOccurrence copyWith({
+    String? id,
+    String? workspaceId,
+    int? version,
+    int? serverSeq,
+    String? createdAt,
+    String? updatedAt,
+    Value<String?> deletedAt = const Value.absent(),
+    String? ruleId,
+    String? dueOn,
+    String? status,
+    Value<String?> snoozedUntil = const Value.absent(),
+  }) => RecurringOccurrence(
+    id: id ?? this.id,
+    workspaceId: workspaceId ?? this.workspaceId,
+    version: version ?? this.version,
+    serverSeq: serverSeq ?? this.serverSeq,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    ruleId: ruleId ?? this.ruleId,
+    dueOn: dueOn ?? this.dueOn,
+    status: status ?? this.status,
+    snoozedUntil: snoozedUntil.present ? snoozedUntil.value : this.snoozedUntil,
+  );
+  RecurringOccurrence copyWithCompanion(RecurringOccurrencesCompanion data) {
+    return RecurringOccurrence(
+      id: data.id.present ? data.id.value : this.id,
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      version: data.version.present ? data.version.value : this.version,
+      serverSeq: data.serverSeq.present ? data.serverSeq.value : this.serverSeq,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      ruleId: data.ruleId.present ? data.ruleId.value : this.ruleId,
+      dueOn: data.dueOn.present ? data.dueOn.value : this.dueOn,
+      status: data.status.present ? data.status.value : this.status,
+      snoozedUntil: data.snoozedUntil.present
+          ? data.snoozedUntil.value
+          : this.snoozedUntil,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurringOccurrence(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('ruleId: $ruleId, ')
+          ..write('dueOn: $dueOn, ')
+          ..write('status: $status, ')
+          ..write('snoozedUntil: $snoozedUntil')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    ruleId,
+    dueOn,
+    status,
+    snoozedUntil,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RecurringOccurrence &&
+          other.id == this.id &&
+          other.workspaceId == this.workspaceId &&
+          other.version == this.version &&
+          other.serverSeq == this.serverSeq &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.ruleId == this.ruleId &&
+          other.dueOn == this.dueOn &&
+          other.status == this.status &&
+          other.snoozedUntil == this.snoozedUntil);
+}
+
+class RecurringOccurrencesCompanion
+    extends UpdateCompanion<RecurringOccurrence> {
+  final Value<String> id;
+  final Value<String> workspaceId;
+  final Value<int> version;
+  final Value<int> serverSeq;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
+  final Value<String?> deletedAt;
+  final Value<String> ruleId;
+  final Value<String> dueOn;
+  final Value<String> status;
+  final Value<String?> snoozedUntil;
+  final Value<int> rowid;
+  const RecurringOccurrencesCompanion({
+    this.id = const Value.absent(),
+    this.workspaceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.ruleId = const Value.absent(),
+    this.dueOn = const Value.absent(),
+    this.status = const Value.absent(),
+    this.snoozedUntil = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RecurringOccurrencesCompanion.insert({
+    required String id,
+    required String workspaceId,
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    required String createdAt,
+    required String updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String ruleId,
+    required String dueOn,
+    required String status,
+    this.snoozedUntil = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workspaceId = Value(workspaceId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       ruleId = Value(ruleId),
+       dueOn = Value(dueOn),
+       status = Value(status);
+  static Insertable<RecurringOccurrence> custom({
+    Expression<String>? id,
+    Expression<String>? workspaceId,
+    Expression<int>? version,
+    Expression<int>? serverSeq,
+    Expression<String>? createdAt,
+    Expression<String>? updatedAt,
+    Expression<String>? deletedAt,
+    Expression<String>? ruleId,
+    Expression<String>? dueOn,
+    Expression<String>? status,
+    Expression<String>? snoozedUntil,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (version != null) 'version': version,
+      if (serverSeq != null) 'server_seq': serverSeq,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (ruleId != null) 'rule_id': ruleId,
+      if (dueOn != null) 'due_on': dueOn,
+      if (status != null) 'status': status,
+      if (snoozedUntil != null) 'snoozed_until': snoozedUntil,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RecurringOccurrencesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workspaceId,
+    Value<int>? version,
+    Value<int>? serverSeq,
+    Value<String>? createdAt,
+    Value<String>? updatedAt,
+    Value<String?>? deletedAt,
+    Value<String>? ruleId,
+    Value<String>? dueOn,
+    Value<String>? status,
+    Value<String?>? snoozedUntil,
+    Value<int>? rowid,
+  }) {
+    return RecurringOccurrencesCompanion(
+      id: id ?? this.id,
+      workspaceId: workspaceId ?? this.workspaceId,
+      version: version ?? this.version,
+      serverSeq: serverSeq ?? this.serverSeq,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      ruleId: ruleId ?? this.ruleId,
+      dueOn: dueOn ?? this.dueOn,
+      status: status ?? this.status,
+      snoozedUntil: snoozedUntil ?? this.snoozedUntil,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (serverSeq.present) {
+      map['server_seq'] = Variable<int>(serverSeq.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<String>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<String>(deletedAt.value);
+    }
+    if (ruleId.present) {
+      map['rule_id'] = Variable<String>(ruleId.value);
+    }
+    if (dueOn.present) {
+      map['due_on'] = Variable<String>(dueOn.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (snoozedUntil.present) {
+      map['snoozed_until'] = Variable<String>(snoozedUntil.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurringOccurrencesCompanion(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('ruleId: $ruleId, ')
+          ..write('dueOn: $dueOn, ')
+          ..write('status: $status, ')
+          ..write('snoozedUntil: $snoozedUntil, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $InboxItemsTable extends InboxItems
+    with TableInfo<$InboxItemsTable, InboxItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InboxItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _serverSeqMeta = const VerificationMeta(
+    'serverSeq',
+  );
+  @override
+  late final GeneratedColumn<int> serverSeq = GeneratedColumn<int>(
+    'server_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<String> updatedAt = GeneratedColumn<String>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<String> deletedAt = GeneratedColumn<String>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paramsMeta = const VerificationMeta('params');
+  @override
+  late final GeneratedColumn<String> params = GeneratedColumn<String>(
+    'params',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
+  static const VerificationMeta _subjectTableMeta = const VerificationMeta(
+    'subjectTable',
+  );
+  @override
+  late final GeneratedColumn<String> subjectTable = GeneratedColumn<String>(
+    'subject_table',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _subjectIdMeta = const VerificationMeta(
+    'subjectId',
+  );
+  @override
+  late final GeneratedColumn<String> subjectId = GeneratedColumn<String>(
+    'subject_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dedupeKeyMeta = const VerificationMeta(
+    'dedupeKey',
+  );
+  @override
+  late final GeneratedColumn<String> dedupeKey = GeneratedColumn<String>(
+    'dedupe_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _readAtMeta = const VerificationMeta('readAt');
+  @override
+  late final GeneratedColumn<String> readAt = GeneratedColumn<String>(
+    'read_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _resolvedAtMeta = const VerificationMeta(
+    'resolvedAt',
+  );
+  @override
+  late final GeneratedColumn<String> resolvedAt = GeneratedColumn<String>(
+    'resolved_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    type,
+    params,
+    subjectTable,
+    subjectId,
+    dedupeKey,
+    readAt,
+    resolvedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'inbox_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<InboxItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('server_seq')) {
+      context.handle(
+        _serverSeqMeta,
+        serverSeq.isAcceptableOrUnknown(data['server_seq']!, _serverSeqMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('params')) {
+      context.handle(
+        _paramsMeta,
+        params.isAcceptableOrUnknown(data['params']!, _paramsMeta),
+      );
+    }
+    if (data.containsKey('subject_table')) {
+      context.handle(
+        _subjectTableMeta,
+        subjectTable.isAcceptableOrUnknown(
+          data['subject_table']!,
+          _subjectTableMeta,
+        ),
+      );
+    }
+    if (data.containsKey('subject_id')) {
+      context.handle(
+        _subjectIdMeta,
+        subjectId.isAcceptableOrUnknown(data['subject_id']!, _subjectIdMeta),
+      );
+    }
+    if (data.containsKey('dedupe_key')) {
+      context.handle(
+        _dedupeKeyMeta,
+        dedupeKey.isAcceptableOrUnknown(data['dedupe_key']!, _dedupeKeyMeta),
+      );
+    }
+    if (data.containsKey('read_at')) {
+      context.handle(
+        _readAtMeta,
+        readAt.isAcceptableOrUnknown(data['read_at']!, _readAtMeta),
+      );
+    }
+    if (data.containsKey('resolved_at')) {
+      context.handle(
+        _resolvedAtMeta,
+        resolvedAt.isAcceptableOrUnknown(data['resolved_at']!, _resolvedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  InboxItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InboxItem(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      serverSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_seq'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      params: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}params'],
+      )!,
+      subjectTable: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject_table'],
+      )!,
+      subjectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject_id'],
+      ),
+      dedupeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dedupe_key'],
+      )!,
+      readAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}read_at'],
+      ),
+      resolvedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}resolved_at'],
+      ),
+    );
+  }
+
+  @override
+  $InboxItemsTable createAlias(String alias) {
+    return $InboxItemsTable(attachedDatabase, alias);
+  }
+}
+
+class InboxItem extends DataClass implements Insertable<InboxItem> {
+  final String id;
+  final String workspaceId;
+  final int version;
+  final int serverSeq;
+  final String createdAt;
+  final String updatedAt;
+  final String? deletedAt;
+  final String type;
+
+  /// JSON object the wording is filled from.
+  final String params;
+  final String subjectTable;
+  final String? subjectId;
+  final String dedupeKey;
+  final String? readAt;
+  final String? resolvedAt;
+  const InboxItem({
+    required this.id,
+    required this.workspaceId,
+    required this.version,
+    required this.serverSeq,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.type,
+    required this.params,
+    required this.subjectTable,
+    this.subjectId,
+    required this.dedupeKey,
+    this.readAt,
+    this.resolvedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['version'] = Variable<int>(version);
+    map['server_seq'] = Variable<int>(serverSeq);
+    map['created_at'] = Variable<String>(createdAt);
+    map['updated_at'] = Variable<String>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<String>(deletedAt);
+    }
+    map['type'] = Variable<String>(type);
+    map['params'] = Variable<String>(params);
+    map['subject_table'] = Variable<String>(subjectTable);
+    if (!nullToAbsent || subjectId != null) {
+      map['subject_id'] = Variable<String>(subjectId);
+    }
+    map['dedupe_key'] = Variable<String>(dedupeKey);
+    if (!nullToAbsent || readAt != null) {
+      map['read_at'] = Variable<String>(readAt);
+    }
+    if (!nullToAbsent || resolvedAt != null) {
+      map['resolved_at'] = Variable<String>(resolvedAt);
+    }
+    return map;
+  }
+
+  InboxItemsCompanion toCompanion(bool nullToAbsent) {
+    return InboxItemsCompanion(
+      id: Value(id),
+      workspaceId: Value(workspaceId),
+      version: Value(version),
+      serverSeq: Value(serverSeq),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      type: Value(type),
+      params: Value(params),
+      subjectTable: Value(subjectTable),
+      subjectId: subjectId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subjectId),
+      dedupeKey: Value(dedupeKey),
+      readAt: readAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(readAt),
+      resolvedAt: resolvedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(resolvedAt),
+    );
+  }
+
+  factory InboxItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InboxItem(
+      id: serializer.fromJson<String>(json['id']),
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      version: serializer.fromJson<int>(json['version']),
+      serverSeq: serializer.fromJson<int>(json['serverSeq']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      deletedAt: serializer.fromJson<String?>(json['deletedAt']),
+      type: serializer.fromJson<String>(json['type']),
+      params: serializer.fromJson<String>(json['params']),
+      subjectTable: serializer.fromJson<String>(json['subjectTable']),
+      subjectId: serializer.fromJson<String?>(json['subjectId']),
+      dedupeKey: serializer.fromJson<String>(json['dedupeKey']),
+      readAt: serializer.fromJson<String?>(json['readAt']),
+      resolvedAt: serializer.fromJson<String?>(json['resolvedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'version': serializer.toJson<int>(version),
+      'serverSeq': serializer.toJson<int>(serverSeq),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
+      'deletedAt': serializer.toJson<String?>(deletedAt),
+      'type': serializer.toJson<String>(type),
+      'params': serializer.toJson<String>(params),
+      'subjectTable': serializer.toJson<String>(subjectTable),
+      'subjectId': serializer.toJson<String?>(subjectId),
+      'dedupeKey': serializer.toJson<String>(dedupeKey),
+      'readAt': serializer.toJson<String?>(readAt),
+      'resolvedAt': serializer.toJson<String?>(resolvedAt),
+    };
+  }
+
+  InboxItem copyWith({
+    String? id,
+    String? workspaceId,
+    int? version,
+    int? serverSeq,
+    String? createdAt,
+    String? updatedAt,
+    Value<String?> deletedAt = const Value.absent(),
+    String? type,
+    String? params,
+    String? subjectTable,
+    Value<String?> subjectId = const Value.absent(),
+    String? dedupeKey,
+    Value<String?> readAt = const Value.absent(),
+    Value<String?> resolvedAt = const Value.absent(),
+  }) => InboxItem(
+    id: id ?? this.id,
+    workspaceId: workspaceId ?? this.workspaceId,
+    version: version ?? this.version,
+    serverSeq: serverSeq ?? this.serverSeq,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    type: type ?? this.type,
+    params: params ?? this.params,
+    subjectTable: subjectTable ?? this.subjectTable,
+    subjectId: subjectId.present ? subjectId.value : this.subjectId,
+    dedupeKey: dedupeKey ?? this.dedupeKey,
+    readAt: readAt.present ? readAt.value : this.readAt,
+    resolvedAt: resolvedAt.present ? resolvedAt.value : this.resolvedAt,
+  );
+  InboxItem copyWithCompanion(InboxItemsCompanion data) {
+    return InboxItem(
+      id: data.id.present ? data.id.value : this.id,
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      version: data.version.present ? data.version.value : this.version,
+      serverSeq: data.serverSeq.present ? data.serverSeq.value : this.serverSeq,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      type: data.type.present ? data.type.value : this.type,
+      params: data.params.present ? data.params.value : this.params,
+      subjectTable: data.subjectTable.present
+          ? data.subjectTable.value
+          : this.subjectTable,
+      subjectId: data.subjectId.present ? data.subjectId.value : this.subjectId,
+      dedupeKey: data.dedupeKey.present ? data.dedupeKey.value : this.dedupeKey,
+      readAt: data.readAt.present ? data.readAt.value : this.readAt,
+      resolvedAt: data.resolvedAt.present
+          ? data.resolvedAt.value
+          : this.resolvedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InboxItem(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('type: $type, ')
+          ..write('params: $params, ')
+          ..write('subjectTable: $subjectTable, ')
+          ..write('subjectId: $subjectId, ')
+          ..write('dedupeKey: $dedupeKey, ')
+          ..write('readAt: $readAt, ')
+          ..write('resolvedAt: $resolvedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    type,
+    params,
+    subjectTable,
+    subjectId,
+    dedupeKey,
+    readAt,
+    resolvedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InboxItem &&
+          other.id == this.id &&
+          other.workspaceId == this.workspaceId &&
+          other.version == this.version &&
+          other.serverSeq == this.serverSeq &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.type == this.type &&
+          other.params == this.params &&
+          other.subjectTable == this.subjectTable &&
+          other.subjectId == this.subjectId &&
+          other.dedupeKey == this.dedupeKey &&
+          other.readAt == this.readAt &&
+          other.resolvedAt == this.resolvedAt);
+}
+
+class InboxItemsCompanion extends UpdateCompanion<InboxItem> {
+  final Value<String> id;
+  final Value<String> workspaceId;
+  final Value<int> version;
+  final Value<int> serverSeq;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
+  final Value<String?> deletedAt;
+  final Value<String> type;
+  final Value<String> params;
+  final Value<String> subjectTable;
+  final Value<String?> subjectId;
+  final Value<String> dedupeKey;
+  final Value<String?> readAt;
+  final Value<String?> resolvedAt;
+  final Value<int> rowid;
+  const InboxItemsCompanion({
+    this.id = const Value.absent(),
+    this.workspaceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.type = const Value.absent(),
+    this.params = const Value.absent(),
+    this.subjectTable = const Value.absent(),
+    this.subjectId = const Value.absent(),
+    this.dedupeKey = const Value.absent(),
+    this.readAt = const Value.absent(),
+    this.resolvedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  InboxItemsCompanion.insert({
+    required String id,
+    required String workspaceId,
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    required String createdAt,
+    required String updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String type,
+    this.params = const Value.absent(),
+    this.subjectTable = const Value.absent(),
+    this.subjectId = const Value.absent(),
+    this.dedupeKey = const Value.absent(),
+    this.readAt = const Value.absent(),
+    this.resolvedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workspaceId = Value(workspaceId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       type = Value(type);
+  static Insertable<InboxItem> custom({
+    Expression<String>? id,
+    Expression<String>? workspaceId,
+    Expression<int>? version,
+    Expression<int>? serverSeq,
+    Expression<String>? createdAt,
+    Expression<String>? updatedAt,
+    Expression<String>? deletedAt,
+    Expression<String>? type,
+    Expression<String>? params,
+    Expression<String>? subjectTable,
+    Expression<String>? subjectId,
+    Expression<String>? dedupeKey,
+    Expression<String>? readAt,
+    Expression<String>? resolvedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (version != null) 'version': version,
+      if (serverSeq != null) 'server_seq': serverSeq,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (type != null) 'type': type,
+      if (params != null) 'params': params,
+      if (subjectTable != null) 'subject_table': subjectTable,
+      if (subjectId != null) 'subject_id': subjectId,
+      if (dedupeKey != null) 'dedupe_key': dedupeKey,
+      if (readAt != null) 'read_at': readAt,
+      if (resolvedAt != null) 'resolved_at': resolvedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  InboxItemsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workspaceId,
+    Value<int>? version,
+    Value<int>? serverSeq,
+    Value<String>? createdAt,
+    Value<String>? updatedAt,
+    Value<String?>? deletedAt,
+    Value<String>? type,
+    Value<String>? params,
+    Value<String>? subjectTable,
+    Value<String?>? subjectId,
+    Value<String>? dedupeKey,
+    Value<String?>? readAt,
+    Value<String?>? resolvedAt,
+    Value<int>? rowid,
+  }) {
+    return InboxItemsCompanion(
+      id: id ?? this.id,
+      workspaceId: workspaceId ?? this.workspaceId,
+      version: version ?? this.version,
+      serverSeq: serverSeq ?? this.serverSeq,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      type: type ?? this.type,
+      params: params ?? this.params,
+      subjectTable: subjectTable ?? this.subjectTable,
+      subjectId: subjectId ?? this.subjectId,
+      dedupeKey: dedupeKey ?? this.dedupeKey,
+      readAt: readAt ?? this.readAt,
+      resolvedAt: resolvedAt ?? this.resolvedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (serverSeq.present) {
+      map['server_seq'] = Variable<int>(serverSeq.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<String>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<String>(deletedAt.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (params.present) {
+      map['params'] = Variable<String>(params.value);
+    }
+    if (subjectTable.present) {
+      map['subject_table'] = Variable<String>(subjectTable.value);
+    }
+    if (subjectId.present) {
+      map['subject_id'] = Variable<String>(subjectId.value);
+    }
+    if (dedupeKey.present) {
+      map['dedupe_key'] = Variable<String>(dedupeKey.value);
+    }
+    if (readAt.present) {
+      map['read_at'] = Variable<String>(readAt.value);
+    }
+    if (resolvedAt.present) {
+      map['resolved_at'] = Variable<String>(resolvedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InboxItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('type: $type, ')
+          ..write('params: $params, ')
+          ..write('subjectTable: $subjectTable, ')
+          ..write('subjectId: $subjectId, ')
+          ..write('dedupeKey: $dedupeKey, ')
+          ..write('readAt: $readAt, ')
+          ..write('resolvedAt: $resolvedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8162,6 +11362,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $BudgetsTable budgets = $BudgetsTable(this);
+  late final $RecurringRulesTable recurringRules = $RecurringRulesTable(this);
+  late final $RecurringOccurrencesTable recurringOccurrences =
+      $RecurringOccurrencesTable(this);
+  late final $InboxItemsTable inboxItems = $InboxItemsTable(this);
   late final $OutboxTable outbox = $OutboxTable(this);
   late final $SyncCursorsTable syncCursors = $SyncCursorsTable(this);
   late final $SyncFailuresTable syncFailures = $SyncFailuresTable(this);
@@ -8170,9 +11374,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'entries_book_date',
     'CREATE INDEX entries_book_date ON entries (cashbook_id, entry_date)',
   );
-  late final Index transactionsAccountDate = Index(
-    'transactions_account_date',
-    'CREATE INDEX transactions_account_date ON transactions (account_id, occurred_on)',
+  late final Index transactionsAccountFeed = Index(
+    'transactions_account_feed',
+    'CREATE INDEX transactions_account_feed ON transactions (account_id, occurred_on, created_at, id)',
+  );
+  late final Index transactionsTransferGroup = Index(
+    'transactions_transfer_group',
+    'CREATE INDEX transactions_transfer_group ON transactions (transfer_group_id)',
+  );
+  late final Index recurringOccurrencesDue = Index(
+    'recurring_occurrences_due',
+    'CREATE INDEX recurring_occurrences_due ON recurring_occurrences (workspace_id, status, due_on)',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -8189,12 +11401,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     categories,
     transactions,
     budgets,
+    recurringRules,
+    recurringOccurrences,
+    inboxItems,
     outbox,
     syncCursors,
     syncFailures,
     settings,
     entriesBookDate,
-    transactionsAccountDate,
+    transactionsAccountFeed,
+    transactionsTransferGroup,
+    recurringOccurrencesDue,
   ];
 }
 
@@ -10753,6 +13970,8 @@ typedef $$TransactionsTableCreateCompanionBuilder =
       required String occurredOn,
       Value<String> note,
       Value<String> source,
+      Value<String> splits,
+      Value<String?> occurrenceId,
       Value<int> rowid,
     });
 typedef $$TransactionsTableUpdateCompanionBuilder =
@@ -10773,6 +13992,8 @@ typedef $$TransactionsTableUpdateCompanionBuilder =
       Value<String> occurredOn,
       Value<String> note,
       Value<String> source,
+      Value<String> splits,
+      Value<String?> occurrenceId,
       Value<int> rowid,
     });
 
@@ -10862,6 +14083,16 @@ class $$TransactionsTableFilterComposer
 
   ColumnFilters<String> get source => $composableBuilder(
     column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get splits => $composableBuilder(
+    column: $table.splits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get occurrenceId => $composableBuilder(
+    column: $table.occurrenceId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -10954,6 +14185,16 @@ class $$TransactionsTableOrderingComposer
     column: $table.source,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get splits => $composableBuilder(
+    column: $table.splits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get occurrenceId => $composableBuilder(
+    column: $table.occurrenceId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TransactionsTableAnnotationComposer
@@ -11022,6 +14263,14 @@ class $$TransactionsTableAnnotationComposer
 
   GeneratedColumn<String> get source =>
       $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get splits =>
+      $composableBuilder(column: $table.splits, builder: (column) => column);
+
+  GeneratedColumn<String> get occurrenceId => $composableBuilder(
+    column: $table.occurrenceId,
+    builder: (column) => column,
+  );
 }
 
 class $$TransactionsTableTableManager
@@ -11071,6 +14320,8 @@ class $$TransactionsTableTableManager
                 Value<String> occurredOn = const Value.absent(),
                 Value<String> note = const Value.absent(),
                 Value<String> source = const Value.absent(),
+                Value<String> splits = const Value.absent(),
+                Value<String?> occurrenceId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TransactionsCompanion(
                 id: id,
@@ -11089,6 +14340,8 @@ class $$TransactionsTableTableManager
                 occurredOn: occurredOn,
                 note: note,
                 source: source,
+                splits: splits,
+                occurrenceId: occurrenceId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -11109,6 +14362,8 @@ class $$TransactionsTableTableManager
                 required String occurredOn,
                 Value<String> note = const Value.absent(),
                 Value<String> source = const Value.absent(),
+                Value<String> splits = const Value.absent(),
+                Value<String?> occurrenceId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TransactionsCompanion.insert(
                 id: id,
@@ -11127,6 +14382,8 @@ class $$TransactionsTableTableManager
                 occurredOn: occurredOn,
                 note: note,
                 source: source,
+                splits: splits,
+                occurrenceId: occurrenceId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -11466,6 +14723,1422 @@ typedef $$BudgetsTableProcessedTableManager =
       $$BudgetsTableUpdateCompanionBuilder,
       (Budget, BaseReferences<_$AppDatabase, $BudgetsTable, Budget>),
       Budget,
+      PrefetchHooks Function()
+    >;
+typedef $$RecurringRulesTableCreateCompanionBuilder =
+    RecurringRulesCompanion Function({
+      required String id,
+      required String workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      required String createdAt,
+      required String updatedAt,
+      Value<String?> deletedAt,
+      required String kind,
+      Value<String> title,
+      Value<String?> accountId,
+      Value<String?> toAccountId,
+      Value<String?> categoryId,
+      Value<int?> amountMinor,
+      Value<String> currency,
+      Value<String> note,
+      Value<String> splits,
+      required String freq,
+      Value<int> interval,
+      Value<int> weekdayMask,
+      Value<int?> monthDay,
+      Value<int?> setPos,
+      Value<int> weekStart,
+      required String startOn,
+      Value<String?> endOn,
+      Value<int?> maxCount,
+      Value<String> mode,
+      Value<int> remindDaysBefore,
+      Value<String?> remindAt,
+      Value<bool> isPaused,
+      Value<String?> nextDueOn,
+      Value<int> doneCount,
+      Value<int> rowid,
+    });
+typedef $$RecurringRulesTableUpdateCompanionBuilder =
+    RecurringRulesCompanion Function({
+      Value<String> id,
+      Value<String> workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      Value<String> createdAt,
+      Value<String> updatedAt,
+      Value<String?> deletedAt,
+      Value<String> kind,
+      Value<String> title,
+      Value<String?> accountId,
+      Value<String?> toAccountId,
+      Value<String?> categoryId,
+      Value<int?> amountMinor,
+      Value<String> currency,
+      Value<String> note,
+      Value<String> splits,
+      Value<String> freq,
+      Value<int> interval,
+      Value<int> weekdayMask,
+      Value<int?> monthDay,
+      Value<int?> setPos,
+      Value<int> weekStart,
+      Value<String> startOn,
+      Value<String?> endOn,
+      Value<int?> maxCount,
+      Value<String> mode,
+      Value<int> remindDaysBefore,
+      Value<String?> remindAt,
+      Value<bool> isPaused,
+      Value<String?> nextDueOn,
+      Value<int> doneCount,
+      Value<int> rowid,
+    });
+
+class $$RecurringRulesTableFilterComposer
+    extends Composer<_$AppDatabase, $RecurringRulesTable> {
+  $$RecurringRulesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accountId => $composableBuilder(
+    column: $table.accountId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get toAccountId => $composableBuilder(
+    column: $table.toAccountId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amountMinor => $composableBuilder(
+    column: $table.amountMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currency => $composableBuilder(
+    column: $table.currency,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get splits => $composableBuilder(
+    column: $table.splits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get freq => $composableBuilder(
+    column: $table.freq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get interval => $composableBuilder(
+    column: $table.interval,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weekdayMask => $composableBuilder(
+    column: $table.weekdayMask,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get monthDay => $composableBuilder(
+    column: $table.monthDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get setPos => $composableBuilder(
+    column: $table.setPos,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weekStart => $composableBuilder(
+    column: $table.weekStart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get startOn => $composableBuilder(
+    column: $table.startOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get endOn => $composableBuilder(
+    column: $table.endOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxCount => $composableBuilder(
+    column: $table.maxCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mode => $composableBuilder(
+    column: $table.mode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get remindDaysBefore => $composableBuilder(
+    column: $table.remindDaysBefore,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remindAt => $composableBuilder(
+    column: $table.remindAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPaused => $composableBuilder(
+    column: $table.isPaused,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nextDueOn => $composableBuilder(
+    column: $table.nextDueOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get doneCount => $composableBuilder(
+    column: $table.doneCount,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RecurringRulesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RecurringRulesTable> {
+  $$RecurringRulesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accountId => $composableBuilder(
+    column: $table.accountId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get toAccountId => $composableBuilder(
+    column: $table.toAccountId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amountMinor => $composableBuilder(
+    column: $table.amountMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currency => $composableBuilder(
+    column: $table.currency,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get splits => $composableBuilder(
+    column: $table.splits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get freq => $composableBuilder(
+    column: $table.freq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get interval => $composableBuilder(
+    column: $table.interval,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weekdayMask => $composableBuilder(
+    column: $table.weekdayMask,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get monthDay => $composableBuilder(
+    column: $table.monthDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get setPos => $composableBuilder(
+    column: $table.setPos,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weekStart => $composableBuilder(
+    column: $table.weekStart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get startOn => $composableBuilder(
+    column: $table.startOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get endOn => $composableBuilder(
+    column: $table.endOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxCount => $composableBuilder(
+    column: $table.maxCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mode => $composableBuilder(
+    column: $table.mode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get remindDaysBefore => $composableBuilder(
+    column: $table.remindDaysBefore,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remindAt => $composableBuilder(
+    column: $table.remindAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPaused => $composableBuilder(
+    column: $table.isPaused,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nextDueOn => $composableBuilder(
+    column: $table.nextDueOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get doneCount => $composableBuilder(
+    column: $table.doneCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RecurringRulesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RecurringRulesTable> {
+  $$RecurringRulesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<int> get serverSeq =>
+      $composableBuilder(column: $table.serverSeq, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get accountId =>
+      $composableBuilder(column: $table.accountId, builder: (column) => column);
+
+  GeneratedColumn<String> get toAccountId => $composableBuilder(
+    column: $table.toAccountId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get amountMinor => $composableBuilder(
+    column: $table.amountMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currency =>
+      $composableBuilder(column: $table.currency, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<String> get splits =>
+      $composableBuilder(column: $table.splits, builder: (column) => column);
+
+  GeneratedColumn<String> get freq =>
+      $composableBuilder(column: $table.freq, builder: (column) => column);
+
+  GeneratedColumn<int> get interval =>
+      $composableBuilder(column: $table.interval, builder: (column) => column);
+
+  GeneratedColumn<int> get weekdayMask => $composableBuilder(
+    column: $table.weekdayMask,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get monthDay =>
+      $composableBuilder(column: $table.monthDay, builder: (column) => column);
+
+  GeneratedColumn<int> get setPos =>
+      $composableBuilder(column: $table.setPos, builder: (column) => column);
+
+  GeneratedColumn<int> get weekStart =>
+      $composableBuilder(column: $table.weekStart, builder: (column) => column);
+
+  GeneratedColumn<String> get startOn =>
+      $composableBuilder(column: $table.startOn, builder: (column) => column);
+
+  GeneratedColumn<String> get endOn =>
+      $composableBuilder(column: $table.endOn, builder: (column) => column);
+
+  GeneratedColumn<int> get maxCount =>
+      $composableBuilder(column: $table.maxCount, builder: (column) => column);
+
+  GeneratedColumn<String> get mode =>
+      $composableBuilder(column: $table.mode, builder: (column) => column);
+
+  GeneratedColumn<int> get remindDaysBefore => $composableBuilder(
+    column: $table.remindDaysBefore,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get remindAt =>
+      $composableBuilder(column: $table.remindAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isPaused =>
+      $composableBuilder(column: $table.isPaused, builder: (column) => column);
+
+  GeneratedColumn<String> get nextDueOn =>
+      $composableBuilder(column: $table.nextDueOn, builder: (column) => column);
+
+  GeneratedColumn<int> get doneCount =>
+      $composableBuilder(column: $table.doneCount, builder: (column) => column);
+}
+
+class $$RecurringRulesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RecurringRulesTable,
+          RecurringRule,
+          $$RecurringRulesTableFilterComposer,
+          $$RecurringRulesTableOrderingComposer,
+          $$RecurringRulesTableAnnotationComposer,
+          $$RecurringRulesTableCreateCompanionBuilder,
+          $$RecurringRulesTableUpdateCompanionBuilder,
+          (
+            RecurringRule,
+            BaseReferences<_$AppDatabase, $RecurringRulesTable, RecurringRule>,
+          ),
+          RecurringRule,
+          PrefetchHooks Function()
+        > {
+  $$RecurringRulesTableTableManager(
+    _$AppDatabase db,
+    $RecurringRulesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RecurringRulesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RecurringRulesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RecurringRulesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workspaceId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> updatedAt = const Value.absent(),
+                Value<String?> deletedAt = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> accountId = const Value.absent(),
+                Value<String?> toAccountId = const Value.absent(),
+                Value<String?> categoryId = const Value.absent(),
+                Value<int?> amountMinor = const Value.absent(),
+                Value<String> currency = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> splits = const Value.absent(),
+                Value<String> freq = const Value.absent(),
+                Value<int> interval = const Value.absent(),
+                Value<int> weekdayMask = const Value.absent(),
+                Value<int?> monthDay = const Value.absent(),
+                Value<int?> setPos = const Value.absent(),
+                Value<int> weekStart = const Value.absent(),
+                Value<String> startOn = const Value.absent(),
+                Value<String?> endOn = const Value.absent(),
+                Value<int?> maxCount = const Value.absent(),
+                Value<String> mode = const Value.absent(),
+                Value<int> remindDaysBefore = const Value.absent(),
+                Value<String?> remindAt = const Value.absent(),
+                Value<bool> isPaused = const Value.absent(),
+                Value<String?> nextDueOn = const Value.absent(),
+                Value<int> doneCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecurringRulesCompanion(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                kind: kind,
+                title: title,
+                accountId: accountId,
+                toAccountId: toAccountId,
+                categoryId: categoryId,
+                amountMinor: amountMinor,
+                currency: currency,
+                note: note,
+                splits: splits,
+                freq: freq,
+                interval: interval,
+                weekdayMask: weekdayMask,
+                monthDay: monthDay,
+                setPos: setPos,
+                weekStart: weekStart,
+                startOn: startOn,
+                endOn: endOn,
+                maxCount: maxCount,
+                mode: mode,
+                remindDaysBefore: remindDaysBefore,
+                remindAt: remindAt,
+                isPaused: isPaused,
+                nextDueOn: nextDueOn,
+                doneCount: doneCount,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workspaceId,
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                required String createdAt,
+                required String updatedAt,
+                Value<String?> deletedAt = const Value.absent(),
+                required String kind,
+                Value<String> title = const Value.absent(),
+                Value<String?> accountId = const Value.absent(),
+                Value<String?> toAccountId = const Value.absent(),
+                Value<String?> categoryId = const Value.absent(),
+                Value<int?> amountMinor = const Value.absent(),
+                Value<String> currency = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> splits = const Value.absent(),
+                required String freq,
+                Value<int> interval = const Value.absent(),
+                Value<int> weekdayMask = const Value.absent(),
+                Value<int?> monthDay = const Value.absent(),
+                Value<int?> setPos = const Value.absent(),
+                Value<int> weekStart = const Value.absent(),
+                required String startOn,
+                Value<String?> endOn = const Value.absent(),
+                Value<int?> maxCount = const Value.absent(),
+                Value<String> mode = const Value.absent(),
+                Value<int> remindDaysBefore = const Value.absent(),
+                Value<String?> remindAt = const Value.absent(),
+                Value<bool> isPaused = const Value.absent(),
+                Value<String?> nextDueOn = const Value.absent(),
+                Value<int> doneCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecurringRulesCompanion.insert(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                kind: kind,
+                title: title,
+                accountId: accountId,
+                toAccountId: toAccountId,
+                categoryId: categoryId,
+                amountMinor: amountMinor,
+                currency: currency,
+                note: note,
+                splits: splits,
+                freq: freq,
+                interval: interval,
+                weekdayMask: weekdayMask,
+                monthDay: monthDay,
+                setPos: setPos,
+                weekStart: weekStart,
+                startOn: startOn,
+                endOn: endOn,
+                maxCount: maxCount,
+                mode: mode,
+                remindDaysBefore: remindDaysBefore,
+                remindAt: remindAt,
+                isPaused: isPaused,
+                nextDueOn: nextDueOn,
+                doneCount: doneCount,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RecurringRulesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RecurringRulesTable,
+      RecurringRule,
+      $$RecurringRulesTableFilterComposer,
+      $$RecurringRulesTableOrderingComposer,
+      $$RecurringRulesTableAnnotationComposer,
+      $$RecurringRulesTableCreateCompanionBuilder,
+      $$RecurringRulesTableUpdateCompanionBuilder,
+      (
+        RecurringRule,
+        BaseReferences<_$AppDatabase, $RecurringRulesTable, RecurringRule>,
+      ),
+      RecurringRule,
+      PrefetchHooks Function()
+    >;
+typedef $$RecurringOccurrencesTableCreateCompanionBuilder =
+    RecurringOccurrencesCompanion Function({
+      required String id,
+      required String workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      required String createdAt,
+      required String updatedAt,
+      Value<String?> deletedAt,
+      required String ruleId,
+      required String dueOn,
+      required String status,
+      Value<String?> snoozedUntil,
+      Value<int> rowid,
+    });
+typedef $$RecurringOccurrencesTableUpdateCompanionBuilder =
+    RecurringOccurrencesCompanion Function({
+      Value<String> id,
+      Value<String> workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      Value<String> createdAt,
+      Value<String> updatedAt,
+      Value<String?> deletedAt,
+      Value<String> ruleId,
+      Value<String> dueOn,
+      Value<String> status,
+      Value<String?> snoozedUntil,
+      Value<int> rowid,
+    });
+
+class $$RecurringOccurrencesTableFilterComposer
+    extends Composer<_$AppDatabase, $RecurringOccurrencesTable> {
+  $$RecurringOccurrencesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ruleId => $composableBuilder(
+    column: $table.ruleId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dueOn => $composableBuilder(
+    column: $table.dueOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get snoozedUntil => $composableBuilder(
+    column: $table.snoozedUntil,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RecurringOccurrencesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RecurringOccurrencesTable> {
+  $$RecurringOccurrencesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ruleId => $composableBuilder(
+    column: $table.ruleId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dueOn => $composableBuilder(
+    column: $table.dueOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get snoozedUntil => $composableBuilder(
+    column: $table.snoozedUntil,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RecurringOccurrencesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RecurringOccurrencesTable> {
+  $$RecurringOccurrencesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<int> get serverSeq =>
+      $composableBuilder(column: $table.serverSeq, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get ruleId =>
+      $composableBuilder(column: $table.ruleId, builder: (column) => column);
+
+  GeneratedColumn<String> get dueOn =>
+      $composableBuilder(column: $table.dueOn, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get snoozedUntil => $composableBuilder(
+    column: $table.snoozedUntil,
+    builder: (column) => column,
+  );
+}
+
+class $$RecurringOccurrencesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RecurringOccurrencesTable,
+          RecurringOccurrence,
+          $$RecurringOccurrencesTableFilterComposer,
+          $$RecurringOccurrencesTableOrderingComposer,
+          $$RecurringOccurrencesTableAnnotationComposer,
+          $$RecurringOccurrencesTableCreateCompanionBuilder,
+          $$RecurringOccurrencesTableUpdateCompanionBuilder,
+          (
+            RecurringOccurrence,
+            BaseReferences<
+              _$AppDatabase,
+              $RecurringOccurrencesTable,
+              RecurringOccurrence
+            >,
+          ),
+          RecurringOccurrence,
+          PrefetchHooks Function()
+        > {
+  $$RecurringOccurrencesTableTableManager(
+    _$AppDatabase db,
+    $RecurringOccurrencesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RecurringOccurrencesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RecurringOccurrencesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$RecurringOccurrencesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workspaceId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> updatedAt = const Value.absent(),
+                Value<String?> deletedAt = const Value.absent(),
+                Value<String> ruleId = const Value.absent(),
+                Value<String> dueOn = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> snoozedUntil = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecurringOccurrencesCompanion(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                ruleId: ruleId,
+                dueOn: dueOn,
+                status: status,
+                snoozedUntil: snoozedUntil,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workspaceId,
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                required String createdAt,
+                required String updatedAt,
+                Value<String?> deletedAt = const Value.absent(),
+                required String ruleId,
+                required String dueOn,
+                required String status,
+                Value<String?> snoozedUntil = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecurringOccurrencesCompanion.insert(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                ruleId: ruleId,
+                dueOn: dueOn,
+                status: status,
+                snoozedUntil: snoozedUntil,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RecurringOccurrencesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RecurringOccurrencesTable,
+      RecurringOccurrence,
+      $$RecurringOccurrencesTableFilterComposer,
+      $$RecurringOccurrencesTableOrderingComposer,
+      $$RecurringOccurrencesTableAnnotationComposer,
+      $$RecurringOccurrencesTableCreateCompanionBuilder,
+      $$RecurringOccurrencesTableUpdateCompanionBuilder,
+      (
+        RecurringOccurrence,
+        BaseReferences<
+          _$AppDatabase,
+          $RecurringOccurrencesTable,
+          RecurringOccurrence
+        >,
+      ),
+      RecurringOccurrence,
+      PrefetchHooks Function()
+    >;
+typedef $$InboxItemsTableCreateCompanionBuilder =
+    InboxItemsCompanion Function({
+      required String id,
+      required String workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      required String createdAt,
+      required String updatedAt,
+      Value<String?> deletedAt,
+      required String type,
+      Value<String> params,
+      Value<String> subjectTable,
+      Value<String?> subjectId,
+      Value<String> dedupeKey,
+      Value<String?> readAt,
+      Value<String?> resolvedAt,
+      Value<int> rowid,
+    });
+typedef $$InboxItemsTableUpdateCompanionBuilder =
+    InboxItemsCompanion Function({
+      Value<String> id,
+      Value<String> workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      Value<String> createdAt,
+      Value<String> updatedAt,
+      Value<String?> deletedAt,
+      Value<String> type,
+      Value<String> params,
+      Value<String> subjectTable,
+      Value<String?> subjectId,
+      Value<String> dedupeKey,
+      Value<String?> readAt,
+      Value<String?> resolvedAt,
+      Value<int> rowid,
+    });
+
+class $$InboxItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $InboxItemsTable> {
+  $$InboxItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get params => $composableBuilder(
+    column: $table.params,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subjectTable => $composableBuilder(
+    column: $table.subjectTable,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subjectId => $composableBuilder(
+    column: $table.subjectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dedupeKey => $composableBuilder(
+    column: $table.dedupeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get readAt => $composableBuilder(
+    column: $table.readAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get resolvedAt => $composableBuilder(
+    column: $table.resolvedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$InboxItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $InboxItemsTable> {
+  $$InboxItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get params => $composableBuilder(
+    column: $table.params,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subjectTable => $composableBuilder(
+    column: $table.subjectTable,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subjectId => $composableBuilder(
+    column: $table.subjectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dedupeKey => $composableBuilder(
+    column: $table.dedupeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get readAt => $composableBuilder(
+    column: $table.readAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get resolvedAt => $composableBuilder(
+    column: $table.resolvedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$InboxItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $InboxItemsTable> {
+  $$InboxItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<int> get serverSeq =>
+      $composableBuilder(column: $table.serverSeq, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get params =>
+      $composableBuilder(column: $table.params, builder: (column) => column);
+
+  GeneratedColumn<String> get subjectTable => $composableBuilder(
+    column: $table.subjectTable,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get subjectId =>
+      $composableBuilder(column: $table.subjectId, builder: (column) => column);
+
+  GeneratedColumn<String> get dedupeKey =>
+      $composableBuilder(column: $table.dedupeKey, builder: (column) => column);
+
+  GeneratedColumn<String> get readAt =>
+      $composableBuilder(column: $table.readAt, builder: (column) => column);
+
+  GeneratedColumn<String> get resolvedAt => $composableBuilder(
+    column: $table.resolvedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$InboxItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $InboxItemsTable,
+          InboxItem,
+          $$InboxItemsTableFilterComposer,
+          $$InboxItemsTableOrderingComposer,
+          $$InboxItemsTableAnnotationComposer,
+          $$InboxItemsTableCreateCompanionBuilder,
+          $$InboxItemsTableUpdateCompanionBuilder,
+          (
+            InboxItem,
+            BaseReferences<_$AppDatabase, $InboxItemsTable, InboxItem>,
+          ),
+          InboxItem,
+          PrefetchHooks Function()
+        > {
+  $$InboxItemsTableTableManager(_$AppDatabase db, $InboxItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$InboxItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$InboxItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$InboxItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workspaceId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> updatedAt = const Value.absent(),
+                Value<String?> deletedAt = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> params = const Value.absent(),
+                Value<String> subjectTable = const Value.absent(),
+                Value<String?> subjectId = const Value.absent(),
+                Value<String> dedupeKey = const Value.absent(),
+                Value<String?> readAt = const Value.absent(),
+                Value<String?> resolvedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => InboxItemsCompanion(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                type: type,
+                params: params,
+                subjectTable: subjectTable,
+                subjectId: subjectId,
+                dedupeKey: dedupeKey,
+                readAt: readAt,
+                resolvedAt: resolvedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workspaceId,
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                required String createdAt,
+                required String updatedAt,
+                Value<String?> deletedAt = const Value.absent(),
+                required String type,
+                Value<String> params = const Value.absent(),
+                Value<String> subjectTable = const Value.absent(),
+                Value<String?> subjectId = const Value.absent(),
+                Value<String> dedupeKey = const Value.absent(),
+                Value<String?> readAt = const Value.absent(),
+                Value<String?> resolvedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => InboxItemsCompanion.insert(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                type: type,
+                params: params,
+                subjectTable: subjectTable,
+                subjectId: subjectId,
+                dedupeKey: dedupeKey,
+                readAt: readAt,
+                resolvedAt: resolvedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$InboxItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $InboxItemsTable,
+      InboxItem,
+      $$InboxItemsTableFilterComposer,
+      $$InboxItemsTableOrderingComposer,
+      $$InboxItemsTableAnnotationComposer,
+      $$InboxItemsTableCreateCompanionBuilder,
+      $$InboxItemsTableUpdateCompanionBuilder,
+      (InboxItem, BaseReferences<_$AppDatabase, $InboxItemsTable, InboxItem>),
+      InboxItem,
       PrefetchHooks Function()
     >;
 typedef $$OutboxTableCreateCompanionBuilder =
@@ -12217,6 +16890,12 @@ class $AppDatabaseManager {
       $$TransactionsTableTableManager(_db, _db.transactions);
   $$BudgetsTableTableManager get budgets =>
       $$BudgetsTableTableManager(_db, _db.budgets);
+  $$RecurringRulesTableTableManager get recurringRules =>
+      $$RecurringRulesTableTableManager(_db, _db.recurringRules);
+  $$RecurringOccurrencesTableTableManager get recurringOccurrences =>
+      $$RecurringOccurrencesTableTableManager(_db, _db.recurringOccurrences);
+  $$InboxItemsTableTableManager get inboxItems =>
+      $$InboxItemsTableTableManager(_db, _db.inboxItems);
   $$OutboxTableTableManager get outbox =>
       $$OutboxTableTableManager(_db, _db.outbox);
   $$SyncCursorsTableTableManager get syncCursors =>

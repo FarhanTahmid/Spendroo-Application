@@ -5,14 +5,19 @@ import 'package:go_router/go_router.dart';
 
 import 'core/auth/auth_repository.dart';
 import 'core/providers.dart';
+import 'core/push/push_controller.dart';
 import 'core/ui.dart';
 import 'features/auth/auth_pages.dart';
 import 'features/cashbook/cashbook_pages.dart';
 import 'features/onboarding/onboarding_page.dart';
+import 'features/personal/account_page.dart';
 import 'features/personal/categories_page.dart';
 import 'features/plan/keep_page.dart';
 import 'features/plan/plan_page.dart';
 import 'features/profile/profile_page.dart';
+import 'features/recurring/inbox.dart';
+import 'features/recurring/recurring_pages.dart';
+import 'features/settings/notification_settings_page.dart';
 import 'features/settings/settings_page.dart';
 import 'features/shell/home_shell.dart';
 import 'l10n/app_localizations.dart';
@@ -61,14 +66,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/reset', builder: (_, _) => const ResetPasswordPage()),
       GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingPage()),
       GoRoute(path: '/', builder: (_, _) => const HomeShell()),
-      GoRoute(path: '/settings', builder: (_, _) => const SettingsPage()),
+      GoRoute(
+        path: '/settings',
+        builder: (_, _) => const SettingsPage(),
+        routes: [GoRoute(path: 'notifications', builder: (_, _) => const NotificationSettingsPage())],
+      ),
       GoRoute(path: '/profile', builder: (_, _) => const ProfilePage()),
       GoRoute(path: '/categories', builder: (_, _) => const CategoriesPage()),
+      GoRoute(path: '/recurring', builder: (_, _) => const RecurringPage()),
+      GoRoute(path: '/inbox', builder: (_, _) => const InboxPage()),
       GoRoute(
         path: '/plan',
         builder: (_, _) => const PlanPage(),
         routes: [GoRoute(path: 'keep', builder: (_, _) => const KeepPage())],
       ),
+      GoRoute(path: '/account/:id', builder: (_, state) => AccountPage(accountId: state.pathParameters['id']!)),
       GoRoute(
         path: '/cashbook/:id',
         builder: (_, state) => CashbookPage(bookId: state.pathParameters['id']!),
@@ -120,6 +132,24 @@ class SpendrooApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Keeps the sync timer alive for as long as the app is open
     ref.watch(syncControllerProvider);
+    // Registers this phone for push while someone is signed in
+    ref.watch(pushControllerProvider);
+    final router = ref.watch(routerProvider);
+
+    // A tapped notification opens its screen, once the app knows who is signed in
+    void follow() {
+      final route = ref.read(pushRouteProvider);
+      if (route == null) return;
+      if (ref.read(authControllerProvider).step != AuthStep.signedIn || ref.read(onboardedProvider) != true) return;
+      ref.read(pushRouteProvider.notifier).done();
+      // From home, so going back leads somewhere
+      router.go('/');
+      if (route != '/') WidgetsBinding.instance.addPostFrameCallback((_) => router.push(route));
+    }
+
+    ref.listen(pushRouteProvider, (_, _) => follow());
+    ref.listen(authControllerProvider, (_, _) => follow());
+    ref.listen(onboardedProvider, (_, _) => follow());
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       debugShowCheckedModeBanner: false,
@@ -134,7 +164,7 @@ class SpendrooApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routerConfig: ref.watch(routerProvider),
+      routerConfig: router,
       // Above every route and sheet, so the amount keypad can sit under all of them
       builder: (context, child) => AmountKeypadHost(child: child!),
     );

@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Continue with Google'**
   String get continueWithGoogle;
 
+  /// No description provided for @googleSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sign in with Google. Try again.'**
+  String get googleSignInFailed;
+
   /// No description provided for @tagline.
   ///
   /// In en, this message translates to:
@@ -1082,6 +1088,12 @@ abstract class AppLocalizations {
   /// **'Net'**
   String get net;
 
+  /// No description provided for @netRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Net remaining balance'**
+  String get netRemaining;
+
   /// No description provided for @lastSixMonths.
   ///
   /// In en, this message translates to:
@@ -1105,6 +1117,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account balances'**
   String get accountBalances;
+
+  /// No description provided for @shareOfTotalBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentages show each account’s share of the total balance.'**
+  String get shareOfTotalBalance;
 
   /// No description provided for @server.
   ///
@@ -1721,13 +1739,13 @@ abstract class AppLocalizations {
   /// No description provided for @featureReportRange.
   ///
   /// In en, this message translates to:
-  /// **'Reports for any dates'**
+  /// **'Custom reports: any dates, types and categories'**
   String get featureReportRange;
 
   /// No description provided for @featureReportExport.
   ///
   /// In en, this message translates to:
-  /// **'Reports as PDF and Excel'**
+  /// **'Reports as Excel'**
   String get featureReportExport;
 
   /// No description provided for @featureAuditTrail.
@@ -1933,6 +1951,1554 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show less'**
   String get showLess;
+
+  /// No description provided for @currentBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Current balance'**
+  String get currentBalance;
+
+  /// No description provided for @periodLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last month'**
+  String get periodLastMonth;
+
+  /// No description provided for @periodLast3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'3 months'**
+  String get periodLast3Months;
+
+  /// No description provided for @periodThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get periodThisYear;
+
+  /// No description provided for @periodAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get periodAllTime;
+
+  /// No description provided for @periodCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get periodCustom;
+
+  /// No description provided for @filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// No description provided for @applyFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get applyFilters;
+
+  /// No description provided for @resetFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get resetFilters;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get clearFilters;
+
+  /// No description provided for @insights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get insights;
+
+  /// No description provided for @transfersIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfers in'**
+  String get transfersIn;
+
+  /// No description provided for @transfersOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfers out'**
+  String get transfersOut;
+
+  /// No description provided for @transferTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To {account}'**
+  String transferTo(String account);
+
+  /// No description provided for @transferFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {account}'**
+  String transferFrom(String account);
+
+  /// No description provided for @closingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing balance'**
+  String get closingBalance;
+
+  /// No description provided for @balanceOverTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance over time'**
+  String get balanceOverTime;
+
+  /// No description provided for @cashInAndOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in and out'**
+  String get cashInAndOut;
+
+  /// No description provided for @whereItWent.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it went'**
+  String get whereItWent;
+
+  /// No description provided for @whereItCameFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it came from'**
+  String get whereItCameFrom;
+
+  /// No description provided for @averagePerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Average per day'**
+  String get averagePerDay;
+
+  /// No description provided for @largestExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Largest expense'**
+  String get largestExpense;
+
+  /// No description provided for @accountGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is no longer here.'**
+  String get accountGone;
+
+  /// No description provided for @nothingInPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in this period.'**
+  String get nothingInPeriod;
+
+  /// No description provided for @inAndOutDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'In and out, in detail'**
+  String get inAndOutDetails;
+
+  /// No description provided for @reportDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download report'**
+  String get reportDownload;
+
+  /// No description provided for @reportTitlePersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal report'**
+  String get reportTitlePersonal;
+
+  /// No description provided for @reportTitleAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account statement'**
+  String get reportTitleAccount;
+
+  /// No description provided for @reportTitleCashbook.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashbook report'**
+  String get reportTitleCashbook;
+
+  /// No description provided for @reportTitleBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business report'**
+  String get reportTitleBusiness;
+
+  /// No description provided for @reportCoversPersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'All your personal accounts together.'**
+  String get reportCoversPersonal;
+
+  /// No description provided for @reportCoversAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the account {name}.'**
+  String reportCoversAccount(String name);
+
+  /// No description provided for @reportCoversCashbook.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the cashbook {name}.'**
+  String reportCoversCashbook(String name);
+
+  /// No description provided for @reportCoversBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Every cashbook of {name} together.'**
+  String reportCoversBusiness(String name);
+
+  /// No description provided for @reportInside.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s inside'**
+  String get reportInside;
+
+  /// No description provided for @reportInsidePersonal1.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening and closing balance of every account'**
+  String get reportInsidePersonal1;
+
+  /// No description provided for @reportInsidePersonal2.
+  ///
+  /// In en, this message translates to:
+  /// **'Income and spending by category'**
+  String get reportInsidePersonal2;
+
+  /// No description provided for @reportInsidePersonal3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every transaction, with transfers listed on their own'**
+  String get reportInsidePersonal3;
+
+  /// No description provided for @reportInsideAccount1.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening and closing balance'**
+  String get reportInsideAccount1;
+
+  /// No description provided for @reportInsideAccount2.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending and income by category'**
+  String get reportInsideAccount2;
+
+  /// No description provided for @reportInsideAccount3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every transaction, with the balance after it'**
+  String get reportInsideAccount3;
+
+  /// No description provided for @reportInsideCashbook1.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening and closing balance'**
+  String get reportInsideCashbook1;
+
+  /// No description provided for @reportInsideCashbook2.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals by category and by payment method'**
+  String get reportInsideCashbook2;
+
+  /// No description provided for @reportInsideCashbook3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every entry, with the balance after it'**
+  String get reportInsideCashbook3;
+
+  /// No description provided for @reportInsideBusiness1.
+  ///
+  /// In en, this message translates to:
+  /// **'Your cashbooks side by side'**
+  String get reportInsideBusiness1;
+
+  /// No description provided for @reportInsideBusiness2.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals by category and by payment method'**
+  String get reportInsideBusiness2;
+
+  /// No description provided for @reportInsideBusiness3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every entry of every cashbook'**
+  String get reportInsideBusiness3;
+
+  /// No description provided for @reportPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get reportPeriod;
+
+  /// No description provided for @reportFileType.
+  ///
+  /// In en, this message translates to:
+  /// **'File type'**
+  String get reportFileType;
+
+  /// No description provided for @reportPdfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to read, print or share'**
+  String get reportPdfHint;
+
+  /// No description provided for @reportExcelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A spreadsheet you can sort and add up'**
+  String get reportExcelHint;
+
+  /// No description provided for @reportFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get reportFree;
+
+  /// No description provided for @reportPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid plan'**
+  String get reportPaid;
+
+  /// No description provided for @reportDownloadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get reportDownloadPdf;
+
+  /// No description provided for @reportDownloadExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Excel'**
+  String get reportDownloadExcel;
+
+  /// No description provided for @reportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Made online from everything you have saved.'**
+  String get reportHint;
+
+  /// No description provided for @reportOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet to download a report.'**
+  String get reportOffline;
+
+  /// No description provided for @reportTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'This period has too many lines for one file (up to {limit}). Choose a shorter period.'**
+  String reportTooLarge(int limit);
+
+  /// No description provided for @reportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The report could not be made. Try again.'**
+  String get reportFailed;
+
+  /// No description provided for @reportThrottled.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many downloads. Try again in a little while.'**
+  String get reportThrottled;
+
+  /// No description provided for @reportReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Your report is ready'**
+  String get reportReady;
+
+  /// No description provided for @reportReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference {reference}'**
+  String reportReference(String reference);
+
+  /// No description provided for @reportOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get reportOpen;
+
+  /// No description provided for @reportShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get reportShare;
+
+  /// No description provided for @reportNoApp.
+  ///
+  /// In en, this message translates to:
+  /// **'No app on this phone can open this file. Use Share or save.'**
+  String get reportNoApp;
+
+  /// No description provided for @reportAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Download another'**
+  String get reportAnother;
+
+  /// No description provided for @reportCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom report'**
+  String get reportCustomTitle;
+
+  /// No description provided for @reportCustomDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get reportCustomDates;
+
+  /// No description provided for @reportCustomTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get reportCustomTypes;
+
+  /// No description provided for @reportCustomAllHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose none to include all.'**
+  String get reportCustomAllHint;
+
+  /// No description provided for @reportCustomNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A filtered report adds up only the lines that match. It shows money in, money out and the difference, without opening or closing balances.'**
+  String get reportCustomNote;
+
+  /// No description provided for @reportSavedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on your phone in {folder}'**
+  String reportSavedTo(String folder);
+
+  /// No description provided for @reportNotSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone has no Downloads folder the app can save to. Use Share to keep a copy.'**
+  String get reportNotSaved;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @savedPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {percent}%'**
+  String savedPercent(String percent);
+
+  /// No description provided for @spendingPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending pace'**
+  String get spendingPace;
+
+  /// No description provided for @spentSoFar.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} spent'**
+  String spentSoFar(String amount);
+
+  /// No description provided for @paceLess.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} less than at this point the month before'**
+  String paceLess(String amount);
+
+  /// No description provided for @paceMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} more than at this point the month before'**
+  String paceMore(String amount);
+
+  /// No description provided for @dailyAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily average'**
+  String get dailyAverage;
+
+  /// No description provided for @monthEndForecast.
+  ///
+  /// In en, this message translates to:
+  /// **'By month end'**
+  String get monthEndForecast;
+
+  /// No description provided for @biggestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest day'**
+  String get biggestDay;
+
+  /// No description provided for @noSpendDays.
+  ///
+  /// In en, this message translates to:
+  /// **'No-spend days'**
+  String get noSpendDays;
+
+  /// No description provided for @budgetEvenPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget, spread evenly'**
+  String get budgetEvenPace;
+
+  /// No description provided for @thatDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} that day'**
+  String thatDay(String amount);
+
+  /// No description provided for @soFar.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} so far'**
+  String soFar(String amount);
+
+  /// No description provided for @tapDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a day to see its transactions'**
+  String get tapDayHint;
+
+  /// No description provided for @budgetHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget health'**
+  String get budgetHealth;
+
+  /// No description provided for @percentUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% used'**
+  String percentUsed(String percent);
+
+  /// No description provided for @usedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'used'**
+  String get usedLabel;
+
+  /// No description provided for @safePerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe per day'**
+  String get safePerDay;
+
+  /// No description provided for @daysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Days left'**
+  String get daysLeft;
+
+  /// No description provided for @keepsWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a day keeps you within it'**
+  String keepsWithin(String amount);
+
+  /// No description provided for @keepsWithinBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a day keeps you within budget this month'**
+  String keepsWithinBudget(String amount);
+
+  /// No description provided for @allBudgets.
+  ///
+  /// In en, this message translates to:
+  /// **'All budgets'**
+  String get allBudgets;
+
+  /// No description provided for @spentShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent · {percent}%'**
+  String spentShare(String percent);
+
+  /// No description provided for @leftShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Left · {percent}%'**
+  String leftShare(String percent);
+
+  /// No description provided for @overShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Over · {percent}%'**
+  String overShare(String percent);
+
+  /// No description provided for @limitAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit {amount}'**
+  String limitAmount(String amount);
+
+  /// No description provided for @verdictOnTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'On track. Spending is behind the calendar.'**
+  String get verdictOnTrack;
+
+  /// No description provided for @verdictAhead.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending is running ahead of the calendar.'**
+  String get verdictAhead;
+
+  /// No description provided for @verdictWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'You stayed within the budget.'**
+  String get verdictWithin;
+
+  /// No description provided for @legendWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'Within allowance'**
+  String get legendWithin;
+
+  /// No description provided for @legendNear.
+  ///
+  /// In en, this message translates to:
+  /// **'A little over'**
+  String get legendNear;
+
+  /// No description provided for @legendOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Far over'**
+  String get legendOver;
+
+  /// No description provided for @notBudgeted.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit set'**
+  String get notBudgeted;
+
+  /// No description provided for @setLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Set limit'**
+  String get setLimit;
+
+  /// No description provided for @dayByDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day by day'**
+  String get dayByDay;
+
+  /// No description provided for @seeTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'See transactions'**
+  String get seeTransactions;
+
+  /// No description provided for @noTransactionsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded here.'**
+  String get noTransactionsHere;
+
+  /// No description provided for @cashFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash flow'**
+  String get cashFlow;
+
+  /// No description provided for @savedInMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'Income beat spending in {saved} of {months} months.'**
+  String savedInMonths(String saved, String months);
+
+  /// No description provided for @tapMonthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a month for details'**
+  String get tapMonthHint;
+
+  /// No description provided for @goToMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to {month}'**
+  String goToMonth(String month);
+
+  /// No description provided for @keptOfIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of income kept'**
+  String keptOfIncome(String percent);
+
+  /// No description provided for @spentMoreThanEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent more than came in'**
+  String get spentMoreThanEarned;
+
+  /// No description provided for @splitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Split'**
+  String get splitTitle;
+
+  /// No description provided for @splitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Split into categories'**
+  String get splitAction;
+
+  /// No description provided for @splitRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove split'**
+  String get splitRemove;
+
+  /// No description provided for @splitAddPart.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a part'**
+  String get splitAddPart;
+
+  /// No description provided for @splitEvenly.
+  ///
+  /// In en, this message translates to:
+  /// **'Share equally'**
+  String get splitEvenly;
+
+  /// No description provided for @splitDone.
+  ///
+  /// In en, this message translates to:
+  /// **'All of it is filed'**
+  String get splitDone;
+
+  /// No description provided for @splitLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} left to file'**
+  String splitLeft(String amount);
+
+  /// No description provided for @splitOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} more than the amount'**
+  String splitOver(String amount);
+
+  /// No description provided for @splitMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The parts must add up to {amount}.'**
+  String splitMismatch(String amount);
+
+  /// No description provided for @splitNeedsAmounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Give every part an amount.'**
+  String get splitNeedsAmounts;
+
+  /// No description provided for @splitInParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Split in {count}'**
+  String splitInParts(String count);
+
+  /// No description provided for @recurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get recurring;
+
+  /// No description provided for @recurringEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing repeats yet. Rent, salary, a bill: set it once and it comes round by itself.'**
+  String get recurringEmpty;
+
+  /// No description provided for @newRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring transaction'**
+  String get newRecurring;
+
+  /// No description provided for @newReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get newReminder;
+
+  /// No description provided for @editRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit recurring transaction'**
+  String get editRecurring;
+
+  /// No description provided for @editReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit reminder'**
+  String get editReminder;
+
+  /// No description provided for @repeatThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Make this repeat'**
+  String get repeatThis;
+
+  /// No description provided for @ruleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get ruleTitle;
+
+  /// No description provided for @ruleTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it a title.'**
+  String get ruleTitleRequired;
+
+  /// No description provided for @repeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats'**
+  String get repeats;
+
+  /// No description provided for @freqOptOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Does not repeat'**
+  String get freqOptOnce;
+
+  /// No description provided for @freqOptDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get freqOptDaily;
+
+  /// No description provided for @freqOptWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get freqOptWeekly;
+
+  /// No description provided for @freqOptMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get freqOptMonthly;
+
+  /// No description provided for @freqOptYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get freqOptYearly;
+
+  /// No description provided for @repeatEvery.
+  ///
+  /// In en, this message translates to:
+  /// **'Every'**
+  String get repeatEvery;
+
+  /// No description provided for @unitDays.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get unitDays;
+
+  /// No description provided for @unitWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'weeks'**
+  String get unitWeeks;
+
+  /// No description provided for @unitMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'months'**
+  String get unitMonths;
+
+  /// No description provided for @unitYears.
+  ///
+  /// In en, this message translates to:
+  /// **'years'**
+  String get unitYears;
+
+  /// No description provided for @freqOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get freqOnce;
+
+  /// No description provided for @freqDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get freqDaily;
+
+  /// No description provided for @freqDailyN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} days'**
+  String freqDailyN(String n);
+
+  /// No description provided for @freqWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every week'**
+  String get freqWeekly;
+
+  /// No description provided for @freqWeeklyN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} weeks'**
+  String freqWeeklyN(String n);
+
+  /// No description provided for @freqMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every month'**
+  String get freqMonthly;
+
+  /// No description provided for @freqMonthlyN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} months'**
+  String freqMonthlyN(String n);
+
+  /// No description provided for @freqYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every year'**
+  String get freqYearly;
+
+  /// No description provided for @freqYearlyN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} years'**
+  String freqYearlyN(String n);
+
+  /// No description provided for @monthlyOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Falls on'**
+  String get monthlyOn;
+
+  /// No description provided for @onDayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {n}'**
+  String onDayOfMonth(String n);
+
+  /// No description provided for @onLastDay.
+  ///
+  /// In en, this message translates to:
+  /// **'The last day'**
+  String get onLastDay;
+
+  /// No description provided for @onWeekdayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'A weekday of the month'**
+  String get onWeekdayOfMonth;
+
+  /// No description provided for @theNthWeekday.
+  ///
+  /// In en, this message translates to:
+  /// **'The {ordinal} {weekday}'**
+  String theNthWeekday(String ordinal, String weekday);
+
+  /// No description provided for @whichOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Which'**
+  String get whichOne;
+
+  /// No description provided for @weekday.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekday'**
+  String get weekday;
+
+  /// No description provided for @ordinalFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'first'**
+  String get ordinalFirst;
+
+  /// No description provided for @ordinalSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'second'**
+  String get ordinalSecond;
+
+  /// No description provided for @ordinalThird.
+  ///
+  /// In en, this message translates to:
+  /// **'third'**
+  String get ordinalThird;
+
+  /// No description provided for @ordinalFourth.
+  ///
+  /// In en, this message translates to:
+  /// **'fourth'**
+  String get ordinalFourth;
+
+  /// No description provided for @ordinalLast.
+  ///
+  /// In en, this message translates to:
+  /// **'last'**
+  String get ordinalLast;
+
+  /// No description provided for @startsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts on'**
+  String get startsOn;
+
+  /// No description provided for @ends.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends'**
+  String get ends;
+
+  /// No description provided for @endsNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get endsNever;
+
+  /// No description provided for @endsOnDate.
+  ///
+  /// In en, this message translates to:
+  /// **'On a date'**
+  String get endsOnDate;
+
+  /// No description provided for @endsAfterTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'After a number of times'**
+  String get endsAfterTimes;
+
+  /// No description provided for @endsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends on'**
+  String get endsOn;
+
+  /// No description provided for @timesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times'**
+  String get timesCount;
+
+  /// No description provided for @numberRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number above zero.'**
+  String get numberRequired;
+
+  /// No description provided for @nextDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {dates}'**
+  String nextDates(String dates);
+
+  /// No description provided for @noMoreDates.
+  ///
+  /// In en, this message translates to:
+  /// **'No date falls on this schedule.'**
+  String get noMoreDates;
+
+  /// No description provided for @recordAutomatically.
+  ///
+  /// In en, this message translates to:
+  /// **'Record automatically'**
+  String get recordAutomatically;
+
+  /// No description provided for @recordAutomaticallyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Without it you are asked first, and can change the amount.'**
+  String get recordAutomaticallyHint;
+
+  /// No description provided for @remindMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me'**
+  String get remindMe;
+
+  /// No description provided for @remindOnTheDay.
+  ///
+  /// In en, this message translates to:
+  /// **'On the day'**
+  String get remindOnTheDay;
+
+  /// No description provided for @remindDayBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'The day before'**
+  String get remindDayBefore;
+
+  /// No description provided for @remindDaysBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days before'**
+  String remindDaysBefore(String n);
+
+  /// No description provided for @remindAt.
+  ///
+  /// In en, this message translates to:
+  /// **'At'**
+  String get remindAt;
+
+  /// No description provided for @usualTime.
+  ///
+  /// In en, this message translates to:
+  /// **'The usual time'**
+  String get usualTime;
+
+  /// No description provided for @paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get paused;
+
+  /// No description provided for @pausedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing falls due while it is paused.'**
+  String get pausedHint;
+
+  /// No description provided for @ended.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get ended;
+
+  /// No description provided for @nextOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {date}'**
+  String nextOn(String date);
+
+  /// No description provided for @dueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Due {date}'**
+  String dueOn(String date);
+
+  /// No description provided for @waitingForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get waitingForYou;
+
+  /// No description provided for @comingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming up'**
+  String get comingUp;
+
+  /// No description provided for @everythingThatRepeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything that repeats'**
+  String get everythingThatRepeats;
+
+  /// No description provided for @recordIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get recordIt;
+
+  /// No description provided for @skipIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skipIt;
+
+  /// No description provided for @laterIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get laterIt;
+
+  /// No description provided for @doneIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get doneIt;
+
+  /// No description provided for @snoozeTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get snoozeTomorrow;
+
+  /// No description provided for @snoozeThreeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'In 3 days'**
+  String get snoozeThreeDays;
+
+  /// No description provided for @snoozeWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'In a week'**
+  String get snoozeWeek;
+
+  /// No description provided for @deleteRuleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this? What it has already recorded stays.'**
+  String get deleteRuleConfirm;
+
+  /// No description provided for @recordsItself.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded automatically'**
+  String get recordsItself;
+
+  /// No description provided for @asksFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks first'**
+  String get asksFirst;
+
+  /// No description provided for @weekStartsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Week starts on'**
+  String get weekStartsOn;
+
+  /// No description provided for @splitKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Split in {count}, as in the transaction'**
+  String splitKept(String count);
+
+  /// No description provided for @featureReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get featureReminders;
+
+  /// No description provided for @limitReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {plan} plan allows {limit, plural, =1{1 reminder} other{{limit} reminders}} at a time.'**
+  String limitReminders(String plan, int limit);
+
+  /// No description provided for @seeAllRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAllRecurring;
+
+  /// No description provided for @addRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addRecurring;
+
+  /// No description provided for @inbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get inbox;
+
+  /// No description provided for @inboxEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to tell you yet. What falls due, what was recorded for you and how your budgets are doing will show up here.'**
+  String get inboxEmpty;
+
+  /// No description provided for @inboxEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get inboxEarlier;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @inboxUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is due in {days} days'**
+  String inboxUpcoming(String title, String days);
+
+  /// No description provided for @inboxUpcomingTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is due tomorrow'**
+  String inboxUpcomingTomorrow(String title);
+
+  /// No description provided for @inboxDue.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is due today'**
+  String inboxDue(String title);
+
+  /// No description provided for @inboxOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is still waiting'**
+  String inboxOverdue(String title);
+
+  /// No description provided for @inboxPosted.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} was recorded'**
+  String inboxPosted(String title);
+
+  /// No description provided for @inboxIncomeComing.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is expected in {days} days'**
+  String inboxIncomeComing(String title, String days);
+
+  /// No description provided for @inboxIncomeTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is expected tomorrow'**
+  String inboxIncomeTomorrow(String title);
+
+  /// No description provided for @inboxIncomeDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Has {title} come in?'**
+  String inboxIncomeDue(String title);
+
+  /// No description provided for @inboxBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} could not be recorded. Check its account.'**
+  String inboxBlocked(String title);
+
+  /// No description provided for @inboxBudget80.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}: {percent}% of the budget is spent'**
+  String inboxBudget80(String title, String percent);
+
+  /// No description provided for @inboxBudgetOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is over its budget'**
+  String inboxBudgetOver(String title);
+
+  /// No description provided for @inboxBudgetDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{spent} of {limit}'**
+  String inboxBudgetDetail(String spent, String limit);
+
+  /// No description provided for @untitledRule.
+  ///
+  /// In en, this message translates to:
+  /// **'A recurring transaction'**
+  String get untitledRule;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @notifAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications'**
+  String get notifAllow;
+
+  /// No description provided for @notifBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is not letting Spendroo show notifications.'**
+  String get notifBlocked;
+
+  /// No description provided for @notifBlockedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If nothing happens, allow them for Spendroo in the phone\'s settings.'**
+  String get notifBlockedHint;
+
+  /// No description provided for @notifPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Push notifications'**
+  String get notifPush;
+
+  /// No description provided for @notifPushHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders reach this phone even when the app is closed.'**
+  String get notifPushHint;
+
+  /// No description provided for @notifWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What to tell you'**
+  String get notifWhat;
+
+  /// No description provided for @notifBills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills and reminders'**
+  String get notifBills;
+
+  /// No description provided for @notifBillsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming up, due today and still waiting'**
+  String get notifBillsHint;
+
+  /// No description provided for @notifIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected income'**
+  String get notifIncome;
+
+  /// No description provided for @notifRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded for you'**
+  String get notifRecorded;
+
+  /// No description provided for @notifRecordedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When a recurring transaction is recorded, or could not be'**
+  String get notifRecordedHint;
+
+  /// No description provided for @notifBudgets.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget alerts'**
+  String get notifBudgets;
+
+  /// No description provided for @notifBudgetsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At 80% of a budget, and when it is passed'**
+  String get notifBudgetsHint;
+
+  /// No description provided for @notifNudge.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily nudge'**
+  String get notifNudge;
+
+  /// No description provided for @notifNudgeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'On days you have written nothing down'**
+  String get notifNudgeHint;
+
+  /// No description provided for @notifNudgeTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Nudge at'**
+  String get notifNudgeTime;
+
+  /// No description provided for @notifWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get notifWhen;
+
+  /// No description provided for @notifReminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me at'**
+  String get notifReminderTime;
+
+  /// No description provided for @notifReminderTimeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For recurring transactions without a time of their own.'**
+  String get notifReminderTimeHint;
+
+  /// No description provided for @notifQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet hours'**
+  String get notifQuiet;
+
+  /// No description provided for @notifQuietHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is sent between these hours. It waits until they end.'**
+  String get notifQuietHint;
+
+  /// No description provided for @notifQuietFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get notifQuietFrom;
+
+  /// No description provided for @notifQuietTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Until'**
+  String get notifQuietTo;
+
+  /// No description provided for @notifTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a test notification'**
+  String get notifTest;
+
+  /// No description provided for @notifTestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent. It should arrive in a moment.'**
+  String get notifTestSent;
+
+  /// No description provided for @notifTestNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is not registered for notifications yet. Check the connection and try again.'**
+  String get notifTestNoDevice;
+
+  /// No description provided for @notifTestNotSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'The server is not set up to send notifications yet.'**
+  String get notifTestNotSetUp;
+
+  /// No description provided for @notifTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It could not be sent. Try again in a while.'**
+  String get notifTestFailed;
+
+  /// No description provided for @nudgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you spend anything today?'**
+  String get nudgeTitle;
+
+  /// No description provided for @nudgeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Write it down while you remember.'**
+  String get nudgeBody;
 }
 
 class _AppLocalizationsDelegate

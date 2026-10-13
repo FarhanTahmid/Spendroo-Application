@@ -5,18 +5,10 @@ import '../../core/db/database.dart';
 import '../../core/money.dart';
 import '../../core/ui.dart';
 import '../plan/upgrade_sheet.dart';
+import 'budget_widgets.dart';
 import 'ledger_repository.dart';
 import 'personal_pages.dart';
-
-/// Expense per day of the selected month, keyed by (workspace id, currency).
-final dailySpendProvider = StreamProvider.family<Map<int, int>, (String, String)>(
-  (ref, key) => ref.watch(ledgerRepositoryProvider).watchDailySpend(key.$1, ref.watch(selectedMonthProvider), key.$2),
-);
-
-/// Transactions of one day, keyed by (workspace id, ISO date).
-final dayTransactionsProvider = StreamProvider.family<List<TransactionView>, (String, String)>(
-  (ref, key) => ref.watch(ledgerRepositoryProvider).watchTransactions(key.$1, day: key.$2),
-);
+import 'transaction_sheets.dart';
 
 /// The month at a glance: what the budgets allow, what each day cost, and how
 /// each category is doing. Days are coloured against the daily allowance
@@ -35,13 +27,19 @@ class BudgetCalendarPage extends ConsumerWidget {
     final budgets = ref.watch(budgetsProvider(workspace.id)).value ?? const <BudgetProgress>[];
     final daily = ref.watch(dailySpendProvider((workspace.id, currency))).value ?? const <int, int>{};
 
-    final totalBudget =
-        budgets.where((b) => b.budget.currency == currency).fold<int>(0, (sum, b) => sum + b.budget.amountMinor);
+    final own = budgets.where((b) => b.budget.currency == currency).toList();
+    final totalBudget = own.fold<int>(0, (sum, b) => sum + b.budget.amountMinor);
     final spent = daily.values.fold<int>(0, (sum, value) => sum + value);
     final allowance = totalBudget ~/ daysInMonth(month);
     final remaining = totalBudget - spent;
-    final now = DateTime.now();
-    final isCurrentMonth = now.year == month.year && now.month == month.month;
+    final pace = SpendPace(month: month, spentMinor: spent, limitMinor: totalBudget);
+    // The ones nearest their limit first
+    final ranked = [...budgets]..sort((a, b) => b.usedPercent.compareTo(a.usedPercent));
+    final budgeted = {for (final b in budgets) b.budget.categoryId};
+    final unbudgeted = (ref.watch(monthSummaryProvider((workspace.id, currency))).value?.byCategory ?? const <CategorySpend>[])
+        .where((c) => c.categoryId != null && !budgeted.contains(c.categoryId))
+        .take(4)
+        .toList();
     void addBudget() => showBudgetForm(context, ref, workspace, month: month);
 
     return PassbookBody(
@@ -49,14 +47,22 @@ class BudgetCalendarPage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Without a budget there is nothing to have left; show what was spent
-          if (totalBudget > 0)
+          if (totalBudget > 0) ...[
             HeaderFigure(
               label: l10n.remaining,
               amountMinor: remaining,
               currency: currency,
               color: remaining < 0 ? const Color(0xFFFF9AA2) : null,
-            )
-          else
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                HeaderStat(label: l10n.budgetThisMonth, amountMinor: totalBudget, currency: currency),
+                const SizedBox(width: 12),
+                HeaderStat(label: l10n.spent, amountMinor: spent, currency: currency),
+              ],
+            ),
+          ] else
             HeaderFigure(label: l10n.spent, amountMinor: spent, currency: currency),
           const SizedBox(height: 12),
           MonthSwitcher(month: month, onChanged: ref.read(selectedMonthProvider.notifier).set),
@@ -65,35 +71,7 @@ class BudgetCalendarPage extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.xl),
         children: [
-          if (totalBudget > 0)
-            Entrance(
-              child: SectionCard(children: [
-                Row(
-                  children: [
-                    StatTile(
-                      label: l10n.budgetThisMonth,
-                      amountMinor: totalBudget,
-                      currency: currency,
-                      color: Theme.of(context).colorScheme.primary,
-                      icon: Icons.flag_rounded,
-                    ),
-                    StatTile(
-                      label: l10n.spent,
-                      amountMinor: spent,
-                      currency: currency,
-                      color: context.amountColor(false),
-                      icon: Icons.north_east_rounded,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                LimitBar(
-                  value: spent / totalBudget,
-                  marker: isCurrentMonth ? now.day / daysInMonth(month) : null,
-                  height: 12,
-                ),
-              ]),
-            ),
+          if (totalBudget > 0) Entrance(child: BudgetGaugeCard(pace: pace, currency: currency)),
           Entrance(
             index: 1,
             child: SectionCard(
@@ -110,8 +88,21 @@ class BudgetCalendarPage extends ConsumerWidget {
                   daily: daily,
                   allowance: allowance,
                   currency: currency,
-                  onDayTap: (day) => _showDay(context, workspace, DateTime(month.year, month.month, day)),
+                  onDayTap: (day) => showDaySheet(context, workspace, DateTime(month.year, month.month, day)),
                 ),
+                if (allowance > 0)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 10, 4, 2),
+                    child: Wrap(
+                      spacing: 14,
+                      runSpacing: 4,
+                      children: [
+                        LegendKey(color: AppTheme.successColor.withValues(alpha: 0.5), label: l10n.legendWithin),
+                        LegendKey(color: AppTheme.warningColor.withValues(alpha: 0.7), label: l10n.legendNear),
+                        LegendKey(color: AppTheme.errorColor.withValues(alpha: 0.6), label: l10n.legendOver),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
@@ -121,8 +112,23 @@ class BudgetCalendarPage extends ConsumerWidget {
               child: Text(l10n.noBudgets, textAlign: TextAlign.center, style: TextStyle(color: context.colors.muted)),
             )
           else
-            for (final item in budgets) _BudgetCard(workspace: workspace, item: item, month: month),
+            for (final item in ranked)
+              BudgetCard(
+                item: item,
+                pace: pace,
+                onTap: () => showBudgetDetail(context, ref, workspace, item, month: month),
+              ),
           AddRowButton(label: l10n.addBudget, onPressed: addBudget),
+          if (unbudgeted.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpace.md),
+              child: NotBudgetedCard(
+                categories: unbudgeted,
+                currency: currency,
+                onSetLimit: (category) =>
+                    showBudgetForm(context, ref, workspace, month: month, categoryId: category.categoryId),
+              ),
+            ),
         ],
       ),
     );
@@ -228,143 +234,10 @@ class _CalendarGrid extends StatelessWidget {
   }
 }
 
-Future<void> _showDay(BuildContext context, Workspace workspace, DateTime date) => showAppSheet<void>(
-      context,
-      title: formatDate(context, isoDate(date)),
-      scrolls: false,
-      trailing: Builder(
-        builder: (context) => TextButton.icon(
-          icon: const Icon(Icons.add_rounded),
-          label: Text(context.l10n.addTransaction),
-          onPressed: () {
-            Navigator.pop(context);
-            openTransactionForm(context, workspace, date: isoDate(date));
-          },
-        ),
-      ),
-      builder: (_) => _DaySheet(workspace: workspace, date: isoDate(date)),
-    );
-
-class _DaySheet extends ConsumerWidget {
-  const _DaySheet({required this.workspace, required this.date});
-
-  final Workspace workspace;
-  final String date;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final transactions = ref.watch(dayTransactionsProvider((workspace.id, date))).value ?? const <TransactionView>[];
-    if (transactions.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
-        child: Text(
-          context.l10n.noTransactionsOnDay,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: context.colors.muted),
-        ),
-      );
-    }
-    return ListView(
-      shrinkWrap: true,
-      padding: const EdgeInsets.only(bottom: 12),
-      children: [
-        for (final view in transactions)
-          TransactionTile(
-            view: view,
-            showDate: false,
-            onTap: () {
-              Navigator.pop(context);
-              openTransactionForm(context, workspace, existing: view);
-            },
-          ),
-      ],
-    );
-  }
-}
-
-class _BudgetCard extends ConsumerWidget {
-  const _BudgetCard({required this.workspace, required this.item, required this.month});
-
-  final Workspace workspace;
-  final BudgetProgress item;
-  final DateTime month;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.l10n;
-    final text = Theme.of(context).textTheme;
-    final currency = item.budget.currency;
-    // Going over the limit while the card is on screen gives it a shake
-    return Shake(
-      trigger: item.isOver ? 1 : 0,
-      child: Card(
-        margin: const EdgeInsets.only(bottom: AppSpace.md),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () => showBudgetForm(context, ref, workspace, month: month, existing: item),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpace.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    ColorDot(categoryFill(item.categoryColor, item.budget.categoryId)),
-                    const SizedBox(width: 10),
-                    Expanded(child: Text(item.categoryName, style: text.titleMedium, overflow: TextOverflow.ellipsis)),
-                    if (item.isOverride) _Tag(l10n.thisMonthOnly, context.colors.muted),
-                    if (item.isOver) _Tag(l10n.overBudget, context.colors.moneyOut),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                LimitBar(value: item.spentMinor / item.budget.amountMinor),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.spentOf(
-                    context.money(item.spentMinor, currency),
-                    context.money(item.budget.amountMinor, currency),
-                  ),
-                  style: text.bodyMedium?.copyWith(fontFeatures: tabularFigures),
-                ),
-                if (item.recurring != null)
-                  Text(
-                    l10n.usualLimit(context.money(item.recurring!.amountMinor, item.recurring!.currency)),
-                    style: text.bodySmall,
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Tag extends StatelessWidget {
-  const _Tag(this.label, this.color);
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.only(left: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(AppRadius.pill),
-        ),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color, fontWeight: FontWeight.w600),
-        ),
-      );
-}
-
 /// Add or change a budget. "This month only" sets an override for [month]
-/// and leaves the category's usual limit as it is.
+/// and leaves the category's usual limit as it is. A new budget opens on [categoryId] when given.
 Future<void> showBudgetForm(BuildContext context, WidgetRef ref, Workspace workspace,
-    {required DateTime month, BudgetProgress? existing}) async {
+    {required DateTime month, BudgetProgress? existing, String? categoryId}) async {
   final l10n = context.l10n;
   final repo = ref.read(ledgerRepositoryProvider);
   final currency = existing?.budget.currency ?? workspace.defaultCurrency;
@@ -376,7 +249,7 @@ Future<void> showBudgetForm(BuildContext context, WidgetRef ref, Workspace works
     text: existing == null ? '' : Money.toInput(existing.budget.amountMinor, currency),
   );
   final options = [for (final c in categories) SelectOption(c.id, c.name, color: categoryFill(c.color, c.id))];
-  var categoryId = existing?.budget.categoryId ?? categories.firstOrNull?.id;
+  var chosen = existing?.budget.categoryId ?? categoryId ?? categories.firstOrNull?.id;
   var thisMonthOnly = existing?.isOverride ?? false;
   var refused = 0;
 
@@ -396,7 +269,7 @@ Future<void> showBudgetForm(BuildContext context, WidgetRef ref, Workspace works
               SelectField<String>(
                 label: l10n.category,
                 icon: Icons.sell_outlined,
-                value: categoryId,
+                value: chosen,
                 options: options,
                 createLabel: l10n.newCategory,
                 onCreate: (name) async {
@@ -405,7 +278,7 @@ Future<void> showBudgetForm(BuildContext context, WidgetRef ref, Workspace works
                   if (id != null) options.add(SelectOption(id!, name, color: categoryFill(null, id)));
                   return id;
                 },
-                onChanged: (value) => setState(() => categoryId = value),
+                onChanged: (value) => setState(() => chosen = value),
               ),
               const SizedBox(height: 12),
             ],
@@ -421,10 +294,10 @@ Future<void> showBudgetForm(BuildContext context, WidgetRef ref, Workspace works
               trigger: refused,
               child: FilledButton(
                 onPressed: () async {
-                  if (!formKey.currentState!.validate() || categoryId == null) return setState(() => refused++);
+                  if (!formKey.currentState!.validate() || chosen == null) return setState(() => refused++);
                   final saved = await guarded(
                     context,
-                    () => repo.setBudget(workspace.id, categoryId!, Money.evaluate(amount.text, currency)!, currency,
+                    () => repo.setBudget(workspace.id, chosen!, Money.evaluate(amount.text, currency)!, currency,
                         month: thisMonthOnly ? monthKey(month) : null),
                   );
                   if (!saved || !context.mounted) return;

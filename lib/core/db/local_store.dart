@@ -17,6 +17,8 @@ Variable _variable(Object? value) => switch (value) {
       bool b => Variable<int>(b ? 1 : 0),
       int i => Variable<int>(i),
       String s => Variable<String>(s),
+      // A JSON column: stored as the server sends it
+      List() || Map() => Variable<String>(jsonEncode(value)),
       _ => Variable<String>(value.toString()),
     };
 

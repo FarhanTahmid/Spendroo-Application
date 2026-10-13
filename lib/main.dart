@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app.dart';
 import 'core/config.dart';
 import 'core/db/database.dart';
+import 'core/firebase.dart';
 import 'core/providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initFirebase();
   final db = AppDatabase();
   final server = AppConfig.allowsServerOverride ? await db.getSetting(serverUrlSettingKey) : null;
   runApp(ProviderScope(

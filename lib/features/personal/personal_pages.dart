@@ -1,6 +1,6 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/db/database.dart';
 import '../../core/entitlements/entitlements.dart';
@@ -11,8 +11,15 @@ import '../../core/ui.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
+import '../recurring/recurring_pages.dart';
+import '../recurring/recurring_repository.dart';
+import 'budget_widgets.dart';
+import 'allocations.dart';
 import 'ledger_repository.dart';
+import 'overview_charts.dart';
 import 'spending_breakdown.dart';
+import 'split_editor.dart';
+import 'transaction_sheets.dart';
 
 String accountKindLabel(BuildContext context, String kind) => switch (kind) {
       'bank' => context.l10n.kindBank,
@@ -30,11 +37,20 @@ IconData accountKindIcon(String kind) => switch (kind) {
       _ => Icons.payments_rounded,
     };
 
-/// [date] (ISO) preselects the day of a new transaction, e.g. from the budget calendar.
-void openTransactionForm(BuildContext context, Workspace workspace, {TransactionView? existing, String? date}) =>
+/// [date] (ISO) preselects the day of a new transaction, e.g. from the budget
+/// calendar; [accountId] its account, from that account's screen.
+/// With [occurrence] the form records a date of a recurring rule: it opens
+/// filled in from the rule, and what is saved settles that date.
+void openTransactionForm(BuildContext context, Workspace workspace,
+        {TransactionView? existing, String? date, String? accountId, OccurrenceView? occurrence}) =>
     Navigator.of(context).push(MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (_) => TransactionFormPage(workspace: workspace, existing: existing, initialDate: date),
+      builder: (_) => TransactionFormPage(
+          workspace: workspace,
+          existing: existing,
+          initialDate: date,
+          initialAccountId: accountId,
+          occurrence: occurrence),
     ));
 
 final monthSummaryProvider = StreamProvider.family<MonthSummary, (String, String)>(
@@ -46,32 +62,42 @@ final monthlyTotalsProvider = StreamProvider.family<List<MonthTotals>, (String, 
       ref.watch(ledgerRepositoryProvider).watchMonthlyTotals(key.$1, ref.watch(selectedMonthProvider), key.$2),
 );
 
-/// Balances, the selected month's income and expense, how spending is pacing
-/// against the budgets, where the money went and how the last six months compare.
+/// Balances, the selected month's income and expense, how spending is adding
+/// up against last month and the budgets, where the money went and how the
+/// last six months compare. Every chart opens what it is made of on a tap.
 /// Figures are in the workspace currency; accounts in other currencies are listed, not added up.
 class OverviewPage extends ConsumerWidget {
-  const OverviewPage({super.key, required this.workspace});
+  const OverviewPage({super.key, required this.workspace, this.onOpenBudgets});
 
   final Workspace workspace;
+
+  /// Moves to the budgets screen; without it the overview offers no way there.
+  final VoidCallback? onOpenBudgets;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
+    final colors = context.colors;
     final currency = workspace.defaultCurrency;
     final key = (workspace.id, currency);
-    final accounts = ref.watch(accountsProvider(workspace.id)).value ?? const <AccountBalance>[];
-    final total = accounts
-        .where((a) => a.account.currency == currency && !a.account.isArchived)
-        .fold<int>(0, (sum, a) => sum + a.balanceMinor);
+    final accounts = (ref.watch(accountsProvider(workspace.id)).value ?? const <AccountBalance>[])
+        .where((a) => !a.account.isArchived)
+        .toList();
+    final total =
+        accounts.where((a) => a.account.currency == currency).fold<int>(0, (sum, a) => sum + a.balanceMinor);
     final month = ref.watch(monthSummaryProvider(key)).value;
     final trend = ref.watch(monthlyTotalsProvider(key)).value ?? const <MonthTotals>[];
-    final budgets = ref.watch(budgetsProvider(workspace.id)).value ?? const <BudgetProgress>[];
-    final budgetTotal =
-        budgets.where((b) => b.budget.currency == currency).fold<int>(0, (sum, b) => sum + b.budget.amountMinor);
+    final budgets = (ref.watch(budgetsProvider(workspace.id)).value ?? const <BudgetProgress>[])
+        .where((b) => b.budget.currency == currency)
+        .toList();
+    final budgetTotal = budgets.fold<int>(0, (sum, b) => sum + b.budget.amountMinor);
     final selectedMonth = ref.watch(selectedMonthProvider);
-    final now = DateTime.now();
-    final isCurrentMonth = now.year == selectedMonth.year && now.month == selectedMonth.month;
+    final net = month == null ? 0 : month.incomeMinor - month.expenseMinor;
+    final saved = month == null || month.incomeMinor <= 0 || net < 0 ? null : (net * 100 / month.incomeMinor).round();
+    // What a recurring rule is waiting on, then what the coming week brings
+    final open = ref.watch(openOccurrencesProvider(workspace.id)).value ?? const <OccurrenceView>[];
+    final waiting = open.where((o) => o.isDue).length;
 
     return PassbookBody(
       header: Column(
@@ -87,78 +113,110 @@ class OverviewPage extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.xl),
           children: [
+            if (open.isNotEmpty)
+              Entrance(
+                child: SectionCard(
+                  title: waiting > 0 ? l10n.waitingForYou : l10n.comingUp,
+                  trailing: TextButton(onPressed: () => context.push('/recurring'), child: Text(l10n.seeAllRecurring)),
+                  padding: const EdgeInsets.fromLTRB(0, AppSpace.md, 0, AppSpace.sm),
+                  children: [
+                    for (final occurrence in open.take(3)) OccurrenceTile(occurrence: occurrence, workspace: workspace),
+                  ],
+                ),
+              ),
             if (month != null) ...[
               Entrance(
-                child: SectionCard(children: [
-                  Row(
-                    children: [
-                      StatTile(
-                        label: l10n.income,
-                        amountMinor: month.incomeMinor,
-                        currency: currency,
-                        color: context.amountColor(true),
-                        icon: Icons.south_west_rounded,
-                      ),
-                      StatTile(
-                        label: l10n.expense,
-                        amountMinor: month.expenseMinor,
-                        currency: currency,
-                        color: context.amountColor(false),
-                        icon: Icons.north_east_rounded,
-                      ),
-                      StatTile(
-                        label: l10n.net,
-                        amountMinor: month.incomeMinor - month.expenseMinor,
-                        currency: currency,
-                        color: context.amountColor(month.incomeMinor >= month.expenseMinor),
-                        icon: Icons.drag_handle_rounded,
-                      ),
-                    ],
-                  ),
-                ]),
+                child: SectionCard(
+                  title: MaterialLocalizations.of(context).formatMonthYear(selectedMonth),
+                  trailing: saved == null
+                      ? null
+                      : Text(l10n.savedPercent(localDigits(context, '$saved')),
+                          style: text.bodySmall?.copyWith(color: colors.muted)),
+                  children: [
+                    Row(
+                      children: [
+                        StatTile(
+                          label: l10n.income,
+                          amountMinor: month.incomeMinor,
+                          currency: currency,
+                          color: context.amountColor(true),
+                          icon: Icons.south_west_rounded,
+                        ),
+                        StatTile(
+                          label: l10n.expense,
+                          amountMinor: month.expenseMinor,
+                          currency: currency,
+                          color: context.amountColor(false),
+                          icon: Icons.north_east_rounded,
+                        ),
+                      ],
+                    ),
+                    const Divider(height: AppSpace.lg * 2),
+                    Row(
+                      children: [
+                        Expanded(child: Text(l10n.netRemaining, style: text.bodyMedium)),
+                        MoneyText(net, currency,
+                            style: text.titleMedium?.copyWith(color: context.amountColor(net >= 0))),
+                      ],
+                    ),
+                  ],
+                ),
               ),
+              Entrance(child: SpendingPaceCard(workspace: workspace, budgetMinor: budgetTotal)),
               if (budgetTotal > 0)
                 Entrance(
                   index: 1,
-                  child: SectionCard(children: [
-                    PaceBar(
-                      spentMinor: month.expenseMinor,
-                      limitMinor: budgetTotal,
-                      currency: currency,
-                      dayFraction: isCurrentMonth ? now.day / daysInMonth(selectedMonth) : null,
-                    ),
-                  ]),
+                  child: BudgetHealthCard(
+                    budgets: budgets,
+                    pace: SpendPace(month: selectedMonth, spentMinor: month.expenseMinor, limitMinor: budgetTotal),
+                    currency: currency,
+                    onOpenAll: onOpenBudgets,
+                    onOpenBudget: (item) => showBudgetDetail(context, ref, workspace, item, month: selectedMonth),
+                  ),
                 ),
               Entrance(
                 index: 2,
                 child: SectionCard(title: l10n.spendingByCategory, children: [
                   if (month.byCategory.isEmpty)
-                    Text(l10n.noSpendingYet, style: text.bodyMedium?.copyWith(color: context.colors.muted))
+                    Text(l10n.noSpendingYet, style: text.bodyMedium?.copyWith(color: colors.muted))
                   else
-                    SpendingBreakdown(month: month, currency: currency, budgets: budgets),
+                    SpendingBreakdown(
+                      month: month,
+                      currency: currency,
+                      budgets: budgets,
+                      onSeeTransactions: (slice) => showCategoryTransactions(context, workspace,
+                          categoryId: slice.categoryId, title: slice.name ?? l10n.uncategorised),
+                    ),
                 ]),
               ),
             ],
             if (trend.any((m) => m.incomeMinor > 0 || m.expenseMinor > 0))
-              SectionCard(title: l10n.lastSixMonths, children: [_TrendChart(trend: trend, currency: currency)]),
+              CashFlowCard(
+                trend: trend,
+                currency: currency,
+                selectedMonth: selectedMonth,
+                onGoToMonth: ref.read(selectedMonthProvider.notifier).set,
+              ),
             if (accounts.isNotEmpty)
-              SectionCard(title: l10n.accountBalances, children: [
-                for (final item in accounts.where((a) => !a.account.isArchived))
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Row(
-                      children: [
-                        IconBadge(accountKindIcon(item.account.kind), size: 36),
-                        const SizedBox(width: 12),
-                        Expanded(child: Text(item.account.name, overflow: TextOverflow.ellipsis)),
-                        Text(
-                          context.money(item.balanceMinor, item.account.currency),
-                          style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600, fontFeatures: tabularFigures),
-                        ),
-                      ],
+              SectionCard(
+                title: l10n.accountBalances,
+                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
+                children: [
+                  if (total > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                      child: Text(l10n.shareOfTotalBalance, style: text.bodySmall?.copyWith(color: colors.muted)),
                     ),
-                  ),
-              ]),
+                  for (final item in accounts)
+                    _AccountRow(
+                      item: item,
+                      // A share of the total only means something for money that is there, in its currency
+                      share: item.account.currency == currency && total > 0 && item.balanceMinor > 0
+                          ? item.balanceMinor / total
+                          : null,
+                    ),
+                ],
+              ),
           ],
         ),
       ),
@@ -166,117 +224,101 @@ class OverviewPage extends ConsumerWidget {
   }
 }
 
-/// Income and expense bars for each month, oldest on the left.
-class _TrendChart extends StatelessWidget {
-  const _TrendChart({required this.trend, required this.currency});
+/// An account on the overview: its balance, and how much of the total it holds. Opens the account.
+class _AccountRow extends StatelessWidget {
+  const _AccountRow({required this.item, required this.share});
 
-  final List<MonthTotals> trend;
-  final String currency;
+  final AccountBalance item;
+  final double? share;
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.languageCode;
-    final months = MaterialLocalizations.of(context);
     final text = Theme.of(context).textTheme;
-    final highest = trend.fold<int>(1, (max, m) => [max, m.incomeMinor, m.expenseMinor].reduce((a, b) => a > b ? a : b));
-    const top = BorderRadius.vertical(top: Radius.circular(5));
-
-    Widget legend(Color color, String label) => Row(
-          mainAxisSize: MainAxisSize.min,
+    final scheme = Theme.of(context).colorScheme;
+    final share = this.share;
+    return Pressable(
+      scale: 0.98,
+      onTap: () => context.push('/account/${item.account.id}'),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
           children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-            ),
-            const SizedBox(width: 6),
-            Text(label, style: text.bodySmall),
-          ],
-        );
-
-    return Column(
-      children: [
-        SizedBox(
-          height: 180,
-          child: BarChart(
-            BarChartData(
-              maxY: highest * 1.15,
-              alignment: BarChartAlignment.spaceAround,
-              gridData: const FlGridData(show: false),
-              borderData: FlBorderData(show: false),
-              barTouchData: BarTouchData(
-                touchTooltipData: BarTouchTooltipData(
-                  getTooltipColor: (_) => const Color(0xFF0E1B30),
-                  getTooltipItem: (group, _, rod, _) => BarTooltipItem(
-                    Money.format(rod.toY.round(), currency, locale: locale),
-                    const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+            IconBadge(accountKindIcon(item.account.kind), size: 36),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: Text(item.account.name, overflow: TextOverflow.ellipsis)),
+                      Text(
+                        context.money(item.balanceMinor, item.account.currency),
+                        style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600, fontFeatures: tabularFigures),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              titlesData: FlTitlesData(
-                leftTitles: const AxisTitles(),
-                rightTitles: const AxisTitles(),
-                topTitles: const AxisTitles(),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 26,
-                    getTitlesWidget: (value, meta) {
-                      final index = value.toInt();
-                      if (index < 0 || index >= trend.length) return const SizedBox.shrink();
-                      // "Oct" from "October 2026"
-                      final label = months.formatMonthYear(trend[index].month).split(' ').first;
-                      return SideTitleWidget(
-                        meta: meta,
-                        child: Text(label.length > 3 && locale != 'bn' ? label.substring(0, 3) : label,
-                            style: text.labelSmall),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              barGroups: [
-                for (final (index, m) in trend.indexed)
-                  BarChartGroupData(x: index, barsSpace: 4, barRods: [
-                    BarChartRodData(
-                      toY: m.incomeMinor.toDouble(),
-                      color: AppTheme.successColor,
-                      width: 10,
-                      borderRadius: top,
+                  if (share != null) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: LinearProgressIndicator(
+                              value: share.clamp(0.0, 1.0),
+                              minHeight: 4,
+                              color: scheme.primary,
+                              backgroundColor: scheme.surfaceContainerHighest,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 44,
+                          child: Text(
+                            localDigits(context, '${(share * 100).round()}%'),
+                            textAlign: TextAlign.end,
+                            style: text.labelSmall?.copyWith(fontFeatures: tabularFigures),
+                          ),
+                        ),
+                      ],
                     ),
-                    BarChartRodData(
-                      toY: m.expenseMinor.toDouble(),
-                      color: AppTheme.errorColor,
-                      width: 10,
-                      borderRadius: top,
-                    ),
-                  ]),
-              ],
+                  ],
+                ],
+              ),
             ),
-            duration: context.motion(AppMotion.emphasised),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            legend(AppTheme.successColor, context.l10n.income),
-            const SizedBox(width: 20),
-            legend(AppTheme.errorColor, context.l10n.expense),
+            Icon(Icons.chevron_right_rounded, size: 18, color: context.colors.muted),
           ],
         ),
-      ],
+      ),
     );
   }
 }
 
 /// One transaction row: what, when, from which account, how much.
 class TransactionTile extends StatelessWidget {
-  const TransactionTile({super.key, required this.view, required this.onTap, this.showDate = true});
+  const TransactionTile({
+    super.key,
+    required this.view,
+    required this.onTap,
+    this.showDate = true,
+    this.showAccount = true,
+    this.transferLabel,
+    this.balance,
+  });
 
   final TransactionView view;
   final VoidCallback onTap;
   final bool showDate;
+
+  /// False on the account's own screen, where every row is on it.
+  final bool showAccount;
+
+  /// Says where a transfer went or came from, in place of "Transfer".
+  final String? transferLabel;
+
+  /// The account's balance after this transaction, already formatted.
+  final String? balance;
 
   @override
   Widget build(BuildContext context) {
@@ -284,9 +326,15 @@ class TransactionTile extends StatelessWidget {
     final t = view.transaction;
     final isTransfer = t.kind == 'transfer';
     final isIn = t.amountMinor > 0;
-    final label = isTransfer ? l10n.transfer : (view.categoryName ?? l10n.uncategorised);
+    final label = isTransfer
+        ? (transferLabel ?? l10n.transfer)
+        : (t.isSplit
+            ? l10n.splitInParts(localDigits(context, '${t.parts.length}'))
+            : (view.categoryName ?? l10n.uncategorised));
     return MoneyRow(
-      icon: isTransfer ? Icons.swap_horiz_rounded : (isIn ? Icons.south_west_rounded : Icons.north_east_rounded),
+      icon: isTransfer
+          ? Icons.swap_horiz_rounded
+          : (t.isSplit ? Icons.call_split_rounded : (isIn ? Icons.south_west_rounded : Icons.north_east_rounded)),
       // The badge wears the category's colour; the arrow and the amount still say which way the money went
       tint: isTransfer
           ? null
@@ -294,11 +342,12 @@ class TransactionTile extends StatelessWidget {
       title: t.note.isNotEmpty ? t.note : label,
       detail: [
         if (showDate) formatDate(context, t.occurredOn),
-        view.accountName,
+        if (showAccount) view.accountName,
         if (t.note.isNotEmpty) label,
       ].join(' · '),
       amount: context.money(t.amountMinor, t.currency),
       amountColor: isTransfer ? null : context.amountColor(isIn),
+      amountDetail: balance,
       onTap: onTap,
     );
   }
@@ -447,11 +496,16 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
 
 /// Add an expense, income or transfer; or edit the amount, date, category and note of an existing one.
 class TransactionFormPage extends ConsumerStatefulWidget {
-  const TransactionFormPage({super.key, required this.workspace, this.existing, this.initialDate});
+  const TransactionFormPage(
+      {super.key, required this.workspace, this.existing, this.initialDate, this.initialAccountId, this.occurrence});
 
   final Workspace workspace;
   final TransactionView? existing;
   final String? initialDate;
+  final String? initialAccountId;
+
+  /// The date of a recurring rule being recorded.
+  final OccurrenceView? occurrence;
 
   @override
   ConsumerState<TransactionFormPage> createState() => _TransactionFormPageState();
@@ -460,23 +514,68 @@ class TransactionFormPage extends ConsumerStatefulWidget {
 class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
   final _formKey = GlobalKey<FormState>();
   late final Transaction? _original = widget.existing?.transaction;
-  late String _kind = _original?.kind ?? 'expense';
+  // What a recurring rule says to record, when this form settles one of its dates
+  late final RecurringRule? _rule = widget.occurrence?.rule.rule;
+  late String _kind = _original?.kind ?? _rule?.kind ?? 'expense';
   late final _amount = TextEditingController(
-    text: _original == null ? '' : Money.toInput(_original.amountMinor.abs(), _original.currency),
+    text: _original != null
+        ? Money.toInput(_original.amountMinor.abs(), _original.currency)
+        : (_rule?.amountMinor == null ? '' : Money.toInput(_rule!.amountMinor!, _rule.currency)),
   );
-  late final _note = TextEditingController(text: _original?.note ?? '');
+  late final _note = TextEditingController(
+    text: _original?.note ?? (_rule == null ? '' : (_rule.note.isNotEmpty ? _rule.note : _rule.title)),
+  );
   late String _date = _original?.occurredOn ?? widget.initialDate ?? todayIso();
-  late String? _accountId = _original?.accountId;
-  String? _toAccountId;
-  late String? _categoryId = _original?.categoryId;
+  late String? _accountId = _original?.accountId ?? _rule?.accountId ?? widget.initialAccountId;
+  late String? _toAccountId = _rule?.toAccountId;
+  late String? _categoryId = _original?.categoryId ?? _rule?.categoryId;
+  // The parts of a split; empty while the transaction has one category
+  late final List<SplitDraft> _split = [
+    if (_original != null)
+      for (final part in _original.parts)
+        _draft(categoryId: part.categoryId, amount: Money.toInput(part.amountMinor, _original.currency))
+    else if (_rule != null)
+      for (final part in SplitPart.decode(_rule.splits))
+        _draft(categoryId: part.categoryId, amount: Money.toInput(part.amountMinor, _rule.currency)),
+  ];
   int _refused = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // What is left to file follows the amount as it is typed
+    _amount.addListener(_typed);
+  }
 
   @override
   void dispose() {
     _amount.dispose();
     _note.dispose();
+    for (final draft in _split) {
+      draft.dispose();
+    }
     super.dispose();
   }
+
+  void _typed() {
+    if (_split.isNotEmpty && mounted) setState(() {});
+  }
+
+  SplitDraft _draft({String? categoryId, String amount = ''}) =>
+      SplitDraft(categoryId: categoryId, amount: amount)..amount.addListener(_typed);
+
+  /// The category chosen so far becomes the first part.
+  void _startSplit() => setState(() {
+        _split.addAll([_draft(categoryId: _categoryId), _draft()]);
+      });
+
+  void _endSplit() => setState(() {
+        _categoryId = _split.first.categoryId;
+        for (final draft in _split) {
+          draft.dispose();
+        }
+        _split.clear();
+      });
 
   void _refuse(String message) {
     setState(() => _refused++);
@@ -491,18 +590,34 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
     final repo = ref.read(ledgerRepositoryProvider);
     final account = accounts.firstWhere((a) => a.account.id == _accountId).account;
     final amount = Money.evaluate(_amount.text, account.currency)!;
+    var splits = const <SplitPart>[];
+    if (_split.isNotEmpty && _kind != 'transfer') {
+      final parts = splitParts(_split, account.currency);
+      if (parts == null) return _refuse(l10n.splitNeedsAmounts);
+      if (parts.fold(0, (sum, part) => sum + part.amountMinor) != amount) {
+        return _refuse(l10n.splitMismatch(context.money(amount, account.currency)));
+      }
+      splits = parts;
+    }
 
     if (_original != null) {
       await repo.updateTransaction(_original,
-          amountMinor: amount, occurredOn: _date, categoryId: _categoryId, note: _note.text.trim());
+          amountMinor: amount, occurredOn: _date, categoryId: _categoryId, note: _note.text.trim(), splits: splits);
     } else if (_kind == 'transfer') {
       final to = accounts.firstWhere((a) => a.account.id == _toAccountId).account;
       if (to.id == account.id) return _refuse(l10n.sameAccountError);
       if (to.currency != account.currency) return _refuse(l10n.currencyMismatch);
-      await repo.addTransfer(account, to, amountMinor: amount, occurredOn: _date, note: _note.text.trim());
+      await repo.addTransfer(account, to,
+          amountMinor: amount, occurredOn: _date, note: _note.text.trim(), occurrenceId: widget.occurrence?.occurrence.id);
     } else {
       await repo.addTransaction(account,
-          kind: _kind, amountMinor: amount, occurredOn: _date, categoryId: _categoryId, note: _note.text.trim());
+          kind: _kind,
+          amountMinor: amount,
+          occurredOn: _date,
+          categoryId: _categoryId,
+          note: _note.text.trim(),
+          splits: splits,
+          occurrenceId: widget.occurrence?.occurrence.id);
     }
     if (!mounted) return;
     final formatted = context.money(amount, account.currency);
@@ -529,7 +644,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
         .toList();
     if (accounts.isEmpty) return Scaffold(appBar: AppBar(), body: const Center(child: AppLoader()));
     _accountId ??= accounts.first.account.id;
-    _toAccountId ??= accounts.length > 1 ? accounts[1].account.id : accounts.first.account.id;
+    // The first account that is not the one the money leaves
+    _toAccountId ??= accounts.firstWhere((a) => a.account.id != _accountId, orElse: () => accounts.first).account.id;
     final account = accounts.firstWhere((a) => a.account.id == _accountId, orElse: () => accounts.first).account;
     final editing = _original != null;
     final isTransfer = _kind == 'transfer';
@@ -538,6 +654,19 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
           'transfer' => scheme.primary,
           _ => AppTheme.errorColor,
         };
+
+    final categoryOptions = [
+      for (final c in categories) SelectOption(c.id, c.name, color: categoryFill(c.color, c.id)),
+    ];
+    Future<String?> createCategory(String name) async {
+      String? id;
+      await guarded(context, () async {
+        id = await ref
+            .read(ledgerRepositoryProvider)
+            .addCategory(widget.workspace.id, name, _kind == 'income' ? 'income' : 'expense');
+      });
+      return id;
+    }
 
     Widget accountPicker(String label, String? value, ValueChanged<String?> onChanged) => SelectField<String>(
           label: label,
@@ -595,7 +724,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.sm, AppSpace.page, AppSpace.lg),
           children: [
-            if (!editing) ...[
+            // What a recurring rule records is the rule's to say
+            if (!editing && _rule == null) ...[
               SlidingSegmented<String>(
                 segments: {'expense': l10n.expense, 'income': l10n.income, 'transfer': l10n.transfer},
                 value: _kind,
@@ -603,6 +733,11 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
                 onChanged: (value) => setState(() {
                   _kind = value;
                   _categoryId = null;
+                  // Its parts were filed under categories of the other kind
+                  for (final draft in _split) {
+                    draft.dispose();
+                  }
+                  _split.clear();
                 }),
               ),
               const SizedBox(height: 20),
@@ -622,24 +757,42 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
               accountPicker(l10n.toAccount, _toAccountId, (value) => setState(() => _toAccountId = value)),
               const SizedBox(height: 12),
             ],
-            if (!isTransfer) ...[
+            if (!isTransfer && _split.isEmpty) ...[
               SelectField<String>(
                 label: l10n.category,
                 icon: Icons.sell_outlined,
                 value: _categoryId,
                 noneLabel: l10n.none,
-                options: [for (final c in categories) SelectOption(c.id, c.name, color: categoryFill(c.color, c.id))],
+                options: categoryOptions,
                 createLabel: l10n.newCategory,
-                onCreate: (name) async {
-                  String? id;
-                  await guarded(context, () async {
-                    id = await ref
-                        .read(ledgerRepositoryProvider)
-                        .addCategory(widget.workspace.id, name, _kind == 'income' ? 'income' : 'expense');
-                  });
-                  return id;
-                },
+                onCreate: createCategory,
                 onChanged: (value) => setState(() => _categoryId = value),
+              ),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  onPressed: _startSplit,
+                  icon: const Icon(Icons.call_split_rounded, size: 18),
+                  label: Text(l10n.splitAction),
+                ),
+              ),
+            ],
+            if (!isTransfer && _split.isNotEmpty) ...[
+              SplitEditor(
+                drafts: _split,
+                currency: account.currency,
+                totalMinor: Money.evaluate(_amount.text, account.currency),
+                categories: categoryOptions,
+                onCreateCategory: createCategory,
+                onChanged: () => setState(() {
+                  // Parts added inside the editor report what is typed in them too
+                  for (final draft in _split) {
+                    draft.amount
+                      ..removeListener(_typed)
+                      ..addListener(_typed);
+                  }
+                }),
+                onRemove: _endSplit,
               ),
               const SizedBox(height: 12),
             ],
@@ -655,6 +808,36 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
               maxLength: 200,
               buildCounter: quietCounter,
             ),
+            if (!editing && _rule == null)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  // Carries over what is typed so far; the rule form takes it from here
+                  onPressed: () {
+                    final amount = Money.evaluate(_amount.text, account.currency);
+                    final parts = _split.isEmpty ? null : splitParts(_split, account.currency);
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (_) => RuleFormPage(
+                        workspace: widget.workspace,
+                        initial: RuleDraft(
+                          kind: _kind,
+                          freq: 'monthly',
+                          startOn: _date,
+                          accountId: _accountId,
+                          toAccountId: isTransfer ? _toAccountId : null,
+                          categoryId: _categoryId,
+                          amountMinor: amount == null || amount <= 0 ? null : amount,
+                          note: _note.text.trim(),
+                          splits: parts ?? const [],
+                        ),
+                      ),
+                    ));
+                  },
+                  icon: const Icon(Icons.event_repeat_rounded, size: 18),
+                  label: Text(l10n.repeatThis),
+                ),
+              ),
           ],
         ),
       ),
@@ -694,7 +877,8 @@ class AccountsPage extends ConsumerWidget {
                     margin: const EdgeInsets.only(bottom: AppSpace.md),
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
-                      onTap: () => showAccountForm(context, workspace, existing: item.account),
+                      // Its transactions; editing the account is one tap further, on that screen
+                      onTap: () => context.push('/account/${item.account.id}'),
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpace.lg),
                         child: Row(

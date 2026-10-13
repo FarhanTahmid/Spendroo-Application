@@ -7,6 +7,8 @@ import 'core/auth/auth_repository.dart';
 import 'core/providers.dart';
 import 'core/push/push_controller.dart';
 import 'core/ui.dart';
+import 'features/goals/goal_page.dart';
+import 'features/goals/goals_page.dart';
 import 'features/auth/auth_pages.dart';
 import 'features/cashbook/cashbook_pages.dart';
 import 'features/onboarding/onboarding_page.dart';
@@ -81,6 +83,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [GoRoute(path: 'keep', builder: (_, _) => const KeepPage())],
       ),
       GoRoute(path: '/account/:id', builder: (_, state) => AccountPage(accountId: state.pathParameters['id']!)),
+      GoRoute(path: '/goals', builder: (_, _) => const GoalsPage()),
+      GoRoute(path: '/goal/:id', builder: (_, state) => GoalPage(goalId: state.pathParameters['id']!)),
       GoRoute(
         path: '/cashbook/:id',
         builder: (_, state) => CashbookPage(bookId: state.pathParameters['id']!),

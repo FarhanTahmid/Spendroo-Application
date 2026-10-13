@@ -112,6 +112,8 @@ void main() {
     await app.settle();
     await app.settle();
     // The taka account is still listed, but the total is now in dollars
+    await tester.drag(find.byType(ListView).first, const Offset(0, -300));
+    await app.settle();
     expect(find.text(r'$0.00'), findsWidgets);
     expect(find.text('৳500.00'), findsOneWidget);
     await app.stop();

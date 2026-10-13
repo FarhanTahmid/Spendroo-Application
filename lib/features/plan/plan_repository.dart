@@ -167,6 +167,7 @@ final limitUseProvider = StreamProvider.autoDispose.family<LimitUse, (String, St
     F.personalAccounts => 'accounts',
     F.customCategories => 'categories',
     F.businessCashbooks => 'cashbooks',
+    F.savingsGoals => 'savings_goals',
     _ => 'workspaces',
   });
   return db

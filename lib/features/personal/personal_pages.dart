@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,12 @@ import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/money.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../goals/goal_celebration.dart';
+import '../goals/goal_math.dart';
+import '../goals/goal_style.dart';
+import '../goals/goals_overview_card.dart';
+import '../goals/goals_page.dart' show byUrgency, newGoal;
+import '../goals/goals_repository.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
@@ -26,6 +34,7 @@ String accountKindLabel(BuildContext context, String kind) => switch (kind) {
       'savings' => context.l10n.kindSavings,
       'mobile_money' => context.l10n.kindMobileMoney,
       'card' => context.l10n.kindCard,
+      'goal' => context.l10n.goalKind,
       _ => context.l10n.kindCash,
     };
 
@@ -34,6 +43,7 @@ IconData accountKindIcon(String kind) => switch (kind) {
       'savings' => Icons.savings_rounded,
       'mobile_money' => Icons.phone_android_rounded,
       'card' => Icons.credit_card_rounded,
+      'goal' => Icons.savings_rounded,
       _ => Icons.payments_rounded,
     };
 
@@ -41,8 +51,9 @@ IconData accountKindIcon(String kind) => switch (kind) {
 /// calendar; [accountId] its account, from that account's screen.
 /// With [occurrence] the form records a date of a recurring rule: it opens
 /// filled in from the rule, and what is saved settles that date.
+/// [goalId] opens it on "Save", putting money into that goal.
 void openTransactionForm(BuildContext context, Workspace workspace,
-        {TransactionView? existing, String? date, String? accountId, OccurrenceView? occurrence}) =>
+        {TransactionView? existing, String? date, String? accountId, OccurrenceView? occurrence, String? goalId}) =>
     Navigator.of(context).push(MaterialPageRoute(
       fullscreenDialog: true,
       builder: (_) => TransactionFormPage(
@@ -50,8 +61,13 @@ void openTransactionForm(BuildContext context, Workspace workspace,
           existing: existing,
           initialDate: date,
           initialAccountId: accountId,
+          initialGoalId: goalId,
           occurrence: occurrence),
     ));
+
+/// The kind the form shows for putting money into a savings goal. It is saved
+/// as a transfer into the goal's account (features/goals).
+const saveKind = 'save';
 
 final monthSummaryProvider = StreamProvider.family<MonthSummary, (String, String)>(
   (ref, key) => ref.watch(ledgerRepositoryProvider).watchMonth(key.$1, ref.watch(selectedMonthProvider), key.$2),
@@ -67,12 +83,15 @@ final monthlyTotalsProvider = StreamProvider.family<List<MonthTotals>, (String, 
 /// last six months compare. Every chart opens what it is made of on a tap.
 /// Figures are in the workspace currency; accounts in other currencies are listed, not added up.
 class OverviewPage extends ConsumerWidget {
-  const OverviewPage({super.key, required this.workspace, this.onOpenBudgets});
+  const OverviewPage({super.key, required this.workspace, this.onOpenBudgets, this.onOpenGoals});
 
   final Workspace workspace;
 
   /// Moves to the budgets screen; without it the overview offers no way there.
   final VoidCallback? onOpenBudgets;
+
+  /// Moves to the goals in the Planner tab; without it the goals screen is pushed.
+  final VoidCallback? onOpenGoals;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -86,6 +105,9 @@ class OverviewPage extends ConsumerWidget {
         .toList();
     final total =
         accounts.where((a) => a.account.currency == currency).fold<int>(0, (sum, a) => sum + a.balanceMinor);
+    // Money set aside in goals is not there to spend, but it is still the user's
+    final goals = ref.watch(goalsProvider(workspace.id)).value ?? const <GoalView>[];
+    final inGoals = goals.where((g) => g.goal.currency == currency).fold<int>(0, (sum, g) => sum + g.savedMinor);
     final month = ref.watch(monthSummaryProvider(key)).value;
     final trend = ref.watch(monthlyTotalsProvider(key)).value ?? const <MonthTotals>[];
     final budgets = (ref.watch(budgetsProvider(workspace.id)).value ?? const <BudgetProgress>[])
@@ -103,7 +125,16 @@ class OverviewPage extends ConsumerWidget {
       header: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          HeaderFigure(label: l10n.totalBalance, amountMinor: total, currency: currency),
+          HeaderFigure(label: goals.isEmpty ? l10n.totalBalance : l10n.available, amountMinor: total, currency: currency),
+          if (goals.isNotEmpty) ...[
+            const SizedBox(height: AppSpace.md),
+            GoalsWorthPanel(
+              availableMinor: total,
+              inGoalsMinor: inGoals,
+              currency: currency,
+              onOpenGoals: onOpenGoals ?? () => context.push('/goals'),
+            ),
+          ],
           const SizedBox(height: 12),
           MonthSwitcher(month: selectedMonth, onChanged: ref.read(selectedMonthProvider.notifier).set),
         ],
@@ -161,6 +192,11 @@ class OverviewPage extends ConsumerWidget {
                     ),
                   ],
                 ),
+              ),
+              // Straight after the month: what is left over has somewhere to go
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpace.sm),
+                child: GoalsStrip(workspace: workspace, onOpenGoals: onOpenGoals),
               ),
               Entrance(child: SpendingPaceCard(workspace: workspace, budgetMinor: budgetTotal)),
               if (budgetTotal > 0)
@@ -326,14 +362,15 @@ class TransactionTile extends StatelessWidget {
     final t = view.transaction;
     final isTransfer = t.kind == 'transfer';
     final isIn = t.amountMinor > 0;
+    final goal = view.goalName;
     final label = isTransfer
-        ? (transferLabel ?? l10n.transfer)
+        ? (goal != null ? (isIn ? l10n.fromGoal(goal) : l10n.toGoal(goal)) : (transferLabel ?? l10n.transfer))
         : (t.isSplit
             ? l10n.splitInParts(localDigits(context, '${t.parts.length}'))
             : (view.categoryName ?? l10n.uncategorised));
     return MoneyRow(
       icon: isTransfer
-          ? Icons.swap_horiz_rounded
+          ? (goal != null ? Icons.savings_rounded : Icons.swap_horiz_rounded)
           : (t.isSplit ? Icons.call_split_rounded : (isIn ? Icons.south_west_rounded : Icons.north_east_rounded)),
       // The badge wears the category's colour; the arrow and the amount still say which way the money went
       tint: isTransfer
@@ -438,7 +475,10 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
         rows.add(TransactionTile(
           view: view,
           showDate: false,
-          onTap: () => openTransactionForm(context, workspace, existing: view),
+          // Money into or out of a goal is the goal's to show and to take back
+          onTap: view.goalId != null
+              ? () => context.push('/goal/${view.goalId}')
+              : () => openTransactionForm(context, workspace, existing: view),
         ));
       }
       return ListView.builder(
@@ -496,13 +536,23 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
 
 /// Add an expense, income or transfer; or edit the amount, date, category and note of an existing one.
 class TransactionFormPage extends ConsumerStatefulWidget {
-  const TransactionFormPage(
-      {super.key, required this.workspace, this.existing, this.initialDate, this.initialAccountId, this.occurrence});
+  const TransactionFormPage({
+    super.key,
+    required this.workspace,
+    this.existing,
+    this.initialDate,
+    this.initialAccountId,
+    this.initialGoalId,
+    this.occurrence,
+  });
 
   final Workspace workspace;
   final TransactionView? existing;
   final String? initialDate;
   final String? initialAccountId;
+
+  /// Opens on "Save", into this goal.
+  final String? initialGoalId;
 
   /// The date of a recurring rule being recorded.
   final OccurrenceView? occurrence;
@@ -516,7 +566,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
   late final Transaction? _original = widget.existing?.transaction;
   // What a recurring rule says to record, when this form settles one of its dates
   late final RecurringRule? _rule = widget.occurrence?.rule.rule;
-  late String _kind = _original?.kind ?? _rule?.kind ?? 'expense';
+  late String _kind = _original?.kind ?? _rule?.kind ?? (widget.initialGoalId != null ? saveKind : 'expense');
+  late String? _goalId = widget.initialGoalId;
   late final _amount = TextEditingController(
     text: _original != null
         ? Money.toInput(_original.amountMinor.abs(), _original.currency)
@@ -600,6 +651,7 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
       splits = parts;
     }
 
+    if (_kind == saveKind) return _saveToGoal(account, amount);
     if (_original != null) {
       await repo.updateTransaction(_original,
           amountMinor: amount, occurredOn: _date, categoryId: _categoryId, note: _note.text.trim(), splits: splits);
@@ -632,6 +684,27 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
     Navigator.pop(context);
   }
 
+  /// Puts the money into the chosen goal, and celebrates a quarter of the way passed.
+  Future<void> _saveToGoal(Account account, int amount) async {
+    final l10n = context.l10n;
+    final goals = ref.read(goalsProvider(widget.workspace.id)).value ?? const <GoalView>[];
+    final view = goals.where((g) => g.goal.id == _goalId).firstOrNull;
+    if (view == null) return _refuse(l10n.goalPick);
+    if (view.goal.currency != account.currency) return _refuse(l10n.currencyMismatch);
+    if (ref.read(entitlementsProvider).value?.isLocked(account.id) ?? false) return _refuse(l10n.goalAccountLocked);
+    await ref.read(goalsRepositoryProvider).contribute(view.goal, account,
+        amountMinor: amount, occurredOn: _date, note: _note.text.trim());
+    if (!mounted) return;
+    final before = view.progressOn(DateTime.now()).percent;
+    final after = math.max(view.savedMinor + amount, 0) * 100 ~/ view.goal.targetMinor;
+    final crossed = marksCrossed(before, after);
+    // The screen underneath stays: the celebration is shown there once this one closes
+    final host = Navigator.of(context).context;
+    showEventBurst(context, AppEvent.moneyIn, label: '+${context.money(amount, account.currency)}');
+    Navigator.pop(context);
+    if (crossed.isNotEmpty && host.mounted) celebrateMilestone(host, view.goal, crossed.last);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -639,6 +712,17 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
     final accounts = (ref.watch(accountsProvider(widget.workspace.id)).value ?? const <AccountBalance>[])
         .where((a) => !a.account.isArchived || a.account.id == _accountId)
         .toList();
+    final plan = ref.watch(entitlementsProvider).value;
+    // Goals money can go into now: open, and not locked by a downgrade
+    final goals = (ref.watch(goalsProvider(widget.workspace.id)).value ?? const <GoalView>[])
+        .where((g) => !g.isArchived && !(plan?.isLocked(g.goal.id) ?? false))
+        .toList();
+    final saving = _kind == saveKind;
+    // The most urgent goal is the likeliest one to save for
+    if (saving && goals.every((g) => g.goal.id != _goalId)) {
+      _goalId = byUrgency(goals, DateTime.now()).firstOrNull?.goal.id;
+    }
+    final goal = goals.where((g) => g.goal.id == _goalId).firstOrNull;
     final categories = (ref.watch(categoriesProvider(widget.workspace.id)).value ?? const <Category>[])
         .where((c) => c.kind == (_kind == 'income' ? 'income' : 'expense'))
         .toList();
@@ -652,6 +736,7 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
     Color kindColor(String kind) => switch (kind) {
           'income' => AppTheme.successColor,
           'transfer' => scheme.primary,
+          saveKind => goal == null ? const Color(0xFF1FA6A0) : goalColor(goal.goal),
           _ => AppTheme.errorColor,
         };
 
@@ -727,7 +812,14 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
             // What a recurring rule records is the rule's to say
             if (!editing && _rule == null) ...[
               SlidingSegmented<String>(
-                segments: {'expense': l10n.expense, 'income': l10n.income, 'transfer': l10n.transfer},
+                key: const ValueKey('kind-switch'),
+                segments: {
+                  'expense': l10n.expense,
+                  'income': l10n.income,
+                  'transfer': l10n.transfer,
+                  // Saving is offered every time money is written down
+                  saveKind: l10n.saveKind,
+                },
                 value: _kind,
                 colorOf: kindColor,
                 onChanged: (value) => setState(() {
@@ -747,17 +839,57 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
               currency: account.currency,
               hero: true,
               autofocus: !editing,
-              color: isTransfer ? null : context.amountColor(_kind == 'income'),
+              color: saving ? kindColor(saveKind) : (isTransfer ? null : context.amountColor(_kind == 'income')),
             ),
             const SizedBox(height: 20),
-            accountPicker(isTransfer ? l10n.fromAccount : l10n.account, _accountId,
+            accountPicker(isTransfer || saving ? l10n.fromAccount : l10n.account, _accountId,
                 (value) => setState(() => _accountId = value)),
             const SizedBox(height: 12),
-            if (isTransfer && !editing) ...[
+            if (saving) ...[
+              if (goals.isEmpty)
+                // Nothing to save into yet: the first goal is one tap away
+                OutlinedButton.icon(
+                  onPressed: () {
+                    final navigator = Navigator.of(context);
+                    final host = navigator.context;
+                    navigator.pop();
+                    newGoal(host, ref, widget.workspace);
+                  },
+                  icon: const Icon(Icons.flag_rounded),
+                  label: Text(l10n.goalStartFirst),
+                )
+              else
+                SelectField<String>(
+                  label: l10n.intoGoal,
+                  icon: Icons.flag_rounded,
+                  value: _goalId,
+                  options: [
+                    for (final g in goals)
+                      SelectOption(
+                        g.goal.id,
+                        g.goal.name,
+                        icon: goalIcon(g.goal),
+                        color: goalColor(g.goal),
+                        detail: '${localDigits(context, '${g.progressOn(DateTime.now()).percent}%')} · '
+                            '${l10n.goalToGo(context.money(g.progressOn(DateTime.now()).remainingMinor, g.goal.currency))}',
+                      ),
+                  ],
+                  onChanged: (value) => setState(() => _goalId = value),
+                ),
+              if (goal != null) ...[
+                const SizedBox(height: 8),
+                _GoalNudge(
+                  view: goal,
+                  onPick: (amount) => setState(() => _amount.text = Money.toInput(amount, goal.goal.currency)),
+                ),
+              ],
+              const SizedBox(height: 12),
+            ],
+            if (isTransfer && !editing && !saving) ...[
               accountPicker(l10n.toAccount, _toAccountId, (value) => setState(() => _toAccountId = value)),
               const SizedBox(height: 12),
             ],
-            if (!isTransfer && _split.isEmpty) ...[
+            if (!isTransfer && !saving && _split.isEmpty) ...[
               SelectField<String>(
                 label: l10n.category,
                 icon: Icons.sell_outlined,
@@ -777,7 +909,7 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
                 ),
               ),
             ],
-            if (!isTransfer && _split.isNotEmpty) ...[
+            if (!isTransfer && !saving && _split.isNotEmpty) ...[
               SplitEditor(
                 drafts: _split,
                 currency: account.currency,
@@ -821,11 +953,12 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
                       builder: (_) => RuleFormPage(
                         workspace: widget.workspace,
                         initial: RuleDraft(
-                          kind: _kind,
+                          // A saving repeats as a transfer into the goal
+                          kind: saving ? 'transfer' : _kind,
                           freq: 'monthly',
                           startOn: _date,
                           accountId: _accountId,
-                          toAccountId: isTransfer ? _toAccountId : null,
+                          toAccountId: saving ? goal?.goal.accountId : (isTransfer ? _toAccountId : null),
                           categoryId: _categoryId,
                           amountMinor: amount == null || amount <= 0 ? null : amount,
                           note: _note.text.trim(),
@@ -846,9 +979,12 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
 }
 
 class AccountsPage extends ConsumerWidget {
-  const AccountsPage({super.key, required this.workspace});
+  const AccountsPage({super.key, required this.workspace, this.onOpenGoals});
 
   final Workspace workspace;
+
+  /// Moves to the goals in the Planner tab; without it the goals screen is pushed.
+  final VoidCallback? onOpenGoals;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -861,8 +997,25 @@ class AccountsPage extends ConsumerWidget {
         .where((a) => a.account.currency == currency && !a.account.isArchived)
         .fold<int>(0, (sum, a) => sum + a.balanceMinor);
 
+    final goals = ref.watch(goalsProvider(workspace.id)).value ?? const <GoalView>[];
+    final inGoals = goals.where((g) => g.goal.currency == currency).fold<int>(0, (sum, g) => sum + g.savedMinor);
+
     return PassbookBody(
-      header: HeaderFigure(label: l10n.totalBalance, amountMinor: total, currency: currency),
+      header: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          HeaderFigure(label: goals.isEmpty ? l10n.totalBalance : l10n.available, amountMinor: total, currency: currency),
+          if (goals.isNotEmpty) ...[
+            const SizedBox(height: AppSpace.md),
+            GoalsWorthPanel(
+              availableMinor: total,
+              inGoalsMinor: inGoals,
+              currency: currency,
+              onOpenGoals: onOpenGoals ?? () => context.push('/goals'),
+            ),
+          ],
+        ],
+      ),
       child: AsyncView(
         value: value,
         builder: (accounts) => ListView(
@@ -922,6 +1075,7 @@ class AccountsPage extends ConsumerWidget {
               ),
             AddRowButton(label: l10n.addAccount, onPressed: () => showAccountForm(context, workspace)),
             LimitHint(feature: F.personalAccounts, workspace: workspace),
+            GoalsAccountsLink(workspace: workspace, onOpenGoals: onOpenGoals),
           ],
         ),
       ),
@@ -1027,6 +1181,52 @@ class _AccountFormState extends ConsumerState<_AccountForm> {
           ],
           const SizedBox(height: 20),
           Shake(trigger: _refused, child: BusyButton(label: l10n.save, onPressed: _save)),
+        ],
+      ),
+    );
+  }
+}
+
+
+/// Under the chosen goal on the "Save" form: how it stands, and the amount
+/// that keeps it on pace, one tap away.
+class _GoalNudge extends StatelessWidget {
+  const _GoalNudge({required this.view, required this.onPick});
+
+  final GoalView view;
+  final ValueChanged<int> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final text = Theme.of(context).textTheme;
+    final goal = view.goal;
+    final progress = view.progressOn(DateTime.now());
+    final needed = progress.neededPerMonthMinor;
+    final color = goalColor(goal);
+    return Container(
+      padding: const EdgeInsets.all(AppSpace.md),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadius.control),
+      ),
+      child: Row(
+        children: [
+          PercentRing(value: progress.fraction, size: 40, stroke: 4, color: color),
+          const SizedBox(width: AppSpace.md),
+          Expanded(
+            child: Text(
+              l10n.goalSavedOf(context.money(view.savedMinor, goal.currency), context.money(goal.targetMinor, goal.currency)),
+              style: text.bodySmall,
+            ),
+          ),
+          if (needed != null)
+            ActionChip(
+              avatar: const Icon(Icons.bolt_rounded, size: 16),
+              label: Text(context.money(needed, goal.currency)),
+              tooltip: l10n.goalQuickNeeded,
+              onPressed: () => onPick(needed),
+            ),
         ],
       ),
     );

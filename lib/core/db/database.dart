@@ -122,6 +122,29 @@ class Transactions extends Table with SyncColumns {
   TextColumn get occurrenceId => text().nullable()();
 }
 
+/// Money put aside for something. It sits in an account of its own (kind
+/// 'goal'), so putting money in or taking it out is a transfer.
+class SavingsGoals extends Table with SyncColumns {
+  TextColumn get accountId => text()();
+  TextColumn get name => text()();
+  IntColumn get targetMinor => integer()();
+  TextColumn get currency => text()();
+
+  /// yyyy-MM-dd, or null for a goal with no date.
+  TextColumn get targetOn => text().nullable()();
+
+  /// A name from the goal icon set (features/goals/goal_style.dart); '' for the default.
+  TextColumn get icon => text().withDefault(const Constant(''))();
+  TextColumn get color => text().nullable()();
+
+  /// active, reached (set by the server) or archived.
+  TextColumn get status => text().withDefault(const Constant('active'))();
+  TextColumn get reachedAt => text().nullable()();
+
+  /// One bit per milestone (25, 50, 75, 100%) the server has told the user about.
+  IntColumn get milestonesHit => integer().withDefault(const Constant(0))();
+}
+
 /// No month: the limit for every month. A month (yyyy-MM-01): that month only.
 class Budgets extends Table with SyncColumns {
   TextColumn get categoryId => text()();
@@ -254,6 +277,9 @@ const billingStampSettingKey = 'billing_stamp';
 /// Offers closed on the home screen, as comma-separated slugs.
 const offersDismissedSettingKey = 'offers_dismissed';
 
+/// Set once the "Give your money a job" card on the overview was closed.
+const goalInviteDismissedSettingKey = 'goal_invite_dismissed';
+
 /// The locks the "choose what to keep" screen was last opened for, so it opens by itself once.
 const keepPromptedSettingKey = 'keep_prompted';
 
@@ -268,7 +294,7 @@ class Settings extends Table {
 
 @DriftDatabase(tables: [
   Workspaces, Cashbooks, EntryCategories, PaymentMethods, Entries, CashbookMembers,
-  Accounts, Categories, Transactions, Budgets, RecurringRules, RecurringOccurrences, InboxItems,
+  Accounts, Categories, Transactions, Budgets, RecurringRules, RecurringOccurrences, InboxItems, SavingsGoals,
   Outbox, SyncCursors, SyncFailures, Settings,
 ])
 class AppDatabase extends _$AppDatabase {
@@ -277,7 +303,7 @@ class AppDatabase extends _$AppDatabase {
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -312,13 +338,16 @@ class AppDatabase extends _$AppDatabase {
             // A split made on another device may have been pulled without its column: pull again
             await customStatement('DELETE FROM sync_cursors');
           },
+          from6To7: (m, schema) async {
+            await m.createTable(schema.savingsGoals);
+          },
         ),
       );
 
   /// Synced tables in the order rows must be applied: parents before children.
   static const syncedTables = [
     'cashbooks', 'entry_categories', 'payment_methods', 'entries', 'cashbook_members',
-    'accounts', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions', 'budgets',
+    'accounts', 'savings_goals', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions', 'budgets',
     'inbox_items',
   ];
 

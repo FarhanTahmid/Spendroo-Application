@@ -1951,4 +1951,621 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get nudgeBody => 'মনে থাকতে থাকতে লিখে রাখুন।';
+
+  @override
+  String get available => 'খরচযোগ্য';
+
+  @override
+  String get inGoals => 'লক্ষ্যে জমা';
+
+  @override
+  String get netWorth => 'মোট সম্পদ';
+
+  @override
+  String get goals => 'সঞ্চয়ের লক্ষ্য';
+
+  @override
+  String get goalKind => 'সঞ্চয়ের লক্ষ্য';
+
+  @override
+  String toGoal(String goal) {
+    return 'লক্ষ্যে জমা: $goal';
+  }
+
+  @override
+  String fromGoal(String goal) {
+    return 'লক্ষ্য থেকে: $goal';
+  }
+
+  @override
+  String get intoGoal => 'যে লক্ষ্যে জমা হবে';
+
+  @override
+  String limitGoals(String plan, int limit) {
+    return 'আপনার $plan প্ল্যানে একসাথে $limitটি সঞ্চয়ের লক্ষ্য রাখা যায়। একটি আর্কাইভ করুন, বা আরও পেতে আপগ্রেড করুন।';
+  }
+
+  @override
+  String get notifGoals => 'সঞ্চয়ের লক্ষ্য';
+
+  @override
+  String get notifGoalsHint =>
+      'প্রতি চার ভাগের এক ভাগ পূরণ, পিছিয়ে পড়া, আর এক মাস কিছু না জমালে';
+
+  @override
+  String get goalTemplateEmergency => 'জরুরি তহবিল';
+
+  @override
+  String get goalTemplateGadget => 'গ্যাজেট';
+
+  @override
+  String get goalTemplateTrip => 'ভ্রমণ';
+
+  @override
+  String get goalTemplateFestival => 'ঈদ ও উৎসব';
+
+  @override
+  String get goalTemplateEducation => 'পড়াশোনা';
+
+  @override
+  String get goalTemplateWedding => 'বিয়ে';
+
+  @override
+  String get goalTemplateVehicle => 'যানবাহন';
+
+  @override
+  String get goalTemplateHome => 'বাড়ি';
+
+  @override
+  String get goalTemplateGift => 'উপহার';
+
+  @override
+  String get goalTemplateCustom => 'অন্য কিছু';
+
+  @override
+  String get goalOnTrack => 'ঠিক পথে';
+
+  @override
+  String get goalAhead => 'এগিয়ে';
+
+  @override
+  String get goalBehind => 'পিছিয়ে';
+
+  @override
+  String get goalNoDate => 'তারিখ নেই';
+
+  @override
+  String get goalReached => 'পূরণ হয়েছে';
+
+  @override
+  String get goalNew => 'নতুন লক্ষ্য';
+
+  @override
+  String get goalEdit => 'লক্ষ্য বদলান';
+
+  @override
+  String get goalCreate => 'জমানো শুরু করুন';
+
+  @override
+  String get goalWhatFor => 'কীসের জন্য জমাচ্ছেন?';
+
+  @override
+  String get goalName => 'লক্ষ্যের নাম';
+
+  @override
+  String get goalTarget => 'লক্ষ্যের পরিমাণ';
+
+  @override
+  String get goalHasDate => 'লক্ষ্যের তারিখ দিন';
+
+  @override
+  String get goalHasDateHint =>
+      'তারিখসহ লক্ষ্য বেশি পূরণ হয়: প্রতি মাসে কত লাগবে তা দেখা যায়';
+
+  @override
+  String get goalTargetDate => 'যে তারিখের মধ্যে';
+
+  @override
+  String get goalColour => 'রং';
+
+  @override
+  String get goalPreviewNoDate => 'প্রতি মাসে কত লাগবে দেখতে তারিখ দিন';
+
+  @override
+  String goalPreviewPace(String month, String week, String day) {
+    return '≈ মাসে $month · সপ্তাহে $week · দিনে $day';
+  }
+
+  @override
+  String goalEmergencySuggestion(String amount) {
+    return 'পরামর্শ: $amount, আপনার তিন মাসের খরচ';
+  }
+
+  @override
+  String goalSavedOf(String saved, String target) {
+    return '$target-এর মধ্যে $saved';
+  }
+
+  @override
+  String goalOfTarget(String target) {
+    return '$target-এর মধ্যে';
+  }
+
+  @override
+  String goalToGo(String amount) {
+    return 'আর $amount বাকি';
+  }
+
+  @override
+  String goalLeft(String amount) {
+    return '$amount বাকি';
+  }
+
+  @override
+  String goalBy(String date) {
+    return '$date-এর মধ্যে';
+  }
+
+  @override
+  String goalPerWeekNeeded(String amount) {
+    return 'সপ্তাহে $amount দরকার';
+  }
+
+  @override
+  String goalNextMilestone(String mark, String amount) {
+    return 'পরের ধাপ: $mark% · আর $amount';
+  }
+
+  @override
+  String goalDaysEarly(String days) {
+    return '$days দিন এগিয়ে';
+  }
+
+  @override
+  String goalDaysLate(String days) {
+    return '$days দিন পিছিয়ে';
+  }
+
+  @override
+  String get goalAddMoney => 'টাকা জমান';
+
+  @override
+  String goalAddMoneyTo(String goal) {
+    return '$goal-এ টাকা জমান';
+  }
+
+  @override
+  String get goalWithdraw => 'তুলুন';
+
+  @override
+  String get goalUseMoney => 'টাকাটা কাজে লাগান';
+
+  @override
+  String get goalKeepSaving => 'জমানো চালিয়ে যান';
+
+  @override
+  String get goalAutoSave => 'নিয়মিত জমা';
+
+  @override
+  String goalAutoSaveTitle(String goal) {
+    return '$goal-এর জন্য জমা';
+  }
+
+  @override
+  String get goalAuto => 'নিজে থেকে জমা';
+
+  @override
+  String get goalRestore => 'ফিরিয়ে আনুন';
+
+  @override
+  String get goalGone => 'এই লক্ষ্যটি আর নেই।';
+
+  @override
+  String get goalDeleteHasMoney =>
+      'আগে টাকাটা তুলে নিন, যাতে কোনো টাকা চোখের আড়ালে না যায়।';
+
+  @override
+  String goalDeleteConfirm(String goal) {
+    return '$goal মুছবেন? এর ইতিহাসও মুছে যাবে।';
+  }
+
+  @override
+  String get goalLockedNote =>
+      'আপনার প্ল্যানে এই লক্ষ্যটি শুধু দেখা যায়: নতুন জমা হবে না, তবে টাকা সবসময় তুলতে পারবেন।';
+
+  @override
+  String goalNoAccountInCurrency(String currency) {
+    return 'টাকা আনা-নেওয়ার জন্য $currency-এ কোনো অ্যাকাউন্ট নেই।';
+  }
+
+  @override
+  String goalMoreThanBalance(String account) {
+    return 'এটা $account-এ যা আছে তার চেয়ে বেশি; ব্যালেন্স শূন্যের নিচে যাবে।';
+  }
+
+  @override
+  String get goalQuickNeeded => 'এ মাসের ভাগ';
+
+  @override
+  String get goalQuickTenth => 'আয়ের ১০%';
+
+  @override
+  String get goalQuickRest => 'বাকি সবটা';
+
+  @override
+  String get goalEnterAmount => 'পরিমাণ লিখুন';
+
+  @override
+  String get goalTrajectory => 'কেমন চলছে';
+
+  @override
+  String get goalTargetLine => 'লক্ষ্য';
+
+  @override
+  String get goalLegendSaved => 'জমা';
+
+  @override
+  String get goalLegendSteady => 'সমান গতিতে';
+
+  @override
+  String get goalLegendForecast => 'আপনার গতিতে';
+
+  @override
+  String get goalLegendMilestone => 'ধাপ';
+
+  @override
+  String get goalPace => 'গতি';
+
+  @override
+  String get goalNeededMonthly => 'মাসে দরকার';
+
+  @override
+  String get goalYourAverage => 'আপনার গড়';
+
+  @override
+  String get goalSoFar => 'এ পর্যন্ত';
+
+  @override
+  String get goalPaceTooEarly => 'এক মাস জমানোর পর এখানে দেখাবে কবে পৌঁছাবেন।';
+
+  @override
+  String get goalForecast => 'শেষ হবে';
+
+  @override
+  String get goalPaceNothingYet =>
+      'টাকা জমা শুরু হলে কবে পৌঁছাবেন তা এখানে দেখাবে।';
+
+  @override
+  String goalPaceEarly(String date) {
+    return 'এই গতিতে আপনি $date নাগাদ পৌঁছাবেন, সময়মতো।';
+  }
+
+  @override
+  String goalPaceLate(String date, String needed) {
+    return 'এই গতিতে আপনি $date নাগাদ পৌঁছাবেন, তারিখের পরে। মাসে $needed জমালে সময়মতো হবে।';
+  }
+
+  @override
+  String goalPaceNoDate(String amount, String date) {
+    return 'মাসে $amount করে জমালে $date নাগাদ পৌঁছাবেন।';
+  }
+
+  @override
+  String get goalWhatIf => 'যদি জমাই…';
+
+  @override
+  String goalWhatIfResult(String amount, String date) {
+    return 'মাসে $amount → $date-এর মধ্যে শেষ';
+  }
+
+  @override
+  String get goalWhatIfNever => 'কবে পৌঁছাবেন দেখতে স্লাইডারটি সরান।';
+
+  @override
+  String get goalWhatIfAutoSave => 'প্রতি মাসে এটা জমান';
+
+  @override
+  String get goalMonthly => 'মাস অনুযায়ী';
+
+  @override
+  String goalStreak(String months) {
+    return 'টানা $months মাস';
+  }
+
+  @override
+  String get goalMilestones => 'ধাপগুলো';
+
+  @override
+  String get goalSources => 'কোথা থেকে এসেছে';
+
+  @override
+  String get goalHistory => 'ইতিহাস';
+
+  @override
+  String get goalNoMoves =>
+      'এখনও কিছু জমা হয়নি। প্রথম পদক্ষেপটাই সবচেয়ে বড়।';
+
+  @override
+  String goalMoveIn(String account) {
+    return '$account থেকে';
+  }
+
+  @override
+  String goalMoveOut(String account) {
+    return '$account-এ';
+  }
+
+  @override
+  String get goalUndoMove =>
+      'এটা ফিরিয়ে নেবেন? ট্রান্সফারের দুই দিকই মুছে যাবে।';
+
+  @override
+  String goalHalfway(String goal) {
+    return '$goal-এর অর্ধেক পথ পেরিয়েছেন!';
+  }
+
+  @override
+  String goalMilestoneReached(String mark, String goal) {
+    return '$goal-এর $mark% পূরণ!';
+  }
+
+  @override
+  String get goalReachedTitle => 'লক্ষ্য পূরণ!';
+
+  @override
+  String goalReachedBody(String goal, String amount) {
+    return '$goal-এর জন্য আপনি $amount জমিয়েছেন।';
+  }
+
+  @override
+  String get goalReachedDays => 'যত দিন লেগেছে';
+
+  @override
+  String get goalReachedTimes => 'যতবার জমিয়েছেন';
+
+  @override
+  String goalsSummary(String saved, String target, String count) {
+    return '$countটি লক্ষ্যে $target-এর মধ্যে $saved';
+  }
+
+  @override
+  String goalsThisMonth(String amount) {
+    return 'এ মাসে $amount';
+  }
+
+  @override
+  String goalsSavingRate(String percent) {
+    return 'আয়ের $percent% জমাচ্ছেন';
+  }
+
+  @override
+  String get goalsHeaderEmpty => 'যে টাকা আলাদা করে রাখবেন তা এখানে দেখাবে।';
+
+  @override
+  String get goalsReachedSection => 'পূরণ হয়েছে';
+
+  @override
+  String goalsArchivedSection(String count) {
+    return 'আর্কাইভ করা ($count)';
+  }
+
+  @override
+  String get goalsEmptyTitle => 'আপনার টাকাকে একটা কাজ দিন';
+
+  @override
+  String get goalsEmptyBody =>
+      'দরকারি কিছুর জন্য টাকা আলাদা করে রাখুন। এটা খরচযোগ্য টাকা থেকে সরে যায়, তাই খরচের লোভ থাকে না, আর যখন খুশি ফেরত নিতে পারবেন।';
+
+  @override
+  String get goalsHowTitle => 'লক্ষ্য কীভাবে কাজ করে';
+
+  @override
+  String get goalsHowSetAside => 'টাকা আলাদা থাকে';
+
+  @override
+  String get goalsHowSetAsideBody =>
+      'টাকা জমালে তা অ্যাকাউন্ট থেকে লক্ষ্যে চলে যায়। তখন তা \'খরচযোগ্য\'-তে থাকে না, তবে মোট সম্পদে ধরা হয়।';
+
+  @override
+  String get goalsHowDate => 'তারিখ দিলে লক্ষ্য বাস্তব হয়';
+
+  @override
+  String get goalsHowDateBody =>
+      'তারিখ দিলে প্রতি মাসে কত লাগবে আর আপনি ঠিক পথে আছেন কি না তা দেখা যায়।';
+
+  @override
+  String get goalsHowFirst => 'আগে নিজেকে দিন';
+
+  @override
+  String get goalsHowFirstBody =>
+      'মাসের শেষে যা থাকে তা জমানোর চেয়ে বেতন পাওয়ার পরপরই নিয়মিত জমানো বেশি কাজ করে।';
+
+  @override
+  String get goalsHowWithdraw => 'যখন খুশি, আপনারই';
+
+  @override
+  String get goalsHowWithdrawBody =>
+      'লক্ষ্যের টাকা খরচ করতে আগে তা অ্যাকাউন্টে তুলুন। টাকা কখনও আটকে থাকে না, শুধু একটা ভেবে-চিন্তে নেওয়া ধাপ বেশি।';
+
+  @override
+  String insightBehind(String goal, String amount, String perWeek) {
+    return '$goal $amount পিছিয়ে আছে। সপ্তাহে $perWeek জমালে আবার ঠিক পথে আসবে।';
+  }
+
+  @override
+  String insightStreak(String months, String goal) {
+    return 'টানা $months মাস $goal-এর জন্য জমিয়েছেন। ধারাটা ধরে রাখুন!';
+  }
+
+  @override
+  String insightCutBack(
+    String category,
+    String amount,
+    String goal,
+    int count,
+    String weeks,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$weeks সপ্তাহ',
+    );
+    return 'এ মাসে $category-এ $amount খরচ হয়েছে। এর অর্ধেক জমালে $goal $_temp0 আগে পূরণ হবে।';
+  }
+
+  @override
+  String insightPayday(String goal) {
+    return 'আপনি সাধারণত বেতনের পরপরই $goal-এর জন্য জমান। প্রতি মাসে নিজে থেকে হোক?';
+  }
+
+  @override
+  String insightBestMonth(String amount) {
+    return 'এ মাসে লক্ষ্যে $amount জমিয়েছেন, এখন পর্যন্ত সেরা মাস।';
+  }
+
+  @override
+  String get insightEmergency =>
+      'এখনও জরুরি তহবিল নেই। অপ্রত্যাশিত খরচের জন্য তিন থেকে ছয় মাসের খরচ রাখার পরামর্শ দেওয়া হয়।';
+
+  @override
+  String get insightEmergencyAction => 'শুরু করুন';
+
+  @override
+  String withdrawTitle(String goal) {
+    return '$goal থেকে টাকা তুলবেন?';
+  }
+
+  @override
+  String get withdrawReachedTitle => 'টাকাটা কাজে লাগান 🎉';
+
+  @override
+  String withdrawFinishMoves(String from, String to) {
+    return 'শেষের তারিখ $from থেকে $to-এ সরে যাবে।';
+  }
+
+  @override
+  String withdrawSetsBack(String amount) {
+    return 'এতে আপনার লক্ষ্য $amount পিছিয়ে যাবে।';
+  }
+
+  @override
+  String withdrawAll(String amount) {
+    return 'সবটা: $amount';
+  }
+
+  @override
+  String get withdrawWhy => 'কেন? (ঐচ্ছিক)';
+
+  @override
+  String get withdrawEmergency => 'জরুরি';
+
+  @override
+  String get withdrawReached => 'লক্ষ্য পূরণ হয়েছে';
+
+  @override
+  String get withdrawChangedPlans => 'পরিকল্পনা বদলেছে';
+
+  @override
+  String get withdrawOther => 'অন্য কারণ';
+
+  @override
+  String withdrawConfirm(String amount) {
+    return '$amount তুলুন';
+  }
+
+  @override
+  String withdrawMove(String amount) {
+    return '$amount অ্যাকাউন্টে নিন';
+  }
+
+  @override
+  String withdrawTooMuch(String amount) {
+    return 'লক্ষ্যে আছে $amount।';
+  }
+
+  @override
+  String withdrawNote(String percent) {
+    return 'আপনি $percent% পথ পেরিয়েছেন। টাকা একটি ট্রান্সফার হিসেবে ফেরত যাবে, যা দুই জায়গাতেই দেখা যাবে।';
+  }
+
+  @override
+  String inboxGoalMilestone(String percent, String title) {
+    return '$title: লক্ষ্যের $percent% পূরণ হয়েছে';
+  }
+
+  @override
+  String inboxGoalReached(String title) {
+    return '$title: লক্ষ্য পূরণ হয়েছে!';
+  }
+
+  @override
+  String inboxGoalBehind(String title) {
+    return '$title সময়ের চেয়ে পিছিয়ে আছে';
+  }
+
+  @override
+  String inboxGoalIdle(String title, String days) {
+    return '$days দিন ধরে $title-এ কিছু জমানো হয়নি';
+  }
+
+  @override
+  String inboxGoalDetail(String saved, String target) {
+    return '$target-এর মধ্যে $saved জমেছে';
+  }
+
+  @override
+  String inboxGoalNeeded(String amount) {
+    return 'মাসে $amount জমালে আবার সময়মতো হবে';
+  }
+
+  @override
+  String get planner => 'পরিকল্পনা';
+
+  @override
+  String get goalsShort => 'লক্ষ্য';
+
+  @override
+  String get saveKind => 'জমা';
+
+  @override
+  String get goalPick => 'একটি লক্ষ্য বেছে নিন';
+
+  @override
+  String get goalStartFirst => 'প্রথম লক্ষ্য শুরু করুন';
+
+  @override
+  String get goalNewShort => 'নতুন';
+
+  @override
+  String goalsBehindCount(String count) {
+    return '$countটি পিছিয়ে';
+  }
+
+  @override
+  String goalsSavedTotal(String amount) {
+    return '$amount জমা';
+  }
+
+  @override
+  String get goalsInviteBody =>
+      'দরকারি কিছুর জন্য টাকা আলাদা রাখুন। লক্ষ্য শুরু করতে চাপুন।';
+
+  @override
+  String goalsKeptAside(int n, String count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$countটি লক্ষ্য, খরচের টাকা থেকে আলাদা',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalsShareOfWorth(String percent) {
+    return 'আপনার সম্পদের $percent লক্ষ্যের জন্য আলাদা রাখা';
+  }
+
+  @override
+  String get goalAccountLocked =>
+      'আপনার প্ল্যানে এই অ্যাকাউন্টটি শুধু দেখার জন্য। জমাতে অন্য একটি বেছে নিন।';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../l10n/app_localizations.dart';
 import 'design/tokens.dart';
@@ -80,9 +81,15 @@ class BrandLogo extends StatelessWidget {
 /// Fill colours: green for money in, red for money out. For text use `context.amountColor`.
 Color amountColor(bool isIn) => isIn ? AppTheme.successColor : AppTheme.errorColor;
 
-/// "1 Oct 2026", with Bengali month names and digits in Bangla.
-String formatDate(BuildContext context, String isoDate) =>
-    MaterialLocalizations.of(context).formatMediumDate(DateTime.parse(isoDate));
+/// "Tue, Oct 13" this year, "Oct 13, 2027" any other, with Bengali month
+/// names and digits in Bangla.
+String formatDate(BuildContext context, String isoDate) => formatDay(context, DateTime.parse(isoDate));
+
+/// [formatDate] for a [DateTime]: the year is left out only when it is this one.
+String formatDay(BuildContext context, DateTime date) {
+  if (date.year == DateTime.now().year) return MaterialLocalizations.of(context).formatMediumDate(date);
+  return DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(date);
+}
 
 /// "Today", "Yesterday", or the date.
 String friendlyDate(BuildContext context, String isoDate) {

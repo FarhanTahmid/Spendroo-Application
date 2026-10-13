@@ -112,7 +112,7 @@ class FirebasePushService implements PushService {
   static const _reminders = AndroidNotificationChannel(
     'reminders',
     'Reminders',
-    description: 'Bills, income and budgets',
+    description: 'Bills, income, budgets and goals',
     importance: Importance.high,
   );
   static const _daily = AndroidNotificationChannel(

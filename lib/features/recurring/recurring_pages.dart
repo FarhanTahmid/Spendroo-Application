@@ -7,6 +7,8 @@ import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/money.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../goals/goal_style.dart';
+import '../goals/goals_repository.dart';
 import '../personal/allocations.dart';
 import '../personal/ledger_repository.dart';
 import '../personal/personal_pages.dart';
@@ -303,6 +305,10 @@ class _RuleFormPageState extends ConsumerState<RuleFormPage> {
   );
   int _refused = 0;
 
+  /// The savings goal the money goes into, when the rule saves for one: it
+  /// takes the place of the account the transfer goes to.
+  SavingsGoal? _goal;
+
   bool get _isReminder => _kind == reminderKind;
 
   @override
@@ -341,7 +347,10 @@ class _RuleFormPageState extends ConsumerState<RuleFormPage> {
       account = accounts.firstWhere((a) => a.account.id == _accountId).account;
       amount = Money.evaluate(_amount.text, account.currency)!;
       if (_kind == 'transfer') {
-        to = accounts.firstWhere((a) => a.account.id == _toAccountId).account;
+        final goal = _goal;
+        to = accounts.where((a) => a.account.id == _toAccountId).firstOrNull?.account ??
+            (goal == null ? null : await ref.read(goalsRepositoryProvider).accountOf(goal));
+        if (to == null) return _refuse(l10n.goalGone);
         if (to.id == account.id) return _refuse(l10n.sameAccountError);
         if (to.currency != account.currency) return _refuse(l10n.currencyMismatch);
       }
@@ -396,6 +405,11 @@ class _RuleFormPageState extends ConsumerState<RuleFormPage> {
     if (accounts.isEmpty) return Scaffold(appBar: AppBar(), body: const Center(child: AppLoader()));
     final editing = _original != null;
     final isTransfer = _kind == 'transfer';
+    _goal = (ref.watch(goalsProvider(widget.workspace.id)).value ?? const <GoalView>[])
+        .where((view) => view.goal.accountId == _toAccountId)
+        .firstOrNull
+        ?.goal;
+    final goal = isTransfer ? _goal : null;
     if (!_isReminder) {
       _accountId ??= accounts.first.account.id;
       _toAccountId ??= accounts.firstWhere((a) => a.account.id != _accountId, orElse: () => accounts.first).account.id;
@@ -455,8 +469,8 @@ class _RuleFormPageState extends ConsumerState<RuleFormPage> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.sm, AppSpace.page, AppSpace.lg),
           children: [
-            // A reminder does not turn into a transaction, nor the other way
-            if (!editing && !_isReminder) ...[
+            // A reminder does not turn into a transaction, nor the other way; saving for a goal stays a transfer
+            if (!editing && !_isReminder && goal == null) ...[
               SlidingSegmented<String>(
                 segments: {'expense': l10n.expense, 'income': l10n.income, 'transfer': l10n.transfer},
                 value: _kind,
@@ -492,7 +506,17 @@ class _RuleFormPageState extends ConsumerState<RuleFormPage> {
               accountPicker(isTransfer ? l10n.fromAccount : l10n.account, _accountId,
                   (value) => setState(() => _accountId = value)),
               const SizedBox(height: 12),
-              if (isTransfer) ...[
+              if (goal != null) ...[
+                // Where the money goes is the goal's account, which is no account to pick
+                InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: l10n.intoGoal,
+                    prefixIcon: Icon(goalIcon(goal), size: 20, color: context.goalTint(goal)),
+                  ),
+                  child: Text(goal.name),
+                ),
+                const SizedBox(height: 12),
+              ] else if (isTransfer) ...[
                 accountPicker(l10n.toAccount, _toAccountId, (value) => setState(() => _toAccountId = value)),
                 const SizedBox(height: 12),
               ],

@@ -444,7 +444,9 @@ void main() {
 
     // --- personal overview, filled by the first sync
     expect(find.text('Total balance'), findsOneWidget);
-    // The total, and the Cash account under "Account balances"
+    // The total, and the Cash account under "Account balances", below the invitation to a first goal
+    await tester.drag(find.byType(ListView).first, const Offset(0, -300));
+    await settle();
     expect(find.text('৳500.00'), findsNWidgets(2));
 
     // --- record an expense; it shows at once, before any network round trip

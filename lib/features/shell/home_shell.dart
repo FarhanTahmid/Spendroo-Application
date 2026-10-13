@@ -11,7 +11,7 @@ import '../../core/providers.dart';
 import '../../core/push/push_controller.dart';
 import '../../core/ui.dart';
 import '../cashbook/cashbook_pages.dart';
-import '../personal/budget_calendar_page.dart';
+import '../personal/planner_page.dart';
 import '../personal/personal_pages.dart';
 import '../plan/offer_banner.dart';
 import '../recurring/inbox.dart';
@@ -151,6 +151,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     if (mounted) context.push('/plan/keep');
   }
 
+  /// The Planner tab, on its budgets or its goals.
+  void _openPlanner(PlannerView view) {
+    ref.read(plannerViewProvider.notifier).show(view);
+    setState(() => _tab = 2);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -197,10 +203,14 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final personal = workspace.kind == 'personal';
     final pages = personal
         ? [
-            OverviewPage(workspace: workspace, onOpenBudgets: () => setState(() => _tab = 2)),
+            OverviewPage(
+              workspace: workspace,
+              onOpenBudgets: () => _openPlanner(PlannerView.budgets),
+              onOpenGoals: () => _openPlanner(PlannerView.goals),
+            ),
             TransactionsPage(workspace: workspace),
-            BudgetCalendarPage(workspace: workspace),
-            AccountsPage(workspace: workspace),
+            PlannerPage(workspace: workspace),
+            AccountsPage(workspace: workspace, onOpenGoals: () => _openPlanner(PlannerView.goals)),
           ]
         : [CashbooksPage(workspace: workspace)];
     final tab = _tab < pages.length ? _tab : 0;
@@ -256,7 +266,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               destinations: [
                 (Icons.home_outlined, Icons.home_rounded, l10n.overview),
                 (Icons.receipt_long_outlined, Icons.receipt_long_rounded, l10n.transactions),
-                (Icons.savings_outlined, Icons.savings_rounded, l10n.budgets),
+                // Budgets and savings goals: where the money is meant to go
+                (Icons.flag_outlined, Icons.flag_rounded, l10n.planner),
                 (Icons.account_balance_wallet_outlined, Icons.account_balance_wallet_rounded, l10n.accounts),
               ],
             )

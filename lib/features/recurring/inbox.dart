@@ -71,6 +71,10 @@ IconData inboxIcon(String type) => switch (type) {
       'rule_blocked' => Icons.error_outline_rounded,
       'budget_80' => Icons.data_usage_rounded,
       'budget_over' => Icons.warning_amber_rounded,
+      'goal_milestone' => Icons.stars_rounded,
+      'goal_reached' => Icons.emoji_events_rounded,
+      'goal_behind' => Icons.trending_down_rounded,
+      'goal_idle' => Icons.savings_outlined,
       'overdue' => Icons.hourglass_bottom_rounded,
       _ => Icons.notifications_none_rounded,
     };
@@ -96,6 +100,10 @@ String inboxTitle(BuildContext context, InboxItem item) {
     'budget_80' =>
       l10n.inboxBudget80((params['category'] as String?) ?? '', localDigits(context, '${params['percent'] ?? 80}')),
     'budget_over' => l10n.inboxBudgetOver((params['category'] as String?) ?? ''),
+    'goal_milestone' => l10n.inboxGoalMilestone(localDigits(context, '${params['mark'] ?? params['percent'] ?? 0}'), title),
+    'goal_reached' => l10n.inboxGoalReached(title),
+    'goal_behind' => l10n.inboxGoalBehind(title),
+    'goal_idle' => l10n.inboxGoalIdle(title, count),
     // A reminder says what the user wrote, and anything newer than this version says its title
     _ => title,
   };
@@ -107,6 +115,14 @@ String inboxDetail(BuildContext context, InboxItem item) {
   final currency = (params['currency'] as String?) ?? '';
   final amount = params['amount_minor'] as int?;
   final when = formatDate(context, item.createdAt.substring(0, 10));
+  if (item.type.startsWith('goal_') && amount != null) {
+    final needed = params['needed_minor'] as int?;
+    if (item.type == 'goal_behind' && needed != null) {
+      return '${context.l10n.inboxGoalNeeded(context.money(needed, currency))} · $when';
+    }
+    final saved = (params['saved_minor'] as int?) ?? 0;
+    return '${context.l10n.inboxGoalDetail(context.money(saved, currency), context.money(amount, currency))} · $when';
+  }
   if (item.type.startsWith('budget_') && amount != null) {
     final spent = (params['spent_minor'] as int?) ?? 0;
     return '${context.l10n.inboxBudgetDetail(context.money(spent, currency), context.money(amount, currency))} · $when';
@@ -228,29 +244,35 @@ class _InboxTile extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final colors = context.colors;
     final waiting = occurrence;
-    final problem = item.type == 'budget_over' || item.type == 'rule_blocked';
+    final problem = item.type == 'budget_over' || item.type == 'rule_blocked' || item.type == 'goal_behind';
+    final goalId = item.subjectTable == 'savings_goals' ? item.subjectId : null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpace.page, vertical: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconBadge(inboxIcon(item.type), color: problem ? AppTheme.errorColor : null),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(inboxTitle(context, item),
-                        style: text.bodyLarge?.copyWith(fontWeight: fresh ? FontWeight.w600 : null)),
-                    Text(inboxDetail(context, item), style: text.bodySmall?.copyWith(color: colors.muted)),
-                  ],
+        InkWell(
+          // News about a goal opens the goal
+          onTap: goalId == null ? null : () => context.push('/goal/$goalId'),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.page, vertical: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconBadge(inboxIcon(item.type), color: problem ? AppTheme.errorColor : null),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(inboxTitle(context, item),
+                          style: text.bodyLarge?.copyWith(fontWeight: fresh ? FontWeight.w600 : null)),
+                      Text(inboxDetail(context, item), style: text.bodySmall?.copyWith(color: colors.muted)),
+                    ],
+                  ),
                 ),
-              ),
-              if (fresh) Padding(padding: const EdgeInsets.only(top: 6), child: ColorDot(colors.gold)),
-            ],
+                if (fresh) Padding(padding: const EdgeInsets.only(top: 6), child: ColorDot(colors.gold)),
+                if (goalId != null) Icon(Icons.chevron_right_rounded, size: 18, color: colors.muted),
+              ],
+            ),
           ),
         ),
         if (waiting != null) _Actions(occurrence: waiting, workspace: workspace),

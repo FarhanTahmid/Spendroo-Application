@@ -3499,6 +3499,960 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Write it down while you remember.'**
   String get nudgeBody;
+
+  /// No description provided for @available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available to spend'**
+  String get available;
+
+  /// No description provided for @inGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'In goals'**
+  String get inGoals;
+
+  /// No description provided for @netWorth.
+  ///
+  /// In en, this message translates to:
+  /// **'Net worth'**
+  String get netWorth;
+
+  /// No description provided for @goals.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings goals'**
+  String get goals;
+
+  /// No description provided for @goalKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings goal'**
+  String get goalKind;
+
+  /// No description provided for @toGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'To goal: {goal}'**
+  String toGoal(String goal);
+
+  /// No description provided for @fromGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'From goal: {goal}'**
+  String fromGoal(String goal);
+
+  /// No description provided for @intoGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Saves into goal'**
+  String get intoGoal;
+
+  /// No description provided for @limitGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {plan} plan allows {limit, plural, =1{1 savings goal} other{{limit} savings goals}} at a time. Archive one, or upgrade for more.'**
+  String limitGoals(String plan, int limit);
+
+  /// No description provided for @notifGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings goals'**
+  String get notifGoals;
+
+  /// No description provided for @notifGoalsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each quarter of the way, falling behind, and a month with nothing saved'**
+  String get notifGoalsHint;
+
+  /// No description provided for @goalTemplateEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency fund'**
+  String get goalTemplateEmergency;
+
+  /// No description provided for @goalTemplateGadget.
+  ///
+  /// In en, this message translates to:
+  /// **'Gadget'**
+  String get goalTemplateGadget;
+
+  /// No description provided for @goalTemplateTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip'**
+  String get goalTemplateTrip;
+
+  /// No description provided for @goalTemplateFestival.
+  ///
+  /// In en, this message translates to:
+  /// **'Eid & festivals'**
+  String get goalTemplateFestival;
+
+  /// No description provided for @goalTemplateEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get goalTemplateEducation;
+
+  /// No description provided for @goalTemplateWedding.
+  ///
+  /// In en, this message translates to:
+  /// **'Wedding'**
+  String get goalTemplateWedding;
+
+  /// No description provided for @goalTemplateVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle'**
+  String get goalTemplateVehicle;
+
+  /// No description provided for @goalTemplateHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get goalTemplateHome;
+
+  /// No description provided for @goalTemplateGift.
+  ///
+  /// In en, this message translates to:
+  /// **'Gift'**
+  String get goalTemplateGift;
+
+  /// No description provided for @goalTemplateCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get goalTemplateCustom;
+
+  /// No description provided for @goalOnTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'On track'**
+  String get goalOnTrack;
+
+  /// No description provided for @goalAhead.
+  ///
+  /// In en, this message translates to:
+  /// **'Ahead'**
+  String get goalAhead;
+
+  /// No description provided for @goalBehind.
+  ///
+  /// In en, this message translates to:
+  /// **'Behind'**
+  String get goalBehind;
+
+  /// No description provided for @goalNoDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No date'**
+  String get goalNoDate;
+
+  /// No description provided for @goalReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Reached'**
+  String get goalReached;
+
+  /// No description provided for @goalNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New goal'**
+  String get goalNew;
+
+  /// No description provided for @goalEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit goal'**
+  String get goalEdit;
+
+  /// No description provided for @goalCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start saving'**
+  String get goalCreate;
+
+  /// No description provided for @goalWhatFor.
+  ///
+  /// In en, this message translates to:
+  /// **'What are you saving for?'**
+  String get goalWhatFor;
+
+  /// No description provided for @goalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal name'**
+  String get goalName;
+
+  /// No description provided for @goalTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target amount'**
+  String get goalTarget;
+
+  /// No description provided for @goalHasDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a target date'**
+  String get goalHasDate;
+
+  /// No description provided for @goalHasDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals with a date are reached more often: you see each month what it takes'**
+  String get goalHasDateHint;
+
+  /// No description provided for @goalTargetDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach it by'**
+  String get goalTargetDate;
+
+  /// No description provided for @goalColour.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour'**
+  String get goalColour;
+
+  /// No description provided for @goalPreviewNoDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a date to see what it takes each month'**
+  String get goalPreviewNoDate;
+
+  /// No description provided for @goalPreviewPace.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {month}/month · {week}/week · {day}/day'**
+  String goalPreviewPace(String month, String week, String day);
+
+  /// No description provided for @goalEmergencySuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested: {amount}, three months of your spending'**
+  String goalEmergencySuggestion(String amount);
+
+  /// No description provided for @goalSavedOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{saved} of {target}'**
+  String goalSavedOf(String saved, String target);
+
+  /// No description provided for @goalOfTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'of {target}'**
+  String goalOfTarget(String target);
+
+  /// No description provided for @goalToGo.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} to go'**
+  String goalToGo(String amount);
+
+  /// No description provided for @goalLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} left'**
+  String goalLeft(String amount);
+
+  /// No description provided for @goalBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {date}'**
+  String goalBy(String date);
+
+  /// No description provided for @goalPerWeekNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount}/week needed'**
+  String goalPerWeekNeeded(String amount);
+
+  /// No description provided for @goalNextMilestone.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {mark}% · {amount} away'**
+  String goalNextMilestone(String mark, String amount);
+
+  /// No description provided for @goalDaysEarly.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ahead'**
+  String goalDaysEarly(String days);
+
+  /// No description provided for @goalDaysLate.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days behind'**
+  String goalDaysLate(String days);
+
+  /// No description provided for @goalAddMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Add money'**
+  String get goalAddMoney;
+
+  /// No description provided for @goalAddMoneyTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add money to {goal}'**
+  String goalAddMoneyTo(String goal);
+
+  /// No description provided for @goalWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get goalWithdraw;
+
+  /// No description provided for @goalUseMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the money'**
+  String get goalUseMoney;
+
+  /// No description provided for @goalKeepSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep saving'**
+  String get goalKeepSaving;
+
+  /// No description provided for @goalAutoSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-save'**
+  String get goalAutoSave;
+
+  /// No description provided for @goalAutoSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save for {goal}'**
+  String goalAutoSaveTitle(String goal);
+
+  /// No description provided for @goalAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-saved'**
+  String get goalAuto;
+
+  /// No description provided for @goalRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring back'**
+  String get goalRestore;
+
+  /// No description provided for @goalGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This goal no longer exists.'**
+  String get goalGone;
+
+  /// No description provided for @goalDeleteHasMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Take the money out first, so none of it is lost from sight.'**
+  String get goalDeleteHasMoney;
+
+  /// No description provided for @goalDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {goal}? Its history goes with it.'**
+  String goalDeleteConfirm(String goal);
+
+  /// No description provided for @goalLockedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your plan keeps this goal read-only: nothing more goes in, but you can always take the money out.'**
+  String get goalLockedNote;
+
+  /// No description provided for @goalNoAccountInCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no account in {currency} to move money with.'**
+  String goalNoAccountInCurrency(String currency);
+
+  /// No description provided for @goalMoreThanBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'That is more than {account} holds; its balance goes below zero.'**
+  String goalMoreThanBalance(String account);
+
+  /// No description provided for @goalQuickNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'This month\'s share'**
+  String get goalQuickNeeded;
+
+  /// No description provided for @goalQuickTenth.
+  ///
+  /// In en, this message translates to:
+  /// **'10% of income'**
+  String get goalQuickTenth;
+
+  /// No description provided for @goalQuickRest.
+  ///
+  /// In en, this message translates to:
+  /// **'All that\'s left'**
+  String get goalQuickRest;
+
+  /// No description provided for @goalEnterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount'**
+  String get goalEnterAmount;
+
+  /// No description provided for @goalTrajectory.
+  ///
+  /// In en, this message translates to:
+  /// **'How it is going'**
+  String get goalTrajectory;
+
+  /// No description provided for @goalTargetLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get goalTargetLine;
+
+  /// No description provided for @goalLegendSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get goalLegendSaved;
+
+  /// No description provided for @goalLegendSteady.
+  ///
+  /// In en, this message translates to:
+  /// **'Steady pace'**
+  String get goalLegendSteady;
+
+  /// No description provided for @goalLegendForecast.
+  ///
+  /// In en, this message translates to:
+  /// **'At your pace'**
+  String get goalLegendForecast;
+
+  /// No description provided for @goalLegendMilestone.
+  ///
+  /// In en, this message translates to:
+  /// **'Milestones'**
+  String get goalLegendMilestone;
+
+  /// No description provided for @goalPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Pace'**
+  String get goalPace;
+
+  /// No description provided for @goalNeededMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Needed / month'**
+  String get goalNeededMonthly;
+
+  /// No description provided for @goalYourAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'You average'**
+  String get goalYourAverage;
+
+  /// No description provided for @goalSoFar.
+  ///
+  /// In en, this message translates to:
+  /// **'So far'**
+  String get goalSoFar;
+
+  /// No description provided for @goalPaceTooEarly.
+  ///
+  /// In en, this message translates to:
+  /// **'After a month of saving, this shows when you\'ll get there.'**
+  String get goalPaceTooEarly;
+
+  /// No description provided for @goalForecast.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll finish'**
+  String get goalForecast;
+
+  /// No description provided for @goalPaceNothingYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Once money goes in, this shows when you\'ll get there.'**
+  String get goalPaceNothingYet;
+
+  /// No description provided for @goalPaceEarly.
+  ///
+  /// In en, this message translates to:
+  /// **'At your pace you get there around {date}, in time.'**
+  String goalPaceEarly(String date);
+
+  /// No description provided for @goalPaceLate.
+  ///
+  /// In en, this message translates to:
+  /// **'At your pace you get there around {date}, after your date. {needed} a month makes it in time.'**
+  String goalPaceLate(String date, String needed);
+
+  /// No description provided for @goalPaceNoDate.
+  ///
+  /// In en, this message translates to:
+  /// **'At {amount} a month you get there around {date}.'**
+  String goalPaceNoDate(String amount, String date);
+
+  /// No description provided for @goalWhatIf.
+  ///
+  /// In en, this message translates to:
+  /// **'What if I saved…'**
+  String get goalWhatIf;
+
+  /// No description provided for @goalWhatIfResult.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a month → done by {date}'**
+  String goalWhatIfResult(String amount, String date);
+
+  /// No description provided for @goalWhatIfNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the slider to see when you\'d get there.'**
+  String get goalWhatIfNever;
+
+  /// No description provided for @goalWhatIfAutoSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this every month'**
+  String get goalWhatIfAutoSave;
+
+  /// No description provided for @goalMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Month by month'**
+  String get goalMonthly;
+
+  /// No description provided for @goalStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'{months} months in a row'**
+  String goalStreak(String months);
+
+  /// No description provided for @goalMilestones.
+  ///
+  /// In en, this message translates to:
+  /// **'Milestones'**
+  String get goalMilestones;
+
+  /// No description provided for @goalSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it came from'**
+  String get goalSources;
+
+  /// No description provided for @goalHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get goalHistory;
+
+  /// No description provided for @goalNoMoves.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing saved yet. The first step is the biggest.'**
+  String get goalNoMoves;
+
+  /// No description provided for @goalMoveIn.
+  ///
+  /// In en, this message translates to:
+  /// **'From {account}'**
+  String goalMoveIn(String account);
+
+  /// No description provided for @goalMoveOut.
+  ///
+  /// In en, this message translates to:
+  /// **'To {account}'**
+  String goalMoveOut(String account);
+
+  /// No description provided for @goalUndoMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Take this back? Both sides of the transfer are deleted.'**
+  String get goalUndoMove;
+
+  /// No description provided for @goalHalfway.
+  ///
+  /// In en, this message translates to:
+  /// **'Halfway to {goal}!'**
+  String goalHalfway(String goal);
+
+  /// No description provided for @goalMilestoneReached.
+  ///
+  /// In en, this message translates to:
+  /// **'{mark}% of the way to {goal}!'**
+  String goalMilestoneReached(String mark, String goal);
+
+  /// No description provided for @goalReachedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal reached!'**
+  String get goalReachedTitle;
+
+  /// No description provided for @goalReachedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You saved {amount} for {goal}.'**
+  String goalReachedBody(String goal, String amount);
+
+  /// No description provided for @goalReachedDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days it took'**
+  String get goalReachedDays;
+
+  /// No description provided for @goalReachedTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'Times you saved'**
+  String get goalReachedTimes;
+
+  /// No description provided for @goalsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{saved} of {target} across {count} goals'**
+  String goalsSummary(String saved, String target, String count);
+
+  /// No description provided for @goalsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} this month'**
+  String goalsThisMonth(String amount);
+
+  /// No description provided for @goalsSavingRate.
+  ///
+  /// In en, this message translates to:
+  /// **'You save {percent}% of income'**
+  String goalsSavingRate(String percent);
+
+  /// No description provided for @goalsHeaderEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Money you set aside shows here.'**
+  String get goalsHeaderEmpty;
+
+  /// No description provided for @goalsReachedSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Reached'**
+  String get goalsReachedSection;
+
+  /// No description provided for @goalsArchivedSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived ({count})'**
+  String goalsArchivedSection(String count);
+
+  /// No description provided for @goalsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your money a job'**
+  String get goalsEmptyTitle;
+
+  /// No description provided for @goalsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Set money aside for what matters. It leaves what you can spend, so you are not tempted, and it is yours to take back anytime.'**
+  String get goalsEmptyBody;
+
+  /// No description provided for @goalsHowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How goals work'**
+  String get goalsHowTitle;
+
+  /// No description provided for @goalsHowSetAside.
+  ///
+  /// In en, this message translates to:
+  /// **'Money is set aside'**
+  String get goalsHowSetAside;
+
+  /// No description provided for @goalsHowSetAsideBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding money moves it out of an account into the goal. It is no longer in \'Available to spend\', but it still counts in your net worth.'**
+  String get goalsHowSetAsideBody;
+
+  /// No description provided for @goalsHowDate.
+  ///
+  /// In en, this message translates to:
+  /// **'A date makes it real'**
+  String get goalsHowDate;
+
+  /// No description provided for @goalsHowDateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'With a date you see what each month needs, and whether you are on track.'**
+  String get goalsHowDateBody;
+
+  /// No description provided for @goalsHowFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay yourself first'**
+  String get goalsHowFirst;
+
+  /// No description provided for @goalsHowFirstBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving right after payday, on a schedule, works better than saving what is left at the month\'s end.'**
+  String get goalsHowFirstBody;
+
+  /// No description provided for @goalsHowWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours, anytime'**
+  String get goalsHowWithdraw;
+
+  /// No description provided for @goalsHowWithdrawBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To spend goal money, take it out into an account first. It is never locked away, just one deliberate step further.'**
+  String get goalsHowWithdrawBody;
+
+  /// No description provided for @insightBehind.
+  ///
+  /// In en, this message translates to:
+  /// **'{goal} is {amount} behind. Adding {perWeek} a week gets it back on track.'**
+  String insightBehind(String goal, String amount, String perWeek);
+
+  /// No description provided for @insightStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'You saved for {goal} {months} months in a row. Keep the streak going!'**
+  String insightStreak(String months, String goal);
+
+  /// No description provided for @insightCutBack.
+  ///
+  /// In en, this message translates to:
+  /// **'You spent {amount} on {category} this month. Half of that would bring {goal} {count, plural, =1{a week} other{{weeks} weeks}} sooner.'**
+  String insightCutBack(
+    String category,
+    String amount,
+    String goal,
+    int count,
+    String weeks,
+  );
+
+  /// No description provided for @insightPayday.
+  ///
+  /// In en, this message translates to:
+  /// **'You usually save for {goal} right after payday. Let it happen on its own every month?'**
+  String insightPayday(String goal);
+
+  /// No description provided for @insightBestMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'You moved {amount} into goals this month, your best month yet.'**
+  String insightBestMonth(String amount);
+
+  /// No description provided for @insightEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'No emergency fund yet. Most advice says to keep three to six months of spending for the unexpected.'**
+  String get insightEmergency;
+
+  /// No description provided for @insightEmergencyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start one'**
+  String get insightEmergencyAction;
+
+  /// No description provided for @withdrawTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Take money out of {goal}?'**
+  String withdrawTitle(String goal);
+
+  /// No description provided for @withdrawReachedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the money 🎉'**
+  String get withdrawReachedTitle;
+
+  /// No description provided for @withdrawFinishMoves.
+  ///
+  /// In en, this message translates to:
+  /// **'Your finish date moves from {from} to {to}.'**
+  String withdrawFinishMoves(String from, String to);
+
+  /// No description provided for @withdrawSetsBack.
+  ///
+  /// In en, this message translates to:
+  /// **'This sets your goal back by {amount}.'**
+  String withdrawSetsBack(String amount);
+
+  /// No description provided for @withdrawAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All of it: {amount}'**
+  String withdrawAll(String amount);
+
+  /// No description provided for @withdrawWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why? (optional)'**
+  String get withdrawWhy;
+
+  /// No description provided for @withdrawEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency'**
+  String get withdrawEmergency;
+
+  /// No description provided for @withdrawReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Reached my goal'**
+  String get withdrawReached;
+
+  /// No description provided for @withdrawChangedPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed plans'**
+  String get withdrawChangedPlans;
+
+  /// No description provided for @withdrawOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get withdrawOther;
+
+  /// No description provided for @withdrawConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw {amount}'**
+  String withdrawConfirm(String amount);
+
+  /// No description provided for @withdrawMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Move {amount} to the account'**
+  String withdrawMove(String amount);
+
+  /// No description provided for @withdrawTooMuch.
+  ///
+  /// In en, this message translates to:
+  /// **'The goal holds {amount}.'**
+  String withdrawTooMuch(String amount);
+
+  /// No description provided for @withdrawNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You are {percent}% of the way. The money goes back as a transfer you can see in both places.'**
+  String withdrawNote(String percent);
+
+  /// No description provided for @inboxGoalMilestone.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of the way to {title}'**
+  String inboxGoalMilestone(String percent, String title);
+
+  /// No description provided for @inboxGoalReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You reached {title}!'**
+  String inboxGoalReached(String title);
+
+  /// No description provided for @inboxGoalBehind.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is falling behind'**
+  String inboxGoalBehind(String title);
+
+  /// No description provided for @inboxGoalIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing put into {title} for {days} days'**
+  String inboxGoalIdle(String title, String days);
+
+  /// No description provided for @inboxGoalDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{saved} of {target} saved'**
+  String inboxGoalDetail(String saved, String target);
+
+  /// No description provided for @inboxGoalNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a month gets it back on track'**
+  String inboxGoalNeeded(String amount);
+
+  /// No description provided for @planner.
+  ///
+  /// In en, this message translates to:
+  /// **'Planner'**
+  String get planner;
+
+  /// No description provided for @goalsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get goalsShort;
+
+  /// No description provided for @saveKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveKind;
+
+  /// No description provided for @goalPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a goal'**
+  String get goalPick;
+
+  /// No description provided for @goalStartFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your first goal'**
+  String get goalStartFirst;
+
+  /// No description provided for @goalNewShort.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get goalNewShort;
+
+  /// No description provided for @goalsBehindCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} behind'**
+  String goalsBehindCount(String count);
+
+  /// No description provided for @goalsSavedTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} saved'**
+  String goalsSavedTotal(String amount);
+
+  /// No description provided for @goalsInviteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Set money aside for something that matters. Tap to start a goal.'**
+  String get goalsInviteBody;
+
+  /// No description provided for @goalsKeptAside.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 goal, kept apart from what you spend} other{{count} goals, kept apart from what you spend}}'**
+  String goalsKeptAside(int n, String count);
+
+  /// No description provided for @goalsShareOfWorth.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent} of what you own is set aside for goals'**
+  String goalsShareOfWorth(String percent);
+
+  /// No description provided for @goalAccountLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is read-only on your plan. Choose another to save from.'**
+  String get goalAccountLocked;
 }
 
 class _AppLocalizationsDelegate

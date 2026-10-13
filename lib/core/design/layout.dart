@@ -34,7 +34,10 @@ class PassbookBody extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 18),
                 child: IconTheme.merge(
                   data: IconThemeData(color: colors.onHeader),
-                  child: DefaultTextStyle.merge(style: TextStyle(color: colors.onHeader), child: header!),
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(color: colors.onHeader),
+                    child: header!,
+                  ),
                 ),
               )
             else
@@ -73,11 +76,11 @@ class PassbookScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: headerAppBar(context, title: title, actions: actions),
-        body: PassbookBody(header: header, child: body),
-        bottomNavigationBar: bottomNavigationBar,
-        floatingActionButton: floatingActionButton,
-      );
+    appBar: headerAppBar(context, title: title, actions: actions),
+    body: PassbookBody(header: header, child: body),
+    bottomNavigationBar: bottomNavigationBar,
+    floatingActionButton: floatingActionButton,
+  );
 }
 
 AppBar headerAppBar(BuildContext context, {Widget? title, List<Widget>? actions}) {
@@ -112,11 +115,7 @@ class HeaderFigure extends StatelessWidget {
         FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,
-          child: MoneyText(
-            amountMinor,
-            currency,
-            style: text.displaySmall?.copyWith(color: color ?? colors.onHeader),
-          ),
+          child: MoneyText(amountMinor, currency, style: text.displaySmall?.copyWith(color: color ?? colors.onHeader)),
         ),
       ],
     );
@@ -125,29 +124,48 @@ class HeaderFigure extends StatelessWidget {
 
 /// A smaller labelled figure for the header's second row.
 class HeaderStat extends StatelessWidget {
-  const HeaderStat({super.key, required this.label, required this.amountMinor, required this.currency, this.color});
+  const HeaderStat({
+    super.key,
+    required this.label,
+    required this.amountMinor,
+    required this.currency,
+    this.color,
+    this.onTap,
+  });
 
   final String label;
   final int amountMinor;
   final String currency;
   final Color? color;
 
+  /// Opens what the figure is made of; a chevron beside the label says so.
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final text = Theme.of(context).textTheme;
+    final figure = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(label, style: text.bodySmall?.copyWith(color: colors.onHeaderMuted)),
+            ),
+            if (onTap != null) Icon(Icons.chevron_right_rounded, size: 16, color: colors.onHeaderMuted),
+          ],
+        ),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: MoneyText(amountMinor, currency, style: text.titleMedium?.copyWith(color: color ?? colors.onHeader)),
+        ),
+      ],
+    );
     return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: text.bodySmall?.copyWith(color: colors.onHeaderMuted)),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: MoneyText(amountMinor, currency, style: text.titleMedium?.copyWith(color: color ?? colors.onHeader)),
-          ),
-        ],
-      ),
+      child: onTap == null ? figure : Pressable(onTap: onTap, child: figure),
     );
   }
 }
@@ -165,15 +183,15 @@ class MonthSwitcher extends StatelessWidget {
     final colors = context.colors;
     final label = MaterialLocalizations.of(context).formatMonthYear(month);
     Widget arrow(String tooltip, IconData icon, int step) => IconButton(
-          tooltip: tooltip,
-          visualDensity: VisualDensity.compact,
-          color: colors.onHeader,
-          icon: Icon(icon),
-          onPressed: () {
-            HapticFeedback.selectionClick();
-            onChanged(DateTime(month.year, month.month + step));
-          },
-        );
+      tooltip: tooltip,
+      visualDensity: VisualDensity.compact,
+      color: colors.onHeader,
+      icon: Icon(icon),
+      onPressed: () {
+        HapticFeedback.selectionClick();
+        onChanged(DateTime(month.year, month.month + step));
+      },
+    );
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
@@ -210,29 +228,37 @@ class SectionCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context) => Card(
-        margin: const EdgeInsets.only(bottom: AppSpace.md),
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: padding ?? const EdgeInsets.all(AppSpace.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (title != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpace.md),
-                  child: Row(
-                    children: [
-                      Expanded(child: Text(title!, style: Theme.of(context).textTheme.titleMedium)),
-                      if (trailing != null) trailing!,
-                    ],
-                  ),
+  Widget build(BuildContext context) {
+    final inset = (padding ?? const EdgeInsets.all(AppSpace.lg)).resolve(Directionality.of(context));
+    return Card(
+      margin: const EdgeInsets.only(bottom: AppSpace.md),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: inset,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (title != null)
+              Padding(
+                // Rows that run edge to edge bring their own inset; the title lines up with every other card's
+                padding: EdgeInsetsDirectional.only(
+                  start: inset.left == 0 ? AppSpace.lg : 0,
+                  end: inset.right == 0 ? AppSpace.lg : 0,
+                  bottom: AppSpace.md,
                 ),
-              ...children,
-            ],
-          ),
+                child: Row(
+                  children: [
+                    Expanded(child: Text(title!, style: Theme.of(context).textTheme.titleMedium)),
+                    if (trailing != null) trailing!,
+                  ],
+                ),
+              ),
+            ...children,
+          ],
         ),
-      );
+      ),
+    );
+  }
 }
 
 /// One labelled figure with a small coloured sign, for a row of two or three.
@@ -268,7 +294,9 @@ class StatTile extends StatelessWidget {
                 child: Icon(icon, size: 14, color: color),
               ),
               const SizedBox(width: 6),
-              Flexible(child: Text(label, style: text.bodySmall, overflow: TextOverflow.ellipsis)),
+              Flexible(
+                child: Text(label, style: text.bodySmall, overflow: TextOverflow.ellipsis),
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -322,10 +350,7 @@ class LimitBar extends StatelessWidget {
               Container(
                 height: height,
                 width: box.maxWidth * fill,
-                decoration: BoxDecoration(
-                  color: colorFor(context, value),
-                  borderRadius: BorderRadius.circular(height),
-                ),
+                decoration: BoxDecoration(color: colorFor(context, value), borderRadius: BorderRadius.circular(height)),
               ),
               if (marker != null)
                 Positioned(
@@ -378,7 +403,11 @@ class EmptyState extends StatelessWidget {
             Text(message, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyLarge),
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: 20),
-              FilledButton.tonalIcon(onPressed: onAction, icon: const Icon(Icons.add_rounded), label: Text(actionLabel!)),
+              FilledButton.tonalIcon(
+                onPressed: onAction,
+                icon: const Icon(Icons.add_rounded),
+                label: Text(actionLabel!),
+              ),
             ],
           ],
         ),
@@ -397,24 +426,27 @@ class AsyncView<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnimatedSwitcher(
-        duration: context.motion(AppMotion.standard),
-        child: value.when(
-          data: (data) => KeyedSubtree(key: const ValueKey('data'), child: builder(data)),
-          loading: () => const Align(
-            key: ValueKey('loading'),
-            alignment: Alignment.topCenter,
-            child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.only(top: 8),
-              child: SkeletonList(),
-            ),
-          ),
-          error: (error, _) => Center(
-            key: const ValueKey('error'),
-            child: Padding(padding: const EdgeInsets.all(24), child: Text('$error', textAlign: TextAlign.center)),
-          ),
+    duration: context.motion(AppMotion.standard),
+    child: value.when(
+      data: (data) => KeyedSubtree(key: const ValueKey('data'), child: builder(data)),
+      loading: () => const Align(
+        key: ValueKey('loading'),
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.only(top: 8),
+          child: SkeletonList(),
         ),
-      );
+      ),
+      error: (error, _) => Center(
+        key: const ValueKey('error'),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text('$error', textAlign: TextAlign.center),
+        ),
+      ),
+    ),
+  );
 }
 
 /// Tappable field that opens a date picker. Dates are ISO strings (yyyy-MM-dd).
@@ -433,19 +465,19 @@ class DateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PickerField(
-        label: label ?? context.l10n.date,
-        text: friendlyDate(context, value),
-        icon: Icons.calendar_today_rounded,
-        onOpen: () async {
-          final picked = await showDatePicker(
-            context: context,
-            initialDate: DateTime.parse(value),
-            firstDate: first ?? DateTime(2000),
-            lastDate: last ?? DateTime.now().add(const Duration(days: 365)),
-          );
-          if (picked != null) onChanged(picked.toIso8601String().substring(0, 10));
-        },
+    label: label ?? context.l10n.date,
+    text: friendlyDate(context, value),
+    icon: Icons.calendar_today_rounded,
+    onOpen: () async {
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.parse(value),
+        firstDate: first ?? DateTime(2000),
+        lastDate: last ?? DateTime.now().add(const Duration(days: 365)),
       );
+      if (picked != null) onChanged(picked.toIso8601String().substring(0, 10));
+    },
+  );
 }
 
 /// A ring that fills to [value] (0 to 1) around whatever sits in its middle,
@@ -561,7 +593,11 @@ class _RingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_RingPainter old) =>
-      old.fill != fill || old.color != color || old.track != track || old.marker != marker || old.markerColor != markerColor;
+      old.fill != fill ||
+      old.color != color ||
+      old.track != track ||
+      old.marker != marker ||
+      old.markerColor != markerColor;
 }
 
 /// A small fact under a chart: what it is, and the figure. Goes in a row of two or three;
@@ -590,7 +626,9 @@ class FactTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(child: Text(label, style: text.labelSmall, maxLines: 1, overflow: TextOverflow.ellipsis)),
+                  Expanded(
+                    child: Text(label, style: text.labelSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  ),
                   if (onTap != null) Icon(Icons.chevron_right_rounded, size: 14, color: colors.muted),
                 ],
               ),
@@ -604,8 +642,7 @@ class FactTile extends StatelessWidget {
                   style: text.titleSmall?.copyWith(color: color, fontFeatures: tabularFigures),
                 ),
               ),
-              if (detail != null)
-                Text(detail!, style: text.labelSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+              if (detail != null) Text(detail!, style: text.labelSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
             ],
           ),
         ),
@@ -622,8 +659,8 @@ class FactRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => IntrinsicHeight(
-        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
-      );
+    child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+  );
 }
 
 /// A coloured key and what it stands for, under a chart.
@@ -638,24 +675,26 @@ class LegendKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (dashed)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (var i = 0; i < 3; i++)
-                  Container(width: 4, height: 2, margin: const EdgeInsets.only(right: 2), color: color),
-              ],
-            )
-          else
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-            ),
-          const SizedBox(width: 6),
-          Flexible(child: Text(label, style: Theme.of(context).textTheme.bodySmall, overflow: TextOverflow.ellipsis)),
-        ],
-      );
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      if (dashed)
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i = 0; i < 3; i++)
+              Container(width: 4, height: 2, margin: const EdgeInsets.only(right: 2), color: color),
+          ],
+        )
+      else
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+        ),
+      const SizedBox(width: 6),
+      Flexible(
+        child: Text(label, style: Theme.of(context).textTheme.bodySmall, overflow: TextOverflow.ellipsis),
+      ),
+    ],
+  );
 }

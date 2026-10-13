@@ -19,7 +19,8 @@ class AccountBalance {
 }
 
 class TransactionView {
-  TransactionView(this.transaction, this.accountName, this.categoryName, {this.categoryColor});
+  TransactionView(this.transaction, this.accountName, this.categoryName,
+      {this.categoryColor, this.goalId, this.goalName});
 
   final Transaction transaction;
   final String accountName;
@@ -27,6 +28,10 @@ class TransactionView {
 
   /// What the user chose for the category, if anything (see categoryFill).
   final String? categoryColor;
+
+  /// The savings goal on the other side of a transfer: money put into it, or taken out of it.
+  final String? goalId;
+  final String? goalName;
 }
 
 class BudgetProgress {
@@ -163,11 +168,14 @@ class LedgerRepository {
   /// anything is written. Without one nothing is checked here.
   final PlanGuard? plan;
 
+  /// The accounts money is spent from. A savings goal's account is not one:
+  /// its money is set aside (features/goals), so it is in no list or total here.
   Stream<List<AccountBalance>> watchAccounts(String workspaceId) => db
       .customSelect(
         'SELECT a.*, a.opening_balance_minor + COALESCE(SUM(t.amount_minor), 0) AS balance FROM accounts a '
         'LEFT JOIN transactions t ON t.account_id = a.id AND t.deleted_at IS NULL '
-        'WHERE a.workspace_id = ? AND a.deleted_at IS NULL GROUP BY a.id ORDER BY a.is_archived, a.created_at',
+        "WHERE a.workspace_id = ? AND a.deleted_at IS NULL AND a.kind <> 'goal' "
+        'GROUP BY a.id ORDER BY a.is_archived, a.created_at',
         variables: [Variable<String>(workspaceId)],
         readsFrom: {db.accounts, db.transactions},
       )
@@ -181,6 +189,8 @@ class LedgerRepository {
 
   /// Newest first. Limited to the month of [month], or to the single [day] (ISO date), when given;
   /// and to one [kind], and to one category ([uncategorised] for those without any).
+  /// Money moving into or out of a savings goal shows once, on the spending
+  /// account's side, naming the goal.
   Stream<List<TransactionView>> watchTransactions(
     String workspaceId, {
     DateTime? month,
@@ -193,9 +203,12 @@ class LedgerRepository {
         day != null ? (day, day) : (month != null ? monthRange(month) : ('0000-01-01', '9999-12-31'));
     return db
         .customSelect(
-          'SELECT t.*, a.name AS a_name, c.name AS c_name, c.color AS c_color FROM transactions t '
+          'SELECT t.*, a.name AS a_name, c.name AS c_name, c.color AS c_color, g.id AS g_id, g.name AS g_name '
+          'FROM transactions t '
           'JOIN accounts a ON a.id = t.account_id LEFT JOIN categories c ON c.id = t.category_id AND c.deleted_at IS NULL '
-          'WHERE t.workspace_id = ? AND t.deleted_at IS NULL AND t.occurred_on BETWEEN ? AND ? '
+          'LEFT JOIN transactions o ON o.transfer_group_id = t.transfer_group_id AND o.id <> t.id AND o.deleted_at IS NULL '
+          'LEFT JOIN savings_goals g ON g.account_id = o.account_id '
+          "WHERE t.workspace_id = ? AND t.deleted_at IS NULL AND a.kind <> 'goal' AND t.occurred_on BETWEEN ? AND ? "
           '${kind == null ? '' : 'AND t.kind = ? '}'
           // A split is listed under each category one of its parts is filed in
           '${uncategorised || categoryId != null ? 'AND ${filedUnder([if (categoryId != null) categoryId], uncategorised: uncategorised)} ' : ''}'
@@ -206,7 +219,7 @@ class LedgerRepository {
             Variable<String>(last),
             if (kind != null) Variable<String>(kind),
           ],
-          readsFrom: {db.transactions, db.accounts, db.categories},
+          readsFrom: {db.transactions, db.accounts, db.categories, db.savingsGoals},
         )
         .watch()
         .map((rows) => [
@@ -216,6 +229,8 @@ class LedgerRepository {
                   row.read<String>('a_name'),
                   row.readNullable<String>('c_name'),
                   categoryColor: row.readNullable<String>('c_color'),
+                  goalId: row.readNullable<String>('g_id'),
+                  goalName: row.readNullable<String>('g_name'),
                 ),
             ]);
   }

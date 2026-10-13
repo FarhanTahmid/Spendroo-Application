@@ -25,6 +25,7 @@ class NotificationPrefs {
     this.income = true,
     this.recorded = true,
     this.budgets = true,
+    this.goals = true,
     this.dailyNudge = true,
     this.nudgeTime = '21:00:00',
     this.reminderTime = '09:00:00',
@@ -38,6 +39,7 @@ class NotificationPrefs {
         income: json['income'] as bool? ?? true,
         recorded: json['recorded'] as bool? ?? true,
         budgets: json['budgets'] as bool? ?? true,
+        goals: json['goals'] as bool? ?? true,
         dailyNudge: json['daily_nudge'] as bool? ?? true,
         nudgeTime: json['nudge_time'] as String? ?? '21:00:00',
         reminderTime: json['reminder_time'] as String? ?? '09:00:00',
@@ -56,6 +58,9 @@ class NotificationPrefs {
   final bool recorded;
   final bool budgets;
 
+  /// Savings goals: milestones, falling behind, a long spell with nothing put in.
+  final bool goals;
+
   /// "Did you spend anything today?", from the phone itself.
   final bool dailyNudge;
 
@@ -73,6 +78,7 @@ class NotificationPrefs {
         'income': income,
         'recorded': recorded,
         'budgets': budgets,
+        'goals': goals,
         'daily_nudge': dailyNudge,
         'nudge_time': nudgeTime,
         'reminder_time': reminderTime,

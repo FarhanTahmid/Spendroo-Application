@@ -1998,4 +1998,629 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nudgeBody => 'Write it down while you remember.';
+
+  @override
+  String get available => 'Available to spend';
+
+  @override
+  String get inGoals => 'In goals';
+
+  @override
+  String get netWorth => 'Net worth';
+
+  @override
+  String get goals => 'Savings goals';
+
+  @override
+  String get goalKind => 'Savings goal';
+
+  @override
+  String toGoal(String goal) {
+    return 'To goal: $goal';
+  }
+
+  @override
+  String fromGoal(String goal) {
+    return 'From goal: $goal';
+  }
+
+  @override
+  String get intoGoal => 'Saves into goal';
+
+  @override
+  String limitGoals(String plan, int limit) {
+    String _temp0 = intl.Intl.pluralLogic(
+      limit,
+      locale: localeName,
+      other: '$limit savings goals',
+      one: '1 savings goal',
+    );
+    return 'Your $plan plan allows $_temp0 at a time. Archive one, or upgrade for more.';
+  }
+
+  @override
+  String get notifGoals => 'Savings goals';
+
+  @override
+  String get notifGoalsHint =>
+      'Each quarter of the way, falling behind, and a month with nothing saved';
+
+  @override
+  String get goalTemplateEmergency => 'Emergency fund';
+
+  @override
+  String get goalTemplateGadget => 'Gadget';
+
+  @override
+  String get goalTemplateTrip => 'Trip';
+
+  @override
+  String get goalTemplateFestival => 'Eid & festivals';
+
+  @override
+  String get goalTemplateEducation => 'Education';
+
+  @override
+  String get goalTemplateWedding => 'Wedding';
+
+  @override
+  String get goalTemplateVehicle => 'Vehicle';
+
+  @override
+  String get goalTemplateHome => 'Home';
+
+  @override
+  String get goalTemplateGift => 'Gift';
+
+  @override
+  String get goalTemplateCustom => 'Something else';
+
+  @override
+  String get goalOnTrack => 'On track';
+
+  @override
+  String get goalAhead => 'Ahead';
+
+  @override
+  String get goalBehind => 'Behind';
+
+  @override
+  String get goalNoDate => 'No date';
+
+  @override
+  String get goalReached => 'Reached';
+
+  @override
+  String get goalNew => 'New goal';
+
+  @override
+  String get goalEdit => 'Edit goal';
+
+  @override
+  String get goalCreate => 'Start saving';
+
+  @override
+  String get goalWhatFor => 'What are you saving for?';
+
+  @override
+  String get goalName => 'Goal name';
+
+  @override
+  String get goalTarget => 'Target amount';
+
+  @override
+  String get goalHasDate => 'Set a target date';
+
+  @override
+  String get goalHasDateHint =>
+      'Goals with a date are reached more often: you see each month what it takes';
+
+  @override
+  String get goalTargetDate => 'Reach it by';
+
+  @override
+  String get goalColour => 'Colour';
+
+  @override
+  String get goalPreviewNoDate => 'Add a date to see what it takes each month';
+
+  @override
+  String goalPreviewPace(String month, String week, String day) {
+    return '≈ $month/month · $week/week · $day/day';
+  }
+
+  @override
+  String goalEmergencySuggestion(String amount) {
+    return 'Suggested: $amount, three months of your spending';
+  }
+
+  @override
+  String goalSavedOf(String saved, String target) {
+    return '$saved of $target';
+  }
+
+  @override
+  String goalOfTarget(String target) {
+    return 'of $target';
+  }
+
+  @override
+  String goalToGo(String amount) {
+    return '$amount to go';
+  }
+
+  @override
+  String goalLeft(String amount) {
+    return '$amount left';
+  }
+
+  @override
+  String goalBy(String date) {
+    return 'by $date';
+  }
+
+  @override
+  String goalPerWeekNeeded(String amount) {
+    return '$amount/week needed';
+  }
+
+  @override
+  String goalNextMilestone(String mark, String amount) {
+    return 'Next: $mark% · $amount away';
+  }
+
+  @override
+  String goalDaysEarly(String days) {
+    return '$days days ahead';
+  }
+
+  @override
+  String goalDaysLate(String days) {
+    return '$days days behind';
+  }
+
+  @override
+  String get goalAddMoney => 'Add money';
+
+  @override
+  String goalAddMoneyTo(String goal) {
+    return 'Add money to $goal';
+  }
+
+  @override
+  String get goalWithdraw => 'Withdraw';
+
+  @override
+  String get goalUseMoney => 'Use the money';
+
+  @override
+  String get goalKeepSaving => 'Keep saving';
+
+  @override
+  String get goalAutoSave => 'Auto-save';
+
+  @override
+  String goalAutoSaveTitle(String goal) {
+    return 'Save for $goal';
+  }
+
+  @override
+  String get goalAuto => 'Auto-saved';
+
+  @override
+  String get goalRestore => 'Bring back';
+
+  @override
+  String get goalGone => 'This goal no longer exists.';
+
+  @override
+  String get goalDeleteHasMoney =>
+      'Take the money out first, so none of it is lost from sight.';
+
+  @override
+  String goalDeleteConfirm(String goal) {
+    return 'Delete $goal? Its history goes with it.';
+  }
+
+  @override
+  String get goalLockedNote =>
+      'Your plan keeps this goal read-only: nothing more goes in, but you can always take the money out.';
+
+  @override
+  String goalNoAccountInCurrency(String currency) {
+    return 'You have no account in $currency to move money with.';
+  }
+
+  @override
+  String goalMoreThanBalance(String account) {
+    return 'That is more than $account holds; its balance goes below zero.';
+  }
+
+  @override
+  String get goalQuickNeeded => 'This month\'s share';
+
+  @override
+  String get goalQuickTenth => '10% of income';
+
+  @override
+  String get goalQuickRest => 'All that\'s left';
+
+  @override
+  String get goalEnterAmount => 'Enter an amount';
+
+  @override
+  String get goalTrajectory => 'How it is going';
+
+  @override
+  String get goalTargetLine => 'Target';
+
+  @override
+  String get goalLegendSaved => 'Saved';
+
+  @override
+  String get goalLegendSteady => 'Steady pace';
+
+  @override
+  String get goalLegendForecast => 'At your pace';
+
+  @override
+  String get goalLegendMilestone => 'Milestones';
+
+  @override
+  String get goalPace => 'Pace';
+
+  @override
+  String get goalNeededMonthly => 'Needed / month';
+
+  @override
+  String get goalYourAverage => 'You average';
+
+  @override
+  String get goalSoFar => 'So far';
+
+  @override
+  String get goalPaceTooEarly =>
+      'After a month of saving, this shows when you\'ll get there.';
+
+  @override
+  String get goalForecast => 'You\'ll finish';
+
+  @override
+  String get goalPaceNothingYet =>
+      'Once money goes in, this shows when you\'ll get there.';
+
+  @override
+  String goalPaceEarly(String date) {
+    return 'At your pace you get there around $date, in time.';
+  }
+
+  @override
+  String goalPaceLate(String date, String needed) {
+    return 'At your pace you get there around $date, after your date. $needed a month makes it in time.';
+  }
+
+  @override
+  String goalPaceNoDate(String amount, String date) {
+    return 'At $amount a month you get there around $date.';
+  }
+
+  @override
+  String get goalWhatIf => 'What if I saved…';
+
+  @override
+  String goalWhatIfResult(String amount, String date) {
+    return '$amount a month → done by $date';
+  }
+
+  @override
+  String get goalWhatIfNever => 'Move the slider to see when you\'d get there.';
+
+  @override
+  String get goalWhatIfAutoSave => 'Save this every month';
+
+  @override
+  String get goalMonthly => 'Month by month';
+
+  @override
+  String goalStreak(String months) {
+    return '$months months in a row';
+  }
+
+  @override
+  String get goalMilestones => 'Milestones';
+
+  @override
+  String get goalSources => 'Where it came from';
+
+  @override
+  String get goalHistory => 'History';
+
+  @override
+  String get goalNoMoves => 'Nothing saved yet. The first step is the biggest.';
+
+  @override
+  String goalMoveIn(String account) {
+    return 'From $account';
+  }
+
+  @override
+  String goalMoveOut(String account) {
+    return 'To $account';
+  }
+
+  @override
+  String get goalUndoMove =>
+      'Take this back? Both sides of the transfer are deleted.';
+
+  @override
+  String goalHalfway(String goal) {
+    return 'Halfway to $goal!';
+  }
+
+  @override
+  String goalMilestoneReached(String mark, String goal) {
+    return '$mark% of the way to $goal!';
+  }
+
+  @override
+  String get goalReachedTitle => 'Goal reached!';
+
+  @override
+  String goalReachedBody(String goal, String amount) {
+    return 'You saved $amount for $goal.';
+  }
+
+  @override
+  String get goalReachedDays => 'Days it took';
+
+  @override
+  String get goalReachedTimes => 'Times you saved';
+
+  @override
+  String goalsSummary(String saved, String target, String count) {
+    return '$saved of $target across $count goals';
+  }
+
+  @override
+  String goalsThisMonth(String amount) {
+    return '$amount this month';
+  }
+
+  @override
+  String goalsSavingRate(String percent) {
+    return 'You save $percent% of income';
+  }
+
+  @override
+  String get goalsHeaderEmpty => 'Money you set aside shows here.';
+
+  @override
+  String get goalsReachedSection => 'Reached';
+
+  @override
+  String goalsArchivedSection(String count) {
+    return 'Archived ($count)';
+  }
+
+  @override
+  String get goalsEmptyTitle => 'Give your money a job';
+
+  @override
+  String get goalsEmptyBody =>
+      'Set money aside for what matters. It leaves what you can spend, so you are not tempted, and it is yours to take back anytime.';
+
+  @override
+  String get goalsHowTitle => 'How goals work';
+
+  @override
+  String get goalsHowSetAside => 'Money is set aside';
+
+  @override
+  String get goalsHowSetAsideBody =>
+      'Adding money moves it out of an account into the goal. It is no longer in \'Available to spend\', but it still counts in your net worth.';
+
+  @override
+  String get goalsHowDate => 'A date makes it real';
+
+  @override
+  String get goalsHowDateBody =>
+      'With a date you see what each month needs, and whether you are on track.';
+
+  @override
+  String get goalsHowFirst => 'Pay yourself first';
+
+  @override
+  String get goalsHowFirstBody =>
+      'Saving right after payday, on a schedule, works better than saving what is left at the month\'s end.';
+
+  @override
+  String get goalsHowWithdraw => 'Yours, anytime';
+
+  @override
+  String get goalsHowWithdrawBody =>
+      'To spend goal money, take it out into an account first. It is never locked away, just one deliberate step further.';
+
+  @override
+  String insightBehind(String goal, String amount, String perWeek) {
+    return '$goal is $amount behind. Adding $perWeek a week gets it back on track.';
+  }
+
+  @override
+  String insightStreak(String months, String goal) {
+    return 'You saved for $goal $months months in a row. Keep the streak going!';
+  }
+
+  @override
+  String insightCutBack(
+    String category,
+    String amount,
+    String goal,
+    int count,
+    String weeks,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$weeks weeks',
+      one: 'a week',
+    );
+    return 'You spent $amount on $category this month. Half of that would bring $goal $_temp0 sooner.';
+  }
+
+  @override
+  String insightPayday(String goal) {
+    return 'You usually save for $goal right after payday. Let it happen on its own every month?';
+  }
+
+  @override
+  String insightBestMonth(String amount) {
+    return 'You moved $amount into goals this month, your best month yet.';
+  }
+
+  @override
+  String get insightEmergency =>
+      'No emergency fund yet. Most advice says to keep three to six months of spending for the unexpected.';
+
+  @override
+  String get insightEmergencyAction => 'Start one';
+
+  @override
+  String withdrawTitle(String goal) {
+    return 'Take money out of $goal?';
+  }
+
+  @override
+  String get withdrawReachedTitle => 'Use the money 🎉';
+
+  @override
+  String withdrawFinishMoves(String from, String to) {
+    return 'Your finish date moves from $from to $to.';
+  }
+
+  @override
+  String withdrawSetsBack(String amount) {
+    return 'This sets your goal back by $amount.';
+  }
+
+  @override
+  String withdrawAll(String amount) {
+    return 'All of it: $amount';
+  }
+
+  @override
+  String get withdrawWhy => 'Why? (optional)';
+
+  @override
+  String get withdrawEmergency => 'Emergency';
+
+  @override
+  String get withdrawReached => 'Reached my goal';
+
+  @override
+  String get withdrawChangedPlans => 'Changed plans';
+
+  @override
+  String get withdrawOther => 'Other';
+
+  @override
+  String withdrawConfirm(String amount) {
+    return 'Withdraw $amount';
+  }
+
+  @override
+  String withdrawMove(String amount) {
+    return 'Move $amount to the account';
+  }
+
+  @override
+  String withdrawTooMuch(String amount) {
+    return 'The goal holds $amount.';
+  }
+
+  @override
+  String withdrawNote(String percent) {
+    return 'You are $percent% of the way. The money goes back as a transfer you can see in both places.';
+  }
+
+  @override
+  String inboxGoalMilestone(String percent, String title) {
+    return '$percent% of the way to $title';
+  }
+
+  @override
+  String inboxGoalReached(String title) {
+    return 'You reached $title!';
+  }
+
+  @override
+  String inboxGoalBehind(String title) {
+    return '$title is falling behind';
+  }
+
+  @override
+  String inboxGoalIdle(String title, String days) {
+    return 'Nothing put into $title for $days days';
+  }
+
+  @override
+  String inboxGoalDetail(String saved, String target) {
+    return '$saved of $target saved';
+  }
+
+  @override
+  String inboxGoalNeeded(String amount) {
+    return '$amount a month gets it back on track';
+  }
+
+  @override
+  String get planner => 'Planner';
+
+  @override
+  String get goalsShort => 'Goals';
+
+  @override
+  String get saveKind => 'Save';
+
+  @override
+  String get goalPick => 'Choose a goal';
+
+  @override
+  String get goalStartFirst => 'Start your first goal';
+
+  @override
+  String get goalNewShort => 'New';
+
+  @override
+  String goalsBehindCount(String count) {
+    return '$count behind';
+  }
+
+  @override
+  String goalsSavedTotal(String amount) {
+    return '$amount saved';
+  }
+
+  @override
+  String get goalsInviteBody =>
+      'Set money aside for something that matters. Tap to start a goal.';
+
+  @override
+  String goalsKeptAside(int n, String count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$count goals, kept apart from what you spend',
+      one: '1 goal, kept apart from what you spend',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalsShareOfWorth(String percent) {
+    return '$percent of what you own is set aside for goals';
+  }
+
+  @override
+  String get goalAccountLocked =>
+      'This account is read-only on your plan. Choose another to save from.';
 }

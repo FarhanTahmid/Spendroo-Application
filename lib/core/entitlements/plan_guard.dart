@@ -51,11 +51,17 @@ class PlanGuard {
 
   /// How many the user holds of what [feature] limits, counted the way the
   /// server counts (billing/rules.py): archived accounts, the categories an
-  /// account starts with, paused reminders and the demo business do not count.
+  /// account starts with, paused reminders, archived goals and the demo
+  /// business do not count. A goal's own account is counted as the goal.
   Future<int> count(String feature, String workspaceId) async {
     final (sql, scoped) = switch (feature) {
       F.personalAccounts => (
-          'SELECT COUNT(*) AS n FROM accounts WHERE workspace_id = ? AND deleted_at IS NULL AND is_archived = 0',
+          'SELECT COUNT(*) AS n FROM accounts WHERE workspace_id = ? AND deleted_at IS NULL AND is_archived = 0 '
+              "AND kind <> 'goal'",
+          true,
+        ),
+      F.savingsGoals => (
+          "SELECT COUNT(*) AS n FROM savings_goals WHERE workspace_id = ? AND deleted_at IS NULL AND status <> 'archived'",
           true,
         ),
       F.customCategories => (

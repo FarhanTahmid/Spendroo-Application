@@ -117,6 +117,7 @@ class _NotificationSettingsPageState extends ConsumerState<NotificationSettingsP
                 ('income', l10n.notifIncome, null, prefs.income),
                 ('recorded', l10n.notifRecorded, l10n.notifRecordedHint, prefs.recorded),
                 ('budgets', l10n.notifBudgets, l10n.notifBudgetsHint, prefs.budgets),
+                ('goals', l10n.notifGoals, l10n.notifGoalsHint, prefs.goals),
                 ('daily_nudge', l10n.notifNudge, l10n.notifNudgeHint, prefs.dailyNudge),
               ]) ...[
                 SwitchField(

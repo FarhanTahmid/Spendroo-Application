@@ -1498,4 +1498,504 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spentMoreThanEarned => 'Spent more than came in';
+
+  @override
+  String get splitTitle => 'Split';
+
+  @override
+  String get splitAction => 'Split into categories';
+
+  @override
+  String get splitRemove => 'Remove split';
+
+  @override
+  String get splitAddPart => 'Add a part';
+
+  @override
+  String get splitEvenly => 'Share equally';
+
+  @override
+  String get splitDone => 'All of it is filed';
+
+  @override
+  String splitLeft(String amount) {
+    return '$amount left to file';
+  }
+
+  @override
+  String splitOver(String amount) {
+    return '$amount more than the amount';
+  }
+
+  @override
+  String splitMismatch(String amount) {
+    return 'The parts must add up to $amount.';
+  }
+
+  @override
+  String get splitNeedsAmounts => 'Give every part an amount.';
+
+  @override
+  String splitInParts(String count) {
+    return 'Split in $count';
+  }
+
+  @override
+  String get recurring => 'Recurring';
+
+  @override
+  String get recurringEmpty =>
+      'Nothing repeats yet. Rent, salary, a bill: set it once and it comes round by itself.';
+
+  @override
+  String get newRecurring => 'Recurring transaction';
+
+  @override
+  String get newReminder => 'Reminder';
+
+  @override
+  String get editRecurring => 'Edit recurring transaction';
+
+  @override
+  String get editReminder => 'Edit reminder';
+
+  @override
+  String get repeatThis => 'Make this repeat';
+
+  @override
+  String get ruleTitle => 'Title';
+
+  @override
+  String get ruleTitleRequired => 'Give it a title.';
+
+  @override
+  String get repeats => 'Repeats';
+
+  @override
+  String get freqOptOnce => 'Does not repeat';
+
+  @override
+  String get freqOptDaily => 'Daily';
+
+  @override
+  String get freqOptWeekly => 'Weekly';
+
+  @override
+  String get freqOptMonthly => 'Monthly';
+
+  @override
+  String get freqOptYearly => 'Yearly';
+
+  @override
+  String get repeatEvery => 'Every';
+
+  @override
+  String get unitDays => 'days';
+
+  @override
+  String get unitWeeks => 'weeks';
+
+  @override
+  String get unitMonths => 'months';
+
+  @override
+  String get unitYears => 'years';
+
+  @override
+  String get freqOnce => 'Once';
+
+  @override
+  String get freqDaily => 'Every day';
+
+  @override
+  String freqDailyN(String n) {
+    return 'Every $n days';
+  }
+
+  @override
+  String get freqWeekly => 'Every week';
+
+  @override
+  String freqWeeklyN(String n) {
+    return 'Every $n weeks';
+  }
+
+  @override
+  String get freqMonthly => 'Every month';
+
+  @override
+  String freqMonthlyN(String n) {
+    return 'Every $n months';
+  }
+
+  @override
+  String get freqYearly => 'Every year';
+
+  @override
+  String freqYearlyN(String n) {
+    return 'Every $n years';
+  }
+
+  @override
+  String get monthlyOn => 'Falls on';
+
+  @override
+  String onDayOfMonth(String n) {
+    return 'Day $n';
+  }
+
+  @override
+  String get onLastDay => 'The last day';
+
+  @override
+  String get onWeekdayOfMonth => 'A weekday of the month';
+
+  @override
+  String theNthWeekday(String ordinal, String weekday) {
+    return 'The $ordinal $weekday';
+  }
+
+  @override
+  String get whichOne => 'Which';
+
+  @override
+  String get weekday => 'Weekday';
+
+  @override
+  String get ordinalFirst => 'first';
+
+  @override
+  String get ordinalSecond => 'second';
+
+  @override
+  String get ordinalThird => 'third';
+
+  @override
+  String get ordinalFourth => 'fourth';
+
+  @override
+  String get ordinalLast => 'last';
+
+  @override
+  String get startsOn => 'Starts on';
+
+  @override
+  String get ends => 'Ends';
+
+  @override
+  String get endsNever => 'Never';
+
+  @override
+  String get endsOnDate => 'On a date';
+
+  @override
+  String get endsAfterTimes => 'After a number of times';
+
+  @override
+  String get endsOn => 'Ends on';
+
+  @override
+  String get timesCount => 'How many times';
+
+  @override
+  String get numberRequired => 'Enter a number above zero.';
+
+  @override
+  String nextDates(String dates) {
+    return 'Next: $dates';
+  }
+
+  @override
+  String get noMoreDates => 'No date falls on this schedule.';
+
+  @override
+  String get recordAutomatically => 'Record automatically';
+
+  @override
+  String get recordAutomaticallyHint =>
+      'Without it you are asked first, and can change the amount.';
+
+  @override
+  String get remindMe => 'Remind me';
+
+  @override
+  String get remindOnTheDay => 'On the day';
+
+  @override
+  String get remindDayBefore => 'The day before';
+
+  @override
+  String remindDaysBefore(String n) {
+    return '$n days before';
+  }
+
+  @override
+  String get remindAt => 'At';
+
+  @override
+  String get usualTime => 'The usual time';
+
+  @override
+  String get paused => 'Paused';
+
+  @override
+  String get pausedHint => 'Nothing falls due while it is paused.';
+
+  @override
+  String get ended => 'Ended';
+
+  @override
+  String nextOn(String date) {
+    return 'Next: $date';
+  }
+
+  @override
+  String dueOn(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String get waitingForYou => 'Waiting for you';
+
+  @override
+  String get comingUp => 'Coming up';
+
+  @override
+  String get everythingThatRepeats => 'Everything that repeats';
+
+  @override
+  String get recordIt => 'Record';
+
+  @override
+  String get skipIt => 'Skip';
+
+  @override
+  String get laterIt => 'Later';
+
+  @override
+  String get doneIt => 'Done';
+
+  @override
+  String get snoozeTomorrow => 'Tomorrow';
+
+  @override
+  String get snoozeThreeDays => 'In 3 days';
+
+  @override
+  String get snoozeWeek => 'In a week';
+
+  @override
+  String get deleteRuleConfirm =>
+      'Delete this? What it has already recorded stays.';
+
+  @override
+  String get recordsItself => 'Recorded automatically';
+
+  @override
+  String get asksFirst => 'Asks first';
+
+  @override
+  String get weekStartsOn => 'Week starts on';
+
+  @override
+  String splitKept(String count) {
+    return 'Split in $count, as in the transaction';
+  }
+
+  @override
+  String get featureReminders => 'Reminders';
+
+  @override
+  String limitReminders(String plan, int limit) {
+    String _temp0 = intl.Intl.pluralLogic(
+      limit,
+      locale: localeName,
+      other: '$limit reminders',
+      one: '1 reminder',
+    );
+    return 'Your $plan plan allows $_temp0 at a time.';
+  }
+
+  @override
+  String get seeAllRecurring => 'See all';
+
+  @override
+  String get addRecurring => 'Add';
+
+  @override
+  String get inbox => 'Reminders';
+
+  @override
+  String get inboxEmpty =>
+      'Nothing to tell you yet. What falls due, what was recorded for you and how your budgets are doing will show up here.';
+
+  @override
+  String get inboxEarlier => 'Earlier';
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String inboxUpcoming(String title, String days) {
+    return '$title is due in $days days';
+  }
+
+  @override
+  String inboxUpcomingTomorrow(String title) {
+    return '$title is due tomorrow';
+  }
+
+  @override
+  String inboxDue(String title) {
+    return '$title is due today';
+  }
+
+  @override
+  String inboxOverdue(String title) {
+    return '$title is still waiting';
+  }
+
+  @override
+  String inboxPosted(String title) {
+    return '$title was recorded';
+  }
+
+  @override
+  String inboxIncomeComing(String title, String days) {
+    return '$title is expected in $days days';
+  }
+
+  @override
+  String inboxIncomeTomorrow(String title) {
+    return '$title is expected tomorrow';
+  }
+
+  @override
+  String inboxIncomeDue(String title) {
+    return 'Has $title come in?';
+  }
+
+  @override
+  String inboxBlocked(String title) {
+    return '$title could not be recorded. Check its account.';
+  }
+
+  @override
+  String inboxBudget80(String title, String percent) {
+    return '$title: $percent% of the budget is spent';
+  }
+
+  @override
+  String inboxBudgetOver(String title) {
+    return '$title is over its budget';
+  }
+
+  @override
+  String inboxBudgetDetail(String spent, String limit) {
+    return '$spent of $limit';
+  }
+
+  @override
+  String get untitledRule => 'A recurring transaction';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notifAllow => 'Allow notifications';
+
+  @override
+  String get notifBlocked =>
+      'This phone is not letting Spendroo show notifications.';
+
+  @override
+  String get notifBlockedHint =>
+      'If nothing happens, allow them for Spendroo in the phone\'s settings.';
+
+  @override
+  String get notifPush => 'Push notifications';
+
+  @override
+  String get notifPushHint =>
+      'Reminders reach this phone even when the app is closed.';
+
+  @override
+  String get notifWhat => 'What to tell you';
+
+  @override
+  String get notifBills => 'Bills and reminders';
+
+  @override
+  String get notifBillsHint => 'Coming up, due today and still waiting';
+
+  @override
+  String get notifIncome => 'Expected income';
+
+  @override
+  String get notifRecorded => 'Recorded for you';
+
+  @override
+  String get notifRecordedHint =>
+      'When a recurring transaction is recorded, or could not be';
+
+  @override
+  String get notifBudgets => 'Budget alerts';
+
+  @override
+  String get notifBudgetsHint => 'At 80% of a budget, and when it is passed';
+
+  @override
+  String get notifNudge => 'Daily nudge';
+
+  @override
+  String get notifNudgeHint => 'On days you have written nothing down';
+
+  @override
+  String get notifNudgeTime => 'Nudge at';
+
+  @override
+  String get notifWhen => 'When';
+
+  @override
+  String get notifReminderTime => 'Remind me at';
+
+  @override
+  String get notifReminderTimeHint =>
+      'For recurring transactions without a time of their own.';
+
+  @override
+  String get notifQuiet => 'Quiet hours';
+
+  @override
+  String get notifQuietHint =>
+      'Nothing is sent between these hours. It waits until they end.';
+
+  @override
+  String get notifQuietFrom => 'From';
+
+  @override
+  String get notifQuietTo => 'Until';
+
+  @override
+  String get notifTest => 'Send a test notification';
+
+  @override
+  String get notifTestSent => 'Sent. It should arrive in a moment.';
+
+  @override
+  String get notifTestNoDevice =>
+      'This phone is not registered for notifications yet. Check the connection and try again.';
+
+  @override
+  String get notifTestNotSetUp =>
+      'The server is not set up to send notifications yet.';
+
+  @override
+  String get notifTestFailed => 'It could not be sent. Try again in a while.';
+
+  @override
+  String get nudgeTitle => 'Did you spend anything today?';
+
+  @override
+  String get nudgeBody => 'Write it down while you remember.';
 }

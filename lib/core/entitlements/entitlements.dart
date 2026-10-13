@@ -10,6 +10,7 @@ abstract final class F {
   static const insightsYearReview = 'insights.year_review';
   static const insightsTrendMonths = 'insights.trend_months';
   static const recurringTransactions = 'recurring.transactions';
+  static const remindersStandalone = 'reminders.standalone';
   static const savingsGoals = 'goals.savings';
   static const homeWidget = 'widget.home';
   static const businessWorkspaces = 'business.workspaces';

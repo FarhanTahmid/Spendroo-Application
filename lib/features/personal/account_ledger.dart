@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/db/database.dart';
 import '../../core/money.dart';
 import '../../core/providers.dart';
+import 'allocations.dart';
 import 'ledger_repository.dart';
 
 /// The spans of time the account screen offers; [custom] is any two dates.
@@ -216,13 +217,8 @@ class AccountLedger {
       variables.add(Variable<String>(filter.kind!));
     }
     if (filter.hasCategories) {
-      final either = <String>[
-        if (filter.categoryIds.isNotEmpty) 't.category_id IN (${List.filled(filter.categoryIds.length, '?').join(', ')})',
-        // A transfer never has a category; "uncategorised" means income and expenses
-        if (filter.uncategorised) "(t.category_id IS NULL AND t.kind != 'transfer')",
-      ];
-      parts.add('(${either.join(' OR ')})');
-      variables.addAll(filter.categoryIds.map((id) => Variable<String>(id)));
+      // A split is kept when any of its parts is; _amount() says how much of it counts
+      parts.add(filedUnder(filter.categoryIds, uncategorised: filter.uncategorised));
     }
     final query = Money.toAsciiDigits(filter.query.trim());
     if (query.isNotEmpty) {
@@ -247,6 +243,12 @@ class AccountLedger {
     }
     return (parts.isEmpty ? '1' : parts.join(' AND '), variables);
   }
+
+  /// What a row counts for under [filter], signed: the whole amount, or under
+  /// a choice of categories the chosen parts of a split.
+  String _amount(AccountFilter filter) => filter.hasCategories
+      ? countedAmount(filter.categoryIds, uncategorised: filter.uncategorised)
+      : 't.amount_minor';
 
   bool _searches(AccountFilter filter) => filter.query.trim().isNotEmpty;
 
@@ -324,15 +326,16 @@ class AccountLedger {
     // Nothing before an open start; everything up to an open end
     final before = filter.from == null ? '0' : 'occurred_on < ?';
     final through = filter.to == null ? '1' : 'occurred_on <= ?';
+    final amount = _amount(filter);
     return db
         .customSelect(
           'SELECT '
-          "COALESCE(SUM(CASE WHEN t.kind = 'income' THEN t.amount_minor END), 0) AS income, "
-          "COALESCE(-SUM(CASE WHEN t.kind = 'expense' THEN t.amount_minor END), 0) AS expense, "
+          "COALESCE(SUM(CASE WHEN t.kind = 'income' THEN $amount END), 0) AS income, "
+          "COALESCE(-SUM(CASE WHEN t.kind = 'expense' THEN $amount END), 0) AS expense, "
           "COALESCE(SUM(CASE WHEN t.kind = 'transfer' AND t.amount_minor > 0 THEN t.amount_minor END), 0) AS t_in, "
           "COALESCE(-SUM(CASE WHEN t.kind = 'transfer' AND t.amount_minor < 0 THEN t.amount_minor END), 0) AS t_out, "
           // Expenses are negative, so the smallest is the biggest
-          "COALESCE(-MIN(CASE WHEN t.kind = 'expense' THEN t.amount_minor END), 0) AS largest, "
+          "COALESCE(-MIN(CASE WHEN t.kind = 'expense' THEN $amount END), 0) AS largest, "
           'COUNT(t.id) AS n, MIN(t.occurred_on) AS first_day, MAX(t.occurred_on) AS last_day, '
           'COALESCE((SELECT opening_balance_minor FROM accounts WHERE id = ?), 0) AS base, '
           'COALESCE((SELECT SUM(amount_minor) FROM transactions '
@@ -378,10 +381,13 @@ class AccountLedger {
     final (narrow, narrowVariables) = _narrow(filter, currency);
     return db
         .customSelect(
-          'SELECT c.id AS c_id, c.name AS c_name, c.color AS c_color, ABS(SUM(t.amount_minor)) AS total, '
-          'COUNT(t.id) AS n, MAX(ABS(t.amount_minor)) AS largest '
-          'FROM transactions t $_categoryJoin${_searches(filter) ? _otherLegJoin : ''}'
+          // Each part of a split under its own category
+          'SELECT c.id AS c_id, c.name AS c_name, c.color AS c_color, ABS(SUM($partAmount)) AS total, '
+          'COUNT(*) AS n, MAX(ABS($partAmount)) AS largest '
+          'FROM transactions t ${partsJoin}LEFT JOIN categories c ON c.id = $partCategory AND c.deleted_at IS NULL '
+          '${_searches(filter) ? _otherLegJoin : ''}'
           'WHERE t.account_id = ? AND t.deleted_at IS NULL AND t.kind = ?$period AND $narrow '
+          '${filter.hasCategories ? 'AND ${partChosen(filter.categoryIds, uncategorised: filter.uncategorised)} ' : ''}'
           'GROUP BY c.id ORDER BY total DESC',
           variables: [
             Variable<String>(accountId),
@@ -411,11 +417,12 @@ class AccountLedger {
   Stream<AccountSeries> watchSeries(String accountId, String currency, AccountFilter filter) {
     final (period, periodVariables) = _period(filter);
     final (narrow, narrowVariables) = _narrow(filter, currency);
+    final amount = _amount(filter);
     return db
         .customSelect(
           'SELECT t.occurred_on AS day, SUM(t.amount_minor) AS net, '
-          'SUM(CASE WHEN ($narrow) AND t.amount_minor > 0 THEN t.amount_minor ELSE 0 END) AS cash_in, '
-          '-SUM(CASE WHEN ($narrow) AND t.amount_minor < 0 THEN t.amount_minor ELSE 0 END) AS cash_out, '
+          'SUM(CASE WHEN ($narrow) AND t.amount_minor > 0 THEN $amount ELSE 0 END) AS cash_in, '
+          '-SUM(CASE WHEN ($narrow) AND t.amount_minor < 0 THEN $amount ELSE 0 END) AS cash_out, '
           'COALESCE((SELECT opening_balance_minor FROM accounts WHERE id = ?), 0) + '
           'COALESCE((SELECT SUM(amount_minor) FROM transactions WHERE account_id = ? AND deleted_at IS NULL '
           'AND ${filter.from == null ? '0' : 'occurred_on < ?'}), 0) AS opening '

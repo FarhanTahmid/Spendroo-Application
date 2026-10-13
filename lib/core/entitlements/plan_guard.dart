@@ -50,8 +50,8 @@ class PlanGuard {
   }
 
   /// How many the user holds of what [feature] limits, counted the way the
-  /// server counts (billing/rules.py): archived accounts and the categories an
-  /// account starts with do not count, nor does the demo business.
+  /// server counts (billing/rules.py): archived accounts, the categories an
+  /// account starts with, paused reminders and the demo business do not count.
   Future<int> count(String feature, String workspaceId) async {
     final (sql, scoped) = switch (feature) {
       F.personalAccounts => (
@@ -60,6 +60,12 @@ class PlanGuard {
         ),
       F.customCategories => (
           'SELECT COUNT(*) AS n FROM categories WHERE workspace_id = ? AND deleted_at IS NULL AND is_default = 0',
+          true,
+        ),
+      // Reminders with nothing to record; a paused one does not count
+      F.remindersStandalone => (
+          "SELECT COUNT(*) AS n FROM recurring_rules WHERE workspace_id = ? AND deleted_at IS NULL "
+              "AND kind = 'reminder' AND is_paused = 0",
           true,
         ),
       F.businessCashbooks => ('SELECT COUNT(*) AS n FROM cashbooks WHERE workspace_id = ? AND deleted_at IS NULL', true),

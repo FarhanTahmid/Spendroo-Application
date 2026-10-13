@@ -2647,6 +2647,858 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Spent more than came in'**
   String get spentMoreThanEarned;
+
+  /// No description provided for @splitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Split'**
+  String get splitTitle;
+
+  /// No description provided for @splitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Split into categories'**
+  String get splitAction;
+
+  /// No description provided for @splitRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove split'**
+  String get splitRemove;
+
+  /// No description provided for @splitAddPart.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a part'**
+  String get splitAddPart;
+
+  /// No description provided for @splitEvenly.
+  ///
+  /// In en, this message translates to:
+  /// **'Share equally'**
+  String get splitEvenly;
+
+  /// No description provided for @splitDone.
+  ///
+  /// In en, this message translates to:
+  /// **'All of it is filed'**
+  String get splitDone;
+
+  /// No description provided for @splitLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} left to file'**
+  String splitLeft(String amount);
+
+  /// No description provided for @splitOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} more than the amount'**
+  String splitOver(String amount);
+
+  /// No description provided for @splitMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The parts must add up to {amount}.'**
+  String splitMismatch(String amount);
+
+  /// No description provided for @splitNeedsAmounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Give every part an amount.'**
+  String get splitNeedsAmounts;
+
+  /// No description provided for @splitInParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Split in {count}'**
+  String splitInParts(String count);
+
+  /// No description provided for @recurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get recurring;
+
+  /// No description provided for @recurringEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing repeats yet. Rent, salary, a bill: set it once and it comes round by itself.'**
+  String get recurringEmpty;
+
+  /// No description provided for @newRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring transaction'**
+  String get newRecurring;
+
+  /// No description provided for @newReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get newReminder;
+
+  /// No description provided for @editRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit recurring transaction'**
+  String get editRecurring;
+
+  /// No description provided for @editReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit reminder'**
+  String get editReminder;
+
+  /// No description provided for @repeatThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Make this repeat'**
+  String get repeatThis;
+
+  /// No description provided for @ruleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get ruleTitle;
+
+  /// No description provided for @ruleTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it a title.'**
+  String get ruleTitleRequired;
+
+  /// No description provided for @repeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats'**
+  String get repeats;
+
+  /// No description provided for @freqOptOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Does not repeat'**
+  String get freqOptOnce;
+
+  /// No description provided for @freqOptDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get freqOptDaily;
+
+  /// No description provided for @freqOptWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get freqOptWeekly;
+
+  /// No description provided for @freqOptMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get freqOptMonthly;
+
+  /// No description provided for @freqOptYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get freqOptYearly;
+
+  /// No description provided for @repeatEvery.
+  ///
+  /// In en, this message translates to:
+  /// **'Every'**
+  String get repeatEvery;
+
+  /// No description provided for @unitDays.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get unitDays;
+
+  /// No description provided for @unitWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'weeks'**
+  String get unitWeeks;
+
+  /// No description provided for @unitMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'months'**
+  String get unitMonths;
+
+  /// No description provided for @unitYears.
+  ///
+  /// In en, this message translates to:
+  /// **'years'**
+  String get unitYears;
+
+  /// No description provided for @freqOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get freqOnce;
+
+  /// No description provided for @freqDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get freqDaily;
+
+  /// No description provided for @freqDailyN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} days'**
+  String freqDailyN(String n);
+
+  /// No description provided for @freqWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every week'**
+  String get freqWeekly;
+
+  /// No description provided for @freqWeeklyN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} weeks'**
+  String freqWeeklyN(String n);
+
+  /// No description provided for @freqMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every month'**
+  String get freqMonthly;
+
+  /// No description provided for @freqMonthlyN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} months'**
+  String freqMonthlyN(String n);
+
+  /// No description provided for @freqYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every year'**
+  String get freqYearly;
+
+  /// No description provided for @freqYearlyN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} years'**
+  String freqYearlyN(String n);
+
+  /// No description provided for @monthlyOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Falls on'**
+  String get monthlyOn;
+
+  /// No description provided for @onDayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {n}'**
+  String onDayOfMonth(String n);
+
+  /// No description provided for @onLastDay.
+  ///
+  /// In en, this message translates to:
+  /// **'The last day'**
+  String get onLastDay;
+
+  /// No description provided for @onWeekdayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'A weekday of the month'**
+  String get onWeekdayOfMonth;
+
+  /// No description provided for @theNthWeekday.
+  ///
+  /// In en, this message translates to:
+  /// **'The {ordinal} {weekday}'**
+  String theNthWeekday(String ordinal, String weekday);
+
+  /// No description provided for @whichOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Which'**
+  String get whichOne;
+
+  /// No description provided for @weekday.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekday'**
+  String get weekday;
+
+  /// No description provided for @ordinalFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'first'**
+  String get ordinalFirst;
+
+  /// No description provided for @ordinalSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'second'**
+  String get ordinalSecond;
+
+  /// No description provided for @ordinalThird.
+  ///
+  /// In en, this message translates to:
+  /// **'third'**
+  String get ordinalThird;
+
+  /// No description provided for @ordinalFourth.
+  ///
+  /// In en, this message translates to:
+  /// **'fourth'**
+  String get ordinalFourth;
+
+  /// No description provided for @ordinalLast.
+  ///
+  /// In en, this message translates to:
+  /// **'last'**
+  String get ordinalLast;
+
+  /// No description provided for @startsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts on'**
+  String get startsOn;
+
+  /// No description provided for @ends.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends'**
+  String get ends;
+
+  /// No description provided for @endsNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get endsNever;
+
+  /// No description provided for @endsOnDate.
+  ///
+  /// In en, this message translates to:
+  /// **'On a date'**
+  String get endsOnDate;
+
+  /// No description provided for @endsAfterTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'After a number of times'**
+  String get endsAfterTimes;
+
+  /// No description provided for @endsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends on'**
+  String get endsOn;
+
+  /// No description provided for @timesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times'**
+  String get timesCount;
+
+  /// No description provided for @numberRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number above zero.'**
+  String get numberRequired;
+
+  /// No description provided for @nextDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {dates}'**
+  String nextDates(String dates);
+
+  /// No description provided for @noMoreDates.
+  ///
+  /// In en, this message translates to:
+  /// **'No date falls on this schedule.'**
+  String get noMoreDates;
+
+  /// No description provided for @recordAutomatically.
+  ///
+  /// In en, this message translates to:
+  /// **'Record automatically'**
+  String get recordAutomatically;
+
+  /// No description provided for @recordAutomaticallyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Without it you are asked first, and can change the amount.'**
+  String get recordAutomaticallyHint;
+
+  /// No description provided for @remindMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me'**
+  String get remindMe;
+
+  /// No description provided for @remindOnTheDay.
+  ///
+  /// In en, this message translates to:
+  /// **'On the day'**
+  String get remindOnTheDay;
+
+  /// No description provided for @remindDayBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'The day before'**
+  String get remindDayBefore;
+
+  /// No description provided for @remindDaysBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days before'**
+  String remindDaysBefore(String n);
+
+  /// No description provided for @remindAt.
+  ///
+  /// In en, this message translates to:
+  /// **'At'**
+  String get remindAt;
+
+  /// No description provided for @usualTime.
+  ///
+  /// In en, this message translates to:
+  /// **'The usual time'**
+  String get usualTime;
+
+  /// No description provided for @paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get paused;
+
+  /// No description provided for @pausedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing falls due while it is paused.'**
+  String get pausedHint;
+
+  /// No description provided for @ended.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get ended;
+
+  /// No description provided for @nextOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {date}'**
+  String nextOn(String date);
+
+  /// No description provided for @dueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Due {date}'**
+  String dueOn(String date);
+
+  /// No description provided for @waitingForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get waitingForYou;
+
+  /// No description provided for @comingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming up'**
+  String get comingUp;
+
+  /// No description provided for @everythingThatRepeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything that repeats'**
+  String get everythingThatRepeats;
+
+  /// No description provided for @recordIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get recordIt;
+
+  /// No description provided for @skipIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skipIt;
+
+  /// No description provided for @laterIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get laterIt;
+
+  /// No description provided for @doneIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get doneIt;
+
+  /// No description provided for @snoozeTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get snoozeTomorrow;
+
+  /// No description provided for @snoozeThreeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'In 3 days'**
+  String get snoozeThreeDays;
+
+  /// No description provided for @snoozeWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'In a week'**
+  String get snoozeWeek;
+
+  /// No description provided for @deleteRuleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this? What it has already recorded stays.'**
+  String get deleteRuleConfirm;
+
+  /// No description provided for @recordsItself.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded automatically'**
+  String get recordsItself;
+
+  /// No description provided for @asksFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks first'**
+  String get asksFirst;
+
+  /// No description provided for @weekStartsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Week starts on'**
+  String get weekStartsOn;
+
+  /// No description provided for @splitKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Split in {count}, as in the transaction'**
+  String splitKept(String count);
+
+  /// No description provided for @featureReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get featureReminders;
+
+  /// No description provided for @limitReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {plan} plan allows {limit, plural, =1{1 reminder} other{{limit} reminders}} at a time.'**
+  String limitReminders(String plan, int limit);
+
+  /// No description provided for @seeAllRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAllRecurring;
+
+  /// No description provided for @addRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addRecurring;
+
+  /// No description provided for @inbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get inbox;
+
+  /// No description provided for @inboxEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to tell you yet. What falls due, what was recorded for you and how your budgets are doing will show up here.'**
+  String get inboxEmpty;
+
+  /// No description provided for @inboxEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get inboxEarlier;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @inboxUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is due in {days} days'**
+  String inboxUpcoming(String title, String days);
+
+  /// No description provided for @inboxUpcomingTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is due tomorrow'**
+  String inboxUpcomingTomorrow(String title);
+
+  /// No description provided for @inboxDue.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is due today'**
+  String inboxDue(String title);
+
+  /// No description provided for @inboxOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is still waiting'**
+  String inboxOverdue(String title);
+
+  /// No description provided for @inboxPosted.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} was recorded'**
+  String inboxPosted(String title);
+
+  /// No description provided for @inboxIncomeComing.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is expected in {days} days'**
+  String inboxIncomeComing(String title, String days);
+
+  /// No description provided for @inboxIncomeTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is expected tomorrow'**
+  String inboxIncomeTomorrow(String title);
+
+  /// No description provided for @inboxIncomeDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Has {title} come in?'**
+  String inboxIncomeDue(String title);
+
+  /// No description provided for @inboxBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} could not be recorded. Check its account.'**
+  String inboxBlocked(String title);
+
+  /// No description provided for @inboxBudget80.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}: {percent}% of the budget is spent'**
+  String inboxBudget80(String title, String percent);
+
+  /// No description provided for @inboxBudgetOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} is over its budget'**
+  String inboxBudgetOver(String title);
+
+  /// No description provided for @inboxBudgetDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{spent} of {limit}'**
+  String inboxBudgetDetail(String spent, String limit);
+
+  /// No description provided for @untitledRule.
+  ///
+  /// In en, this message translates to:
+  /// **'A recurring transaction'**
+  String get untitledRule;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @notifAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications'**
+  String get notifAllow;
+
+  /// No description provided for @notifBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is not letting Spendroo show notifications.'**
+  String get notifBlocked;
+
+  /// No description provided for @notifBlockedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If nothing happens, allow them for Spendroo in the phone\'s settings.'**
+  String get notifBlockedHint;
+
+  /// No description provided for @notifPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Push notifications'**
+  String get notifPush;
+
+  /// No description provided for @notifPushHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders reach this phone even when the app is closed.'**
+  String get notifPushHint;
+
+  /// No description provided for @notifWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What to tell you'**
+  String get notifWhat;
+
+  /// No description provided for @notifBills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills and reminders'**
+  String get notifBills;
+
+  /// No description provided for @notifBillsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming up, due today and still waiting'**
+  String get notifBillsHint;
+
+  /// No description provided for @notifIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected income'**
+  String get notifIncome;
+
+  /// No description provided for @notifRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded for you'**
+  String get notifRecorded;
+
+  /// No description provided for @notifRecordedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When a recurring transaction is recorded, or could not be'**
+  String get notifRecordedHint;
+
+  /// No description provided for @notifBudgets.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget alerts'**
+  String get notifBudgets;
+
+  /// No description provided for @notifBudgetsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At 80% of a budget, and when it is passed'**
+  String get notifBudgetsHint;
+
+  /// No description provided for @notifNudge.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily nudge'**
+  String get notifNudge;
+
+  /// No description provided for @notifNudgeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'On days you have written nothing down'**
+  String get notifNudgeHint;
+
+  /// No description provided for @notifNudgeTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Nudge at'**
+  String get notifNudgeTime;
+
+  /// No description provided for @notifWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get notifWhen;
+
+  /// No description provided for @notifReminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me at'**
+  String get notifReminderTime;
+
+  /// No description provided for @notifReminderTimeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For recurring transactions without a time of their own.'**
+  String get notifReminderTimeHint;
+
+  /// No description provided for @notifQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet hours'**
+  String get notifQuiet;
+
+  /// No description provided for @notifQuietHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is sent between these hours. It waits until they end.'**
+  String get notifQuietHint;
+
+  /// No description provided for @notifQuietFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get notifQuietFrom;
+
+  /// No description provided for @notifQuietTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Until'**
+  String get notifQuietTo;
+
+  /// No description provided for @notifTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a test notification'**
+  String get notifTest;
+
+  /// No description provided for @notifTestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent. It should arrive in a moment.'**
+  String get notifTestSent;
+
+  /// No description provided for @notifTestNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is not registered for notifications yet. Check the connection and try again.'**
+  String get notifTestNoDevice;
+
+  /// No description provided for @notifTestNotSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'The server is not set up to send notifications yet.'**
+  String get notifTestNotSetUp;
+
+  /// No description provided for @notifTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'It could not be sent. Try again in a while.'**
+  String get notifTestFailed;
+
+  /// No description provided for @nudgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you spend anything today?'**
+  String get nudgeTitle;
+
+  /// No description provided for @nudgeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Write it down while you remember.'**
+  String get nudgeBody;
 }
 
 class _AppLocalizationsDelegate

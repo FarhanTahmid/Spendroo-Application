@@ -5,6 +5,7 @@ import 'package:spendroo/core/db/database.dart';
 import 'package:spendroo/core/db/local_store.dart';
 import 'package:spendroo/core/sync/sync_engine.dart';
 import 'package:spendroo/features/cashbook/cashbook_repository.dart';
+import 'package:spendroo/features/personal/allocations.dart';
 import 'package:spendroo/features/personal/ledger_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -138,6 +139,48 @@ void main() {
     await engine().sync();
     expect(await books.watchCashbooks(shopId).first, isEmpty);
     expect(await books.watchEntries(bookId).first, isEmpty);
+  });
+
+  test('a split pulled from the server is kept as it was sent', () async {
+    const accountId = '00000000-0000-0000-0000-0000000000c1';
+    const foodId = '00000000-0000-0000-0000-0000000000c2';
+    const spentId = '00000000-0000-0000-0000-0000000000c3';
+    respond = (request) async => switch (request.url.path) {
+          '/api/v1/workspaces/' => json(workspaces('personal')),
+          '/api/v1/sync/pull/' => json({
+              ...emptyPull(),
+              'next_since': 3,
+              'changes': {
+                'accounts': [
+                  serverRow(accountId, 1, {
+                    'name': 'Cash', 'kind': 'cash', 'currency': 'BDT', 'opening_balance_minor': 0, 'is_archived': false,
+                  }),
+                ],
+                'categories': [
+                  serverRow(foodId, 2, {'name': 'Food', 'kind': 'expense', 'is_default': true, 'color': null}),
+                ],
+                'transactions': [
+                  serverRow(spentId, 3, {
+                    'account_id': accountId, 'category_id': null, 'kind': 'expense', 'amount_minor': -500,
+                    'currency': 'BDT', 'transfer_group_id': null, 'occurred_on': '2026-10-06', 'note': 'ATM cash',
+                    'source': 'manual',
+                    'splits': [
+                      {'category_id': foodId, 'amount_minor': 300, 'note': 'Lunch'},
+                      {'category_id': null, 'amount_minor': 200, 'note': ''},
+                    ],
+                  }),
+                ],
+              },
+            }),
+          _ => json({}, 404),
+        };
+
+    await engine().sync();
+    final ledger = LedgerRepository(db, store);
+    final spent = (await ledger.watchTransactions(shopId).first).single.transaction;
+    expect(spent.parts, [const SplitPart(foodId, 300, note: 'Lunch'), const SplitPart(null, 200)]);
+    final month = await ledger.watchMonth(shopId, DateTime(2026, 10), 'BDT').first;
+    expect(month.byCategory.map((c) => (c.name, c.amountMinor)).toList(), [('Food', 300), (null, 200)]);
   });
 
   test('a transfer leg the server refuses is undone and reported', () async {

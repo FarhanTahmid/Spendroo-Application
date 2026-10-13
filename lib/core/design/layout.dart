@@ -419,22 +419,29 @@ class AsyncView<T> extends StatelessWidget {
 
 /// Tappable field that opens a date picker. Dates are ISO strings (yyyy-MM-dd).
 class DateField extends StatelessWidget {
-  const DateField({super.key, required this.value, required this.onChanged});
+  const DateField({super.key, required this.value, required this.onChanged, this.label, this.first, this.last});
 
   final String value;
   final ValueChanged<String> onChanged;
 
+  /// "Date" unless the form has more than one.
+  final String? label;
+
+  /// The days that can be picked: from 2000 to a year from now unless given.
+  final DateTime? first;
+  final DateTime? last;
+
   @override
   Widget build(BuildContext context) => PickerField(
-        label: context.l10n.date,
+        label: label ?? context.l10n.date,
         text: friendlyDate(context, value),
         icon: Icons.calendar_today_rounded,
         onOpen: () async {
           final picked = await showDatePicker(
             context: context,
             initialDate: DateTime.parse(value),
-            firstDate: DateTime(2000),
-            lastDate: DateTime.now().add(const Duration(days: 365)),
+            firstDate: first ?? DateTime(2000),
+            lastDate: last ?? DateTime.now().add(const Duration(days: 365)),
           );
           if (picked != null) onChanged(picked.toIso8601String().substring(0, 10));
         },

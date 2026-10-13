@@ -9,6 +9,8 @@ import '../../core/providers.dart';
 import '../../core/ui.dart';
 import '../profile/profile_page.dart';
 import '../profile/profile_repository.dart';
+import '../recurring/recurring_repository.dart';
+import '../recurring/schedule_editor.dart';
 import '../shell/home_shell.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -19,6 +21,7 @@ class SettingsPage extends ConsumerWidget {
     final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
+    final weekStart = ref.watch(weekStartProvider).value ?? defaultWeekStart;
     final status = ref.watch(syncControllerProvider);
     final pending = ref.watch(pendingChangesProvider).value ?? 0;
     final failures = ref.watch(syncFailuresProvider).value ?? const [];
@@ -140,13 +143,51 @@ class SettingsPage extends ConsumerWidget {
                   if (context.mounted && !changed) context.showMessage(l10n.needsConnection);
                 },
               ),
-            if (workspace != null && workspace.kind == 'personal')
+            if (workspace != null && workspace.kind == 'personal') ...[
               ListTile(
                 leading: const Icon(Icons.sell_outlined),
                 title: Text(l10n.categories),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => context.push('/categories'),
               ),
+              ListTile(
+                leading: const Icon(Icons.event_repeat_rounded),
+                title: Text(l10n.recurring),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => context.push('/recurring'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.date_range_outlined),
+                title: Text(l10n.weekStartsOn),
+                trailing: Text(
+                  weekdayName(context, weekStart, long: true),
+                  style: text.titleMedium?.copyWith(color: scheme.primary),
+                ),
+                onTap: () async {
+                  final picked = await showSelectSheet<int>(
+                    context,
+                    title: l10n.weekStartsOn,
+                    value: weekStart,
+                    options: [
+                      // The days a week begins on somewhere: Saturday, Sunday, Monday
+                      for (final day in const [5, 6, 0]) SelectOption(day, weekdayName(context, day, long: true)),
+                    ],
+                  );
+                  final day = picked?.value;
+                  if (day == null || day == weekStart) return;
+                  await ref.read(recurringRepositoryProvider).setWeekStart(day);
+                  ref.invalidate(weekStartProvider);
+                },
+              ),
+            ],
+          ]),
+          group([
+            ListTile(
+              leading: const Icon(Icons.notifications_none_rounded),
+              title: Text(l10n.notifications),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => context.push('/settings/notifications'),
+            ),
           ]),
           group([
             ListTile(

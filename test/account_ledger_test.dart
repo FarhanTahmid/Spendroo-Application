@@ -4,6 +4,7 @@ import 'package:spendroo/core/db/database.dart';
 import 'package:spendroo/core/db/local_store.dart';
 import 'package:spendroo/core/providers.dart';
 import 'package:spendroo/features/personal/account_ledger.dart';
+import 'package:spendroo/features/personal/allocations.dart';
 import 'package:spendroo/features/personal/ledger_repository.dart';
 
 import 'test_support.dart';
@@ -59,6 +60,41 @@ void main() {
       cursor = (t.occurredOn, t.createdAt, t.id);
     }
   }
+
+  // The same split and the same figures as the server's SplitTests (ledger_personal/tests.py)
+  test('a split counts for its chosen parts under a choice of categories', () async {
+    await seed();
+    final transportId = await repo.addCategory('ws1', 'Transport', 'expense');
+    await repo.addTransaction(cash,
+        kind: 'expense',
+        amountMinor: 50000,
+        occurredOn: '2026-10-06',
+        note: 'ATM cash',
+        splits: [SplitPart(foodId, 20000), SplitPart(transportId, 10000), const SplitPart(null, 20000)]);
+    const october = AccountFilter(from: '2026-10-01', to: '2026-10-31');
+
+    final whole = await ledger.watchSummary(cash.id, 'BDT', october).first;
+    expect((whole.expenseMinor, whole.count), (125000, 4));
+    final categories = await ledger.watchCategories(cash.id, 'BDT', october).first;
+    expect(categories.map((c) => (c.name, c.amountMinor, c.count, c.largestMinor)).toList(),
+        [('Food', 65000, 2, 45000), (null, 50000, 2, 30000), ('Transport', 10000, 1, 10000)]);
+
+    final food = october.copyWith(categoryIds: {foodId});
+    final narrowed = await ledger.watchSummary(cash.id, 'BDT', food).first;
+    expect((narrowed.expenseMinor, narrowed.count, narrowed.largestExpenseMinor), (65000, 2, 45000));
+    expect((await ledger.watchCategories(cash.id, 'BDT', food).first).map((c) => (c.name, c.amountMinor)).toList(),
+        [('Food', 65000)]);
+    final series = await ledger.watchSeries(cash.id, 'BDT', food).first;
+    expect(series.points.map((p) => (p.date.day, p.outMinor)).toList(), [(2, 45000), (5, 0), (6, 20000)]);
+    // The balance still counts all of it
+    expect(series.points.last.balanceMinor, 3355000);
+
+    final none = await ledger.watchSummary(cash.id, 'BDT', october.copyWith(uncategorised: true)).first;
+    expect((none.expenseMinor, none.count), (50000, 2));
+    final both = october.copyWith(categoryIds: {transportId}, uncategorised: true);
+    expect((await ledger.watchSummary(cash.id, 'BDT', both).first).expenseMinor, 60000);
+    expect((await all(AccountFilter(categoryIds: {transportId}))).map((r) => r.transaction.note).toList(), ['ATM cash']);
+  });
 
   test('pages walk every row once, newest first, even when rows share a day and a moment', () async {
     // One timestamp for all: only the id tells them apart

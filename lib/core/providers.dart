@@ -12,6 +12,7 @@ import 'db/database.dart';
 import 'db/local_store.dart';
 import 'entitlements/entitlements.dart';
 import 'entitlements/entitlements_controller.dart';
+import 'push/push_controller.dart';
 import 'sync/sync_engine.dart';
 
 // ---------------------------------------------------------------- plumbing
@@ -108,6 +109,7 @@ class AuthController extends Notifier<AuthState> {
         ? AuthStep.signedOut
         : AuthStep.values.firstWhere((s) => s.name == stored, orElse: () => AuthStep.signedOut);
     state = AuthState(step, email: email);
+    if (step == AuthStep.signedIn) ref.read(pushControllerProvider.notifier).signedIn();
     if (!hasToken) return;
     try {
       await _apply(await _auth.currentSession(), email: email);
@@ -157,6 +159,8 @@ class AuthController extends Notifier<AuthState> {
       _run(() => _auth.resetPassword(code, newPassword), email: state.email);
 
   Future<void> logOut() async {
+    // While the session still answers: this phone stops ringing for the user
+    await ref.read(pushControllerProvider.notifier).unregister();
     await _auth.logOut();
     // So "Continue with Google" asks which account to use next time
     await ref.read(googleIdentityProvider).signOut();
@@ -190,10 +194,14 @@ class AuthController extends Notifier<AuthState> {
     await _db.setSetting(_stepKey, step.name);
     await _db.setSetting(_emailKey, email);
     state = AuthState(step, email: email);
-    if (step == AuthStep.signedIn) ref.read(syncControllerProvider.notifier).schedule(immediately: true);
+    if (step == AuthStep.signedIn) {
+      ref.read(syncControllerProvider.notifier).schedule(immediately: true);
+      ref.read(pushControllerProvider.notifier).signedIn();
+    }
   }
 
   Future<void> _signedOutCleanup() async {
+    await ref.read(pushControllerProvider.notifier).signedOut();
     await _db.wipe();
     await _db.setSetting(_stepKey, null);
     await _db.setSetting(_emailKey, null);
@@ -205,6 +213,8 @@ class AuthController extends Notifier<AuthState> {
     await _db.setSetting(billingStampSettingKey, null);
     await _db.setSetting(offersDismissedSettingKey, null);
     await _db.setSetting(keepPromptedSettingKey, null);
+    await _db.setSetting(notificationPrefsSettingKey, null);
+    await _db.setSetting(pushAskedSettingKey, null);
   }
 }
 

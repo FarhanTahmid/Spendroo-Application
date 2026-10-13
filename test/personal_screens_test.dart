@@ -1,11 +1,14 @@
 import 'package:spendroo/core/api/api_client.dart';
 import 'package:spendroo/core/db/database.dart';
 import 'package:spendroo/core/db/local_store.dart';
+import 'package:spendroo/core/design/amounts.dart';
 import 'package:spendroo/core/design/category_color.dart';
+import 'package:spendroo/core/design/select_field.dart';
 import 'package:spendroo/core/entitlements/entitlements.dart';
 import 'package:spendroo/core/entitlements/entitlements_controller.dart';
 import 'package:spendroo/core/providers.dart';
 import 'package:spendroo/core/theme.dart';
+import 'package:spendroo/features/personal/allocations.dart';
 import 'package:spendroo/features/personal/budget_calendar_page.dart';
 import 'package:spendroo/features/personal/categories_page.dart';
 import 'package:spendroo/features/personal/ledger_repository.dart';
@@ -178,6 +181,54 @@ void main() {
     await app.settle();
     expect(find.text('September 2026'), findsOneWidget);
     expect(find.text('2.5k'), findsNothing);
+    await app.stop();
+  });
+
+  testWidgets('a transaction is split across categories, and the parts must add up', (tester) async {
+    final app = ScreenHarness(tester);
+    await app.run(() async {
+      await app.ledger.addAccount(workspace.id, name: 'Cash', kind: 'cash', currency: 'BDT');
+      await app.ledger.addCategory(workspace.id, 'Food', 'expense');
+      await app.ledger.addCategory(workspace.id, 'Transport', 'expense');
+    });
+    await app.show(const TransactionFormPage(workspace: workspace));
+    final categoryFields = find.byWidgetPredicate((w) => w is SelectField<String> && w.label == 'Category');
+    Finder amountOf(Finder field) => find.descendant(of: field, matching: find.byType(EditableText));
+    Future<void> tap(Finder finder) async {
+      await tester.ensureVisible(finder);
+      await tester.pump();
+      await tester.tap(finder);
+      await app.settle();
+    }
+
+    await tester.enterText(amountOf(find.byType(AmountField).first), '500');
+    await tap(find.text('Split into categories'));
+    expect(tester.widget<Text>(find.byKey(const Key('split-status'))).data, contains('left to file'));
+
+    await tap(categoryFields.first);
+    await tap(find.text('Food').last);
+    await tester.enterText(amountOf(find.byKey(const Key('split-amount-0'))), '300');
+    await tester.enterText(amountOf(find.byKey(const Key('split-amount-1'))), '150');
+    await app.settle();
+    await tap(find.widgetWithText(FilledButton, 'Save'));
+    expect(find.textContaining('The parts must add up to'), findsOneWidget);
+    expect(await app.run(() => app.ledger.watchTransactions(workspace.id).first), isEmpty);
+
+    // A new part starts with what is still to be filed
+    await tap(find.text('Add a part'));
+    expect(tester.widget<Text>(find.byKey(const Key('split-status'))).data, 'All of it is filed');
+    await tap(categoryFields.at(2));
+    await tap(find.text('Transport').last);
+    await tap(find.widgetWithText(FilledButton, 'Save'));
+
+    final saved = (await app.run(() => app.ledger.watchTransactions(workspace.id).first)).single.transaction;
+    final categories = {for (final c in await app.run(() => app.ledger.watchCategories(workspace.id).first)) c.name: c.id};
+    expect((saved.amountMinor, saved.categoryId), (-50000, null));
+    expect(saved.parts, [
+      SplitPart(categories['Food'], 30000),
+      const SplitPart(null, 15000),
+      SplitPart(categories['Transport'], 5000),
+    ]);
     await app.stop();
   });
 

@@ -7,6 +7,7 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/entitlements/plan_guard.dart';
 import '../../core/providers.dart';
+import 'allocations.dart';
 
 class AccountBalance {
   AccountBalance(this.account, this.balanceMinor);
@@ -196,14 +197,14 @@ class LedgerRepository {
           'JOIN accounts a ON a.id = t.account_id LEFT JOIN categories c ON c.id = t.category_id AND c.deleted_at IS NULL '
           'WHERE t.workspace_id = ? AND t.deleted_at IS NULL AND t.occurred_on BETWEEN ? AND ? '
           '${kind == null ? '' : 'AND t.kind = ? '}'
-          '${uncategorised ? 'AND t.category_id IS NULL ' : (categoryId == null ? '' : 'AND t.category_id = ? ')}'
+          // A split is listed under each category one of its parts is filed in
+          '${uncategorised || categoryId != null ? 'AND ${filedUnder([if (categoryId != null) categoryId], uncategorised: uncategorised)} ' : ''}'
           'ORDER BY t.occurred_on DESC, t.created_at DESC',
           variables: [
             Variable<String>(workspaceId),
             Variable<String>(first),
             Variable<String>(last),
             if (kind != null) Variable<String>(kind),
-            if (!uncategorised && categoryId != null) Variable<String>(categoryId),
           ],
           readsFrom: {db.transactions, db.accounts, db.categories},
         )
@@ -225,8 +226,10 @@ class LedgerRepository {
     final (first, last) = monthRange(month);
     return db
         .customSelect(
-          'SELECT b.*, c.name AS c_name, c.color AS c_color, COALESCE((SELECT -SUM(t.amount_minor) FROM transactions t '
-          "WHERE t.category_id = b.category_id AND t.kind = 'expense' AND t.deleted_at IS NULL "
+          // Part by part: a split spends from the budget of each category it is filed under
+          'SELECT b.*, c.name AS c_name, c.color AS c_color, '
+          'COALESCE((SELECT -SUM($partAmount) FROM transactions t $partsJoin'
+          "WHERE $partCategory = b.category_id AND t.kind = 'expense' AND t.deleted_at IS NULL "
           'AND t.occurred_on BETWEEN ? AND ?), 0) AS spent FROM budgets b '
           'JOIN categories c ON c.id = b.category_id AND c.deleted_at IS NULL '
           'WHERE b.workspace_id = ? AND b.deleted_at IS NULL AND (b.month IS NULL OR b.month = ?) ORDER BY c.name',
@@ -270,9 +273,10 @@ class LedgerRepository {
     final (first, last) = monthRange(month);
     return db
         .customSelect(
-          'SELECT occurred_on AS day, -SUM(amount_minor) AS spent FROM transactions '
-          "WHERE workspace_id = ? AND deleted_at IS NULL AND kind = 'expense' AND currency = ? "
-          'AND occurred_on BETWEEN ? AND ? ${categoryId == null ? '' : 'AND category_id = ? '}GROUP BY occurred_on',
+          'SELECT t.occurred_on AS day, -SUM($partAmount) AS spent FROM transactions t $partsJoin'
+          "WHERE t.workspace_id = ? AND t.deleted_at IS NULL AND t.kind = 'expense' AND t.currency = ? "
+          'AND t.occurred_on BETWEEN ? AND ? ${categoryId == null ? '' : 'AND $partCategory = ? '}'
+          'GROUP BY t.occurred_on',
           variables: [
             Variable<String>(workspaceId),
             Variable<String>(currency),
@@ -336,13 +340,14 @@ class LedgerRepository {
     return db
         .customSelect(
           'SELECT t.kind AS kind, c.id AS c_id, c.name AS c_name, c.color AS c_color, '
-          'SUM(CASE WHEN t.occurred_on >= ? THEN t.amount_minor ELSE 0 END) AS total, '
-          'SUM(CASE WHEN t.occurred_on < ? THEN t.amount_minor ELSE 0 END) AS previous, '
+          'SUM(CASE WHEN t.occurred_on >= ? THEN $partAmount ELSE 0 END) AS total, '
+          'SUM(CASE WHEN t.occurred_on < ? THEN $partAmount ELSE 0 END) AS previous, '
           'SUM(CASE WHEN t.occurred_on >= ? THEN 1 ELSE 0 END) AS n, '
           // Expenses are negative, so the smallest is the biggest
-          'MIN(CASE WHEN t.occurred_on >= ? THEN t.amount_minor END) AS largest '
-          'FROM transactions t '
-          'LEFT JOIN categories c ON c.id = t.category_id AND c.deleted_at IS NULL '
+          'MIN(CASE WHEN t.occurred_on >= ? THEN $partAmount END) AS largest '
+          // Each part of a split under its own category
+          'FROM transactions t $partsJoin'
+          'LEFT JOIN categories c ON c.id = $partCategory AND c.deleted_at IS NULL '
           "WHERE t.workspace_id = ? AND t.deleted_at IS NULL AND t.kind != 'transfer' AND t.currency = ? "
           'AND t.occurred_on BETWEEN ? AND ? GROUP BY t.kind, c.id',
           variables: [
@@ -434,21 +439,42 @@ class LedgerRepository {
   }
 
   /// Transactions filed under the category, for the warning before deleting it.
-  Future<int> transactionCount(String categoryId) async {
-    final count = db.transactions.id.count();
-    final query = db.selectOnly(db.transactions)
-      ..addColumns([count])
-      ..where(db.transactions.categoryId.equals(categoryId) & db.transactions.deletedAt.isNull());
-    return (await query.getSingle()).read(count) ?? 0;
-  }
+  Future<int> transactionCount(String categoryId) async => (await _filedUnder(categoryId)).length;
+
+  /// Alive transactions with the category, or with a part of a split under it.
+  Future<List<Transaction>> _filedUnder(String categoryId) => db
+      .customSelect(
+        'SELECT t.* FROM transactions t WHERE t.deleted_at IS NULL AND ${filedUnder([categoryId])}',
+        readsFrom: {db.transactions},
+      )
+      .map((row) => db.transactions.map(row.data))
+      .get();
 
   /// Its transactions stay, uncategorised; its budgets go with it.
   Future<void> deleteCategory(Category category) => db.transaction(() async {
-        final transactions = await (db.select(db.transactions)
-              ..where((t) => t.categoryId.equals(category.id) & t.deletedAt.isNull()))
-            .get();
-        for (final t in transactions) {
-          await store.update('transactions', t.id, {'category_id': null});
+        for (final t in await _filedUnder(category.id)) {
+          await store.update('transactions', t.id, {
+            if (t.isSplit)
+              'splits': SplitPart.encode([
+                for (final part in t.parts) part.categoryId == category.id ? part.withCategory(null) : part,
+              ])
+            else
+              'category_id': null,
+          });
+        }
+        // What a recurring rule records next has no deleted category either
+        final rules = await (db.select(db.recurringRules)..where((r) => r.deletedAt.isNull())).get();
+        for (final rule in rules) {
+          final parts = SplitPart.decode(rule.splits);
+          if (rule.categoryId == category.id) {
+            await store.update('recurring_rules', rule.id, {'category_id': null});
+          } else if (parts.any((part) => part.categoryId == category.id)) {
+            await store.update('recurring_rules', rule.id, {
+              'splits': SplitPart.encode([
+                for (final part in parts) part.categoryId == category.id ? part.withCategory(null) : part,
+              ]),
+            });
+          }
         }
         final budgets = await (db.select(db.budgets)
               ..where((b) => b.categoryId.equals(category.id) & b.deletedAt.isNull()))
@@ -466,6 +492,8 @@ class LedgerRepository {
     required String occurredOn,
     String? categoryId,
     String note = '',
+    List<SplitPart> splits = const [],
+    String? occurrenceId,
   }) async {
     // A locked account is read-only, its transactions included
     plan?.writable(F.personalAccounts, account.id);
@@ -474,13 +502,17 @@ class LedgerRepository {
       account.workspaceId,
       {
         'account_id': account.id,
-        'category_id': categoryId,
+        // A split has no category of its own
+        'category_id': splits.isEmpty ? categoryId : null,
         'kind': kind,
         'amount_minor': kind == 'expense' ? -amountMinor : amountMinor,
         'transfer_group_id': null,
         'occurred_on': occurredOn,
         'note': note,
         'source': 'manual',
+        if (splits.isNotEmpty) 'splits': SplitPart.encode(splits),
+        // The date of a recurring rule this settles
+        if (occurrenceId != null) 'occurrence_id': occurrenceId,
       },
       localOnly: {'currency': account.currency},
     );
@@ -491,16 +523,19 @@ class LedgerRepository {
     required int amountMinor,
     required String occurredOn,
     String note = '',
+    String? occurrenceId,
   }) async {
     plan?.writable(F.personalAccounts, from.id);
     plan?.writable(F.personalAccounts, to.id);
-    return _addTransfer(from, to, amountMinor: amountMinor, occurredOn: occurredOn, note: note);
+    return _addTransfer(from, to,
+        amountMinor: amountMinor, occurredOn: occurredOn, note: note, occurrenceId: occurrenceId);
   }
 
   Future<void> _addTransfer(Account from, Account to, {
     required int amountMinor,
     required String occurredOn,
     required String note,
+    String? occurrenceId,
   }) =>
       db.transaction(() async {
         final group = newId();
@@ -517,6 +552,7 @@ class LedgerRepository {
               'occurred_on': occurredOn,
               'note': note,
               'source': 'manual',
+              if (occurrenceId != null) 'occurrence_id': occurrenceId,
             },
             localOnly: {'currency': account.currency},
           );
@@ -528,14 +564,19 @@ class LedgerRepository {
     required String occurredOn,
     String? categoryId,
     String note = '',
+    List<SplitPart> splits = const [],
   }) async {
     plan?.writable(F.personalAccounts, original.accountId);
     final signed = original.amountMinor < 0 ? -amountMinor : amountMinor;
+    final category = splits.isEmpty ? categoryId : null;
+    final resplit = !SplitPart.same(splits, original.parts);
     return store.update('transactions', original.id, {
-      if (signed != original.amountMinor) 'amount_minor': signed,
+      // The parts add up to the amount, so the two always travel together
+      if (signed != original.amountMinor || (resplit && splits.isNotEmpty)) 'amount_minor': signed,
       if (occurredOn != original.occurredOn) 'occurred_on': occurredOn,
-      if (categoryId != original.categoryId) 'category_id': categoryId,
+      if (category != original.categoryId) 'category_id': category,
       if (note != original.note) 'note': note,
+      if (resplit || (splits.isNotEmpty && signed != original.amountMinor)) 'splits': SplitPart.encode(splits),
     });
   }
 

@@ -11,10 +11,14 @@ import '../../core/ui.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
+import '../recurring/recurring_pages.dart';
+import '../recurring/recurring_repository.dart';
 import 'budget_widgets.dart';
+import 'allocations.dart';
 import 'ledger_repository.dart';
 import 'overview_charts.dart';
 import 'spending_breakdown.dart';
+import 'split_editor.dart';
 import 'transaction_sheets.dart';
 
 String accountKindLabel(BuildContext context, String kind) => switch (kind) {
@@ -35,12 +39,18 @@ IconData accountKindIcon(String kind) => switch (kind) {
 
 /// [date] (ISO) preselects the day of a new transaction, e.g. from the budget
 /// calendar; [accountId] its account, from that account's screen.
+/// With [occurrence] the form records a date of a recurring rule: it opens
+/// filled in from the rule, and what is saved settles that date.
 void openTransactionForm(BuildContext context, Workspace workspace,
-        {TransactionView? existing, String? date, String? accountId}) =>
+        {TransactionView? existing, String? date, String? accountId, OccurrenceView? occurrence}) =>
     Navigator.of(context).push(MaterialPageRoute(
       fullscreenDialog: true,
       builder: (_) => TransactionFormPage(
-          workspace: workspace, existing: existing, initialDate: date, initialAccountId: accountId),
+          workspace: workspace,
+          existing: existing,
+          initialDate: date,
+          initialAccountId: accountId,
+          occurrence: occurrence),
     ));
 
 final monthSummaryProvider = StreamProvider.family<MonthSummary, (String, String)>(
@@ -85,6 +95,9 @@ class OverviewPage extends ConsumerWidget {
     final selectedMonth = ref.watch(selectedMonthProvider);
     final net = month == null ? 0 : month.incomeMinor - month.expenseMinor;
     final saved = month == null || month.incomeMinor <= 0 || net < 0 ? null : (net * 100 / month.incomeMinor).round();
+    // What a recurring rule is waiting on, then what the coming week brings
+    final open = ref.watch(openOccurrencesProvider(workspace.id)).value ?? const <OccurrenceView>[];
+    final waiting = open.where((o) => o.isDue).length;
 
     return PassbookBody(
       header: Column(
@@ -100,6 +113,17 @@ class OverviewPage extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.xl),
           children: [
+            if (open.isNotEmpty)
+              Entrance(
+                child: SectionCard(
+                  title: waiting > 0 ? l10n.waitingForYou : l10n.comingUp,
+                  trailing: TextButton(onPressed: () => context.push('/recurring'), child: Text(l10n.seeAllRecurring)),
+                  padding: const EdgeInsets.fromLTRB(0, AppSpace.md, 0, AppSpace.sm),
+                  children: [
+                    for (final occurrence in open.take(3)) OccurrenceTile(occurrence: occurrence, workspace: workspace),
+                  ],
+                ),
+              ),
             if (month != null) ...[
               Entrance(
                 child: SectionCard(
@@ -302,9 +326,15 @@ class TransactionTile extends StatelessWidget {
     final t = view.transaction;
     final isTransfer = t.kind == 'transfer';
     final isIn = t.amountMinor > 0;
-    final label = isTransfer ? (transferLabel ?? l10n.transfer) : (view.categoryName ?? l10n.uncategorised);
+    final label = isTransfer
+        ? (transferLabel ?? l10n.transfer)
+        : (t.isSplit
+            ? l10n.splitInParts(localDigits(context, '${t.parts.length}'))
+            : (view.categoryName ?? l10n.uncategorised));
     return MoneyRow(
-      icon: isTransfer ? Icons.swap_horiz_rounded : (isIn ? Icons.south_west_rounded : Icons.north_east_rounded),
+      icon: isTransfer
+          ? Icons.swap_horiz_rounded
+          : (t.isSplit ? Icons.call_split_rounded : (isIn ? Icons.south_west_rounded : Icons.north_east_rounded)),
       // The badge wears the category's colour; the arrow and the amount still say which way the money went
       tint: isTransfer
           ? null
@@ -467,12 +497,15 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
 /// Add an expense, income or transfer; or edit the amount, date, category and note of an existing one.
 class TransactionFormPage extends ConsumerStatefulWidget {
   const TransactionFormPage(
-      {super.key, required this.workspace, this.existing, this.initialDate, this.initialAccountId});
+      {super.key, required this.workspace, this.existing, this.initialDate, this.initialAccountId, this.occurrence});
 
   final Workspace workspace;
   final TransactionView? existing;
   final String? initialDate;
   final String? initialAccountId;
+
+  /// The date of a recurring rule being recorded.
+  final OccurrenceView? occurrence;
 
   @override
   ConsumerState<TransactionFormPage> createState() => _TransactionFormPageState();
@@ -481,23 +514,68 @@ class TransactionFormPage extends ConsumerStatefulWidget {
 class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
   final _formKey = GlobalKey<FormState>();
   late final Transaction? _original = widget.existing?.transaction;
-  late String _kind = _original?.kind ?? 'expense';
+  // What a recurring rule says to record, when this form settles one of its dates
+  late final RecurringRule? _rule = widget.occurrence?.rule.rule;
+  late String _kind = _original?.kind ?? _rule?.kind ?? 'expense';
   late final _amount = TextEditingController(
-    text: _original == null ? '' : Money.toInput(_original.amountMinor.abs(), _original.currency),
+    text: _original != null
+        ? Money.toInput(_original.amountMinor.abs(), _original.currency)
+        : (_rule?.amountMinor == null ? '' : Money.toInput(_rule!.amountMinor!, _rule.currency)),
   );
-  late final _note = TextEditingController(text: _original?.note ?? '');
+  late final _note = TextEditingController(
+    text: _original?.note ?? (_rule == null ? '' : (_rule.note.isNotEmpty ? _rule.note : _rule.title)),
+  );
   late String _date = _original?.occurredOn ?? widget.initialDate ?? todayIso();
-  late String? _accountId = _original?.accountId ?? widget.initialAccountId;
-  String? _toAccountId;
-  late String? _categoryId = _original?.categoryId;
+  late String? _accountId = _original?.accountId ?? _rule?.accountId ?? widget.initialAccountId;
+  late String? _toAccountId = _rule?.toAccountId;
+  late String? _categoryId = _original?.categoryId ?? _rule?.categoryId;
+  // The parts of a split; empty while the transaction has one category
+  late final List<SplitDraft> _split = [
+    if (_original != null)
+      for (final part in _original.parts)
+        _draft(categoryId: part.categoryId, amount: Money.toInput(part.amountMinor, _original.currency))
+    else if (_rule != null)
+      for (final part in SplitPart.decode(_rule.splits))
+        _draft(categoryId: part.categoryId, amount: Money.toInput(part.amountMinor, _rule.currency)),
+  ];
   int _refused = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // What is left to file follows the amount as it is typed
+    _amount.addListener(_typed);
+  }
 
   @override
   void dispose() {
     _amount.dispose();
     _note.dispose();
+    for (final draft in _split) {
+      draft.dispose();
+    }
     super.dispose();
   }
+
+  void _typed() {
+    if (_split.isNotEmpty && mounted) setState(() {});
+  }
+
+  SplitDraft _draft({String? categoryId, String amount = ''}) =>
+      SplitDraft(categoryId: categoryId, amount: amount)..amount.addListener(_typed);
+
+  /// The category chosen so far becomes the first part.
+  void _startSplit() => setState(() {
+        _split.addAll([_draft(categoryId: _categoryId), _draft()]);
+      });
+
+  void _endSplit() => setState(() {
+        _categoryId = _split.first.categoryId;
+        for (final draft in _split) {
+          draft.dispose();
+        }
+        _split.clear();
+      });
 
   void _refuse(String message) {
     setState(() => _refused++);
@@ -512,18 +590,34 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
     final repo = ref.read(ledgerRepositoryProvider);
     final account = accounts.firstWhere((a) => a.account.id == _accountId).account;
     final amount = Money.evaluate(_amount.text, account.currency)!;
+    var splits = const <SplitPart>[];
+    if (_split.isNotEmpty && _kind != 'transfer') {
+      final parts = splitParts(_split, account.currency);
+      if (parts == null) return _refuse(l10n.splitNeedsAmounts);
+      if (parts.fold(0, (sum, part) => sum + part.amountMinor) != amount) {
+        return _refuse(l10n.splitMismatch(context.money(amount, account.currency)));
+      }
+      splits = parts;
+    }
 
     if (_original != null) {
       await repo.updateTransaction(_original,
-          amountMinor: amount, occurredOn: _date, categoryId: _categoryId, note: _note.text.trim());
+          amountMinor: amount, occurredOn: _date, categoryId: _categoryId, note: _note.text.trim(), splits: splits);
     } else if (_kind == 'transfer') {
       final to = accounts.firstWhere((a) => a.account.id == _toAccountId).account;
       if (to.id == account.id) return _refuse(l10n.sameAccountError);
       if (to.currency != account.currency) return _refuse(l10n.currencyMismatch);
-      await repo.addTransfer(account, to, amountMinor: amount, occurredOn: _date, note: _note.text.trim());
+      await repo.addTransfer(account, to,
+          amountMinor: amount, occurredOn: _date, note: _note.text.trim(), occurrenceId: widget.occurrence?.occurrence.id);
     } else {
       await repo.addTransaction(account,
-          kind: _kind, amountMinor: amount, occurredOn: _date, categoryId: _categoryId, note: _note.text.trim());
+          kind: _kind,
+          amountMinor: amount,
+          occurredOn: _date,
+          categoryId: _categoryId,
+          note: _note.text.trim(),
+          splits: splits,
+          occurrenceId: widget.occurrence?.occurrence.id);
     }
     if (!mounted) return;
     final formatted = context.money(amount, account.currency);
@@ -560,6 +654,19 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
           'transfer' => scheme.primary,
           _ => AppTheme.errorColor,
         };
+
+    final categoryOptions = [
+      for (final c in categories) SelectOption(c.id, c.name, color: categoryFill(c.color, c.id)),
+    ];
+    Future<String?> createCategory(String name) async {
+      String? id;
+      await guarded(context, () async {
+        id = await ref
+            .read(ledgerRepositoryProvider)
+            .addCategory(widget.workspace.id, name, _kind == 'income' ? 'income' : 'expense');
+      });
+      return id;
+    }
 
     Widget accountPicker(String label, String? value, ValueChanged<String?> onChanged) => SelectField<String>(
           label: label,
@@ -617,7 +724,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.sm, AppSpace.page, AppSpace.lg),
           children: [
-            if (!editing) ...[
+            // What a recurring rule records is the rule's to say
+            if (!editing && _rule == null) ...[
               SlidingSegmented<String>(
                 segments: {'expense': l10n.expense, 'income': l10n.income, 'transfer': l10n.transfer},
                 value: _kind,
@@ -625,6 +733,11 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
                 onChanged: (value) => setState(() {
                   _kind = value;
                   _categoryId = null;
+                  // Its parts were filed under categories of the other kind
+                  for (final draft in _split) {
+                    draft.dispose();
+                  }
+                  _split.clear();
                 }),
               ),
               const SizedBox(height: 20),
@@ -644,24 +757,42 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
               accountPicker(l10n.toAccount, _toAccountId, (value) => setState(() => _toAccountId = value)),
               const SizedBox(height: 12),
             ],
-            if (!isTransfer) ...[
+            if (!isTransfer && _split.isEmpty) ...[
               SelectField<String>(
                 label: l10n.category,
                 icon: Icons.sell_outlined,
                 value: _categoryId,
                 noneLabel: l10n.none,
-                options: [for (final c in categories) SelectOption(c.id, c.name, color: categoryFill(c.color, c.id))],
+                options: categoryOptions,
                 createLabel: l10n.newCategory,
-                onCreate: (name) async {
-                  String? id;
-                  await guarded(context, () async {
-                    id = await ref
-                        .read(ledgerRepositoryProvider)
-                        .addCategory(widget.workspace.id, name, _kind == 'income' ? 'income' : 'expense');
-                  });
-                  return id;
-                },
+                onCreate: createCategory,
                 onChanged: (value) => setState(() => _categoryId = value),
+              ),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  onPressed: _startSplit,
+                  icon: const Icon(Icons.call_split_rounded, size: 18),
+                  label: Text(l10n.splitAction),
+                ),
+              ),
+            ],
+            if (!isTransfer && _split.isNotEmpty) ...[
+              SplitEditor(
+                drafts: _split,
+                currency: account.currency,
+                totalMinor: Money.evaluate(_amount.text, account.currency),
+                categories: categoryOptions,
+                onCreateCategory: createCategory,
+                onChanged: () => setState(() {
+                  // Parts added inside the editor report what is typed in them too
+                  for (final draft in _split) {
+                    draft.amount
+                      ..removeListener(_typed)
+                      ..addListener(_typed);
+                  }
+                }),
+                onRemove: _endSplit,
               ),
               const SizedBox(height: 12),
             ],
@@ -677,6 +808,36 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
               maxLength: 200,
               buildCounter: quietCounter,
             ),
+            if (!editing && _rule == null)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  // Carries over what is typed so far; the rule form takes it from here
+                  onPressed: () {
+                    final amount = Money.evaluate(_amount.text, account.currency);
+                    final parts = _split.isEmpty ? null : splitParts(_split, account.currency);
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (_) => RuleFormPage(
+                        workspace: widget.workspace,
+                        initial: RuleDraft(
+                          kind: _kind,
+                          freq: 'monthly',
+                          startOn: _date,
+                          accountId: _accountId,
+                          toAccountId: isTransfer ? _toAccountId : null,
+                          categoryId: _categoryId,
+                          amountMinor: amount == null || amount <= 0 ? null : amount,
+                          note: _note.text.trim(),
+                          splits: parts ?? const [],
+                        ),
+                      ),
+                    ));
+                  },
+                  icon: const Icon(Icons.event_repeat_rounded, size: 18),
+                  label: Text(l10n.repeatThis),
+                ),
+              ),
           ],
         ),
       ),

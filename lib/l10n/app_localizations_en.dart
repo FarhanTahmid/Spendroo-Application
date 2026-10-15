@@ -572,6 +572,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newThisMonth => 'New this month';
 
   @override
+  String changeVsPeriodBefore(String percent) {
+    return '$percent% vs the period before';
+  }
+
+  @override
+  String get newThisPeriod => 'New this period';
+
+  @override
   String get accountBalances => 'Account balances';
 
   @override
@@ -1073,6 +1081,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String spendInsightRisePeriod(String name, String percent) {
+    return '$name is up $percent% on the period before.';
+  }
+
+  @override
   String get spendTapHint => 'Tap a category for details';
 
   @override
@@ -1111,6 +1124,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get periodCustom => 'Custom';
+
+  @override
+  String get chooseDates => 'Choose dates';
+
+  @override
+  String get backToMonths => 'Back to months';
 
   @override
   String get filters => 'Filters';

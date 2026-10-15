@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config.dart';
+import '../../core/db/database.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/ui.dart';
@@ -21,6 +22,23 @@ Future<bool> guarded(BuildContext context, Future<void> Function() action) async
     if (context.mounted) await showUpgradeSheet(context, refusal: refusal);
     return false;
   }
+}
+
+/// Whether the plan keeps [feature] from this user in [workspace]. Only the
+/// owner's own plan is known on the phone: in someone else's business the
+/// server decides.
+bool featureLocked(WidgetRef ref, Workspace workspace, String feature) {
+  final plan = ref.read(entitlementsProvider).value;
+  if (plan == null || !plan.enforced || workspace.role != 'owner') return false;
+  return !plan.can(feature);
+}
+
+/// Says what the plan lacks on the upgrade sheet. True when [feature] is (or
+/// has just become) the user's.
+Future<bool> unlockFeature(BuildContext context, WidgetRef ref, Workspace workspace, String feature) async {
+  if (!featureLocked(ref, workspace, feature)) return true;
+  await guarded(context, () => ref.read(planGuardProvider).require(feature, workspace.id));
+  return context.mounted && !featureLocked(ref, workspace, feature);
 }
 
 /// What each plan gives, and the ways to move to one. With [refusal] it opens

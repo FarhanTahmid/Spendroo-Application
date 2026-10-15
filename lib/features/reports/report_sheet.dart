@@ -105,21 +105,9 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
   /// Where in the phone's storage the report was put; null when it could not be.
   String? _savedTo;
 
-  /// Whether the plan keeps [feature] from this user. Only the owner's own
-  /// plan is known on the phone: in someone else's business the server decides.
-  bool _locked(String feature) {
-    final plan = ref.read(entitlementsProvider).value;
-    if (plan == null || !plan.enforced || widget.workspace.role != 'owner') return false;
-    return !plan.can(feature);
-  }
+  bool _locked(String feature) => featureLocked(ref, widget.workspace, feature);
 
-  /// Says what the plan lacks on the upgrade sheet. True when the feature is
-  /// (or has just become) the user's.
-  Future<bool> _unlock(String feature) async {
-    if (!_locked(feature)) return true;
-    await guarded(context, () => ref.read(planGuardProvider).require(feature, widget.workspace.id));
-    return mounted && !_locked(feature);
-  }
+  Future<bool> _unlock(String feature) => unlockFeature(context, ref, widget.workspace, feature);
 
   Future<void> _pickPeriod(ReportPeriod period) async {
     HapticFeedback.selectionClick();

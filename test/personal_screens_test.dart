@@ -3,6 +3,7 @@ import 'package:spendroo/core/db/database.dart';
 import 'package:spendroo/core/db/local_store.dart';
 import 'package:spendroo/core/design/amounts.dart';
 import 'package:spendroo/core/design/category_color.dart';
+import 'package:spendroo/core/design/layout.dart';
 import 'package:spendroo/core/design/select_field.dart';
 import 'package:spendroo/core/entitlements/entitlements.dart';
 import 'package:spendroo/core/entitlements/entitlements_controller.dart';
@@ -21,6 +22,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'plan_test.dart' show entitlements;
 import 'test_support.dart';
 
 const workspace = Workspace(
@@ -398,6 +400,79 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('100% of spending'), findsOneWidget);
     expect(find.text('Housing'), findsNothing);
+    await app.stop();
+  });
+
+  testWidgets('overview: chosen dates in place of the month, on a plan that has them', (tester) async {
+    tester.view.physicalSize = const Size(1080, 6000);
+    tester.view.devicePixelRatio = 2.5;
+    addTearDown(tester.view.reset);
+    final app = ScreenHarness(tester, plan: entitlements(plan: 'plus'));
+    await app.run(() async {
+      await app.db.into(app.db.workspaces).insert(workspace);
+      await app.ledger.addAccount(workspace.id, name: 'Cash', kind: 'cash', currency: 'BDT');
+      final cash = (await app.ledger.watchAccounts(workspace.id).first).single.account;
+      final rent = await app.ledger.addCategory(workspace.id, 'Housing', 'expense');
+      final food = await app.ledger.addCategory(workspace.id, 'Food', 'expense');
+      Future<void> spend(String category, int amount, String day) => app.ledger
+          .addTransaction(cash, kind: 'expense', amountMinor: amount, occurredOn: day, categoryId: category);
+      await spend(rent, 1800000, '2026-10-05');
+      await spend(food, 40000, '2026-10-02');
+      await spend(food, 20000, '2026-10-07'); // after the range
+      await spend(food, 20000, '2026-09-28'); // in the six days before it
+      await app.ledger.setBudget(workspace.id, food, 100000, 'BDT');
+      await app.db.delete(app.db.workspaces).go();
+    });
+
+    await app.show(const Scaffold(body: OverviewPage(workspace: workspace)));
+    expect(find.byIcon(Icons.lock_outline_rounded), findsNothing);
+    await tester.tap(find.byTooltip('Choose dates'));
+    await app.settle();
+    expect(find.byType(DateRangePickerDialog), findsOneWidget);
+    Navigator.of(tester.element(find.byType(DateRangePickerDialog))).pop();
+    await app.settle();
+
+    app.container.read(overviewRangeProvider.notifier).set(const InsightsRange('2026-10-01', '2026-10-06'));
+    await app.settle();
+    expect(tester.takeException(), isNull);
+    expect(find.byType(MonthSwitcher), findsNothing);
+    expect(find.text('Housing takes 98% of what you spent.'), findsOneWidget);
+    expect(find.text('Food is up 100% on the period before.'), findsOneWidget);
+    // A month's budgets and pace have no place in chosen dates
+    expect(find.text('Budget health'), findsNothing);
+    expect(find.byKey(const ValueKey('pace-chart')), findsNothing);
+
+    await tester.tap(find.text('Food').last);
+    await app.settle();
+    expect(find.text('+100% vs the period before'), findsOneWidget);
+    await tester.tap(find.text('See transactions'));
+    await app.settle();
+    expect(find.byType(TransactionTile), findsOneWidget); // not the one on the 7th
+    await tester.tapAt(const Offset(10, 10));
+    await app.settle();
+
+    await tester.tap(find.byTooltip('Back to months'));
+    await app.settle();
+    expect(app.container.read(overviewRangeProvider), isNull);
+    expect(find.byType(MonthSwitcher), findsOneWidget);
+    expect(find.text('Budget health'), findsOneWidget);
+    await app.stop();
+  });
+
+  testWidgets('overview: on Free, choosing dates offers the upgrade', (tester) async {
+    final app = ScreenHarness(tester, plan: entitlements());
+    app.container.read(overviewRangeProvider.notifier).set(const InsightsRange('2026-10-01', '2026-10-06'));
+    await app.show(const Scaffold(body: OverviewPage(workspace: workspace)));
+    // Chosen while the plan still had it
+    expect(app.container.read(overviewRangeProvider), isNull);
+    expect(find.byType(MonthSwitcher), findsOneWidget);
+    expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Choose dates'));
+    await app.settle();
+    expect(find.byType(DateRangePickerDialog), findsNothing);
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(tester.takeException(), isNull);
     await app.stop();
   });
 

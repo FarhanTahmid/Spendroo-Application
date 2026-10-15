@@ -194,6 +194,28 @@ void main() {
       expect((budgets.single.spentMinor, budgets.single.isOver), (5000, true));
     });
 
+    test('a chosen range adds up its days and compares with as many days before', () async {
+      final foodId = await repo.addCategory('ws1', 'Food', 'expense');
+      await repo.addTransaction(cash, kind: 'expense', amountMinor: 4000, occurredOn: '2026-10-05', categoryId: foodId);
+      await repo.addTransaction(cash, kind: 'expense', amountMinor: 1000, occurredOn: '2026-10-20', categoryId: foodId);
+      await repo.addTransaction(cash, kind: 'expense', amountMinor: 9999, occurredOn: '2026-09-21', categoryId: foodId);
+      await repo.addTransaction(cash, kind: 'expense', amountMinor: 500, occurredOn: '2026-09-20', categoryId: foodId);
+      await repo.addTransaction(cash, kind: 'income', amountMinor: 80000, occurredOn: '2026-10-01');
+
+      const range = InsightsRange('2026-10-01', '2026-10-10');
+      expect((range.days, range.previousFrom), (10, '2026-09-21'));
+      // Across the end of March, when some clocks go forward
+      expect(const InsightsRange('2026-03-20', '2026-04-05').days, 17);
+
+      final summary = await repo.watchRange('ws1', range, 'BDT').first;
+      expect((summary.incomeMinor, summary.expenseMinor), (80000, 4000));
+      // Against 21–30 September only: the 20th is a day too early
+      final food = summary.byCategory.single;
+      expect((food.amountMinor, food.count, food.previousMinor, food.changePercent), (4000, 1, 9999, -60));
+      expect([for (final t in await repo.watchTransactions('ws1', range: range).first) t.transaction.amountMinor],
+          [-4000, 80000]); // newest first
+    });
+
     test('a split is counted part by part, and its parts travel with the amount', () async {
       final foodId = await repo.addCategory('ws1', 'Food', 'expense');
       final transportId = await repo.addCategory('ws1', 'Transport', 'expense');

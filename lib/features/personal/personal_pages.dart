@@ -73,6 +73,34 @@ final monthSummaryProvider = StreamProvider.family<MonthSummary, (String, String
   (ref, key) => ref.watch(ledgerRepositoryProvider).watchMonth(key.$1, ref.watch(selectedMonthProvider), key.$2),
 );
 
+/// What the overview adds up: the selected month, or the chosen range in its place.
+final overviewSummaryProvider = StreamProvider.family<MonthSummary, (String, String)>((ref, key) {
+  final range = ref.watch(overviewRangeProvider);
+  final ledger = ref.watch(ledgerRepositoryProvider);
+  return range == null
+      ? ledger.watchMonth(key.$1, ref.watch(selectedMonthProvider), key.$2)
+      : ledger.watchRange(key.$1, range, key.$2);
+});
+
+/// Asks for the days the overview shows in place of a month. A plan feature:
+/// without it the upgrade sheet says so.
+Future<void> pickOverviewRange(BuildContext context, WidgetRef ref, Workspace workspace) async {
+  HapticFeedback.selectionClick();
+  if (!await unlockFeature(context, ref, workspace, F.insightsCustomRange) || !context.mounted) return;
+  final now = DateTime.now();
+  final current = ref.read(overviewRangeProvider);
+  final month = ref.read(selectedMonthProvider);
+  final picked = await showDateRangePicker(
+    context: context,
+    firstDate: DateTime(2000),
+    lastDate: now.add(const Duration(days: 365)),
+    initialDateRange: current != null
+        ? DateTimeRange(start: current.start, end: current.end)
+        : DateTimeRange(start: month, end: DateTime(month.year, month.month + 1, 0)),
+  );
+  if (picked != null) ref.read(overviewRangeProvider.notifier).set(InsightsRange.of(picked.start, picked.end));
+}
+
 final monthlyTotalsProvider = StreamProvider.family<List<MonthTotals>, (String, String)>(
   (ref, key) =>
       ref.watch(ledgerRepositoryProvider).watchMonthlyTotals(key.$1, ref.watch(selectedMonthProvider), key.$2),
@@ -81,6 +109,8 @@ final monthlyTotalsProvider = StreamProvider.family<List<MonthTotals>, (String, 
 /// Balances, the selected month's income and expense, how spending is adding
 /// up against last month and the budgets, where the money went and how the
 /// last six months compare. Every chart opens what it is made of on a tap.
+/// With a chosen range the income, expense and categories are the range's,
+/// and the cards that only make sense for a month step aside.
 /// Figures are in the workspace currency; accounts in other currencies are listed, not added up.
 class OverviewPage extends ConsumerWidget {
   const OverviewPage({super.key, required this.workspace, this.onOpenBudgets, this.onOpenGoals});
@@ -108,7 +138,14 @@ class OverviewPage extends ConsumerWidget {
     // Money set aside in goals is not there to spend, but it is still the user's
     final goals = ref.watch(goalsProvider(workspace.id)).value ?? const <GoalView>[];
     final inGoals = goals.where((g) => g.goal.currency == currency).fold<int>(0, (sum, g) => sum + g.savedMinor);
-    final month = ref.watch(monthSummaryProvider(key)).value;
+    var range = ref.watch(overviewRangeProvider);
+    ref.watch(entitlementsProvider);
+    if (range != null && featureLocked(ref, workspace, F.insightsCustomRange)) {
+      // The plan no longer has it, after a downgrade
+      range = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(overviewRangeProvider.notifier).set(null));
+    }
+    final month = ref.watch(overviewSummaryProvider(key)).value;
     final trend = ref.watch(monthlyTotalsProvider(key)).value ?? const <MonthTotals>[];
     final budgets = (ref.watch(budgetsProvider(workspace.id)).value ?? const <BudgetProgress>[])
         .where((b) => b.budget.currency == currency)
@@ -136,7 +173,25 @@ class OverviewPage extends ConsumerWidget {
             ),
           ],
           const SizedBox(height: 12),
-          MonthSwitcher(month: selectedMonth, onChanged: ref.read(selectedMonthProvider.notifier).set),
+          Row(
+            children: [
+              Expanded(
+                child: range == null
+                    ? MonthSwitcher(month: selectedMonth, onChanged: ref.read(selectedMonthProvider.notifier).set)
+                    : _RangePill(range: range, onClear: () => ref.read(overviewRangeProvider.notifier).set(null)),
+              ),
+              const SizedBox(width: AppSpace.sm),
+              IconButton(
+                tooltip: l10n.chooseDates,
+                color: colors.onHeader,
+                style: IconButton.styleFrom(backgroundColor: Colors.white.withValues(alpha: 0.1)),
+                icon: Icon(featureLocked(ref, workspace, F.insightsCustomRange)
+                    ? Icons.lock_outline_rounded
+                    : Icons.date_range_rounded),
+                onPressed: () => pickOverviewRange(context, ref, workspace),
+              ),
+            ],
+          ),
         ],
       ),
       child: RefreshIndicator(
@@ -158,7 +213,9 @@ class OverviewPage extends ConsumerWidget {
             if (month != null) ...[
               Entrance(
                 child: SectionCard(
-                  title: MaterialLocalizations.of(context).formatMonthYear(selectedMonth),
+                  title: range == null
+                      ? MaterialLocalizations.of(context).formatMonthYear(selectedMonth)
+                      : _rangeLabel(context, range),
                   trailing: saved == null
                       ? null
                       : Text(l10n.savedPercent(localDigits(context, '$saved')),
@@ -198,8 +255,9 @@ class OverviewPage extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: AppSpace.sm),
                 child: GoalsStrip(workspace: workspace, onOpenGoals: onOpenGoals),
               ),
-              Entrance(child: SpendingPaceCard(workspace: workspace, budgetMinor: budgetTotal)),
-              if (budgetTotal > 0)
+              // Pace and budgets are a month's
+              if (range == null) Entrance(child: SpendingPaceCard(workspace: workspace, budgetMinor: budgetTotal)),
+              if (range == null && budgetTotal > 0)
                 Entrance(
                   index: 1,
                   child: BudgetHealthCard(
@@ -219,9 +277,10 @@ class OverviewPage extends ConsumerWidget {
                     SpendingBreakdown(
                       month: month,
                       currency: currency,
-                      budgets: budgets,
+                      budgets: range == null ? budgets : const [],
+                      overRange: range != null,
                       onSeeTransactions: (slice) => showCategoryTransactions(context, workspace,
-                          categoryId: slice.categoryId, title: slice.name ?? l10n.uncategorised),
+                          categoryId: slice.categoryId, title: slice.name ?? l10n.uncategorised, range: range),
                     ),
                 ]),
               ),
@@ -231,7 +290,10 @@ class OverviewPage extends ConsumerWidget {
                 trend: trend,
                 currency: currency,
                 selectedMonth: selectedMonth,
-                onGoToMonth: ref.read(selectedMonthProvider.notifier).set,
+                onGoToMonth: (month) {
+                  ref.read(overviewRangeProvider.notifier).set(null);
+                  ref.read(selectedMonthProvider.notifier).set(month);
+                },
               ),
             if (accounts.isNotEmpty)
               SectionCard(
@@ -255,6 +317,51 @@ class OverviewPage extends ConsumerWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+String _rangeLabel(BuildContext context, InsightsRange range) =>
+    '${formatDate(context, range.from)} – ${formatDate(context, range.to)}';
+
+/// The chosen range in the month switcher's place, with the way back to months.
+class _RangePill extends StatelessWidget {
+  const _RangePill({required this.range, required this.onClear});
+
+  final InsightsRange range;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+      ),
+      child: Row(
+        children: [
+          const SizedBox(width: 48),
+          Expanded(
+            child: Text(
+              _rangeLabel(context, range),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(color: colors.onHeader),
+            ),
+          ),
+          IconButton(
+            tooltip: context.l10n.backToMonths,
+            visualDensity: VisualDensity.compact,
+            color: colors.onHeader,
+            icon: const Icon(Icons.close_rounded),
+            onPressed: () {
+              HapticFeedback.selectionClick();
+              onClear();
+            },
+          ),
+        ],
       ),
     );
   }

@@ -569,6 +569,14 @@ class AppLocalizationsBn extends AppLocalizations {
   String get newThisMonth => 'এই মাসে নতুন';
 
   @override
+  String changeVsPeriodBefore(String percent) {
+    return 'আগের সময়ের তুলনায় $percent%';
+  }
+
+  @override
+  String get newThisPeriod => 'এই সময়ে নতুন';
+
+  @override
   String get accountBalances => 'অ্যাকাউন্টের ব্যালেন্স';
 
   @override
@@ -1039,6 +1047,11 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
+  String spendInsightRisePeriod(String name, String percent) {
+    return 'আগের সময়ের তুলনায় $name খাতে খরচ $percent% বেড়েছে।';
+  }
+
+  @override
   String get spendTapHint => 'বিস্তারিত দেখতে কোনো খাতে ট্যাপ করুন';
 
   @override
@@ -1077,6 +1090,12 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get periodCustom => 'নিজে বাছুন';
+
+  @override
+  String get chooseDates => 'তারিখ বেছে নিন';
+
+  @override
+  String get backToMonths => 'মাসে ফিরে যান';
 
   @override
   String get filters => 'ফিল্টার';

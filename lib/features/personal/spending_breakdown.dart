@@ -11,10 +11,13 @@ String localDigits(BuildContext context, String text) =>
 
 /// "+12% vs last month" in red when spending rose, green when it fell.
 class ChangeChip extends StatelessWidget {
-  const ChangeChip({super.key, required this.percent});
+  const ChangeChip({super.key, required this.percent, this.overRange = false});
 
   /// Null: the category had no spending last month.
   final int? percent;
+
+  /// Compared with as many days before a chosen range, not with last month.
+  final bool overRange;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,12 @@ class ChangeChip extends StatelessWidget {
         if (percent != null && percent != 0) const SizedBox(width: 4),
         Flexible(
           child: Text(
-            signed == null ? l10n.newThisMonth : l10n.changeVsLastMonth(signed),
+            switch ((signed, overRange)) {
+              (null, false) => l10n.newThisMonth,
+              (null, true) => l10n.newThisPeriod,
+              (final String signed, false) => l10n.changeVsLastMonth(signed),
+              (final String signed, true) => l10n.changeVsPeriodBefore(signed),
+            },
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color),
           ),
@@ -51,10 +59,15 @@ class SpendingBreakdown extends StatefulWidget {
     required this.currency,
     this.budgets = const [],
     this.onSeeTransactions,
+    this.overRange = false,
   });
 
+  /// The month's figures, or a chosen range's with [overRange].
   final MonthSummary month;
   final String currency;
+
+  /// [month] holds a chosen range: changes are on as many days before it.
+  final bool overRange;
 
   /// The budgets in force for the month, to show next to the category in focus.
   final List<BudgetProgress> budgets;
@@ -220,6 +233,7 @@ class _SpendingBreakdownState extends State<SpendingBreakdown> with TickerProvid
                     fill: fills[selected],
                     currency: widget.currency,
                     budget: _budgetOf(slices[selected]),
+                    overRange: widget.overRange,
                     onClose: () => _select(selected),
                     onSeeTransactions: widget.onSeeTransactions == null
                         ? null
@@ -290,7 +304,7 @@ class _SpendingBreakdownState extends State<SpendingBreakdown> with TickerProvid
         _Insight(
           icon: Icons.trending_up_rounded,
           color: context.colors.moneyOut,
-          text: l10n.spendInsightRise(
+          text: (widget.overRange ? l10n.spendInsightRisePeriod : l10n.spendInsightRise)(
               riser.name ?? l10n.uncategorised, localDigits(context, '${riser.changePercent}')),
         ),
     ];
@@ -358,12 +372,14 @@ class _FocusPanel extends StatelessWidget {
     required this.budget,
     required this.onClose,
     this.onSeeTransactions,
+    this.overRange = false,
   });
 
   final CategorySpend slice;
   final Color fill;
   final String currency;
   final BudgetProgress? budget;
+  final bool overRange;
   final VoidCallback onClose;
   final VoidCallback? onSeeTransactions;
 
@@ -411,7 +427,7 @@ class _FocusPanel extends StatelessWidget {
                     Text(slice.name ?? l10n.uncategorised,
                         style: text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 2),
-                    ChangeChip(percent: slice.changePercent),
+                    ChangeChip(percent: slice.changePercent, overRange: overRange),
                   ],
                 ),
               ),

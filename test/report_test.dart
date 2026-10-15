@@ -310,7 +310,9 @@ void main() {
       expect(find.text('Income and spending by category'), findsOneWidget);
       expect(find.text('Free'), findsOneWidget); // PDF
       expect(find.text('Paid plan'), findsOneWidget); // Excel
-      expect(find.byIcon(Icons.lock_outline_rounded), findsNWidgets(2)); // Excel, and custom dates
+      // Excel, and custom dates; the overview behind has its own for chosen dates
+      expect(find.descendant(of: find.byType(BottomSheet), matching: find.byIcon(Icons.lock_outline_rounded)),
+          findsNWidgets(2));
       expect(find.text('Download PDF'), findsOneWidget);
       expect(server.asked, isEmpty);
       await app.stop();

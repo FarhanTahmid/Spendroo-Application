@@ -23,6 +23,13 @@ void main() {
         return (cash, bank);
       });
 
+  /// The period pills scroll sideways; Custom is the last.
+  Future<void> showCustom(WidgetTester tester) async {
+    final pills = find.byWidgetPredicate((w) => w is ListView && w.scrollDirection == Axis.horizontal);
+    await tester.drag(pills, const Offset(-1000, 0));
+    await tester.pumpAndSettle();
+  }
+
   void phone(WidgetTester tester, {double height = 2400}) {
     tester.view.physicalSize = Size(1080, height);
     tester.view.devicePixelRatio = 2.5;
@@ -158,6 +165,44 @@ void main() {
     await app.settle();
     expect(find.byType(TransactionFormPage), findsNothing);
     expect(find.byType(BottomSheet), findsOneWidget); // the upgrade sheet
+    expect(tester.takeException(), isNull);
+    await app.stop();
+  });
+
+  testWidgets('chosen dates are a plan feature: Free is offered the upgrade instead', (tester) async {
+    phone(tester);
+    final app = ScreenHarness(tester, plan: entitlements());
+    final (cash, _) = await accounts(app, (cash, bank) async {});
+    // Chosen while the plan still had it; held so it outlives the gap before the screen
+    final held = app.container.listen(accountFilterProvider(cash.id), (_, _) {});
+    addTearDown(held.close);
+    app.container.read(accountFilterProvider(cash.id).notifier)
+        .setPeriod(AccountPeriod.custom, from: '2026-09-10', to: '2026-10-02');
+
+    await app.show(AccountPage(accountId: cash.id));
+    expect(app.container.read(accountFilterProvider(cash.id)).period, AccountPeriod.thisMonth);
+    await showCustom(tester);
+    expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
+
+    await tester.tap(find.text('Custom'));
+    await app.settle();
+    expect(find.byType(DateRangePickerDialog), findsNothing);
+    expect(find.byType(BottomSheet), findsOneWidget); // the upgrade sheet
+    expect(tester.takeException(), isNull);
+    await app.stop();
+  });
+
+  testWidgets('on a paid plan Custom asks for the dates', (tester) async {
+    phone(tester);
+    final app = ScreenHarness(tester, plan: entitlements(plan: 'plus'));
+    final (cash, _) = await accounts(app, (cash, bank) async {});
+
+    await app.show(AccountPage(accountId: cash.id));
+    await showCustom(tester);
+    expect(find.byIcon(Icons.date_range_rounded), findsOneWidget);
+    await tester.tap(find.text('Custom'));
+    await app.settle();
+    expect(find.byType(DateRangePickerDialog), findsOneWidget);
     expect(tester.takeException(), isNull);
     await app.stop();
   });

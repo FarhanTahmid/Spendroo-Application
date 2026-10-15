@@ -110,7 +110,7 @@ class MonthTotals {
   final int expenseMinor;
 }
 
-/// What one category took of a month's spending.
+/// What one category took of a period's spending.
 class CategorySpend {
   CategorySpend(this.categoryId, this.name, this.color, this.amountMinor,
       {this.count = 0, this.largestMinor = 0, this.previousMinor = 0});
@@ -127,13 +127,15 @@ class CategorySpend {
   final int count;
   final int largestMinor;
 
-  /// Spent in the category the month before (positive).
+  /// Spent in the category the period before (positive): the month before, or
+  /// as many days again before a chosen range.
   final int previousMinor;
 
-  /// Percentage change on the month before, or null when there was nothing to compare with.
+  /// Percentage change on the period before, or null when there was nothing to compare with.
   int? get changePercent => previousMinor == 0 ? null : ((amountMinor - previousMinor) * 100 / previousMinor).round();
 }
 
+/// Income, expense and expense by category for a month or a chosen range.
 class MonthSummary {
   MonthSummary(this.incomeMinor, this.expenseMinor, this.byCategory);
 
@@ -157,6 +159,35 @@ String isoDate(DateTime date) =>
 String monthKey(DateTime date) => isoDate(DateTime(date.year, date.month, 1));
 
 int daysInMonth(DateTime month) => DateTime(month.year, month.month + 1, 0).day;
+
+/// Days chosen in place of a month, both ends inclusive, as ISO dates.
+class InsightsRange {
+  const InsightsRange(this.from, this.to);
+
+  InsightsRange.of(DateTime start, DateTime end) : this(isoDate(start), isoDate(end));
+
+  final String from;
+  final String to;
+
+  DateTime get start => DateTime.parse(from);
+  DateTime get end => DateTime.parse(to);
+
+  /// How many days it covers.
+  int get days {
+    // In UTC, so a change of clocks does not take a day off
+    final (first, last) = (start, end);
+    return DateTime.utc(last.year, last.month, last.day).difference(DateTime.utc(first.year, first.month, first.day)).inDays + 1;
+  }
+
+  /// The first day of as many days again just before it, to compare with.
+  String get previousFrom => isoDate(DateTime(start.year, start.month, start.day - days));
+
+  @override
+  bool operator ==(Object other) => other is InsightsRange && other.from == from && other.to == to;
+
+  @override
+  int get hashCode => Object.hash(from, to);
+}
 
 class LedgerRepository {
   LedgerRepository(this.db, this.store, [this.plan]);
@@ -195,12 +226,18 @@ class LedgerRepository {
     String workspaceId, {
     DateTime? month,
     String? day,
+    InsightsRange? range,
     String? kind,
     String? categoryId,
     bool uncategorised = false,
   }) {
-    final (first, last) =
-        day != null ? (day, day) : (month != null ? monthRange(month) : ('0000-01-01', '9999-12-31'));
+    final (first, last) = day != null
+        ? (day, day)
+        : month != null
+            ? monthRange(month)
+            : range != null
+                ? (range.from, range.to)
+                : ('0000-01-01', '9999-12-31');
     return db
         .customSelect(
           'SELECT t.*, a.name AS a_name, c.name AS c_name, c.color AS c_color, g.id AS g_id, g.name AS g_name '
@@ -352,6 +389,16 @@ class LedgerRepository {
   Stream<MonthSummary> watchMonth(String workspaceId, DateTime month, String currency) {
     final (first, last) = monthRange(month);
     final (previousFirst, _) = monthRange(DateTime(month.year, month.month - 1, 1));
+    return _watchSummary(workspaceId, first, last, previousFirst, currency);
+  }
+
+  /// The same for any days, each category carrying what it took in as many
+  /// days again just before them.
+  Stream<MonthSummary> watchRange(String workspaceId, InsightsRange range, String currency) =>
+      _watchSummary(workspaceId, range.from, range.to, range.previousFrom, currency);
+
+  Stream<MonthSummary> _watchSummary(
+      String workspaceId, String first, String last, String previousFirst, String currency) {
     return db
         .customSelect(
           'SELECT t.kind AS kind, c.id AS c_id, c.name AS c_name, c.color AS c_color, '
@@ -381,7 +428,7 @@ class LedgerRepository {
       for (final row in rows) {
         final total = row.read<int>('total');
         final count = row.read<int>('n');
-        if (count == 0) continue; // only the month before
+        if (count == 0) continue; // only the period before
         if (row.read<String>('kind') == 'income') {
           income += total;
         } else {
@@ -664,6 +711,17 @@ class SelectedMonthController extends Notifier<DateTime> {
 }
 
 final selectedMonthProvider = NotifierProvider<SelectedMonthController, DateTime>(SelectedMonthController.new);
+
+/// Days the overview shows in place of the selected month; null shows the
+/// month. A plan feature ([F.insightsCustomRange]).
+class OverviewRangeController extends Notifier<InsightsRange?> {
+  @override
+  InsightsRange? build() => null;
+
+  void set(InsightsRange? range) => state = range;
+}
+
+final overviewRangeProvider = NotifierProvider<OverviewRangeController, InsightsRange?>(OverviewRangeController.new);
 
 final transactionsProvider = StreamProvider.family<List<TransactionView>, String>(
   (ref, workspaceId) =>

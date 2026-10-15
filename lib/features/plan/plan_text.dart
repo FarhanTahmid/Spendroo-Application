@@ -12,6 +12,7 @@ const shownFeatures = [
   F.personalAccounts,
   F.customCategories,
   F.budgetMonthOverride,
+  F.insightsCustomRange,
   F.recurringTransactions,
   F.remindersStandalone,
   F.savingsGoals,

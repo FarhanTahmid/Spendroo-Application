@@ -81,9 +81,15 @@ class _AccountPageState extends ConsumerState<AccountPage> {
     setState(() => _searchEpoch++);
   }
 
-  Future<void> _pickPeriod(AccountPeriod period) async {
+  /// Chosen dates are a plan feature. Only the owner's plan is known here.
+  bool _customLocked(Workspace? workspace) =>
+      workspace != null && featureLocked(ref, workspace, F.insightsCustomRange);
+
+  Future<void> _pickPeriod(AccountPeriod period, Workspace? workspace) async {
     HapticFeedback.selectionClick();
     if (period != AccountPeriod.custom) return _filters.setPeriod(period);
+    if (workspace != null && !await unlockFeature(context, ref, workspace, F.insightsCustomRange)) return;
+    if (!mounted) return;
     final filter = ref.read(accountFilterProvider(_id));
     final now = DateTime.now();
     final picked = await showDateRangePicker(
@@ -161,6 +167,14 @@ class _AccountPageState extends ConsumerState<AccountPage> {
         .firstOrNull;
     final locked = !account.isArchived && (ref.watch(entitlementsProvider).value?.isLocked(account.id) ?? false);
     final filter = ref.watch(accountFilterProvider(_id));
+    ref.watch(entitlementsProvider);
+    final customLocked = _customLocked(workspace);
+    if (filter.period == AccountPeriod.custom && customLocked) {
+      // The plan no longer has it, after a downgrade
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _filters.setPeriod(AccountPeriod.thisMonth);
+      });
+    }
     final summary = ref.watch(accountSummaryProvider(_id)).value;
     final series = ref.watch(accountSeriesProvider(_id)).value;
     final feed = ref.watch(accountFeedProvider(_id));
@@ -218,9 +232,13 @@ class _AccountPageState extends ConsumerState<AccountPage> {
                         padding: const EdgeInsets.only(right: AppSpace.sm),
                         child: _Pill(
                           label: _periodLabel(filter, period),
-                          icon: period == AccountPeriod.custom ? Icons.date_range_rounded : null,
+                          icon: period != AccountPeriod.custom
+                              ? null
+                              : customLocked
+                                  ? Icons.lock_outline_rounded
+                                  : Icons.date_range_rounded,
                           selected: filter.period == period,
-                          onTap: () => _pickPeriod(period),
+                          onTap: () => _pickPeriod(period, workspace),
                         ),
                       ),
                   ],

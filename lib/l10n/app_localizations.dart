@@ -1112,6 +1112,18 @@ abstract class AppLocalizations {
   /// **'New this month'**
   String get newThisMonth;
 
+  /// No description provided for @changeVsPeriodBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% vs the period before'**
+  String changeVsPeriodBefore(String percent);
+
+  /// No description provided for @newThisPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'New this period'**
+  String get newThisPeriod;
+
   /// No description provided for @accountBalances.
   ///
   /// In en, this message translates to:
@@ -1916,6 +1928,12 @@ abstract class AppLocalizations {
   /// **'{name} is up {percent}% on last month.'**
   String spendInsightRise(String name, String percent);
 
+  /// No description provided for @spendInsightRisePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is up {percent}% on the period before.'**
+  String spendInsightRisePeriod(String name, String percent);
+
   /// No description provided for @spendTapHint.
   ///
   /// In en, this message translates to:
@@ -1987,6 +2005,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom'**
   String get periodCustom;
+
+  /// No description provided for @chooseDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose dates'**
+  String get chooseDates;
+
+  /// No description provided for @backToMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to months'**
+  String get backToMonths;
 
   /// No description provided for @filters.
   ///

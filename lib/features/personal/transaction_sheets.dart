@@ -43,6 +43,18 @@ final categoryTransactionsProvider = StreamProvider.autoDispose.family<List<Tran
       ),
 );
 
+/// The same for a chosen range, keyed by (workspace id, category id, range).
+final rangeCategoryTransactionsProvider =
+    StreamProvider.autoDispose.family<List<TransactionView>, (String, String?, InsightsRange)>(
+  (ref, key) => ref.watch(ledgerRepositoryProvider).watchTransactions(
+        key.$1,
+        range: key.$3,
+        kind: 'expense',
+        categoryId: key.$2,
+        uncategorised: key.$2 == null,
+      ),
+);
+
 /// What happened on [date], with a way to add to it.
 Future<void> showDaySheet(BuildContext context, Workspace workspace, DateTime date) => showAppSheet<void>(
       context,
@@ -68,9 +80,10 @@ Future<void> showDaySheet(BuildContext context, Workspace workspace, DateTime da
       ),
     );
 
-/// The selected month's expenses in one category; [categoryId] null for the uncategorised ones.
+/// The selected month's expenses in one category, or [range]'s when given;
+/// [categoryId] null for the uncategorised ones.
 Future<void> showCategoryTransactions(BuildContext context, Workspace workspace,
-        {required String? categoryId, required String title}) =>
+        {required String? categoryId, required String title, InsightsRange? range}) =>
     showAppSheet<void>(
       context,
       title: title,
@@ -78,7 +91,10 @@ Future<void> showCategoryTransactions(BuildContext context, Workspace workspace,
       builder: (_) => Consumer(
         builder: (context, ref, _) => TransactionSheetList(
           workspace: workspace,
-          transactions: ref.watch(categoryTransactionsProvider((workspace.id, categoryId))).value,
+          transactions: (range == null
+                  ? ref.watch(categoryTransactionsProvider((workspace.id, categoryId)))
+                  : ref.watch(rangeCategoryTransactionsProvider((workspace.id, categoryId, range))))
+              .value,
           emptyMessage: context.l10n.noTransactionsHere,
         ),
       ),

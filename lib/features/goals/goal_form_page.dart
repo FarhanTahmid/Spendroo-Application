@@ -121,7 +121,7 @@ class _GoalFormPageState extends ConsumerState<GoalFormPage> {
     // Three months of spending, the usual advice for a first cushion
     int? cushion;
     if (_icon == 'emergency') {
-      final months = ref.watch(monthlyTotalsProvider((widget.workspace.id, _currency))).value ?? const <MonthTotals>[];
+      final months = ref.watch(monthlyTotalsProvider((widget.workspace.id, _currency, 6))).value ?? const <MonthTotals>[];
       final spent = months.reversed.skip(1).take(3).where((m) => m.expenseMinor > 0).toList();
       if (spent.isNotEmpty) cushion = spent.fold<int>(0, (sum, m) => sum + m.expenseMinor) ~/ spent.length * 3;
     }

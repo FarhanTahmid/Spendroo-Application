@@ -423,10 +423,49 @@ class _AccountPageState extends ConsumerState<AccountPage> {
           SectionCard(title: l10n.cashInAndOut, children: [
             _FlowChart(series: series, currency: account.currency),
           ]),
+          if (series.hiddenMonths > 0) const _HiddenMonthsNote(),
           _CategoryCard(accountId: _id, currency: account.currency, onPick: _showCategory),
         ]),
       ),
     ];
+  }
+}
+
+/// Says the charts start later than the account does because of the plan,
+/// and opens the upgrade sheet.
+class _HiddenMonthsNote extends ConsumerWidget {
+  const _HiddenMonthsNote();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final colors = context.colors;
+    final text = Theme.of(context).textTheme;
+    final limit = ref.watch(trendLimitProvider);
+    if (limit == null) return const SizedBox.shrink();
+    return Padding(
+      key: const ValueKey('hidden-months-note'),
+      padding: const EdgeInsets.only(bottom: AppSpace.md),
+      child: Row(
+        children: [
+          Icon(Icons.lock_outline_rounded, size: 14, color: colors.muted),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              l10n.showingLatestMonths(localDigits(context, '$limit')),
+              style: text.bodySmall?.copyWith(color: colors.muted),
+            ),
+          ),
+          TextButton(
+            onPressed: () => showUpgradeSheet(
+              context,
+              refusal: PlanLimitException(F.insightsTrendMonths, limit: limit),
+            ),
+            child: Text(l10n.planUpgrade),
+          ),
+        ],
+      ),
+    );
   }
 }
 

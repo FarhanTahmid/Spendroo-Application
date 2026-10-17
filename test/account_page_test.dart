@@ -207,6 +207,42 @@ void main() {
     await app.stop();
   });
 
+  /// Cash with an income in each of the ten months to October 2026, showing its insights over all time.
+  Future<ScreenHarness> longAccount(WidgetTester tester, {Entitlements? plan}) async {
+    phone(tester, height: 6000);
+    final app = ScreenHarness(tester, plan: plan);
+    final (cash, _) = await accounts(app, (cash, bank) async {
+      for (var month = 1; month <= 10; month++) {
+        await app.ledger.addTransaction(cash, kind: 'income', amountMinor: 100, occurredOn: '2026-${'$month'.padLeft(2, '0')}-05');
+      }
+    });
+    final held = app.container.listen(accountFilterProvider(cash.id), (_, _) {});
+    addTearDown(held.close);
+    app.container.read(accountFilterProvider(cash.id).notifier).setPeriod(AccountPeriod.allTime);
+    await app.show(AccountPage(accountId: cash.id));
+    await tester.tap(find.text('Insights'));
+    await app.settle();
+    return app;
+  }
+
+  testWidgets('insights over all time: Free charts the latest six months and says so', (tester) async {
+    final app = await longAccount(tester, plan: entitlements());
+    expect(find.byKey(const ValueKey('hidden-months-note')), findsOneWidget);
+    expect(find.text('Showing the latest 6 months. Earlier ones come with an upgrade.'), findsOneWidget);
+    await tester.tap(find.text('Upgrade'));
+    await app.settle();
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await app.stop();
+  });
+
+  testWidgets('insights over all time: Plus charts every month', (tester) async {
+    final app = await longAccount(tester, plan: entitlements(plan: 'plus'));
+    expect(find.byKey(const ValueKey('hidden-months-note')), findsNothing);
+    expect(tester.takeException(), isNull);
+    await app.stop();
+  });
+
   testWidgets('an account that is gone says so', (tester) async {
     phone(tester);
     final app = ScreenHarness(tester);

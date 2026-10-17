@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -722,6 +724,32 @@ class OverviewRangeController extends Notifier<InsightsRange?> {
 }
 
 final overviewRangeProvider = NotifierProvider<OverviewRangeController, InsightsRange?>(OverviewRangeController.new);
+
+/// The lengths the cash-flow trend offers, in months.
+const trendLengths = [6, 12, 24];
+
+/// How many months the cash-flow trend is asked to show. The plan may allow
+/// fewer ([trendLimitProvider]); [trendMonths] says what is drawn.
+class TrendLengthController extends Notifier<int> {
+  @override
+  int build() => trendLengths.first;
+
+  void set(int months) => state = months;
+}
+
+final trendLengthProvider = NotifierProvider<TrendLengthController, int>(TrendLengthController.new);
+
+/// The most months a trend may chart ([F.insightsTrendMonths]). Null when
+/// nothing holds it back: no plan known yet, a server that refuses nothing,
+/// or no limit. The server shortens its own charts the same way.
+final trendLimitProvider = Provider<int?>((ref) {
+  final plan = ref.watch(entitlementsProvider).value;
+  if (plan == null || !plan.enforced) return null;
+  return plan.limitOf(F.insightsTrendMonths);
+});
+
+/// The months [length] asks for, held to [limit].
+int trendMonths(int length, int? limit) => limit == null ? length : math.min(length, math.max(limit, 1));
 
 final transactionsProvider = StreamProvider.family<List<TransactionView>, String>(
   (ref, workspaceId) =>

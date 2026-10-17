@@ -561,7 +561,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get netRemaining => 'Net remaining balance';
 
   @override
-  String get lastSixMonths => 'Last 6 months';
+  String lastMonthsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Last $count months',
+      one: 'Last month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String monthsShort(String count) {
+    return '${count}M';
+  }
+
+  @override
+  String get trendLength => 'Months shown';
+
+  @override
+  String showingLatestMonths(String months) {
+    return 'Showing the latest $months months. Earlier ones come with an upgrade.';
+  }
 
   @override
   String changeVsLastMonth(String percent) {
@@ -2055,6 +2076,17 @@ class AppLocalizationsEn extends AppLocalizations {
       one: '1 savings goal',
     );
     return 'Your $plan plan allows $_temp0 at a time. Archive one, or upgrade for more.';
+  }
+
+  @override
+  String limitTrendMonths(String plan, int limit) {
+    String _temp0 = intl.Intl.pluralLogic(
+      limit,
+      locale: localeName,
+      other: 'the last $limit months',
+      one: 'the last month',
+    );
+    return 'Your $plan plan charts $_temp0. Upgrade to look further back.';
   }
 
   @override

@@ -101,14 +101,31 @@ Future<void> pickOverviewRange(BuildContext context, WidgetRef ref, Workspace wo
   if (picked != null) ref.read(overviewRangeProvider.notifier).set(InsightsRange.of(picked.start, picked.end));
 }
 
-final monthlyTotalsProvider = StreamProvider.family<List<MonthTotals>, (String, String)>(
-  (ref, key) =>
-      ref.watch(ledgerRepositoryProvider).watchMonthlyTotals(key.$1, ref.watch(selectedMonthProvider), key.$2),
+/// Income and expense month by month up to the selected month. Keyed by
+/// workspace, currency and how many months.
+final monthlyTotalsProvider = StreamProvider.family<List<MonthTotals>, (String, String, int)>(
+  (ref, key) => ref
+      .watch(ledgerRepositoryProvider)
+      .watchMonthlyTotals(key.$1, ref.watch(selectedMonthProvider), key.$2, count: key.$3),
 );
+
+/// Asks for [months] of cash-flow trend. More than the plan charts opens the
+/// upgrade sheet first, and the length is kept only if the plan now allows it.
+Future<void> pickTrendLength(BuildContext context, WidgetRef ref, int months) async {
+  HapticFeedback.selectionClick();
+  final limit = ref.read(trendLimitProvider);
+  if (limit != null && months > limit) {
+    await showUpgradeSheet(context, refusal: PlanLimitException(F.insightsTrendMonths, limit: limit));
+    if (!context.mounted) return;
+    final now = ref.read(trendLimitProvider);
+    if (now != null && months > now) return;
+  }
+  ref.read(trendLengthProvider.notifier).set(months);
+}
 
 /// Balances, the selected month's income and expense, how spending is adding
 /// up against last month and the budgets, where the money went and how the
-/// last six months compare. Every chart opens what it is made of on a tap.
+/// last months compare (6, 12 or 24, as far as the plan charts). Every chart opens what it is made of on a tap.
 /// With a chosen range the income, expense and categories are the range's,
 /// and the cards that only make sense for a month step aside.
 /// Figures are in the workspace currency; accounts in other currencies are listed, not added up.
@@ -146,7 +163,17 @@ class OverviewPage extends ConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(overviewRangeProvider.notifier).set(null));
     }
     final month = ref.watch(overviewSummaryProvider(key)).value;
-    final trend = ref.watch(monthlyTotalsProvider(key)).value ?? const <MonthTotals>[];
+    final trendLimit = ref.watch(trendLimitProvider);
+    final trendLength = ref.watch(trendLengthProvider);
+    if (trendLimit != null && trendLength > trendLimit) {
+      // The plan charts fewer months than were chosen, after a downgrade: the longest it still allows
+      final allowed = trendLengths.lastWhere((length) => length <= trendLimit, orElse: () => trendLengths.first);
+      if (allowed != trendLength) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(trendLengthProvider.notifier).set(allowed));
+      }
+    }
+    final months = trendMonths(trendLength, trendLimit);
+    final trend = ref.watch(monthlyTotalsProvider((workspace.id, currency, months))).value ?? const <MonthTotals>[];
     final budgets = (ref.watch(budgetsProvider(workspace.id)).value ?? const <BudgetProgress>[])
         .where((b) => b.budget.currency == currency)
         .toList();
@@ -290,6 +317,9 @@ class OverviewPage extends ConsumerWidget {
                 trend: trend,
                 currency: currency,
                 selectedMonth: selectedMonth,
+                length: trendLength,
+                limit: trendLimit,
+                onLengthChanged: (length) => pickTrendLength(context, ref, length),
                 onGoToMonth: (month) {
                   ref.read(overviewRangeProvider.notifier).set(null);
                   ref.read(selectedMonthProvider.notifier).set(month);

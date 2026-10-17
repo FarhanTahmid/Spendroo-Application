@@ -558,7 +558,22 @@ class AppLocalizationsBn extends AppLocalizations {
   String get netRemaining => 'নিট অবশিষ্ট ব্যালেন্স';
 
   @override
-  String get lastSixMonths => 'গত ৬ মাস';
+  String lastMonthsCount(int count) {
+    return 'গত $count মাস';
+  }
+
+  @override
+  String monthsShort(String count) {
+    return '$count মাস';
+  }
+
+  @override
+  String get trendLength => 'যত মাস দেখানো হচ্ছে';
+
+  @override
+  String showingLatestMonths(String months) {
+    return 'সর্বশেষ $months মাস দেখানো হচ্ছে। আগের মাসগুলো দেখতে আপগ্রেড করুন।';
+  }
 
   @override
   String changeVsLastMonth(String percent) {
@@ -2002,6 +2017,11 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String limitGoals(String plan, int limit) {
     return 'আপনার $plan প্ল্যানে একসাথে $limitটি সঞ্চয়ের লক্ষ্য রাখা যায়। একটি আর্কাইভ করুন, বা আরও পেতে আপগ্রেড করুন।';
+  }
+
+  @override
+  String limitTrendMonths(String plan, int limit) {
+    return 'আপনার $plan প্ল্যানে গত $limit মাসের ধারা দেখা যায়। আরও আগের মাস দেখতে আপগ্রেড করুন।';
   }
 
   @override

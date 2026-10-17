@@ -16,6 +16,7 @@ import 'package:spendroo/features/personal/ledger_repository.dart';
 import 'package:spendroo/features/personal/personal_pages.dart';
 import 'package:spendroo/l10n/app_localizations.dart';
 import 'package:drift/drift.dart' show DatabaseConnection;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -42,6 +43,9 @@ class FixedEntitlements extends EntitlementsController {
 
   @override
   Future<Entitlements?> build() async => plan;
+
+  /// The server answers with another plan, as after a downgrade.
+  void change(Entitlements next) => state = AsyncData(next);
 }
 
 /// A personal screen on an in-memory database, with the month fixed to October 2026.
@@ -473,6 +477,148 @@ void main() {
     expect(find.byType(DateRangePickerDialog), findsNothing);
     expect(find.byType(BottomSheet), findsOneWidget);
     expect(tester.takeException(), isNull);
+    await app.stop();
+  });
+
+  /// Income in each of the [months] months up to October 2026, and the overview showing them.
+  Future<ScreenHarness> trendOverview(WidgetTester tester, {Entitlements? plan, int months = 30}) async {
+    tester.view.physicalSize = const Size(1080, 6000);
+    tester.view.devicePixelRatio = 2.5;
+    addTearDown(tester.view.reset);
+    final app = ScreenHarness(tester, plan: plan);
+    await app.run(() async {
+      await app.db.into(app.db.workspaces).insert(workspace);
+      await app.ledger.addAccount(workspace.id, name: 'Cash', kind: 'cash', currency: 'BDT');
+      final cash = (await app.ledger.watchAccounts(workspace.id).first).single.account;
+      for (var back = 0; back < months; back++) {
+        await app.ledger.addTransaction(cash,
+            kind: 'income', amountMinor: 1000 + back, occurredOn: isoDate(DateTime(2026, 10 - back, 3)));
+      }
+      await app.db.delete(app.db.workspaces).go();
+    });
+    await app.show(const Scaffold(body: OverviewPage(workspace: workspace)));
+    return app;
+  }
+
+  /// How many months the cash-flow chart draws.
+  int chartedMonths(WidgetTester tester) =>
+      tester.widget<BarChart>(find.descendant(of: find.byKey(const ValueKey('cash-flow-chart')), matching: find.byType(BarChart)))
+          .data
+          .barGroups
+          .length;
+
+  bool chipLocked(WidgetTester tester, int months) => find
+      .descendant(of: find.byKey(ValueKey('trend-length-$months')), matching: find.byIcon(Icons.lock_outline_rounded))
+      .evaluate()
+      .isNotEmpty;
+
+  testWidgets('trends: Free charts six months and offers the upgrade for more', (tester) async {
+    final app = await trendOverview(tester, plan: entitlements());
+    expect(chartedMonths(tester), 6);
+    expect(find.byKey(const ValueKey('cash-flow-scroll')), findsNothing);
+    expect(find.byKey(const ValueKey('cash-flow-axis')), findsNothing); // the chart draws its own
+    expect(find.text('2026'), findsNothing);
+    expect([chipLocked(tester, 6), chipLocked(tester, 12), chipLocked(tester, 24)], [false, true, true]);
+    expect(find.bySemanticsLabel('Last 6 months'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('trend-length-12')));
+    await app.settle();
+    expect(find.byType(BottomSheet), findsOneWidget); // the upgrade sheet
+    expect(find.text('Your Free plan charts the last 6 months. Upgrade to look further back.'), findsOneWidget);
+    // Nothing changed behind it
+    expect(app.container.read(trendLengthProvider), 6);
+    expect(tester.takeException(), isNull);
+    await app.stop();
+  });
+
+  testWidgets('trends: Plus charts up to two years, latest first, and a downgrade falls back', (tester) async {
+    final app = await trendOverview(tester, plan: entitlements(plan: 'plus'));
+    expect(trendLengths.any((months) => chipLocked(tester, months)), isFalse);
+
+    await tester.tap(find.byKey(const ValueKey('trend-length-12')));
+    await app.settle();
+    expect(app.container.read(trendLengthProvider), 12);
+    expect(chartedMonths(tester), 12);
+
+    await tester.tap(find.byKey(const ValueKey('trend-length-24')));
+    await app.settle();
+    expect(chartedMonths(tester), 24);
+    // More than fits: it scrolls, opening on the latest months
+    final scroll = find.byKey(const ValueKey('cash-flow-scroll'));
+    expect(scroll, findsOneWidget);
+    expect(tester.widget<SingleChildScrollView>(scroll).reverse, isTrue);
+    expect(find.text('Oct'), findsWidgets);
+    // The amounts stay in view beside the scrolling months, and two years name their years
+    final axis = find.byKey(const ValueKey('cash-flow-axis'));
+    expect(axis, findsOneWidget);
+    expect(find.descendant(of: scroll, matching: axis), findsNothing);
+    expect(find.text('2024'), findsOneWidget); // under November, the first month
+    expect(find.text('2025'), findsOneWidget); // under January
+    expect(find.text('2026'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    // The plan drops to Free: the chart goes back to what Free charts
+    (app.container.read(entitlementsProvider.notifier) as FixedEntitlements).change(entitlements());
+    await app.settle();
+    expect(app.container.read(trendLengthProvider), 6);
+    expect(chartedMonths(tester), 6);
+    expect(tester.takeException(), isNull);
+    await app.stop();
+  });
+
+  testWidgets('trends: going to a month from the chart brings its figures into view', (tester) async {
+    final app = await trendOverview(tester, months: 8);
+    // A phone, so the chart sits below the fold
+    tester.view.physicalSize = const Size(1080, 2400);
+    await app.settle();
+    final page = find.descendant(of: find.byType(ListView).first, matching: find.byType(Scrollable)).first;
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('cash-flow-chart')), 300, scrollable: page);
+    await app.settle();
+    final scrolled = tester.state<ScrollableState>(page).position;
+    expect(scrolled.pixels, greaterThan(0));
+
+    // May to October: September is the fifth
+    final flow = tester.getRect(find.byKey(const ValueKey('cash-flow-chart')));
+    await tester.tapAt(Offset(flow.left + 44 + (flow.width - 44) * 4.5 / 6, flow.center.dy));
+    await app.settle();
+    await tester.ensureVisible(find.text('Go to September 2026'));
+    await app.settle();
+    await tester.tap(find.text('Go to September 2026'));
+    await tester.pumpAndSettle();
+    expect(app.container.read(selectedMonthProvider), DateTime(2026, 9));
+    expect(tester.state<ScrollableState>(page).position.pixels, 0);
+    expect(find.text('September 2026'), findsWidgets);
+    expect(tester.takeException(), isNull);
+    await app.stop();
+  });
+
+  testWidgets('trends: without a plan to go by nothing is locked', (tester) async {
+    final app = await trendOverview(tester, months: 14);
+    expect(trendLengths.any((months) => chipLocked(tester, months)), isFalse);
+    await tester.tap(find.byKey(const ValueKey('trend-length-24')));
+    await app.settle();
+    expect(chartedMonths(tester), 24);
+    await app.stop();
+  });
+
+  testWidgets('trends: a long chart holds together in the dark theme and in Bangla', (tester) async {
+    tester.view.physicalSize = const Size(1080, 6000);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final app = ScreenHarness(tester, plan: entitlements(plan: 'plus'));
+    await app.run(() async {
+      await app.db.into(app.db.workspaces).insert(workspace);
+      await app.ledger.addAccount(workspace.id, name: 'Cash', kind: 'cash', currency: 'BDT');
+      final cash = (await app.ledger.watchAccounts(workspace.id).first).single.account;
+      await app.ledger.addTransaction(cash, kind: 'expense', amountMinor: 123456, occurredOn: '2025-02-10');
+      await app.ledger.addTransaction(cash, kind: 'income', amountMinor: 6500000, occurredOn: '2026-10-01');
+      await app.db.delete(app.db.workspaces).go();
+    });
+    app.container.read(trendLengthProvider.notifier).set(24);
+    await app.show(const Scaffold(body: OverviewPage(workspace: workspace)), theme: AppTheme.darkTheme, locale: 'bn');
+    expect(tester.takeException(), isNull);
+    expect(chartedMonths(tester), 24);
+    expect(find.text('২৪ মাস'), findsOneWidget);
     await app.stop();
   });
 

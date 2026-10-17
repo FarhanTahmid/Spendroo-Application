@@ -1094,11 +1094,29 @@ abstract class AppLocalizations {
   /// **'Net remaining balance'**
   String get netRemaining;
 
-  /// No description provided for @lastSixMonths.
+  /// No description provided for @lastMonthsCount.
   ///
   /// In en, this message translates to:
-  /// **'Last 6 months'**
-  String get lastSixMonths;
+  /// **'{count, plural, =1{Last month} other{Last {count} months}}'**
+  String lastMonthsCount(int count);
+
+  /// No description provided for @monthsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}M'**
+  String monthsShort(String count);
+
+  /// No description provided for @trendLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Months shown'**
+  String get trendLength;
+
+  /// No description provided for @showingLatestMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the latest {months} months. Earlier ones come with an upgrade.'**
+  String showingLatestMonths(String months);
 
   /// No description provided for @changeVsLastMonth.
   ///
@@ -3583,6 +3601,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your {plan} plan allows {limit, plural, =1{1 savings goal} other{{limit} savings goals}} at a time. Archive one, or upgrade for more.'**
   String limitGoals(String plan, int limit);
+
+  /// No description provided for @limitTrendMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {plan} plan charts {limit, plural, =1{the last month} other{the last {limit} months}}. Upgrade to look further back.'**
+  String limitTrendMonths(String plan, int limit);
 
   /// No description provided for @notifGoals.
   ///

@@ -170,13 +170,36 @@ class BalancePoint {
 }
 
 class AccountSeries {
-  AccountSeries(this.points, {required this.monthly, required this.openingMinor});
+  AccountSeries(this.points, {required this.monthly, required this.openingMinor, this.hiddenMonths = 0});
 
   final List<BalancePoint> points;
   final bool monthly;
 
   /// The balance before the first point.
   final int openingMinor;
+
+  /// Months of history before the first point that the plan does not chart
+  /// ([F.insightsTrendMonths]); 0 when nothing was left out.
+  final int hiddenMonths;
+}
+
+/// Of a month-by-month series, the [maxMonths] months up to its latest point,
+/// with the balance the first of them starts from. The server shortens its
+/// series the same way (API ledger_personal/trends.py, trim_months).
+AccountSeries trimSeries(AccountSeries series, int? maxMonths) {
+  final points = series.points;
+  if (!series.monthly || maxMonths == null || points.isEmpty) return series;
+  final latest = points.last.date;
+  final cutoff = DateTime(latest.year, latest.month - (maxMonths - 1));
+  final dropped = points.indexWhere((point) => !point.date.isBefore(cutoff));
+  if (dropped <= 0) return series;
+  final earliest = points.first.date;
+  return AccountSeries(
+    points.sublist(dropped),
+    monthly: true,
+    openingMinor: points[dropped - 1].balanceMinor,
+    hiddenMonths: (cutoff.year - earliest.year) * 12 + cutoff.month - earliest.month,
+  );
 }
 
 /// A span longer than this is charted month by month.
@@ -413,8 +436,9 @@ class AccountLedger {
 
   /// Cash in, cash out and the closing balance, step by step through the
   /// period. In and out follow the whole [filter]; the balance counts every
-  /// transaction, as a balance must.
-  Stream<AccountSeries> watchSeries(String accountId, String currency, AccountFilter filter) {
+  /// transaction, as a balance must. A month-by-month series keeps only the
+  /// [maxMonths] months up to its latest ([trimSeries]).
+  Stream<AccountSeries> watchSeries(String accountId, String currency, AccountFilter filter, {int? maxMonths}) {
     final (period, periodVariables) = _period(filter);
     final (narrow, narrowVariables) = _narrow(filter, currency);
     final amount = _amount(filter);
@@ -460,7 +484,7 @@ class AccountLedger {
           points.add(BalancePoint(date, cashIn, cashOut, balance));
         }
       }
-      return AccountSeries(points, monthly: monthly, openingMinor: opening);
+      return trimSeries(AccountSeries(points, monthly: monthly, openingMinor: opening), maxMonths);
     });
   }
 }
@@ -629,5 +653,6 @@ final accountSeriesProvider = StreamProvider.autoDispose.family<AccountSeries, S
   if (currency == null) return const Stream.empty();
   return ref
       .watch(accountLedgerProvider)
-      .watchSeries(accountId, currency, ref.watch(accountFilterProvider(accountId)));
+      .watchSeries(accountId, currency, ref.watch(accountFilterProvider(accountId)),
+          maxMonths: ref.watch(trendLimitProvider));
 });

@@ -244,6 +244,39 @@ void main() {
     expect((await ledger.watchSeries(cash.id, 'BDT', october).first).openingMinor, 2981000);
   });
 
+  // The same months and figures as the server's SeriesCapTests (ledger_personal/tests.py)
+  test('a monthly series keeps the months the plan charts, and its balance still counts the rest', () async {
+    for (var month = 1; month <= 10; month++) {
+      await income(100, isoDate(DateTime(2026, month, 5)));
+    }
+    final whole = await ledger.watchSeries(cash.id, 'BDT', const AccountFilter()).first;
+    expect((whole.points.length, whole.hiddenMonths, whole.openingMinor), (10, 0, 100000));
+
+    final free = await ledger.watchSeries(cash.id, 'BDT', const AccountFilter(), maxMonths: 6).first;
+    expect(free.hiddenMonths, 4);
+    expect(free.points.map((p) => isoDate(p.date)).toList(),
+        ['2026-05-01', '2026-06-01', '2026-07-01', '2026-08-01', '2026-09-01', '2026-10-01']);
+    expect(free.openingMinor, 100000 + 400);
+    expect(free.points.last.balanceMinor, 100000 + 1000);
+
+    // Room for all of it, or a series by day: nothing is left out
+    expect((await ledger.watchSeries(cash.id, 'BDT', const AccountFilter(), maxMonths: 24).first).hiddenMonths, 0);
+    final october = const AccountFilter().withPeriod(AccountPeriod.thisMonth, now: DateTime(2026, 10, 12));
+    final daily = await ledger.watchSeries(cash.id, 'BDT', october, maxMonths: 1).first;
+    expect((daily.monthly, daily.hiddenMonths), (false, 0));
+  });
+
+  test('trimming counts the months skipped, not just the points', () {
+    BalancePoint at(int year, int month, int balance) => BalancePoint(DateTime(year, month), 0, 0, balance);
+    final series = AccountSeries([at(2024, 3, 10), at(2025, 11, 20), at(2026, 2, 30)], monthly: true, openingMinor: 0);
+    final trimmed = trimSeries(series, 6);
+    expect(trimmed.points.map((p) => p.date).toList(), [DateTime(2025, 11), DateTime(2026, 2)]);
+    // March 2024 up to September 2025
+    expect((trimmed.hiddenMonths, trimmed.openingMinor), (18, 10));
+    expect(identical(trimSeries(series, null), series), isTrue);
+    expect(trimSeries(series, 36).hiddenMonths, 0);
+  });
+
   group('feed', () {
     late ProviderContainer container;
 

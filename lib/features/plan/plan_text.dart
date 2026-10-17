@@ -13,6 +13,7 @@ const shownFeatures = [
   F.customCategories,
   F.budgetMonthOverride,
   F.insightsCustomRange,
+  F.insightsTrendMonths,
   F.recurringTransactions,
   F.remindersStandalone,
   F.savingsGoals,
@@ -65,6 +66,7 @@ String planLimitText(AppLocalizations l10n, PlanLimitException refusal, String p
         F.savingsGoals => l10n.limitGoals(plan, limit),
         F.businessCashbooks => l10n.limitCashbooks(plan, limit),
         F.businessWorkspaces => l10n.limitWorkspaces(plan, limit),
+        F.insightsTrendMonths => l10n.limitTrendMonths(plan, limit),
         _ => l10n.limitGeneric(plan),
       },
   };

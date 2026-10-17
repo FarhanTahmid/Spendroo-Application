@@ -469,8 +469,23 @@ class BudgetHealthCard extends StatelessWidget {
   }
 }
 
+/// Months that fit the card side by side; a longer trend scrolls, latest first.
+const _monthsInView = 8;
+
+/// Room the amounts axis takes on the left of the chart.
+const _axisWidth = 44.0;
+
+/// Height of the bars' area, above the month names.
+const _plotHeight = 144.0;
+
+/// Room the month names take under the bars; a trend longer than a year
+/// also names the year under its first month and each January.
+const _monthLabelsHeight = 26.0;
+const _monthAndYearHeight = 40.0;
+
 /// Income beside expense for each of the last months. Tapping a month puts it
 /// in focus and says how it went; from there the screens can move to it.
+/// How many months is the user's choice of [trendLengths], held to the plan.
 class CashFlowCard extends StatefulWidget {
   const CashFlowCard({
     super.key,
@@ -478,6 +493,9 @@ class CashFlowCard extends StatefulWidget {
     required this.currency,
     required this.selectedMonth,
     required this.onGoToMonth,
+    required this.length,
+    required this.limit,
+    required this.onLengthChanged,
   });
 
   /// Oldest first.
@@ -485,6 +503,13 @@ class CashFlowCard extends StatefulWidget {
   final String currency;
   final DateTime selectedMonth;
   final ValueChanged<DateTime> onGoToMonth;
+
+  /// The length chosen, of [trendLengths].
+  final int length;
+
+  /// The most months the plan charts; null for no limit.
+  final int? limit;
+  final ValueChanged<int> onLengthChanged;
 
   @override
   State<CashFlowCard> createState() => _CashFlowCardState();
@@ -516,11 +541,13 @@ class _CashFlowCardState extends State<CashFlowCard> {
     final step = niceStep(highest);
     final top = (highest / step).ceil() * step;
     const rounded = BorderRadius.vertical(top: Radius.circular(4));
+    // Thinner bars once the months are packed closer
+    final barWidth = trend.length > 6 ? 9.0 : 12.0;
 
     BarChartRodData rod(int amount, Color fill, bool dimmed) => BarChartRodData(
           toY: amount.toDouble(),
           color: fill.withValues(alpha: dimmed ? 0.3 : 1),
-          width: 12,
+          width: barWidth,
           borderRadius: rounded,
           // The whole column answers a tap, not just the ink
           backDrawRodData: BackgroundBarChartRodData(show: true, toY: top, color: Colors.transparent),
@@ -528,7 +555,7 @@ class _CashFlowCardState extends State<CashFlowCard> {
 
     return SectionCard(
       title: l10n.cashFlow,
-      trailing: Text(l10n.lastSixMonths, style: text.bodySmall),
+      trailing: TrendLengthPicker(value: widget.length, limit: widget.limit, onChanged: widget.onLengthChanged),
       children: [
         if (active.length > 1)
           Padding(
@@ -538,80 +565,127 @@ class _CashFlowCardState extends State<CashFlowCard> {
               style: text.bodyMedium,
             ),
           ),
-        SizedBox(
-          key: const ValueKey('cash-flow-chart'),
-          height: 170,
-          child: BarChart(
-            BarChartData(
-              maxY: top,
-              alignment: BarChartAlignment.spaceAround,
-              borderData: FlBorderData(show: false),
-              gridData: FlGridData(
-                drawVerticalLine: false,
-                horizontalInterval: step,
-                getDrawingHorizontalLine: (_) => FlLine(color: colors.hairline, strokeWidth: 1),
-              ),
-              barTouchData: BarTouchData(
-                handleBuiltInTouches: false,
-                allowTouchBarBackDraw: true,
-                touchExtraThreshold: const EdgeInsets.symmetric(horizontal: 10),
-                touchCallback: (event, response) {
-                  final index = response?.spot?.touchedBarGroupIndex;
-                  if (event is FlTapUpEvent && index != null && index < trend.length) _select(trend[index].month);
-                },
-              ),
-              titlesData: FlTitlesData(
-                rightTitles: const AxisTitles(),
-                topTitles: const AxisTitles(),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 44,
-                    interval: step,
-                    getTitlesWidget: (value, meta) => value == 0
-                        ? const SizedBox.shrink()
-                        : SideTitleWidget(
-                            meta: meta,
-                            child: Text(
-                              Money.compact(value.round(), widget.currency, locale: context.languageCode),
-                              style: text.labelSmall,
-                            ),
-                          ),
-                  ),
+        LayoutBuilder(builder: (context, box) {
+          final perMonth = (box.maxWidth - _axisWidth) / math.min(math.max(trend.length, 1), _monthsInView);
+          final scrolls = trend.length > _monthsInView;
+          final withYears = trend.length > 12;
+          final labelsHeight = withYears ? _monthAndYearHeight : _monthLabelsHeight;
+          String amount(double value) => Money.compact(value.round(), widget.currency, locale: context.languageCode);
+
+          // A long trend scrolls under an axis that stays put, so the amounts are always there to read by
+          final chart = SizedBox(
+            key: const ValueKey('cash-flow-chart'),
+            width: scrolls ? perMonth * trend.length : box.maxWidth,
+            height: _plotHeight + labelsHeight,
+            child: BarChart(
+              BarChartData(
+                maxY: top,
+                alignment: BarChartAlignment.spaceAround,
+                borderData: FlBorderData(show: false),
+                gridData: FlGridData(
+                  drawVerticalLine: false,
+                  horizontalInterval: step,
+                  getDrawingHorizontalLine: (_) => FlLine(color: colors.hairline, strokeWidth: 1),
                 ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 26,
-                    getTitlesWidget: (value, meta) {
-                      final index = value.toInt();
-                      if (index < 0 || index >= trend.length) return const SizedBox.shrink();
-                      final inFocus = index == focusIndex;
-                      return SideTitleWidget(
-                        meta: meta,
-                        child: Text(
-                          shortMonth(context, trend[index].month),
-                          style: text.labelSmall?.copyWith(
-                            color: inFocus ? Theme.of(context).colorScheme.onSurface : null,
-                            fontWeight: inFocus ? FontWeight.w700 : null,
+                barTouchData: BarTouchData(
+                  handleBuiltInTouches: false,
+                  allowTouchBarBackDraw: true,
+                  touchExtraThreshold: const EdgeInsets.symmetric(horizontal: 10),
+                  touchCallback: (event, response) {
+                    final index = response?.spot?.touchedBarGroupIndex;
+                    if (event is FlTapUpEvent && index != null && index < trend.length) _select(trend[index].month);
+                  },
+                ),
+                titlesData: FlTitlesData(
+                  rightTitles: const AxisTitles(),
+                  topTitles: const AxisTitles(),
+                  leftTitles: scrolls
+                      ? const AxisTitles()
+                      : AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: _axisWidth,
+                            interval: step,
+                            getTitlesWidget: (value, meta) => value == 0
+                                ? const SizedBox.shrink()
+                                : SideTitleWidget(meta: meta, child: Text(amount(value), style: text.labelSmall)),
                           ),
                         ),
-                      );
-                    },
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: labelsHeight,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        if (index < 0 || index >= trend.length) return const SizedBox.shrink();
+                        final inFocus = index == focusIndex;
+                        final month = trend[index].month;
+                        final style = text.labelSmall?.copyWith(
+                          color: inFocus ? Theme.of(context).colorScheme.onSurface : null,
+                          fontWeight: inFocus ? FontWeight.w700 : null,
+                        );
+                        final label = Text(shortMonth(context, month), style: style);
+                        return SideTitleWidget(
+                          meta: meta,
+                          child: !withYears || (index > 0 && month.month != 1)
+                              ? label
+                              : Column(mainAxisSize: MainAxisSize.min, children: [
+                                  label,
+                                  Text(localDigits(context, '${month.year}'),
+                                      style: text.labelSmall?.copyWith(color: colors.muted, fontSize: 10)),
+                                ]),
+                        );
+                      },
+                    ),
                   ),
                 ),
+                barGroups: [
+                  for (final (index, m) in trend.indexed)
+                    BarChartGroupData(x: index, barsSpace: 2, barRods: [
+                      rod(m.incomeMinor, inFill, focus != null && index != focusIndex),
+                      rod(m.expenseMinor, outFill, focus != null && index != focusIndex),
+                    ]),
+                ],
               ),
-              barGroups: [
-                for (final (index, m) in trend.indexed)
-                  BarChartGroupData(x: index, barsSpace: 2, barRods: [
-                    rod(m.incomeMinor, inFill, focus != null && index != focusIndex),
-                    rod(m.expenseMinor, outFill, focus != null && index != focusIndex),
-                  ]),
-              ],
+              duration: context.motion(AppMotion.standard),
             ),
-            duration: context.motion(AppMotion.standard),
-          ),
-        ),
+          );
+          if (!scrolls) return chart;
+          const plot = _plotHeight;
+          return Row(
+            children: [
+              SizedBox(
+                key: const ValueKey('cash-flow-axis'),
+                width: _axisWidth,
+                height: _plotHeight + labelsHeight,
+                child: Stack(
+                  // The top label sits half above the chart, as the chart's own does
+                  clipBehavior: Clip.none,
+                  children: [
+                    for (var value = step; value <= top; value += step)
+                      Positioned(
+                        // Centred on its grid line, as the chart places its own labels
+                        top: plot * (1 - value / top) - 8,
+                        left: 0,
+                        right: 6,
+                        height: 16,
+                        child: Text(amount(value), style: text.labelSmall, textAlign: TextAlign.end),
+                      ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  key: const ValueKey('cash-flow-scroll'),
+                  scrollDirection: Axis.horizontal,
+                  // Opens on the latest months; older ones are a swipe back
+                  reverse: true,
+                  child: chart,
+                ),
+              ),
+            ],
+          );
+        }),
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -648,11 +722,95 @@ class _CashFlowCardState extends State<CashFlowCard> {
                         : () {
                             widget.onGoToMonth(focus.month);
                             setState(() => _focus = null);
+                            // The month's own figures head the page: take the user up to them
+                            final page = Scrollable.maybeOf(context)?.position;
+                            final duration = context.motion(AppMotion.emphasised);
+                            if (page == null) return;
+                            duration == Duration.zero
+                                ? page.jumpTo(0)
+                                : page.animateTo(0, duration: duration, curve: AppMotion.ease);
                           },
                   ),
                 ),
         ),
       ],
+    );
+  }
+}
+
+/// The trend lengths as small chips. A length the plan does not chart wears a
+/// padlock; choosing it still calls [onChanged], which says so on the upgrade sheet.
+class TrendLengthPicker extends StatelessWidget {
+  const TrendLengthPicker({super.key, required this.value, required this.limit, required this.onChanged});
+
+  final int value;
+
+  /// The most months the plan charts; null for no limit.
+  final int? limit;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+    final colors = context.colors;
+    final text = Theme.of(context).textTheme;
+    final shown = trendMonths(value, limit);
+    return Semantics(
+      label: l10n.trendLength,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final length in trendLengths)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 4),
+              child: () {
+                final locked = limit != null && length > limit!;
+                final selected = !locked && length == shown;
+                final ink = selected ? scheme.onPrimary : colors.muted;
+                return Semantics(
+                  button: true,
+                  selected: selected,
+                  label: locked ? '${l10n.lastMonthsCount(length)}, ${l10n.lockedTag}' : l10n.lastMonthsCount(length),
+                  excludeSemantics: true,
+                  child: Material(
+                    key: ValueKey('trend-length-$length'),
+                    color: selected ? scheme.primary : colors.field,
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                      onTap: selected ? null : () => onChanged(length),
+                      child: ConstrainedBox(
+                        // A comfortable target, though the chip looks small
+                        constraints: const BoxConstraints(minHeight: 32, minWidth: 40),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 9),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (locked) ...[
+                                Icon(Icons.lock_outline_rounded, size: 12, color: ink),
+                                const SizedBox(width: 2),
+                              ],
+                              Text(
+                                l10n.monthsShort(localDigits(context, '$length')),
+                                style: text.labelSmall?.copyWith(
+                                  color: ink,
+                                  fontWeight: selected ? FontWeight.w700 : null,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }(),
+            ),
+        ],
+      ),
     );
   }
 }

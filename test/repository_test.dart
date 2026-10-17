@@ -350,6 +350,27 @@ void main() {
       expect((await repo.watchTransactions('ws1', month: DateTime(2026, 9)).first).length, 1);
     });
 
+    test('a longer trend reaches back across the year and keeps its empty months', () async {
+      await repo.addTransaction(cash, kind: 'income', amountMinor: 900, occurredOn: '2024-11-30');
+      await repo.addTransaction(cash, kind: 'expense', amountMinor: 400, occurredOn: '2025-01-01');
+      await repo.addTransaction(cash, kind: 'expense', amountMinor: 100, occurredOn: '2026-10-31');
+      await repo.addTransfer(cash, bank, amountMinor: 3000, occurredOn: '2025-06-03');
+
+      final year = await repo.watchMonthlyTotals('ws1', DateTime(2026, 10), 'BDT', count: 12).first;
+      expect(year.length, 12);
+      expect((year.first.month, year.last.month), (DateTime(2025, 11), DateTime(2026, 10)));
+      expect(year.last.expenseMinor, 100);
+
+      final two = await repo.watchMonthlyTotals('ws1', DateTime(2026, 10), 'BDT', count: 24).first;
+      expect(two.length, 24);
+      expect(two.first.month, DateTime(2024, 11));
+      expect([for (final m in two) if (m.incomeMinor > 0 || m.expenseMinor > 0) (m.month, m.incomeMinor, m.expenseMinor)], [
+        (DateTime(2024, 11), 900, 0),
+        (DateTime(2025, 1), 0, 400),
+        (DateTime(2026, 10), 0, 100),
+      ]);
+    });
+
     test('deleting a category keeps its transactions, uncategorised, and drops its budgets', () async {
       final foodId = await repo.addCategory('ws1', 'Food', 'expense');
       await repo.addTransaction(cash, kind: 'expense', amountMinor: 1000, occurredOn: '2026-10-03', categoryId: foodId);

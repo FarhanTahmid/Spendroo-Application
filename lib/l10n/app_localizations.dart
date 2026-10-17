@@ -4507,6 +4507,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This account is read-only on your plan. Choose another to save from.'**
   String get goalAccountLocked;
+
+  /// No description provided for @reviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Year in review'**
+  String get reviewTitle;
+
+  /// No description provided for @reviewYearSoFar.
+  ///
+  /// In en, this message translates to:
+  /// **'{year} so far'**
+  String reviewYearSoFar(String year);
+
+  /// No description provided for @reviewPreviousYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous year'**
+  String get reviewPreviousYear;
+
+  /// No description provided for @reviewNextYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Next year'**
+  String get reviewNextYear;
+
+  /// No description provided for @reviewKept.
+  ///
+  /// In en, this message translates to:
+  /// **'You kept'**
+  String get reviewKept;
+
+  /// No description provided for @reviewOverspent.
+  ///
+  /// In en, this message translates to:
+  /// **'You spent more than came in by'**
+  String get reviewOverspent;
+
+  /// No description provided for @reviewRate.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of what came in'**
+  String reviewRate(String percent);
+
+  /// No description provided for @reviewCameIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Came in'**
+  String get reviewCameIn;
+
+  /// No description provided for @reviewWentOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Went out'**
+  String get reviewWentOut;
+
+  /// No description provided for @reviewAgainst.
+  ///
+  /// In en, this message translates to:
+  /// **'Against {year}'**
+  String reviewAgainst(String year);
+
+  /// No description provided for @reviewChangeOn.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% on {year}'**
+  String reviewChangeOn(String percent, String year);
+
+  /// No description provided for @reviewNothingBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in {year}'**
+  String reviewNothingBefore(String year);
+
+  /// No description provided for @reviewMonthByMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month by month'**
+  String get reviewMonthByMonth;
+
+  /// No description provided for @reviewSpentMost.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent most'**
+  String get reviewSpentMost;
+
+  /// No description provided for @reviewSpentLeast.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent least'**
+  String get reviewSpentLeast;
+
+  /// No description provided for @reviewMonthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a month to open it.'**
+  String get reviewMonthHint;
+
+  /// No description provided for @reviewWhereItWent.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it went'**
+  String get reviewWhereItWent;
+
+  /// No description provided for @reviewShareOfSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of spending'**
+  String reviewShareOfSpending(String percent);
+
+  /// No description provided for @reviewMoreCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more categories: {amount}'**
+  String reviewMoreCategories(String count, String amount);
+
+  /// No description provided for @reviewHighlights.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights'**
+  String get reviewHighlights;
+
+  /// No description provided for @reviewBiggestExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest expense'**
+  String get reviewBiggestExpense;
+
+  /// No description provided for @reviewAverageMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'A month on average'**
+  String get reviewAverageMonth;
+
+  /// No description provided for @reviewBestMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Best month for saving'**
+  String get reviewBestMonth;
+
+  /// No description provided for @reviewKeptAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} kept'**
+  String reviewKeptAmount(String amount);
+
+  /// No description provided for @reviewMonthsInGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Months in the green'**
+  String get reviewMonthsInGreen;
+
+  /// No description provided for @reviewMonthsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total}'**
+  String reviewMonthsOf(String count, String total);
+
+  /// No description provided for @reviewGoalsReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals reached'**
+  String get reviewGoalsReached;
+
+  /// No description provided for @reviewShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your year'**
+  String get reviewShare;
+
+  /// No description provided for @reviewShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'My {year} with Spendroo'**
+  String reviewShareText(String year);
+
+  /// No description provided for @reviewShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share the card. Try again.'**
+  String get reviewShareFailed;
+
+  /// No description provided for @reviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was recorded in {year}. Add income and expenses and your year will build up here.'**
+  String reviewEmpty(String year);
+
+  /// No description provided for @reviewLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Look back on a whole year: what came in, where it went, your best and worst months, and how it compares with the year before.'**
+  String get reviewLocked;
+
+  /// No description provided for @reviewTileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {year} in review'**
+  String reviewTileTitle(String year);
+
+  /// No description provided for @reviewTileBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals, top categories and your best months'**
+  String get reviewTileBody;
 }
 
 class _AppLocalizationsDelegate

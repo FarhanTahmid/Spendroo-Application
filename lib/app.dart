@@ -9,6 +9,7 @@ import 'core/push/push_controller.dart';
 import 'core/ui.dart';
 import 'features/goals/goal_page.dart';
 import 'features/goals/goals_page.dart';
+import 'features/insights/year_review_page.dart';
 import 'features/auth/auth_pages.dart';
 import 'features/cashbook/cashbook_pages.dart';
 import 'features/onboarding/onboarding_page.dart';
@@ -84,6 +85,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/account/:id', builder: (_, state) => AccountPage(accountId: state.pathParameters['id']!)),
       GoRoute(path: '/goals', builder: (_, _) => const GoalsPage()),
+      GoRoute(path: '/year-review', builder: (_, _) => const YearReviewPage()),
       GoRoute(path: '/goal/:id', builder: (_, state) => GoalPage(goalId: state.pathParameters['id']!)),
       GoRoute(
         path: '/cashbook/:id',

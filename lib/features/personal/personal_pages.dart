@@ -16,6 +16,7 @@ import '../goals/goal_style.dart';
 import '../goals/goals_overview_card.dart';
 import '../goals/goals_page.dart' show byUrgency, newGoal;
 import '../goals/goals_repository.dart';
+import '../insights/year_review_page.dart' show YearReviewTile;
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
@@ -325,6 +326,8 @@ class OverviewPage extends ConsumerWidget {
                   ref.read(selectedMonthProvider.notifier).set(month);
                 },
               ),
+            // A personal ledger's look back; a business has its own reports
+            if (workspace.kind == 'personal') YearReviewTile(workspace: workspace),
             if (accounts.isNotEmpty)
               SectionCard(
                 title: l10n.accountBalances,

@@ -21,6 +21,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'plan_test.dart' show entitlements;
@@ -51,7 +52,7 @@ class FixedEntitlements extends EntitlementsController {
 /// A personal screen on an in-memory database, with the month fixed to October 2026.
 /// Without [plan] nobody is signed in, so no plan limits anything.
 class ScreenHarness {
-  ScreenHarness(this.tester, {Entitlements? plan}) {
+  ScreenHarness(this.tester, {Entitlements? plan, List<Override> overrides = const []}) {
     useHostSqlite();
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true));
     store = LocalStore(db);
@@ -61,6 +62,7 @@ class ScreenHarness {
       localStoreProvider.overrideWithValue(store),
       tokenStoreProvider.overrideWithValue(MemoryTokenStore()),
       if (plan != null) entitlementsProvider.overrideWith(() => FixedEntitlements(plan)),
+      ...overrides,
     ]);
     container.read(selectedMonthProvider.notifier).set(DateTime(2026, 10));
   }
@@ -470,7 +472,8 @@ void main() {
     // Chosen while the plan still had it
     expect(app.container.read(overviewRangeProvider), isNull);
     expect(find.byType(MonthSwitcher), findsOneWidget);
-    expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
+    expect(find.descendant(of: find.byTooltip('Choose dates'), matching: find.byIcon(Icons.lock_outline_rounded)),
+        findsOneWidget);
 
     await tester.tap(find.byTooltip('Choose dates'));
     await app.settle();

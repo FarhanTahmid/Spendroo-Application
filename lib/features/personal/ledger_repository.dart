@@ -399,6 +399,23 @@ class LedgerRepository {
   Stream<MonthSummary> watchRange(String workspaceId, InsightsRange range, String currency) =>
       _watchSummary(workspaceId, range.from, range.to, range.previousFrom, currency);
 
+  /// The same for a calendar year, each category carrying what it took the
+  /// year before (Year in review). Not [watchRange]: as many days again before
+  /// a leap year would start a day early.
+  Stream<MonthSummary> watchYear(String workspaceId, int year, String currency) =>
+      _watchSummary(workspaceId, isoDate(DateTime(year)), isoDate(DateTime(year, 12, 31)), isoDate(DateTime(year - 1)),
+          currency);
+
+  /// The day of the workspace's first transaction; null before there is one.
+  Stream<DateTime?> watchFirstTransactionDay(String workspaceId) => db
+      .customSelect(
+        'SELECT MIN(occurred_on) AS first FROM transactions WHERE workspace_id = ? AND deleted_at IS NULL',
+        variables: [Variable<String>(workspaceId)],
+        readsFrom: {db.transactions},
+      )
+      .watchSingle()
+      .map((row) => switch (row.readNullable<String>('first')) { final day? => DateTime.parse(day), null => null });
+
   Stream<MonthSummary> _watchSummary(
       String workspaceId, String first, String last, String previousFirst, String currency) {
     return db

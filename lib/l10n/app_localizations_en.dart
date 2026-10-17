@@ -2674,4 +2674,131 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get goalAccountLocked =>
       'This account is read-only on your plan. Choose another to save from.';
+
+  @override
+  String get reviewTitle => 'Year in review';
+
+  @override
+  String reviewYearSoFar(String year) {
+    return '$year so far';
+  }
+
+  @override
+  String get reviewPreviousYear => 'Previous year';
+
+  @override
+  String get reviewNextYear => 'Next year';
+
+  @override
+  String get reviewKept => 'You kept';
+
+  @override
+  String get reviewOverspent => 'You spent more than came in by';
+
+  @override
+  String reviewRate(String percent) {
+    return '$percent% of what came in';
+  }
+
+  @override
+  String get reviewCameIn => 'Came in';
+
+  @override
+  String get reviewWentOut => 'Went out';
+
+  @override
+  String reviewAgainst(String year) {
+    return 'Against $year';
+  }
+
+  @override
+  String reviewChangeOn(String percent, String year) {
+    return '$percent% on $year';
+  }
+
+  @override
+  String reviewNothingBefore(String year) {
+    return 'Nothing in $year';
+  }
+
+  @override
+  String get reviewMonthByMonth => 'Month by month';
+
+  @override
+  String get reviewSpentMost => 'Spent most';
+
+  @override
+  String get reviewSpentLeast => 'Spent least';
+
+  @override
+  String get reviewMonthHint => 'Tap a month to open it.';
+
+  @override
+  String get reviewWhereItWent => 'Where it went';
+
+  @override
+  String reviewShareOfSpending(String percent) {
+    return '$percent% of spending';
+  }
+
+  @override
+  String reviewMoreCategories(String count, String amount) {
+    return '$count more categories: $amount';
+  }
+
+  @override
+  String get reviewHighlights => 'Highlights';
+
+  @override
+  String get reviewBiggestExpense => 'Biggest expense';
+
+  @override
+  String get reviewAverageMonth => 'A month on average';
+
+  @override
+  String get reviewBestMonth => 'Best month for saving';
+
+  @override
+  String reviewKeptAmount(String amount) {
+    return '$amount kept';
+  }
+
+  @override
+  String get reviewMonthsInGreen => 'Months in the green';
+
+  @override
+  String reviewMonthsOf(String count, String total) {
+    return '$count of $total';
+  }
+
+  @override
+  String get reviewGoalsReached => 'Goals reached';
+
+  @override
+  String get reviewShare => 'Share your year';
+
+  @override
+  String reviewShareText(String year) {
+    return 'My $year with Spendroo';
+  }
+
+  @override
+  String get reviewShareFailed => 'Could not share the card. Try again.';
+
+  @override
+  String reviewEmpty(String year) {
+    return 'Nothing was recorded in $year. Add income and expenses and your year will build up here.';
+  }
+
+  @override
+  String get reviewLocked =>
+      'Look back on a whole year: what came in, where it went, your best and worst months, and how it compares with the year before.';
+
+  @override
+  String reviewTileTitle(String year) {
+    return 'Your $year in review';
+  }
+
+  @override
+  String get reviewTileBody => 'Totals, top categories and your best months';
 }

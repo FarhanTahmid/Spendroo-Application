@@ -14,6 +14,7 @@ const shownFeatures = [
   F.budgetMonthOverride,
   F.insightsCustomRange,
   F.insightsTrendMonths,
+  F.insightsYearReview,
   F.recurringTransactions,
   F.remindersStandalone,
   F.savingsGoals,

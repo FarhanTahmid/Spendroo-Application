@@ -2607,4 +2607,132 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get goalAccountLocked =>
       'আপনার প্ল্যানে এই অ্যাকাউন্টটি শুধু দেখার জন্য। জমাতে অন্য একটি বেছে নিন।';
+
+  @override
+  String get reviewTitle => 'বছরের সারসংক্ষেপ';
+
+  @override
+  String reviewYearSoFar(String year) {
+    return '$year এখন পর্যন্ত';
+  }
+
+  @override
+  String get reviewPreviousYear => 'আগের বছর';
+
+  @override
+  String get reviewNextYear => 'পরের বছর';
+
+  @override
+  String get reviewKept => 'আপনি জমিয়েছেন';
+
+  @override
+  String get reviewOverspent => 'আয়ের চেয়ে বেশি খরচ হয়েছে';
+
+  @override
+  String reviewRate(String percent) {
+    return 'আয়ের $percent%';
+  }
+
+  @override
+  String get reviewCameIn => 'এসেছে';
+
+  @override
+  String get reviewWentOut => 'গেছে';
+
+  @override
+  String reviewAgainst(String year) {
+    return '$year-এর তুলনায়';
+  }
+
+  @override
+  String reviewChangeOn(String percent, String year) {
+    return '$year-এর তুলনায় $percent%';
+  }
+
+  @override
+  String reviewNothingBefore(String year) {
+    return '$year-এ কিছু ছিল না';
+  }
+
+  @override
+  String get reviewMonthByMonth => 'মাস অনুযায়ী';
+
+  @override
+  String get reviewSpentMost => 'সবচেয়ে বেশি খরচ';
+
+  @override
+  String get reviewSpentLeast => 'সবচেয়ে কম খরচ';
+
+  @override
+  String get reviewMonthHint => 'কোনো মাস খুলতে চাপুন।';
+
+  @override
+  String get reviewWhereItWent => 'টাকা কোথায় গেল';
+
+  @override
+  String reviewShareOfSpending(String percent) {
+    return 'খরচের $percent%';
+  }
+
+  @override
+  String reviewMoreCategories(String count, String amount) {
+    return 'আরও $countটি খাত: $amount';
+  }
+
+  @override
+  String get reviewHighlights => 'বিশেষ দিক';
+
+  @override
+  String get reviewBiggestExpense => 'সবচেয়ে বড় খরচ';
+
+  @override
+  String get reviewAverageMonth => 'মাসে গড়ে';
+
+  @override
+  String get reviewBestMonth => 'সঞ্চয়ের সেরা মাস';
+
+  @override
+  String reviewKeptAmount(String amount) {
+    return '$amount জমা';
+  }
+
+  @override
+  String get reviewMonthsInGreen => 'লাভে থাকা মাস';
+
+  @override
+  String reviewMonthsOf(String count, String total) {
+    return '$totalটির মধ্যে $countটি';
+  }
+
+  @override
+  String get reviewGoalsReached => 'পূরণ হওয়া লক্ষ্য';
+
+  @override
+  String get reviewShare => 'আপনার বছর শেয়ার করুন';
+
+  @override
+  String reviewShareText(String year) {
+    return 'Spendroo-তে আমার $year';
+  }
+
+  @override
+  String get reviewShareFailed =>
+      'কার্ডটি শেয়ার করা গেল না। আবার চেষ্টা করুন।';
+
+  @override
+  String reviewEmpty(String year) {
+    return '$year-এ কিছু লেখা হয়নি। আয় ও খরচ যোগ করুন, আপনার বছর এখানে তৈরি হবে।';
+  }
+
+  @override
+  String get reviewLocked =>
+      'পুরো বছরে ফিরে দেখুন: কী এল, কোথায় গেল, সেরা ও খারাপ মাস, আর আগের বছরের সাথে তুলনা।';
+
+  @override
+  String reviewTileTitle(String year) {
+    return 'আপনার $year এক নজরে';
+  }
+
+  @override
+  String get reviewTileBody => 'মোট হিসাব, শীর্ষ খাত আর সেরা মাসগুলো';
 }

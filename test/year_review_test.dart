@@ -46,6 +46,7 @@ void main() {
         today: DateTime(2026, 3, 15),
         months: twoYears(2026, these: {1: (0, 50000), 2: (0, 40000), 3: (100000, 1)}),
         summary: noCategories,
+        since: DateTime(2026, 1, 10),
       );
       expect((review.isPartial, review.closedMonths), (true, 2));
       expect(review.biggestMonth, ReviewMonth(DateTime(2026, 1), 50000));
@@ -56,12 +57,30 @@ void main() {
       expect((review.hasPrevious, review.incomeChange), (false, null));
       expect((review.isOpen(DateTime(2026, 2)), review.isOpen(DateTime(2026, 3))), (false, true));
 
-      final january = YearReview.of(year: 2026, today: DateTime(2026, 1, 20), months: twoYears(2026), summary: noCategories);
+      final january = YearReview.of(
+          year: 2026, today: DateTime(2026, 1, 20), months: twoYears(2026), summary: noCategories, since: null);
       expect((january.biggestMonth, january.averageExpenseMinor, january.closedMonths), (null, null, 0));
     });
 
+    test('months from before the first transaction are not averaged or counted', () {
+      // Recording started in the middle of August
+      final review = YearReview.of(
+        year: 2026,
+        today: DateTime(2026, 10, 17),
+        months: twoYears(2026, these: {8: (5000, 40869), 9: (74950, 41079), 10: (65000, 31910)}),
+        summary: noCategories,
+        since: DateTime(2026, 8, 14),
+      );
+      expect((review.closedMonths, review.trackedMonths), (9, 2));
+      expect(review.averageExpenseMinor, (40869 + 41079) ~/ 2);
+      expect(review.monthsInGreen, 1);
+      expect(review.biggestMonth, ReviewMonth(DateTime(2026, 9), 41079));
+      expect(review.smallestMonth, ReviewMonth(DateTime(2026, 8), 40869));
+    });
+
     test('an empty year, and one that spent more than came in', () {
-      final empty = YearReview.of(year: 2024, today: DateTime(2026, 10, 17), months: twoYears(2024), summary: noCategories);
+      final empty = YearReview.of(
+          year: 2024, today: DateTime(2026, 10, 17), months: twoYears(2024), summary: noCategories, since: null);
       expect((empty.isEmpty, empty.savingsRate, empty.biggestMonth, empty.smallestMonth), (true, null, null, null));
 
       final over = YearReview.of(
@@ -69,6 +88,7 @@ void main() {
         today: DateTime(2026, 10, 17),
         months: twoYears(2024, these: {1: (1000, 1155)}, before: {5: (2000, 1000)}),
         summary: noCategories,
+        since: DateTime(2023, 5, 1),
       );
       expect((over.netMinor, over.savingsRate), (-155, -16));
       // One month that spent anything has no smallest beside the biggest
@@ -82,6 +102,7 @@ void main() {
         today: DateTime(2026, 10, 17),
         months: twoYears(2024, these: {2: (0, 500), 7: (0, 500), 9: (0, 100), 11: (0, 100)}),
         summary: noCategories,
+        since: DateTime(2023, 1, 1),
       );
       expect((review.biggestMonth?.month, review.smallestMonth?.month), (DateTime(2024, 2), DateTime(2024, 9)));
       expect(review.averageExpenseMinor, 1200 ~/ 12);
@@ -134,6 +155,7 @@ void main() {
           today: DateTime(2026, 10, 17),
           months: await repo.watchMonthlyTotals('ws1', DateTime(year, 12), 'BDT', count: 24).first,
           summary: await repo.watchYear('ws1', year, 'BDT').first,
+          since: await repo.watchFirstTransactionDay('ws1').first,
         );
 
     test('a closed year gives the same review as the server', () async {

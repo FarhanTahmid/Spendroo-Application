@@ -591,12 +591,12 @@ class ReviewHighlightsCard extends StatelessWidget {
           detail: l10n.reviewKeptAmount(context.money(best.amountMinor, currency)),
           color: colors.moneyIn,
         ),
-      if (review.closedMonths > 0)
+      if (review.trackedMonths > 0)
         FactTile(
           label: l10n.reviewMonthsInGreen,
           value: l10n.reviewMonthsOf(
             localDigits(context, '${review.monthsInGreen}'),
-            localDigits(context, '${review.closedMonths}'),
+            localDigits(context, '${review.trackedMonths}'),
           ),
         ),
       if (review.goalsReached > 0)

@@ -17,13 +17,15 @@ class ReviewYearController extends Notifier<int?> {
 
 final reviewYearProvider = NotifierProvider<ReviewYearController, int?>(ReviewYearController.new);
 
+/// The day of a workspace's first transaction; null before there is one.
+final _firstDayProvider = StreamProvider.family<DateTime?, String>(
+  (ref, workspaceId) => ref.watch(ledgerRepositoryProvider).watchFirstTransactionDay(workspaceId),
+);
+
 /// The years a workspace can look back on, newest first.
-final reviewYearsProvider = StreamProvider.family<List<int>, String>((ref, workspaceId) {
+final reviewYearsProvider = Provider.family<AsyncValue<List<int>>, String>((ref, workspaceId) {
   final today = ref.watch(reviewTodayProvider);
-  return ref
-      .watch(ledgerRepositoryProvider)
-      .watchFirstTransactionDay(workspaceId)
-      .map((first) => reviewYears(first, today));
+  return ref.watch(_firstDayProvider(workspaceId)).whenData((first) => reviewYears(first, today));
 });
 
 /// Workspace, currency and year.
@@ -42,11 +44,12 @@ final _reviewSummaryProvider = StreamProvider.family<MonthSummary, ReviewKey>(
 final yearReviewProvider = Provider.family<AsyncValue<YearReview>, ReviewKey>((ref, key) {
   final months = ref.watch(_reviewMonthsProvider(key));
   final summary = ref.watch(_reviewSummaryProvider(key));
+  final first = ref.watch(_firstDayProvider(key.$1));
   final goals = ref.watch(goalsProvider(key.$1)).value ?? const <GoalView>[];
   if (months.hasError) return AsyncError(months.error!, months.stackTrace ?? StackTrace.current);
   if (summary.hasError) return AsyncError(summary.error!, summary.stackTrace ?? StackTrace.current);
   final (monthly, total) = (months.value, summary.value);
-  if (monthly == null || total == null) return const AsyncLoading();
+  if (monthly == null || total == null || !first.hasValue) return const AsyncLoading();
   // The server stamps reached_at in the workspace's day, so its year leads the text
   final reached = goals.where((g) => g.goal.reachedAt?.startsWith('${key.$3}') ?? false).length;
   return AsyncData(
@@ -55,6 +58,7 @@ final yearReviewProvider = Provider.family<AsyncValue<YearReview>, ReviewKey>((r
       today: ref.watch(reviewTodayProvider),
       months: monthly,
       summary: total,
+      since: first.value,
       goalsReached: reached,
     ),
   );

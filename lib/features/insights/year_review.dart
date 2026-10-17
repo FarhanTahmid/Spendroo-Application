@@ -49,6 +49,9 @@ class ReviewMonth {
 /// - A month is "closed" once it is over. Ranking months and the monthly
 ///   average look at closed months only, so a month still under way never
 ///   reads as the smallest.
+/// - Closed months are "tracked" from the month of the workspace's first
+///   transaction: the average and the months in the green leave out months
+///   from before anything was recorded.
 /// - Transfers are neither income nor expense; each part of a split counts
 ///   under its own category.
 class YearReview {
@@ -57,6 +60,7 @@ class YearReview {
     required this.isPartial,
     required this.months,
     required this.closedMonths,
+    required this.trackedMonths,
     required this.incomeMinor,
     required this.expenseMinor,
     required this.previousIncomeMinor,
@@ -74,12 +78,14 @@ class YearReview {
 
   /// [months] holds the 24 months from January of the year before to December
   /// of [year], oldest first (watchMonthlyTotals); [summary] is the year by
-  /// category, each carrying what it took the year before (watchYear).
+  /// category, each carrying what it took the year before (watchYear);
+  /// [since] is the day of the workspace's first transaction.
   factory YearReview.of({
     required int year,
     required DateTime today,
     required List<MonthTotals> months,
     required MonthSummary summary,
+    required DateTime? since,
     int goalsReached = 0,
   }) {
     assert(months.length == 24, 'two years of months');
@@ -87,9 +93,11 @@ class YearReview {
     int sum(Iterable<int> values) => values.fold(0, (a, b) => a + b);
     final closedCount = year < today.year ? 12 : (year == today.year ? today.month - 1 : 0);
     final closed = these.take(closedCount).toList();
+    final start = since == null ? null : DateTime(since.year, since.month);
+    final tracked = start == null ? <MonthTotals>[] : closed.where((m) => !m.month.isBefore(start)).toList();
 
     final spent = closed.where((m) => m.expenseMinor > 0).toList();
-    final saving = closed.where((m) => m.incomeMinor - m.expenseMinor > 0).toList();
+    final saving = tracked.where((m) => m.incomeMinor - m.expenseMinor > 0).toList();
     ReviewMonth? ranked(List<MonthTotals> from, int Function(MonthTotals) measure, {required bool largest}) {
       if (from.isEmpty) return null;
       final values = from.map(measure);
@@ -106,6 +114,7 @@ class YearReview {
       isPartial: year == today.year,
       months: these,
       closedMonths: closedCount,
+      trackedMonths: tracked.length,
       incomeMinor: sum(these.map((m) => m.incomeMinor)),
       expenseMinor: sum(these.map((m) => m.expenseMinor)),
       previousIncomeMinor: previousIncome,
@@ -115,7 +124,7 @@ class YearReview {
       smallestMonth: spent.length > 1 ? ranked(spent, (m) => m.expenseMinor, largest: false) : null,
       bestMonth: ranked(saving, (m) => m.incomeMinor - m.expenseMinor, largest: true),
       monthsInGreen: saving.length,
-      averageExpenseMinor: closed.isEmpty ? null : sum(closed.map((m) => m.expenseMinor)) ~/ closed.length,
+      averageExpenseMinor: tracked.isEmpty ? null : sum(tracked.map((m) => m.expenseMinor)) ~/ tracked.length,
       largestExpenseMinor: summary.byCategory.fold(0, (a, c) => math.max(a, c.largestMinor)),
       categories: summary.byCategory,
       goalsReached: goalsReached,
@@ -133,6 +142,9 @@ class YearReview {
   /// How many of [months] are over.
   final int closedMonths;
 
+  /// How many of those came after the first transaction.
+  final int trackedMonths;
+
   final int incomeMinor;
   final int expenseMinor;
   final int previousIncomeMinor;
@@ -148,10 +160,10 @@ class YearReview {
   /// The closed month that kept most of its income.
   final ReviewMonth? bestMonth;
 
-  /// Closed months with more in than out.
+  /// Tracked months with more in than out.
   final int monthsInGreen;
 
-  /// Spent per closed month; null before the first is over.
+  /// Spent per tracked month; null before the first is over.
   final int? averageExpenseMinor;
 
   /// The biggest single expense, or part of a split.

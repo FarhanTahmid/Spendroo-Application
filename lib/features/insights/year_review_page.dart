@@ -16,10 +16,17 @@ import 'year_review_providers.dart';
 import 'year_review_share.dart';
 
 /// Opens the year in review, or says on the upgrade sheet that the plan lacks it.
+/// When a month is opened from the review, the page it came from goes back to
+/// the top, where that month's figures are.
 Future<void> openYearReview(BuildContext context, WidgetRef ref, Workspace workspace) async {
   HapticFeedback.selectionClick();
   if (!await unlockFeature(context, ref, workspace, F.insightsYearReview) || !context.mounted) return;
-  await context.push('/year-review');
+  final month = await context.push<DateTime>('/year-review');
+  if (month == null || !context.mounted) return;
+  final page = Scrollable.maybeOf(context)?.position;
+  final duration = context.motion(AppMotion.emphasised);
+  if (page == null) return;
+  duration == Duration.zero ? page.jumpTo(0) : page.animateTo(0, duration: duration, curve: AppMotion.ease);
 }
 
 /// A year looked back on ([F.insightsYearReview]): one card to share, the year
@@ -58,7 +65,10 @@ class _YearReviewPageState extends ConsumerState<YearReviewPage> {
     final l10n = context.l10n;
     final workspace = ref.watch(currentWorkspaceProvider);
     if (workspace == null) {
-      return Scaffold(appBar: AppBar(), body: const Center(child: AppLoader()));
+      return Scaffold(
+        appBar: AppBar(),
+        body: const Center(child: AppLoader()),
+      );
     }
     ref.watch(entitlementsProvider);
     final locked = featureLocked(ref, workspace, F.insightsYearReview);
@@ -96,7 +106,7 @@ class _YearReviewPageState extends ConsumerState<YearReviewPage> {
                   onOpenMonth: (month) {
                     ref.read(overviewRangeProvider.notifier).set(null);
                     ref.read(selectedMonthProvider.notifier).set(month);
-                    Navigator.of(context).maybePop();
+                    Navigator.of(context).maybePop(month);
                   },
                 ),
               ),
@@ -184,38 +194,46 @@ class _ReviewBody extends StatelessWidget {
         message: context.l10n.reviewEmpty(localDigits(context, '${review.year}')),
       );
     }
-    return ListView(
+    // Not a lazy list: the card to share stays painted however far down the page is
+    return SingleChildScrollView(
       key: PageStorageKey('year-review-${review.year}'),
       padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.xl),
-      children: [
-        Entrance(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: AppSpace.md),
-            child: RepaintBoundary(
-              key: cardKey,
-              child: ReviewHeroCard(review: review, currency: currency),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Entrance(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: AppSpace.md),
+              child: RepaintBoundary(
+                key: cardKey,
+                // Rounded corners on the page's colour, not see-through: some apps turn those black
+                child: ColoredBox(
+                  color: context.colors.paper,
+                  child: ReviewHeroCard(review: review, currency: currency),
+                ),
+              ),
             ),
           ),
-        ),
-        if (review.hasPrevious)
+          if (review.hasPrevious)
+            Entrance(
+              index: 1,
+              child: ReviewVersusCard(review: review, currency: currency),
+            ),
           Entrance(
-            index: 1,
-            child: ReviewVersusCard(review: review, currency: currency),
+            index: 2,
+            child: ReviewMonthsCard(review: review, currency: currency, onOpenMonth: onOpenMonth),
           ),
-        Entrance(
-          index: 2,
-          child: ReviewMonthsCard(review: review, currency: currency, onOpenMonth: onOpenMonth),
-        ),
-        if (review.categories.isNotEmpty)
+          if (review.categories.isNotEmpty)
+            Entrance(
+              index: 3,
+              child: ReviewCategoriesCard(review: review, currency: currency),
+            ),
           Entrance(
-            index: 3,
-            child: ReviewCategoriesCard(review: review, currency: currency),
+            index: 4,
+            child: ReviewHighlightsCard(review: review, currency: currency),
           ),
-        Entrance(
-          index: 4,
-          child: ReviewHighlightsCard(review: review, currency: currency),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -239,14 +239,30 @@ void main() {
         ],
       ),
     ));
+    // A phone, so the tile sits below the fold
+    tester.view.physicalSize = const Size(1080, 2400);
     await app.settle();
     final tile = find.byType(YearReviewTile);
+    final page = find.descendant(of: find.byType(ListView).first, matching: find.byType(Scrollable)).first;
+    await tester.scrollUntilVisible(tile, 300, scrollable: page);
+    await app.settle();
+    expect(tester.state<ScrollableState>(page).position.pixels, greaterThan(0));
     expect(find.descendant(of: tile, matching: find.byIcon(Icons.chevron_right_rounded)), findsOneWidget);
     await tester.tap(tile);
     await app.settle();
     await app.settle();
     expect(find.byType(YearReviewPage), findsOneWidget);
     expect(find.text('Year in review'), findsOneWidget);
+
+    // Opening a month comes back to the overview, scrolled up to that month's figures
+    await goBackAYear(app, tester);
+    await tester.tap(find.byKey(const ValueKey('review-month-2025-03-01')));
+    await app.settle();
+    await tester.pumpAndSettle();
+    expect(find.byType(YearReviewPage), findsNothing);
+    expect(app.container.read(selectedMonthProvider), DateTime(2025, 3));
+    expect(tester.state<ScrollableState>(page).position.pixels, 0);
+    expect(find.text('March 2025'), findsWidgets);
     expect(tester.takeException(), isNull);
     await app.stop();
   });

@@ -54,7 +54,12 @@ IconData accountKindIcon(String kind) => switch (kind) {
 /// filled in from the rule, and what is saved settles that date.
 /// [goalId] opens it on "Save", putting money into that goal.
 void openTransactionForm(BuildContext context, Workspace workspace,
-        {TransactionView? existing, String? date, String? accountId, OccurrenceView? occurrence, String? goalId}) =>
+        {TransactionView? existing,
+        String? date,
+        String? accountId,
+        OccurrenceView? occurrence,
+        String? goalId,
+        String? kind}) =>
     Navigator.of(context).push(MaterialPageRoute(
       fullscreenDialog: true,
       builder: (_) => TransactionFormPage(
@@ -63,6 +68,7 @@ void openTransactionForm(BuildContext context, Workspace workspace,
           initialDate: date,
           initialAccountId: accountId,
           initialGoalId: goalId,
+          initialKind: kind,
           occurrence: occurrence),
     ));
 
@@ -683,6 +689,7 @@ class TransactionFormPage extends ConsumerStatefulWidget {
     this.initialDate,
     this.initialAccountId,
     this.initialGoalId,
+    this.initialKind,
     this.occurrence,
   });
 
@@ -697,6 +704,10 @@ class TransactionFormPage extends ConsumerStatefulWidget {
   /// The date of a recurring rule being recorded.
   final OccurrenceView? occurrence;
 
+  /// Opens on this kind ('expense', 'income' or 'transfer'), as the
+  /// home-screen widget's add buttons ask.
+  final String? initialKind;
+
   @override
   ConsumerState<TransactionFormPage> createState() => _TransactionFormPageState();
 }
@@ -706,7 +717,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
   late final Transaction? _original = widget.existing?.transaction;
   // What a recurring rule says to record, when this form settles one of its dates
   late final RecurringRule? _rule = widget.occurrence?.rule.rule;
-  late String _kind = _original?.kind ?? _rule?.kind ?? (widget.initialGoalId != null ? saveKind : 'expense');
+  late String _kind =
+      _original?.kind ?? _rule?.kind ?? (widget.initialGoalId != null ? saveKind : widget.initialKind ?? 'expense');
   late String? _goalId = widget.initialGoalId;
   late final _amount = TextEditingController(
     text: _original != null

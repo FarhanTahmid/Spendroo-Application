@@ -2801,4 +2801,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewTileBody => 'Totals, top categories and your best months';
+
+  @override
+  String get widgetAdd => 'Add';
+
+  @override
+  String widgetSafePace(String amount) {
+    return 'Safe $amount/day';
+  }
+
+  @override
+  String widgetAveragePace(String amount) {
+    return 'Avg $amount/day';
+  }
+
+  @override
+  String get widgetBudgetLeft => 'Budget left';
+
+  @override
+  String get widgetUnlockTitle => 'See your whole month here';
+
+  @override
+  String get widgetUnlockBody =>
+      'Today, budget left, what\'s left this month and a daily spending chart';
+
+  @override
+  String get widgetUnlockCta => 'Unlock with Plus';
+
+  @override
+  String get widgetSignInTitle => 'Sign in to Spendroo';
+
+  @override
+  String get widgetSignInBody => 'This month\'s spending will show here';
+
+  @override
+  String get widgetEmptyChart =>
+      'Nothing spent yet this month. Tap + to log an expense.';
+
+  @override
+  String get widgetHideAmounts => 'Hide amounts';
+
+  @override
+  String get widgetShowAmounts => 'Show amounts';
+
+  @override
+  String widgetUpdated(String time) {
+    return 'Updated $time';
+  }
+
+  @override
+  String get widgetSettingsTitle => 'Home-screen widget';
+
+  @override
+  String get widgetSettingsBody =>
+      'This month\'s spending and one-tap adding, right on your home screen';
+
+  @override
+  String get widgetAddToHome => 'Add to home screen';
+
+  @override
+  String get widgetPinManual =>
+      'Long-press an empty spot on your home screen, tap Widgets and find Spendroo.';
+
+  @override
+  String get widgetSpentThisMonth => 'Spent this month';
+
+  @override
+  String widgetSpentIn(String month) {
+    return 'Spent in $month';
+  }
+
+  @override
+  String get widgetLeftThisMonth => 'Left this month';
 }

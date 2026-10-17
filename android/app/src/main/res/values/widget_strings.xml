@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The widget picker. The widget's own words come from the app, in the app's language -->
+    <string name="widget_label">Spending</string>
+    <string name="widget_description">This month\'s spending, today, and one-tap adding</string>
+    <!-- Shown until the app has been opened once -->
+    <string name="widget_fallback_title">Spendroo</string>
+    <string name="widget_fallback_body">Open Spendroo to set up this widget</string>
+    <string name="widget_preview_today">Spent this month</string>
+    <string name="widget_preview_amount">৳18,420</string>
+    <string name="widget_preview_month">Today · ৳450</string>
+</resources>

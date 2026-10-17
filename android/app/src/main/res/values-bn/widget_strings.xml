@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_label">খরচ</string>
+    <string name="widget_description">এই মাসের খরচ, আজকের খরচ আর এক ট্যাপে যোগ</string>
+    <string name="widget_fallback_title">স্পেন্ড্রু</string>
+    <string name="widget_fallback_body">উইজেটটি চালু করতে স্পেন্ড্রু খুলুন</string>
+    <string name="widget_preview_today">এই মাসের খরচ</string>
+    <string name="widget_preview_amount">৳১৮,৪২০</string>
+    <string name="widget_preview_month">আজ · ৳৪৫০</string>
+</resources>

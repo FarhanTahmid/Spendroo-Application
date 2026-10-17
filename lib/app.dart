@@ -9,6 +9,9 @@ import 'core/push/push_controller.dart';
 import 'core/ui.dart';
 import 'features/goals/goal_page.dart';
 import 'features/goals/goals_page.dart';
+import 'features/home_widget/home_widget_controller.dart';
+import 'features/home_widget/quick_add_page.dart';
+import 'features/home_widget/widget_launch.dart';
 import 'features/insights/year_review_page.dart';
 import 'features/auth/auth_pages.dart';
 import 'features/cashbook/cashbook_pages.dart';
@@ -69,6 +72,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/reset', builder: (_, _) => const ResetPasswordPage()),
       GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingPage()),
       GoRoute(path: '/', builder: (_, _) => const HomeShell()),
+      // The add form on its own, for the home-screen widget's buttons
+      GoRoute(
+        path: '/add',
+        pageBuilder: (_, state) => MaterialPage(
+          fullscreenDialog: true,
+          child: QuickAddPage(kind: state.uri.queryParameters['kind']),
+        ),
+      ),
       GoRoute(
         path: '/settings',
         builder: (_, _) => const SettingsPage(),
@@ -140,6 +151,9 @@ class SpendrooApp extends ConsumerWidget {
     ref.watch(syncControllerProvider);
     // Registers this phone for push while someone is signed in
     ref.watch(pushControllerProvider);
+    // Keeps the home-screen widget's figures current, and hears its buttons
+    ref.watch(homeWidgetControllerProvider);
+    ref.watch(widgetLaunchControllerProvider);
     final router = ref.watch(routerProvider);
 
     // A tapped notification opens its screen, once the app knows who is signed in

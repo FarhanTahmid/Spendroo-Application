@@ -12,6 +12,8 @@ val hasUploadKey = !keystoreProperties.getProperty("storeFile").isNullOrBlank()
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    // The home-screen widget is written with Glance (Compose for widgets)
+    id("org.jetbrains.kotlin.plugin.compose")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
     // Reads google-services.json, which lists all three flavours
@@ -36,6 +38,10 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     defaultConfig {
@@ -113,4 +119,10 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // Home-screen widget (lib/features/home_widget feeds it through the home_widget plugin)
+    implementation("androidx.glance:glance-appwidget:1.2.0")
+
+    testImplementation("junit:junit:4.13.2")
+    // Android's own org.json is a stub on the JVM
+    testImplementation("org.json:json:20240303")
 }

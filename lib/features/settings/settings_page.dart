@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,7 @@ import '../../core/config.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../home_widget/home_widget_tile.dart';
 import '../profile/profile_page.dart';
 import '../profile/profile_repository.dart';
 import '../recurring/recurring_repository.dart';
@@ -188,6 +190,7 @@ class SettingsPage extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: () => context.push('/settings/notifications'),
             ),
+            if (defaultTargetPlatform == TargetPlatform.android) const HomeWidgetTile(),
           ]),
           group([
             ListTile(

@@ -2735,4 +2735,76 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get reviewTileBody => 'মোট হিসাব, শীর্ষ খাত আর সেরা মাসগুলো';
+
+  @override
+  String get widgetAdd => 'যোগ';
+
+  @override
+  String widgetSafePace(String amount) {
+    return 'দিনে $amount নিরাপদ';
+  }
+
+  @override
+  String widgetAveragePace(String amount) {
+    return 'গড়ে দিনে $amount';
+  }
+
+  @override
+  String get widgetBudgetLeft => 'বাজেট বাকি';
+
+  @override
+  String get widgetUnlockTitle => 'পুরো মাস এখানেই দেখুন';
+
+  @override
+  String get widgetUnlockBody =>
+      'আজকের খরচ, বাকি বাজেট, এ মাসে কত বাকি আর দৈনিক খরচের চার্ট';
+
+  @override
+  String get widgetUnlockCta => 'প্লাস দিয়ে খুলুন';
+
+  @override
+  String get widgetSignInTitle => 'স্পেন্ড্রুতে সাইন ইন করুন';
+
+  @override
+  String get widgetSignInBody => 'এই মাসের খরচ এখানে দেখা যাবে';
+
+  @override
+  String get widgetEmptyChart =>
+      'এই মাসে এখনো কোনো খরচ নেই। খরচ লিখতে + চাপুন।';
+
+  @override
+  String get widgetHideAmounts => 'টাকার অঙ্ক লুকান';
+
+  @override
+  String get widgetShowAmounts => 'টাকার অঙ্ক দেখান';
+
+  @override
+  String widgetUpdated(String time) {
+    return 'হালনাগাদ $time';
+  }
+
+  @override
+  String get widgetSettingsTitle => 'হোম স্ক্রিন উইজেট';
+
+  @override
+  String get widgetSettingsBody =>
+      'এই মাসের খরচ আর এক ট্যাপে যোগ, সরাসরি হোম স্ক্রিনে';
+
+  @override
+  String get widgetAddToHome => 'হোম স্ক্রিনে যোগ করুন';
+
+  @override
+  String get widgetPinManual =>
+      'হোম স্ক্রিনের ফাঁকা জায়গায় চেপে ধরুন, উইজেট চাপুন আর স্পেন্ড্রু খুঁজে নিন।';
+
+  @override
+  String get widgetSpentThisMonth => 'এই মাসের খরচ';
+
+  @override
+  String widgetSpentIn(String month) {
+    return '$month-এর খরচ';
+  }
+
+  @override
+  String get widgetLeftThisMonth => 'এ মাসে বাকি';
 }

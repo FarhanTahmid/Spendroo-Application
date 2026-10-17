@@ -788,5 +788,26 @@
   "reviewEmpty": "{year}-এ কিছু লেখা হয়নি। আয় ও খরচ যোগ করুন, আপনার বছর এখানে তৈরি হবে।",
   "reviewLocked": "পুরো বছরে ফিরে দেখুন: কী এল, কোথায় গেল, সেরা ও খারাপ মাস, আর আগের বছরের সাথে তুলনা।",
   "reviewTileTitle": "আপনার {year} এক নজরে",
-  "reviewTileBody": "মোট হিসাব, শীর্ষ খাত আর সেরা মাসগুলো"
+  "reviewTileBody": "মোট হিসাব, শীর্ষ খাত আর সেরা মাসগুলো",
+
+  "widgetAdd": "যোগ",
+  "widgetSafePace": "দিনে {amount} নিরাপদ",
+  "widgetAveragePace": "গড়ে দিনে {amount}",
+  "widgetBudgetLeft": "বাজেট বাকি",
+  "widgetUnlockTitle": "পুরো মাস এখানেই দেখুন",
+  "widgetUnlockBody": "আজকের খরচ, বাকি বাজেট, এ মাসে কত বাকি আর দৈনিক খরচের চার্ট",
+  "widgetUnlockCta": "প্লাস দিয়ে খুলুন",
+  "widgetSignInTitle": "স্পেন্ড্রুতে সাইন ইন করুন",
+  "widgetSignInBody": "এই মাসের খরচ এখানে দেখা যাবে",
+  "widgetEmptyChart": "এই মাসে এখনো কোনো খরচ নেই। খরচ লিখতে + চাপুন।",
+  "widgetHideAmounts": "টাকার অঙ্ক লুকান",
+  "widgetShowAmounts": "টাকার অঙ্ক দেখান",
+  "widgetUpdated": "হালনাগাদ {time}",
+  "widgetSettingsTitle": "হোম স্ক্রিন উইজেট",
+  "widgetSettingsBody": "এই মাসের খরচ আর এক ট্যাপে যোগ, সরাসরি হোম স্ক্রিনে",
+  "widgetAddToHome": "হোম স্ক্রিনে যোগ করুন",
+  "widgetPinManual": "হোম স্ক্রিনের ফাঁকা জায়গায় চেপে ধরুন, উইজেট চাপুন আর স্পেন্ড্রু খুঁজে নিন।",
+  "widgetSpentThisMonth": "এই মাসের খরচ",
+  "widgetSpentIn": "{month}-এর খরচ",
+  "widgetLeftThisMonth": "এ মাসে বাকি"
 }

@@ -111,6 +111,13 @@ class PushRoute extends Notifier<String?> {
 
   void open(String? route) => state = _known.contains(route) ? route : '/inbox';
 
+  /// Screens a home-screen widget button opens (features/home_widget/widget_launch.dart).
+  static const _fromWidget = {'/', '/plan', '/add'};
+
+  void openFromWidget(String route) {
+    if (_fromWidget.contains(Uri.parse(route).path)) state = route;
+  }
+
   void done() => state = null;
 }
 

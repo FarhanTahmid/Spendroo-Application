@@ -4711,6 +4711,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Totals, top categories and your best months'**
   String get reviewTileBody;
+
+  /// No description provided for @widgetAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get widgetAdd;
+
+  /// No description provided for @widgetSafePace.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe {amount}/day'**
+  String widgetSafePace(String amount);
+
+  /// No description provided for @widgetAveragePace.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg {amount}/day'**
+  String widgetAveragePace(String amount);
+
+  /// No description provided for @widgetBudgetLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget left'**
+  String get widgetBudgetLeft;
+
+  /// No description provided for @widgetUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See your whole month here'**
+  String get widgetUnlockTitle;
+
+  /// No description provided for @widgetUnlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Today, budget left, what\'s left this month and a daily spending chart'**
+  String get widgetUnlockBody;
+
+  /// No description provided for @widgetUnlockCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with Plus'**
+  String get widgetUnlockCta;
+
+  /// No description provided for @widgetSignInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to Spendroo'**
+  String get widgetSignInTitle;
+
+  /// No description provided for @widgetSignInBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This month\'s spending will show here'**
+  String get widgetSignInBody;
+
+  /// No description provided for @widgetEmptyChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing spent yet this month. Tap + to log an expense.'**
+  String get widgetEmptyChart;
+
+  /// No description provided for @widgetHideAmounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide amounts'**
+  String get widgetHideAmounts;
+
+  /// No description provided for @widgetShowAmounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Show amounts'**
+  String get widgetShowAmounts;
+
+  /// No description provided for @widgetUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {time}'**
+  String widgetUpdated(String time);
+
+  /// No description provided for @widgetSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home-screen widget'**
+  String get widgetSettingsTitle;
+
+  /// No description provided for @widgetSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This month\'s spending and one-tap adding, right on your home screen'**
+  String get widgetSettingsBody;
+
+  /// No description provided for @widgetAddToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to home screen'**
+  String get widgetAddToHome;
+
+  /// No description provided for @widgetPinManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press an empty spot on your home screen, tap Widgets and find Spendroo.'**
+  String get widgetPinManual;
+
+  /// No description provided for @widgetSpentThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent this month'**
+  String get widgetSpentThisMonth;
+
+  /// No description provided for @widgetSpentIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent in {month}'**
+  String widgetSpentIn(String month);
+
+  /// No description provided for @widgetLeftThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Left this month'**
+  String get widgetLeftThisMonth;
 }
 
 class _AppLocalizationsDelegate

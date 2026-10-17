@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The widget card in the dark theme: deeper navy, with a faint edge so it holds on a black wallpaper -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="315"
+        android:endColor="#FF0E2647"
+        android:startColor="#FF081A33"
+        android:type="linear" />
+    <stroke android:width="1dp" android:color="#1FFFFFFF" />
+    <corners android:radius="@dimen/widget_radius" />
+</shape>

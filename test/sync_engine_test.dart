@@ -214,4 +214,71 @@ void main() {
     expect((failure.tableName_, failure.code), ('transactions', 'invalid'));
     expect(await db.select(db.outbox).get(), isEmpty);
   });
+
+  group('census', () {
+    const kept = '00000000-0000-0000-0000-0000000000c1';
+    const lost = '00000000-0000-0000-0000-0000000000c2';
+    const localOnly = '00000000-0000-0000-0000-0000000000c3';
+    late int censusStatus;
+
+    Future<void> plant(String id, int seq) => store.upsertRow(
+          'accounts',
+          serverRow(id, seq, {'name': id.substring(34), 'kind': 'cash', 'currency': 'BDT', 'opening_balance_minor': 100, 'is_archived': 0}),
+        );
+
+    Future<Set<String>> accounts() async => (await db.select(db.accounts).get()).map((a) => a.id).toSet();
+
+    List<Map<String, dynamic>> asked() => [
+          for (final request in requests)
+            if (request.url.path == '/api/v1/sync/census/') (jsonDecode(request.body) as Map).cast<String, dynamic>(),
+        ];
+
+    setUp(() async {
+      censusStatus = 200;
+      await plant(kept, 5);
+      await plant(lost, 6);
+      // Made here and never acknowledged: the server cannot know it yet
+      await plant(localOnly, 0);
+      respond = (request) async => switch (request.url.path) {
+            '/api/v1/workspaces/' => json(workspaces('personal')),
+            '/api/v1/sync/pull/' => json(emptyPull()),
+            // The server lost one row outright, with no tombstone to pull
+            '/api/v1/sync/census/' => json({
+                'missing': [
+                  for (final id in (jsonDecode(request.body)['ids'] as List).cast<String>())
+                    if (id == lost) id,
+                ],
+              }, censusStatus),
+            _ => json({}, 404),
+          };
+    });
+
+    test('drops what the server no longer has, keeps the rest, and runs once a day', () async {
+      await engine().sync();
+      expect(await accounts(), {kept, localOnly});
+      final accountsAsk = asked().singleWhere((body) => body['table'] == 'accounts');
+      expect(accountsAsk['workspace'], shopId);
+      expect((accountsAsk['ids'] as List).toSet(), {kept, lost}); // the unacknowledged row is not asked about
+      // Tables holding nothing acknowledged are not asked about
+      expect(asked().map((body) => body['table']).toSet(), {'accounts'});
+
+      // Within the day: no census
+      requests.clear();
+      await engine().sync();
+      expect(asked(), isEmpty);
+
+      // A day on, it runs again
+      final yesterday = DateTime.now().subtract(SyncEngine.censusEvery + const Duration(minutes: 1));
+      await db.setSetting(SyncEngine.censusKey(shopId), yesterday.toUtc().toIso8601String());
+      await engine().sync();
+      expect(asked(), isNotEmpty);
+    });
+
+    test('a census the server cannot answer changes nothing and does not fail the sync', () async {
+      censusStatus = 500;
+      await engine().sync();
+      expect(await accounts(), {kept, lost, localOnly});
+      expect(await db.getSetting(SyncEngine.censusKey(shopId)), isNull); // tried again next time
+    });
+  });
 }

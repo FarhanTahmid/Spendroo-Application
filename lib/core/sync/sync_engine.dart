@@ -25,6 +25,10 @@ class SyncException implements Exception {
 /// to be sent. The server is the authority: each push result carries the row as
 /// the server now holds it, and a refused change is rolled back locally and
 /// recorded in sync_failures.
+///
+/// A pull only carries rows that changed, so a row the server lost without a
+/// tombstone would stay here for good. Once a day a census asks the server
+/// which of the rows it acknowledged it no longer has, and drops them.
 class SyncEngine {
   SyncEngine(this.db, this.api, this.store, {this.onBillingStamp, this.onPlanLimit});
 
@@ -40,6 +44,12 @@ class SyncEngine {
 
   static const _pushBatchSize = 100;
 
+  /// How often the census runs per workspace, and how many ids go in one ask.
+  static const censusEvery = Duration(hours: 24);
+  static const _censusBatchSize = 500;
+
+  static String censusKey(String workspaceId) => 'census_at:$workspaceId';
+
   Future<void> sync() async {
     await _sendOnboarding();
     await refreshWorkspaces();
@@ -47,6 +57,7 @@ class SyncEngine {
     for (final workspace in workspaces) {
       await _push(workspace.id);
       await _pull(workspace.id);
+      await _census(workspace.id);
     }
   }
 
@@ -204,6 +215,44 @@ class SyncEngine {
       since = nextSince;
       if (!hasMore) return;
     }
+  }
+
+  /// Drops rows the server acknowledged once but no longer has at all. Only
+  /// rows with a server_seq are asked about, and one still waiting to be
+  /// pushed is kept: those the server has not seen yet. A failed ask leaves
+  /// the census for the next sync; it never fails the sync itself.
+  Future<void> _census(String workspaceId) async {
+    final key = censusKey(workspaceId);
+    final moment = DateTime.now();
+    final last = DateTime.tryParse(await db.getSetting(key) ?? '');
+    if (last != null && moment.difference(last) < censusEvery) return;
+
+    for (final table in AppDatabase.syncedTables) {
+      final ids = (await db.customSelect(
+        'SELECT id FROM "$table" WHERE workspace_id = ? AND server_seq > 0',
+        variables: [Variable<String>(workspaceId)],
+        readsFrom: {db.tableByName(table)},
+      ).get())
+          .map((row) => row.read<String>('id'))
+          .toList();
+      for (var start = 0; start < ids.length; start += _censusBatchSize) {
+        final response = _checkSession(await api.post('/api/v1/sync/census/', {
+          'workspace': workspaceId,
+          'table': table,
+          'ids': ids.sublist(start, (start + _censusBatchSize).clamp(0, ids.length)),
+        }));
+        if (!response.ok) return;
+        final missing = ((response.json['missing'] as List?) ?? const []).cast<String>();
+        if (missing.isEmpty) continue;
+        await db.transaction(() async {
+          for (final id in missing) {
+            if (await _hasPending(id)) continue;
+            await _hardDelete(table, id);
+          }
+        });
+      }
+    }
+    await db.setSetting(key, moment.toUtc().toIso8601String());
   }
 
   ApiResponse _check(ApiResponse response) {

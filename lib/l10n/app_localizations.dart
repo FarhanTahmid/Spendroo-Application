@@ -836,6 +836,96 @@ abstract class AppLocalizations {
   /// **'You can view this cashbook but not change it.'**
   String get readOnly;
 
+  /// No description provided for @addOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'You can add entries to this cashbook but not change them.'**
+  String get addOnly;
+
+  /// No description provided for @whoHasAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Who has access'**
+  String get whoHasAccess;
+
+  /// No description provided for @accessIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners, admins and viewers see every cashbook. Choose what each staff member may do in this one.'**
+  String get accessIntro;
+
+  /// No description provided for @noStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff yet. People who join this business as staff appear here.'**
+  String get noStaff;
+
+  /// No description provided for @accessNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No access'**
+  String get accessNone;
+
+  /// No description provided for @accessNoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t see this cashbook'**
+  String get accessNoneHint;
+
+  /// No description provided for @accessView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get accessView;
+
+  /// No description provided for @accessViewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sees the entries but can\'t change anything'**
+  String get accessViewHint;
+
+  /// No description provided for @accessAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get accessAdd;
+
+  /// No description provided for @accessAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds entries but can\'t change or delete them'**
+  String get accessAddHint;
+
+  /// No description provided for @accessEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get accessEdit;
+
+  /// No description provided for @accessEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds, changes and deletes entries'**
+  String get accessEditHint;
+
+  /// No description provided for @accessManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get accessManage;
+
+  /// No description provided for @accessManageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Also categories, payment methods and who has access'**
+  String get accessManageHint;
+
+  /// No description provided for @accessRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t make that change.'**
+  String get accessRefused;
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:

@@ -7,6 +7,7 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/entitlements/plan_guard.dart';
 import '../../core/providers.dart';
+import 'book_access.dart';
 
 /// Seeded into every new cashbook, same lists as the server uses.
 const defaultEntryCategories = [
@@ -162,16 +163,16 @@ class CashbookRepository {
             ]);
   }
 
-  /// What the signed-in user may do in this book: 'admin', 'edit' or 'view'.
-  Future<String> permissionFor(Cashbook book, Workspace workspace) async {
-    if (workspace.role == 'owner' || workspace.role == 'admin') return 'admin';
-    if (workspace.role == 'viewer') return 'view';
+  /// What the signed-in user may do in this book.
+  Future<BookAccess> accessFor(Cashbook book, Workspace workspace) async {
+    final byRole = BookAccess.forRole(workspace.role);
+    if (byRole != null) return byRole;
     // Staff only ever receive their own grants
     final grant = await (db.select(db.cashbookMembers)
           ..where((m) => m.cashbookId.equals(book.id) & m.deletedAt.isNull())
           ..limit(1))
         .getSingleOrNull();
-    return switch (grant?.role) { 'admin' => 'admin', 'editor' => 'edit', _ => 'view' };
+    return BookAccess.fromGrant(grant?.role);
   }
 
   Future<String> createCashbook(String workspaceId, String name, String currency) async {

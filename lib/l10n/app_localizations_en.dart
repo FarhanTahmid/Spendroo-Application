@@ -396,6 +396,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get readOnly => 'You can view this cashbook but not change it.';
 
   @override
+  String get addOnly =>
+      'You can add entries to this cashbook but not change them.';
+
+  @override
+  String get whoHasAccess => 'Who has access';
+
+  @override
+  String get accessIntro =>
+      'Owners, admins and viewers see every cashbook. Choose what each staff member may do in this one.';
+
+  @override
+  String get noStaff =>
+      'No staff yet. People who join this business as staff appear here.';
+
+  @override
+  String get accessNone => 'No access';
+
+  @override
+  String get accessNoneHint => 'Can\'t see this cashbook';
+
+  @override
+  String get accessView => 'View';
+
+  @override
+  String get accessViewHint => 'Sees the entries but can\'t change anything';
+
+  @override
+  String get accessAdd => 'Add';
+
+  @override
+  String get accessAddHint => 'Adds entries but can\'t change or delete them';
+
+  @override
+  String get accessEdit => 'Edit';
+
+  @override
+  String get accessEditHint => 'Adds, changes and deletes entries';
+
+  @override
+  String get accessManage => 'Manage';
+
+  @override
+  String get accessManageHint =>
+      'Also categories, payment methods and who has access';
+
+  @override
+  String get accessRefused => 'You can\'t make that change.';
+
+  @override
   String get language => 'Language';
 
   @override

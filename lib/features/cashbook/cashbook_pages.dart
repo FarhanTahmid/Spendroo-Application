@@ -14,6 +14,7 @@ import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
 import '../reports/report_repository.dart';
 import '../reports/report_sheet.dart';
+import 'book_access.dart';
 import 'cashbook_repository.dart';
 
 /// Light enough to read as "money out" on the navy header.
@@ -225,11 +226,13 @@ class CashbookPage extends ConsumerWidget {
     final workspace = workspaces.where((w) => w.id == book.workspaceId).firstOrNull;
     final repo = ref.read(cashbookRepositoryProvider);
 
-    return FutureBuilder<String>(
-      future: workspace == null ? Future.value('view') : repo.permissionFor(book, workspace),
+    return FutureBuilder<BookAccess>(
+      future: workspace == null ? Future.value(BookAccess.view) : repo.accessFor(book, workspace),
       builder: (context, snapshot) {
-        final permission = snapshot.data ?? 'view';
-        final canEdit = permission != 'view';
+        final access = snapshot.data ?? BookAccess.view;
+        final canEdit = access.canEdit;
+        // Who may use a book is a business's question; a personal space has no team
+        final canShare = access.canManage && workspace?.kind == 'business' && workspace?.isDemo != true;
         return PassbookScaffold(
           title: Text(book.bookName),
           actions: [
@@ -250,6 +253,8 @@ class CashbookPage extends ConsumerWidget {
                 onSelected: (action) async {
                   if (action == 'categories') {
                     context.push('/cashbook/$bookId/categories');
+                  } else if (action == 'access') {
+                    context.push('/cashbook/$bookId/access');
                   } else if (action == 'rename') {
                     final name =
                         await promptText(context, title: l10n.rename, label: l10n.cashbookName, initial: book.bookName);
@@ -265,7 +270,8 @@ class CashbookPage extends ConsumerWidget {
                 },
                 itemBuilder: (context) => [
                   PopupMenuItem(value: 'rename', child: Text(l10n.rename)),
-                  if (permission == 'admin') PopupMenuItem(value: 'categories', child: Text(l10n.categories)),
+                  if (access.canManage) PopupMenuItem(value: 'categories', child: Text(l10n.categories)),
+                  if (canShare) PopupMenuItem(value: 'access', child: Text(l10n.whoHasAccess)),
                   if (workspace?.role == 'owner') PopupMenuItem(value: 'delete', child: Text(l10n.delete)),
                 ],
               ),
@@ -278,9 +284,13 @@ class CashbookPage extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, 0),
                   child: Row(
                     children: [
-                      Icon(Icons.visibility_outlined, size: 18, color: context.colors.muted),
+                      Icon(access.canAdd ? Icons.add_circle_outline_rounded : Icons.visibility_outlined,
+                          size: 18, color: context.colors.muted),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(l10n.readOnly, style: Theme.of(context).textTheme.bodySmall)),
+                      Expanded(
+                        child: Text(access.canAdd ? l10n.addOnly : l10n.readOnly,
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ),
                     ],
                   ),
                 ),
@@ -301,7 +311,7 @@ class CashbookPage extends ConsumerWidget {
               ),
             ],
           ),
-          bottomNavigationBar: canEdit
+          bottomNavigationBar: access.canAdd
               ? DecoratedBox(
                   decoration: BoxDecoration(
                     color: context.colors.sheet,

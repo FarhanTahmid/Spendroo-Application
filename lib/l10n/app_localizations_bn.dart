@@ -398,6 +398,56 @@ class AppLocalizationsBn extends AppLocalizations {
   String get readOnly => 'আপনি এই ক্যাশবুক দেখতে পারবেন, বদলাতে পারবেন না।';
 
   @override
+  String get addOnly =>
+      'আপনি এই ক্যাশবুকে এন্ট্রি যোগ করতে পারবেন, বদলাতে পারবেন না।';
+
+  @override
+  String get whoHasAccess => 'কারা দেখতে পারে';
+
+  @override
+  String get accessIntro =>
+      'মালিক, অ্যাডমিন ও দর্শক সব ক্যাশবুক দেখেন। এই ক্যাশবুকে প্রত্যেক স্টাফ কী করতে পারবেন, তা বেছে নিন।';
+
+  @override
+  String get noStaff =>
+      'এখনো কোনো স্টাফ নেই। যাঁরা স্টাফ হিসেবে এই ব্যবসায় যোগ দেবেন, তাঁরা এখানে দেখা যাবেন।';
+
+  @override
+  String get accessNone => 'অনুমতি নেই';
+
+  @override
+  String get accessNoneHint => 'এই ক্যাশবুক দেখতে পারবেন না';
+
+  @override
+  String get accessView => 'দেখা';
+
+  @override
+  String get accessViewHint => 'এন্ট্রি দেখতে পারবেন, কিছু বদলাতে পারবেন না';
+
+  @override
+  String get accessAdd => 'যোগ';
+
+  @override
+  String get accessAddHint =>
+      'এন্ট্রি যোগ করতে পারবেন, বদলাতে বা মুছতে পারবেন না';
+
+  @override
+  String get accessEdit => 'সম্পাদনা';
+
+  @override
+  String get accessEditHint => 'এন্ট্রি যোগ, বদল ও মুছতে পারবেন';
+
+  @override
+  String get accessManage => 'পরিচালনা';
+
+  @override
+  String get accessManageHint =>
+      'খাত, পরিশোধের মাধ্যম এবং কারা দেখতে পারে, সেটাও';
+
+  @override
+  String get accessRefused => 'আপনি এই পরিবর্তন করতে পারবেন না।';
+
+  @override
   String get language => 'ভাষা';
 
   @override

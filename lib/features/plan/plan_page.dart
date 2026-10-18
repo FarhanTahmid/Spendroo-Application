@@ -8,6 +8,7 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../team/team_page.dart';
 import 'offer_banner.dart';
 import 'plan_repository.dart';
 import 'plan_text.dart';
@@ -97,6 +98,9 @@ class PlanPage extends ConsumerWidget {
                 // Cashbooks are counted per business, and only its owner's plan decides
                 if (current != null && current.kind == 'business' && current.role == 'owner')
                   _Meter(feature: F.businessCashbooks, workspaceId: current.id, detail: current.name),
+                // Seats are counted on the server: members and invitations waiting
+                if (current != null && current.kind == 'business' && current.role == 'owner' && !current.isDemo)
+                  SeatUsageRow(workspace: current),
               ],
             ),
             Card(

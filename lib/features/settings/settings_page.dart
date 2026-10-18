@@ -145,6 +145,14 @@ class SettingsPage extends ConsumerWidget {
                   if (context.mounted && !changed) context.showMessage(l10n.needsConnection);
                 },
               ),
+            if (workspace != null && workspace.kind == 'business' && !workspace.isDemo)
+              ListTile(
+                leading: const Icon(Icons.groups_2_outlined),
+                title: Text(l10n.team),
+                subtitle: Text(l10n.teamHint),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => context.push('/team'),
+              ),
             if (workspace != null && workspace.kind == 'personal') ...[
               ListTile(
                 leading: const Icon(Icons.sell_outlined),

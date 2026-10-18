@@ -232,6 +232,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               subjectId: workspace.id,
               subjectName: workspaceLabel(context, workspace),
             ),
+          // Everyone in a business may see who else is in it
+          if (!personal && !workspace.isDemo)
+            IconButton(
+              tooltip: l10n.team,
+              icon: const Icon(Icons.groups_2_outlined),
+              onPressed: () => context.push('/team'),
+            ),
           IconButton(
             tooltip: l10n.settings,
             icon: const Icon(Icons.settings_outlined),
@@ -498,6 +505,16 @@ class _WorkspaceSheet extends ConsumerWidget {
           onTap: () async {
             final name = await promptText(context, title: l10n.newBusiness, label: l10n.businessName);
             if (name != null && context.mounted) await create(() => actions.createBusiness(name));
+          },
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: IconBadge(Icons.vpn_key_outlined, color: context.colors.muted),
+          title: Text(l10n.joinBusiness),
+          onTap: () {
+            final router = GoRouter.of(context);
+            Navigator.pop(context);
+            router.push('/join');
           },
         ),
         if (!workspaces.any((w) => w.isDemo))

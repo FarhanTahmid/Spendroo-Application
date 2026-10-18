@@ -4921,6 +4921,642 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Left this month'**
   String get widgetLeftThisMonth;
+
+  /// No description provided for @team.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get team;
+
+  /// No description provided for @teamOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage team'**
+  String get teamOpen;
+
+  /// No description provided for @teamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'People, roles and invitations'**
+  String get teamHint;
+
+  /// No description provided for @teamBusinessOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'A team belongs to a business. Switch to one to see its people.'**
+  String get teamBusinessOnly;
+
+  /// No description provided for @you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get you;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
+  /// No description provided for @yourRole.
+  ///
+  /// In en, this message translates to:
+  /// **'You are {role} here'**
+  String yourRole(String role);
+
+  /// No description provided for @peopleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person} other{{count} people}}'**
+  String peopleCount(int count);
+
+  /// No description provided for @roleOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get roleOwner;
+
+  /// No description provided for @roleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get roleAdmin;
+
+  /// No description provided for @roleStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get roleStaff;
+
+  /// No description provided for @roleViewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewer'**
+  String get roleViewer;
+
+  /// No description provided for @roleOwnerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Owns the business and its plan. Can do everything.'**
+  String get roleOwnerHint;
+
+  /// No description provided for @roleAdminHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs every cashbook and invites staff and viewers.'**
+  String get roleAdminHint;
+
+  /// No description provided for @roleStaffHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Works only in the cashbooks you open to them.'**
+  String get roleStaffHint;
+
+  /// No description provided for @roleViewerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sees every cashbook but changes nothing.'**
+  String get roleViewerHint;
+
+  /// No description provided for @groupAdmins.
+  ///
+  /// In en, this message translates to:
+  /// **'Admins'**
+  String get groupAdmins;
+
+  /// No description provided for @groupStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get groupStaff;
+
+  /// No description provided for @groupViewers.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewers'**
+  String get groupViewers;
+
+  /// No description provided for @groupInvited.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited'**
+  String get groupInvited;
+
+  /// No description provided for @seatsUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} of {limit} seats used'**
+  String seatsUsed(int used, int limit);
+
+  /// No description provided for @seatsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 seat left} other{{count} seats left}}'**
+  String seatsLeft(int count);
+
+  /// No description provided for @seatsFull.
+  ///
+  /// In en, this message translates to:
+  /// **'All seats taken'**
+  String get seatsFull;
+
+  /// No description provided for @seatsUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No one invited yet} =1{1 seat in use} other{{count} seats in use}}'**
+  String seatsUnlimited(int count);
+
+  /// No description provided for @seatsFullAskOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Every seat on this business is taken. Ask the owner to make room or upgrade the plan.'**
+  String get seatsFullAskOwner;
+
+  /// No description provided for @limitSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {plan} plan gives {limit, plural, =0{no team seats} =1{1 team seat} other{{limit} team seats}} per business.'**
+  String limitSeats(String plan, int limit);
+
+  /// No description provided for @teamUpsellTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring your team'**
+  String get teamUpsellTitle;
+
+  /// No description provided for @teamUpsellBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The Business plan gives you seats for staff. Invite them, choose who works in which cashbook, and see every entry in one place.'**
+  String get teamUpsellBody;
+
+  /// No description provided for @teamEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Just you so far'**
+  String get teamEmptyTitle;
+
+  /// No description provided for @teamEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite the people who keep the books with you. You decide what each of them can see and do.'**
+  String get teamEmptyBody;
+
+  /// No description provided for @invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get invite;
+
+  /// No description provided for @inviteSomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite someone'**
+  String get inviteSomeone;
+
+  /// No description provided for @inviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite to {business}'**
+  String inviteTitle(String business);
+
+  /// No description provided for @inviteIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'They join with a one-time code, valid for 7 days.'**
+  String get inviteIntro;
+
+  /// No description provided for @inviteEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'name@example.com'**
+  String get inviteEmailHint;
+
+  /// No description provided for @invitePhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+880 17XX-XXXXXX'**
+  String get invitePhoneHint;
+
+  /// No description provided for @inviteByEmailNote.
+  ///
+  /// In en, this message translates to:
+  /// **'We email them the code. Only the account with this email can use it.'**
+  String get inviteByEmailNote;
+
+  /// No description provided for @inviteByPhoneNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You get a code to send them yourself, by SMS or any chat app.'**
+  String get inviteByPhoneNote;
+
+  /// No description provided for @inviteAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite as'**
+  String get inviteAs;
+
+  /// No description provided for @inviteUsesSeat.
+  ///
+  /// In en, this message translates to:
+  /// **'This takes seat {seat} of {limit} until they join or the invitation ends.'**
+  String inviteUsesSeat(int seat, int limit);
+
+  /// No description provided for @inviteSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send invitation'**
+  String get inviteSend;
+
+  /// No description provided for @inviteMakeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Create code'**
+  String get inviteMakeCode;
+
+  /// No description provided for @inviteEmailNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter their email.'**
+  String get inviteEmailNeeded;
+
+  /// No description provided for @invitePhoneNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter their phone number.'**
+  String get invitePhoneNeeded;
+
+  /// No description provided for @inviteEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That doesn’t look like an email address.'**
+  String get inviteEmailInvalid;
+
+  /// No description provided for @invitePhoneInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That doesn’t look like a phone number.'**
+  String get invitePhoneInvalid;
+
+  /// No description provided for @inviteTicketTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation to {business}'**
+  String inviteTicketTitle(String business);
+
+  /// No description provided for @inviteEmailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {email}. You can also pass the code on yourself.'**
+  String inviteEmailed(String email);
+
+  /// No description provided for @inviteShareOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Send this code to them now. It is shown only once.'**
+  String get inviteShareOnce;
+
+  /// No description provided for @inviteValidDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Works for 1 day, once.} other{Works for {days} days, once.}}'**
+  String inviteValidDays(int days);
+
+  /// No description provided for @inviteShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Join {business} on Spendroo. Open the app, tap the business name at the top, choose “Join a business” and enter this code: {code}'**
+  String inviteShareText(String business, String code);
+
+  /// No description provided for @inviteExpiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Ends today} =1{Ends tomorrow} other{Ends in {days} days}}'**
+  String inviteExpiresIn(int days);
+
+  /// No description provided for @inviteCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw invitation'**
+  String get inviteCancel;
+
+  /// No description provided for @inviteCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw the invitation to {contact}? Their code will stop working and the seat is freed.'**
+  String inviteCancelConfirm(String contact);
+
+  /// No description provided for @codeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied'**
+  String get codeCopied;
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @paste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get paste;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @cashbookAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashbook access'**
+  String get cashbookAccess;
+
+  /// No description provided for @booksOpenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{open} of {total} open'**
+  String booksOpenCount(int open, int total);
+
+  /// No description provided for @accessByRoleAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Reaches every cashbook through their role.'**
+  String get accessByRoleAll;
+
+  /// No description provided for @accessByRoleView.
+  ///
+  /// In en, this message translates to:
+  /// **'Can look at every cashbook, but not change anything.'**
+  String get accessByRoleView;
+
+  /// No description provided for @accessByRoleStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Works only in the cashbooks the owner or an admin opens to them.'**
+  String get accessByRoleStaff;
+
+  /// No description provided for @roleChangeNotYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the owner can change this role.'**
+  String get roleChangeNotYours;
+
+  /// No description provided for @roleChangeDropsAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Make {name} {role}? Their access to single cashbooks will be removed.'**
+  String roleChangeDropsAccess(String name, String role);
+
+  /// No description provided for @joinedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined {date}'**
+  String joinedOn(String date);
+
+  /// No description provided for @memberGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This person is no longer in the business.'**
+  String get memberGone;
+
+  /// No description provided for @removeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from business'**
+  String get removeMember;
+
+  /// No description provided for @removeMemberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They lose access straight away. You can invite them again.'**
+  String get removeMemberHint;
+
+  /// No description provided for @removeMemberConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from {business}? Their entries stay.'**
+  String removeMemberConfirm(String name, String business);
+
+  /// No description provided for @memberRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get memberRemoved;
+
+  /// No description provided for @handOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Make owner'**
+  String get handOver;
+
+  /// No description provided for @handOverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over the business'**
+  String get handOverTitle;
+
+  /// No description provided for @handOverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand the business and its plan to {name}'**
+  String handOverHint(String name);
+
+  /// No description provided for @handOverBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} becomes the owner of {business}, and it runs on their plan from then on. You stay on as an admin, and only they can hand it back.'**
+  String handOverBody(String name, String business);
+
+  /// No description provided for @handOverTypeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Type “{business}” to confirm'**
+  String handOverTypeName(String business);
+
+  /// No description provided for @handedOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is the owner now'**
+  String handedOver(String name);
+
+  /// No description provided for @handOverNoRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}’s plan has no room for this business yet. They need a plan with enough businesses, team seats and cashbooks first.'**
+  String handOverNoRoom(String name);
+
+  /// No description provided for @leaveBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave business'**
+  String get leaveBusiness;
+
+  /// No description provided for @leaveBusinessConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave {business}? It will disappear from this phone, and you need a new invitation to come back.'**
+  String leaveBusinessConfirm(String business);
+
+  /// No description provided for @leftBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'You left {business}'**
+  String leftBusiness(String business);
+
+  /// No description provided for @joinBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Join a business'**
+  String get joinBusiness;
+
+  /// No description provided for @joinIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Got an invitation code? Enter it to join the business that sent it.'**
+  String get joinIntro;
+
+  /// No description provided for @joinCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'10 letters and numbers, from the email or message you got'**
+  String get joinCodeHint;
+
+  /// No description provided for @invitedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited by {name}'**
+  String invitedBy(String name);
+
+  /// No description provided for @joinAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Join as {role}'**
+  String joinAs(String role);
+
+  /// No description provided for @joinedBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to {business}'**
+  String joinedBusiness(String business);
+
+  /// No description provided for @teamErrorAlreadyMember.
+  ///
+  /// In en, this message translates to:
+  /// **'This person is already in the business.'**
+  String get teamErrorAlreadyMember;
+
+  /// No description provided for @teamErrorInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That code doesn’t match any invitation. Check it and try again.'**
+  String get teamErrorInvalidCode;
+
+  /// No description provided for @teamErrorExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This invitation has ended. Ask for a new one.'**
+  String get teamErrorExpired;
+
+  /// No description provided for @teamErrorUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has already been used.'**
+  String get teamErrorUsed;
+
+  /// No description provided for @teamErrorWrongAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'This invitation was sent to another email. Sign in with that account to use it.'**
+  String get teamErrorWrongAccount;
+
+  /// No description provided for @teamErrorNoSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'This business has no free seat right now. Ask its owner to make room.'**
+  String get teamErrorNoSeats;
+
+  /// No description provided for @teamErrorTooMany.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many tries. Wait a while and try again.'**
+  String get teamErrorTooMany;
+
+  /// No description provided for @teamErrorBadInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Check what you entered and try again.'**
+  String get teamErrorBadInput;
+
+  /// No description provided for @teamErrorRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'You can’t make this change.'**
+  String get teamErrorRefused;
+
+  /// No description provided for @teamErrorFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That didn’t work. Try again.'**
+  String get teamErrorFailed;
+
+  /// No description provided for @haveInviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'I have an invitation code'**
+  String get haveInviteCode;
+
+  /// No description provided for @haveInviteCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Join a business someone invited you to.'**
+  String get haveInviteCodeHint;
+
+  /// No description provided for @joinRoleAdminHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ll run every cashbook and can invite staff and viewers.'**
+  String get joinRoleAdminHint;
+
+  /// No description provided for @joinRoleStaffHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ll work in the cashbooks the owner or an admin opens to you.'**
+  String get joinRoleStaffHint;
+
+  /// No description provided for @joinRoleViewerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ll see every cashbook but won’t change anything.'**
+  String get joinRoleViewerHint;
+
+  /// No description provided for @noCashbooksForStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'No cashbooks are open to you yet. Ask the owner or an admin to give you access.'**
+  String get noCashbooksForStaff;
+
+  /// No description provided for @roleChangeManagersOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the owner or an admin can change this role.'**
+  String get roleChangeManagersOnly;
+
+  /// No description provided for @seatsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No team seats on this plan'**
+  String get seatsNone;
 }
 
 class _AppLocalizationsDelegate

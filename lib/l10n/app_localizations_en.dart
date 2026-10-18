@@ -2922,4 +2922,441 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetLeftThisMonth => 'Left this month';
+
+  @override
+  String get team => 'Team';
+
+  @override
+  String get teamOpen => 'Manage team';
+
+  @override
+  String get teamHint => 'People, roles and invitations';
+
+  @override
+  String get teamBusinessOnly =>
+      'A team belongs to a business. Switch to one to see its people.';
+
+  @override
+  String get you => 'You';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String yourRole(String role) {
+    return 'You are $role here';
+  }
+
+  @override
+  String peopleCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people',
+      one: '1 person',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roleOwner => 'Owner';
+
+  @override
+  String get roleAdmin => 'Admin';
+
+  @override
+  String get roleStaff => 'Staff';
+
+  @override
+  String get roleViewer => 'Viewer';
+
+  @override
+  String get roleOwnerHint =>
+      'Owns the business and its plan. Can do everything.';
+
+  @override
+  String get roleAdminHint =>
+      'Runs every cashbook and invites staff and viewers.';
+
+  @override
+  String get roleStaffHint => 'Works only in the cashbooks you open to them.';
+
+  @override
+  String get roleViewerHint => 'Sees every cashbook but changes nothing.';
+
+  @override
+  String get groupAdmins => 'Admins';
+
+  @override
+  String get groupStaff => 'Staff';
+
+  @override
+  String get groupViewers => 'Viewers';
+
+  @override
+  String get groupInvited => 'Invited';
+
+  @override
+  String seatsUsed(int used, int limit) {
+    return '$used of $limit seats used';
+  }
+
+  @override
+  String seatsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seats left',
+      one: '1 seat left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get seatsFull => 'All seats taken';
+
+  @override
+  String seatsUnlimited(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seats in use',
+      one: '1 seat in use',
+      zero: 'No one invited yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get seatsFullAskOwner =>
+      'Every seat on this business is taken. Ask the owner to make room or upgrade the plan.';
+
+  @override
+  String limitSeats(String plan, int limit) {
+    String _temp0 = intl.Intl.pluralLogic(
+      limit,
+      locale: localeName,
+      other: '$limit team seats',
+      one: '1 team seat',
+      zero: 'no team seats',
+    );
+    return 'Your $plan plan gives $_temp0 per business.';
+  }
+
+  @override
+  String get teamUpsellTitle => 'Bring your team';
+
+  @override
+  String get teamUpsellBody =>
+      'The Business plan gives you seats for staff. Invite them, choose who works in which cashbook, and see every entry in one place.';
+
+  @override
+  String get teamEmptyTitle => 'Just you so far';
+
+  @override
+  String get teamEmptyBody =>
+      'Invite the people who keep the books with you. You decide what each of them can see and do.';
+
+  @override
+  String get invite => 'Invite';
+
+  @override
+  String get inviteSomeone => 'Invite someone';
+
+  @override
+  String inviteTitle(String business) {
+    return 'Invite to $business';
+  }
+
+  @override
+  String get inviteIntro => 'They join with a one-time code, valid for 7 days.';
+
+  @override
+  String get inviteEmailHint => 'name@example.com';
+
+  @override
+  String get invitePhoneHint => '+880 17XX-XXXXXX';
+
+  @override
+  String get inviteByEmailNote =>
+      'We email them the code. Only the account with this email can use it.';
+
+  @override
+  String get inviteByPhoneNote =>
+      'You get a code to send them yourself, by SMS or any chat app.';
+
+  @override
+  String get inviteAs => 'Invite as';
+
+  @override
+  String inviteUsesSeat(int seat, int limit) {
+    return 'This takes seat $seat of $limit until they join or the invitation ends.';
+  }
+
+  @override
+  String get inviteSend => 'Send invitation';
+
+  @override
+  String get inviteMakeCode => 'Create code';
+
+  @override
+  String get inviteEmailNeeded => 'Enter their email.';
+
+  @override
+  String get invitePhoneNeeded => 'Enter their phone number.';
+
+  @override
+  String get inviteEmailInvalid => 'That doesn’t look like an email address.';
+
+  @override
+  String get invitePhoneInvalid => 'That doesn’t look like a phone number.';
+
+  @override
+  String inviteTicketTitle(String business) {
+    return 'Invitation to $business';
+  }
+
+  @override
+  String inviteEmailed(String email) {
+    return 'Sent to $email. You can also pass the code on yourself.';
+  }
+
+  @override
+  String get inviteShareOnce =>
+      'Send this code to them now. It is shown only once.';
+
+  @override
+  String inviteValidDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Works for $days days, once.',
+      one: 'Works for 1 day, once.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String inviteShareText(String business, String code) {
+    return 'Join $business on Spendroo. Open the app, tap the business name at the top, choose “Join a business” and enter this code: $code';
+  }
+
+  @override
+  String inviteExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Ends in $days days',
+      one: 'Ends tomorrow',
+      zero: 'Ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get inviteCancel => 'Withdraw invitation';
+
+  @override
+  String inviteCancelConfirm(String contact) {
+    return 'Withdraw the invitation to $contact? Their code will stop working and the seat is freed.';
+  }
+
+  @override
+  String get codeCopied => 'Code copied';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get paste => 'Paste';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get cashbookAccess => 'Cashbook access';
+
+  @override
+  String booksOpenCount(int open, int total) {
+    return '$open of $total open';
+  }
+
+  @override
+  String get accessByRoleAll => 'Reaches every cashbook through their role.';
+
+  @override
+  String get accessByRoleView =>
+      'Can look at every cashbook, but not change anything.';
+
+  @override
+  String get accessByRoleStaff =>
+      'Works only in the cashbooks the owner or an admin opens to them.';
+
+  @override
+  String get roleChangeNotYours => 'Only the owner can change this role.';
+
+  @override
+  String roleChangeDropsAccess(String name, String role) {
+    return 'Make $name $role? Their access to single cashbooks will be removed.';
+  }
+
+  @override
+  String joinedOn(String date) {
+    return 'Joined $date';
+  }
+
+  @override
+  String get memberGone => 'This person is no longer in the business.';
+
+  @override
+  String get removeMember => 'Remove from business';
+
+  @override
+  String get removeMemberHint =>
+      'They lose access straight away. You can invite them again.';
+
+  @override
+  String removeMemberConfirm(String name, String business) {
+    return 'Remove $name from $business? Their entries stay.';
+  }
+
+  @override
+  String get memberRemoved => 'Removed';
+
+  @override
+  String get handOver => 'Make owner';
+
+  @override
+  String get handOverTitle => 'Hand over the business';
+
+  @override
+  String handOverHint(String name) {
+    return 'Hand the business and its plan to $name';
+  }
+
+  @override
+  String handOverBody(String name, String business) {
+    return '$name becomes the owner of $business, and it runs on their plan from then on. You stay on as an admin, and only they can hand it back.';
+  }
+
+  @override
+  String handOverTypeName(String business) {
+    return 'Type “$business” to confirm';
+  }
+
+  @override
+  String handedOver(String name) {
+    return '$name is the owner now';
+  }
+
+  @override
+  String handOverNoRoom(String name) {
+    return '$name’s plan has no room for this business yet. They need a plan with enough businesses, team seats and cashbooks first.';
+  }
+
+  @override
+  String get leaveBusiness => 'Leave business';
+
+  @override
+  String leaveBusinessConfirm(String business) {
+    return 'Leave $business? It will disappear from this phone, and you need a new invitation to come back.';
+  }
+
+  @override
+  String leftBusiness(String business) {
+    return 'You left $business';
+  }
+
+  @override
+  String get joinBusiness => 'Join a business';
+
+  @override
+  String get joinIntro =>
+      'Got an invitation code? Enter it to join the business that sent it.';
+
+  @override
+  String get joinCodeHint =>
+      '10 letters and numbers, from the email or message you got';
+
+  @override
+  String invitedBy(String name) {
+    return 'Invited by $name';
+  }
+
+  @override
+  String joinAs(String role) {
+    return 'Join as $role';
+  }
+
+  @override
+  String joinedBusiness(String business) {
+    return 'Welcome to $business';
+  }
+
+  @override
+  String get teamErrorAlreadyMember =>
+      'This person is already in the business.';
+
+  @override
+  String get teamErrorInvalidCode =>
+      'That code doesn’t match any invitation. Check it and try again.';
+
+  @override
+  String get teamErrorExpired =>
+      'This invitation has ended. Ask for a new one.';
+
+  @override
+  String get teamErrorUsed => 'This code has already been used.';
+
+  @override
+  String get teamErrorWrongAccount =>
+      'This invitation was sent to another email. Sign in with that account to use it.';
+
+  @override
+  String get teamErrorNoSeats =>
+      'This business has no free seat right now. Ask its owner to make room.';
+
+  @override
+  String get teamErrorTooMany => 'Too many tries. Wait a while and try again.';
+
+  @override
+  String get teamErrorBadInput => 'Check what you entered and try again.';
+
+  @override
+  String get teamErrorRefused => 'You can’t make this change.';
+
+  @override
+  String get teamErrorFailed => 'That didn’t work. Try again.';
+
+  @override
+  String get haveInviteCode => 'I have an invitation code';
+
+  @override
+  String get haveInviteCodeHint => 'Join a business someone invited you to.';
+
+  @override
+  String get joinRoleAdminHint =>
+      'You’ll run every cashbook and can invite staff and viewers.';
+
+  @override
+  String get joinRoleStaffHint =>
+      'You’ll work in the cashbooks the owner or an admin opens to you.';
+
+  @override
+  String get joinRoleViewerHint =>
+      'You’ll see every cashbook but won’t change anything.';
+
+  @override
+  String get noCashbooksForStaff =>
+      'No cashbooks are open to you yet. Ask the owner or an admin to give you access.';
+
+  @override
+  String get roleChangeManagersOnly =>
+      'Only the owner or an admin can change this role.';
+
+  @override
+  String get seatsNone => 'No team seats on this plan';
 }

@@ -57,7 +57,7 @@ class CashbooksPage extends ConsumerWidget {
                       height: 380,
                       child: EmptyState(
                         icon: Icons.menu_book_outlined,
-                        message: l10n.noCashbooks,
+                        message: _canManage ? l10n.noCashbooks : l10n.noCashbooksForStaff,
                         actionLabel: _canManage ? l10n.addCashbook : null,
                         onAction: addCashbook,
                       ),

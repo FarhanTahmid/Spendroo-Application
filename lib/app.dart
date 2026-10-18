@@ -27,6 +27,9 @@ import 'features/recurring/recurring_pages.dart';
 import 'features/settings/notification_settings_page.dart';
 import 'features/settings/settings_page.dart';
 import 'features/shell/home_shell.dart';
+import 'features/team/join_page.dart';
+import 'features/team/member_page.dart';
+import 'features/team/team_page.dart';
 import 'l10n/app_localizations.dart';
 
 /// Where each sign-in state belongs. The router re-evaluates this whenever
@@ -97,6 +100,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/account/:id', builder: (_, state) => AccountPage(accountId: state.pathParameters['id']!)),
       GoRoute(path: '/goals', builder: (_, _) => const GoalsPage()),
+      GoRoute(
+        path: '/team',
+        builder: (_, _) => const TeamPage(),
+        routes: [
+          GoRoute(path: ':membershipId', builder: (_, state) => MemberPage(membershipId: state.pathParameters['membershipId']!)),
+        ],
+      ),
+      GoRoute(path: '/join', builder: (_, _) => const JoinPage()),
       GoRoute(path: '/year-review', builder: (_, _) => const YearReviewPage()),
       GoRoute(path: '/goal/:id', builder: (_, state) => GoalPage(goalId: state.pathParameters['id']!)),
       GoRoute(

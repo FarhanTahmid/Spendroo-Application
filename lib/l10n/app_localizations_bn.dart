@@ -2857,4 +2857,403 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get widgetLeftThisMonth => 'এ মাসে বাকি';
+
+  @override
+  String get team => 'টিম';
+
+  @override
+  String get teamOpen => 'টিম সামলান';
+
+  @override
+  String get teamHint => 'সদস্য, ভূমিকা ও আমন্ত্রণ';
+
+  @override
+  String get teamBusinessOnly =>
+      'টিম থাকে ব্যবসায়। এর সদস্যদের দেখতে কোনো ব্যবসায় যান।';
+
+  @override
+  String get you => 'আপনি';
+
+  @override
+  String get role => 'ভূমিকা';
+
+  @override
+  String yourRole(String role) {
+    return 'এখানে আপনি $role';
+  }
+
+  @override
+  String peopleCount(int count) {
+    return '$count জন';
+  }
+
+  @override
+  String get roleOwner => 'মালিক';
+
+  @override
+  String get roleAdmin => 'অ্যাডমিন';
+
+  @override
+  String get roleStaff => 'স্টাফ';
+
+  @override
+  String get roleViewer => 'দর্শক';
+
+  @override
+  String get roleOwnerHint => 'ব্যবসা ও এর প্ল্যানের মালিক। সবকিছু করতে পারেন।';
+
+  @override
+  String get roleAdminHint =>
+      'সব ক্যাশবুক চালান, স্টাফ ও দর্শককে আমন্ত্রণ জানান।';
+
+  @override
+  String get roleStaffHint => 'শুধু আপনার খুলে দেওয়া ক্যাশবুকে কাজ করেন।';
+
+  @override
+  String get roleViewerHint => 'সব ক্যাশবুক দেখেন, কিছু বদলাতে পারেন না।';
+
+  @override
+  String get groupAdmins => 'অ্যাডমিন';
+
+  @override
+  String get groupStaff => 'স্টাফ';
+
+  @override
+  String get groupViewers => 'দর্শক';
+
+  @override
+  String get groupInvited => 'আমন্ত্রিত';
+
+  @override
+  String seatsUsed(int used, int limit) {
+    return '$limitটি আসনের $usedটি ব্যবহৃত';
+  }
+
+  @override
+  String seatsLeft(int count) {
+    return '$countটি আসন বাকি';
+  }
+
+  @override
+  String get seatsFull => 'সব আসন ভরা';
+
+  @override
+  String seatsUnlimited(int count) {
+    return '$countটি আসন ব্যবহৃত';
+  }
+
+  @override
+  String get seatsFullAskOwner =>
+      'এই ব্যবসার সব আসন ভরা। জায়গা করতে বা প্ল্যান বাড়াতে মালিককে বলুন।';
+
+  @override
+  String limitSeats(String plan, int limit) {
+    return 'আপনার $plan প্ল্যানে প্রতি ব্যবসায় $limitটি টিম আসন আছে।';
+  }
+
+  @override
+  String get teamUpsellTitle => 'আপনার টিম আনুন';
+
+  @override
+  String get teamUpsellBody =>
+      'বিজনেস প্ল্যানে স্টাফদের জন্য আসন পাবেন। তাঁদের আমন্ত্রণ জানান, কে কোন ক্যাশবুকে কাজ করবেন বেছে নিন, আর সব হিসাব এক জায়গায় দেখুন।';
+
+  @override
+  String get teamEmptyTitle => 'এখন পর্যন্ত শুধু আপনি';
+
+  @override
+  String get teamEmptyBody =>
+      'যাঁরা আপনার সঙ্গে হিসাব রাখেন তাঁদের আমন্ত্রণ জানান। কে কী দেখবেন ও করবেন, তা আপনি ঠিক করবেন।';
+
+  @override
+  String get invite => 'আমন্ত্রণ';
+
+  @override
+  String get inviteSomeone => 'কাউকে আমন্ত্রণ জানান';
+
+  @override
+  String inviteTitle(String business) {
+    return '$business-এ আমন্ত্রণ';
+  }
+
+  @override
+  String get inviteIntro =>
+      'তাঁরা একবার ব্যবহারযোগ্য কোড দিয়ে যোগ দেবেন, যা ৭ দিন চলবে।';
+
+  @override
+  String get inviteEmailHint => 'name@example.com ঠিকানা';
+
+  @override
+  String get invitePhoneHint => '+৮৮০ ১৭XX-XXXXXX';
+
+  @override
+  String get inviteByEmailNote =>
+      'আমরা তাঁকে কোডটি ইমেইল করব। শুধু এই ইমেইলের অ্যাকাউন্টই এটি ব্যবহার করতে পারবে।';
+
+  @override
+  String get inviteByPhoneNote =>
+      'আপনি একটি কোড পাবেন, যা এসএমএস বা যেকোনো চ্যাট অ্যাপে নিজে পাঠাবেন।';
+
+  @override
+  String get inviteAs => 'যে ভূমিকায় আমন্ত্রণ';
+
+  @override
+  String inviteUsesSeat(int seat, int limit) {
+    return 'যোগ দেওয়া বা আমন্ত্রণ শেষ না হওয়া পর্যন্ত এটি $limitটির মধ্যে $seat নম্বর আসন নেবে।';
+  }
+
+  @override
+  String get inviteSend => 'আমন্ত্রণ পাঠান';
+
+  @override
+  String get inviteMakeCode => 'কোড তৈরি করুন';
+
+  @override
+  String get inviteEmailNeeded => 'তাঁর ইমেইল লিখুন।';
+
+  @override
+  String get invitePhoneNeeded => 'তাঁর ফোন নম্বর লিখুন।';
+
+  @override
+  String get inviteEmailInvalid => 'এটি ইমেইল ঠিকানা মনে হচ্ছে না।';
+
+  @override
+  String get invitePhoneInvalid => 'এটি ফোন নম্বর মনে হচ্ছে না।';
+
+  @override
+  String inviteTicketTitle(String business) {
+    return '$business-এ আমন্ত্রণ';
+  }
+
+  @override
+  String inviteEmailed(String email) {
+    return '$email-এ পাঠানো হয়েছে। চাইলে কোডটি নিজেও পাঠাতে পারেন।';
+  }
+
+  @override
+  String get inviteShareOnce =>
+      'কোডটি এখনই তাঁকে পাঠান। এটি শুধু একবারই দেখানো হয়।';
+
+  @override
+  String inviteValidDays(int days) {
+    return '$days দিন চলবে, একবারই ব্যবহার করা যাবে।';
+  }
+
+  @override
+  String inviteShareText(String business, String code) {
+    return 'Spendroo-তে $business-এ যোগ দিন। অ্যাপ খুলে ওপরে ব্যবসার নাম ছুঁয়ে “ব্যবসায় যোগ দিন” বেছে নিন, তারপর এই কোড দিন: $code';
+  }
+
+  @override
+  String inviteExpiresIn(int days) {
+    return '$days দিনের মধ্যে শেষ হবে';
+  }
+
+  @override
+  String get inviteCancel => 'আমন্ত্রণ ফিরিয়ে নিন';
+
+  @override
+  String inviteCancelConfirm(String contact) {
+    return '$contact-এর আমন্ত্রণ বাতিল করবেন? তাঁর কোড আর কাজ করবে না এবং আসনটি খালি হবে।';
+  }
+
+  @override
+  String get codeCopied => 'কোড কপি হয়েছে';
+
+  @override
+  String get copy => 'কপি';
+
+  @override
+  String get share => 'শেয়ার';
+
+  @override
+  String get paste => 'পেস্ট';
+
+  @override
+  String get change => 'বদলান';
+
+  @override
+  String get cashbookAccess => 'ক্যাশবুকে প্রবেশ';
+
+  @override
+  String booksOpenCount(int open, int total) {
+    return '$totalটির $openটি খোলা';
+  }
+
+  @override
+  String get accessByRoleAll => 'ভূমিকার কারণে সব ক্যাশবুকে প্রবেশ করতে পারেন।';
+
+  @override
+  String get accessByRoleView =>
+      'সব ক্যাশবুক দেখতে পারেন, কিন্তু কিছু বদলাতে পারেন না।';
+
+  @override
+  String get accessByRoleStaff =>
+      'মালিক বা অ্যাডমিন যেসব ক্যাশবুক খুলে দেন, শুধু সেখানে কাজ করেন।';
+
+  @override
+  String get roleChangeNotYours => 'শুধু মালিক এই ভূমিকা বদলাতে পারেন।';
+
+  @override
+  String roleChangeDropsAccess(String name, String role) {
+    return '$name-কে $role করবেন? আলাদা ক্যাশবুকে তাঁর প্রবেশাধিকার মুছে যাবে।';
+  }
+
+  @override
+  String joinedOn(String date) {
+    return 'যোগ দিয়েছেন $date';
+  }
+
+  @override
+  String get memberGone => 'এই ব্যক্তি আর ব্যবসায় নেই।';
+
+  @override
+  String get removeMember => 'ব্যবসা থেকে সরান';
+
+  @override
+  String get removeMemberHint =>
+      'তিনি সঙ্গে সঙ্গে প্রবেশাধিকার হারাবেন। পরে আবার আমন্ত্রণ জানাতে পারবেন।';
+
+  @override
+  String removeMemberConfirm(String name, String business) {
+    return '$business থেকে $name-কে সরাবেন? তাঁর এন্ট্রিগুলো থেকে যাবে।';
+  }
+
+  @override
+  String get memberRemoved => 'সরানো হয়েছে';
+
+  @override
+  String get handOver => 'মালিক করুন';
+
+  @override
+  String get handOverTitle => 'ব্যবসা হস্তান্তর';
+
+  @override
+  String handOverHint(String name) {
+    return 'ব্যবসা ও এর প্ল্যান $name-কে দিন';
+  }
+
+  @override
+  String handOverBody(String name, String business) {
+    return '$name হবেন $business-এর মালিক, আর এরপর এটি চলবে তাঁর প্ল্যানে। আপনি অ্যাডমিন থাকবেন, আর শুধু তিনিই আবার ফিরিয়ে দিতে পারবেন।';
+  }
+
+  @override
+  String handOverTypeName(String business) {
+    return 'নিশ্চিত করতে “$business” লিখুন';
+  }
+
+  @override
+  String handedOver(String name) {
+    return '$name এখন মালিক';
+  }
+
+  @override
+  String handOverNoRoom(String name) {
+    return '$name-এর প্ল্যানে এখনো এই ব্যবসার জায়গা নেই। আগে তাঁর এমন প্ল্যান দরকার, যাতে যথেষ্ট ব্যবসা, টিম আসন ও ক্যাশবুক আছে।';
+  }
+
+  @override
+  String get leaveBusiness => 'ব্যবসা ছাড়ুন';
+
+  @override
+  String leaveBusinessConfirm(String business) {
+    return '$business ছাড়বেন? এটি এই ফোন থেকে চলে যাবে, ফিরতে নতুন আমন্ত্রণ লাগবে।';
+  }
+
+  @override
+  String leftBusiness(String business) {
+    return 'আপনি $business ছেড়েছেন';
+  }
+
+  @override
+  String get joinBusiness => 'ব্যবসায় যোগ দিন';
+
+  @override
+  String get joinIntro =>
+      'আমন্ত্রণ কোড পেয়েছেন? যে ব্যবসা পাঠিয়েছে, তাতে যোগ দিতে কোডটি লিখুন।';
+
+  @override
+  String get joinCodeHint =>
+      'আপনার পাওয়া ইমেইল বা মেসেজের ১০টি অক্ষর ও সংখ্যা';
+
+  @override
+  String invitedBy(String name) {
+    return '$name আমন্ত্রণ জানিয়েছেন';
+  }
+
+  @override
+  String joinAs(String role) {
+    return '$role হিসেবে যোগ দিন';
+  }
+
+  @override
+  String joinedBusiness(String business) {
+    return '$business-এ স্বাগতম';
+  }
+
+  @override
+  String get teamErrorAlreadyMember => 'এই ব্যক্তি আগে থেকেই ব্যবসায় আছেন।';
+
+  @override
+  String get teamErrorInvalidCode =>
+      'এই কোডের কোনো আমন্ত্রণ নেই। দেখে আবার চেষ্টা করুন।';
+
+  @override
+  String get teamErrorExpired =>
+      'এই আমন্ত্রণের মেয়াদ শেষ। নতুন একটি চেয়ে নিন।';
+
+  @override
+  String get teamErrorUsed => 'এই কোড আগেই ব্যবহার হয়েছে।';
+
+  @override
+  String get teamErrorWrongAccount =>
+      'এই আমন্ত্রণ অন্য ইমেইলে পাঠানো হয়েছে। ব্যবহার করতে সেই অ্যাকাউন্টে ঢুকুন।';
+
+  @override
+  String get teamErrorNoSeats =>
+      'এই ব্যবসায় এখন কোনো খালি আসন নেই। মালিককে জায়গা করতে বলুন।';
+
+  @override
+  String get teamErrorTooMany =>
+      'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।';
+
+  @override
+  String get teamErrorBadInput => 'যা লিখেছেন দেখে আবার চেষ্টা করুন।';
+
+  @override
+  String get teamErrorRefused => 'আপনি এই পরিবর্তন করতে পারবেন না।';
+
+  @override
+  String get teamErrorFailed => 'হয়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get haveInviteCode => 'আমার কাছে আমন্ত্রণ কোড আছে';
+
+  @override
+  String get haveInviteCodeHint =>
+      'যে ব্যবসা আপনাকে আমন্ত্রণ জানিয়েছে, তাতে যোগ দিন।';
+
+  @override
+  String get joinRoleAdminHint =>
+      'আপনি সব ক্যাশবুক চালাবেন, আর স্টাফ ও দর্শককে আমন্ত্রণ জানাতে পারবেন।';
+
+  @override
+  String get joinRoleStaffHint =>
+      'মালিক বা অ্যাডমিন যেসব ক্যাশবুক খুলে দেবেন, আপনি সেখানে কাজ করবেন।';
+
+  @override
+  String get joinRoleViewerHint =>
+      'আপনি সব ক্যাশবুক দেখবেন, কিন্তু কিছু বদলাবেন না।';
+
+  @override
+  String get noCashbooksForStaff =>
+      'এখনো কোনো ক্যাশবুক আপনার জন্য খোলা হয়নি। প্রবেশাধিকার দিতে মালিক বা অ্যাডমিনকে বলুন।';
+
+  @override
+  String get roleChangeManagersOnly =>
+      'শুধু মালিক বা অ্যাডমিন এই ভূমিকা বদলাতে পারেন।';
+
+  @override
+  String get seatsNone => 'এই প্ল্যানে কোনো টিম আসন নেই';
 }

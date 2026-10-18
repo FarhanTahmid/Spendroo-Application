@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/db/database.dart';
 import '../../core/providers.dart';
@@ -51,7 +52,12 @@ class CashbookAccessPage extends ConsumerWidget {
                 if (members.isEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpace.lg),
-                    child: EmptyState(icon: Icons.group_outlined, message: l10n.noStaff),
+                    child: EmptyState(
+                      icon: Icons.group_outlined,
+                      message: l10n.noStaff,
+                      actionLabel: l10n.teamOpen,
+                      onAction: () => context.push('/team'),
+                    ),
                   )
                 else
                   Card(
@@ -86,26 +92,7 @@ class CashbookAccessPage extends ConsumerWidget {
       context.showMessage(l10n.accessRefused);
       return;
     }
-    final levels = <BookAccess?>[null, ...BookAccess.values.where((a) => a != BookAccess.manage || mayGrantManage)];
-    final picked = await showAppSheet<({BookAccess? access})>(
-      context,
-      title: member.email,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final level in levels)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(accessLabel(context, level)),
-              subtitle: Text(_hint(context, level)),
-              trailing: level == member.access
-                  ? Icon(Icons.check_rounded, color: Theme.of(context).colorScheme.primary)
-                  : null,
-              onTap: () => Navigator.of(context).pop((access: level)),
-            ),
-        ],
-      ),
-    );
+    final picked = await showAccessPicker(context, title: member.email, current: member.access, mayGrantManage: mayGrantManage);
     if (picked == null || picked.access == member.access || !context.mounted) return;
 
     var outcome = AccessOutcome.refused;
@@ -123,17 +110,46 @@ class CashbookAccessPage extends ConsumerWidget {
         ref.invalidate(bookAccessListProvider(bookId));
     }
   }
+}
 
-  String _hint(BuildContext context, BookAccess? access) {
-    final l10n = context.l10n;
-    return switch (access) {
-      null => l10n.accessNoneHint,
-      BookAccess.view => l10n.accessViewHint,
-      BookAccess.add => l10n.accessAddHint,
-      BookAccess.edit => l10n.accessEditHint,
-      BookAccess.manage => l10n.accessManageHint,
-    };
-  }
+/// Asks which level of access to give, [current] ticked. Only the owner or an
+/// admin ([mayGrantManage]) may let someone else manage a book. Null when
+/// dismissed; a record so that "no access" can be the answer.
+Future<({BookAccess? access})?> showAccessPicker(
+  BuildContext context, {
+  required String title,
+  required BookAccess? current,
+  required bool mayGrantManage,
+}) {
+  final levels = <BookAccess?>[null, ...BookAccess.values.where((a) => a != BookAccess.manage || mayGrantManage)];
+  return showAppSheet<({BookAccess? access})>(
+    context,
+    title: title,
+    builder: (context) => Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final level in levels)
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(accessLabel(context, level)),
+            subtitle: Text(_accessHint(context, level)),
+            trailing: level == current ? Icon(Icons.check_rounded, color: Theme.of(context).colorScheme.primary) : null,
+            onTap: () => Navigator.of(context).pop((access: level)),
+          ),
+      ],
+    ),
+  );
+}
+
+String _accessHint(BuildContext context, BookAccess? access) {
+  final l10n = context.l10n;
+  return switch (access) {
+    null => l10n.accessNoneHint,
+    BookAccess.view => l10n.accessViewHint,
+    BookAccess.add => l10n.accessAddHint,
+    BookAccess.edit => l10n.accessEditHint,
+    BookAccess.manage => l10n.accessManageHint,
+  };
 }
 
 /// The name of a level of access to a cashbook; null is none at all.

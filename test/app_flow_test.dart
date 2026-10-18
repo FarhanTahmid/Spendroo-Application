@@ -414,6 +414,23 @@ void main() {
     await app.stop();
   }, timeout: const Timeout(Duration(seconds: 90)));
 
+  testWidgets('someone invited goes from the first question straight to the code', (tester) async {
+    final app = Harness(tester, FakeServer());
+    await app.start();
+    await app.logIn();
+
+    await tester.tap(find.text('I have an invitation code'));
+    await app.settle();
+    expect(find.text('Join a business'), findsOneWidget);
+    expect(find.text('How will you use Spendroo?'), findsNothing);
+    // Back from the code is the app itself, not the question again
+    await tester.tap(find.byType(BackButton));
+    await app.settle();
+    expect(find.text('How will you use Spendroo?'), findsNothing);
+    expect(find.text('Total balance'), findsOneWidget);
+    await app.stop();
+  }, timeout: const Timeout(Duration(seconds: 90)));
+
   testWidgets('log in, choose personal, record an expense, switch to Bangla', (tester) async {
     final server = FakeServer();
     final app = Harness(tester, server);

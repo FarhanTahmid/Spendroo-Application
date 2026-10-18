@@ -20,6 +20,7 @@ const shownFeatures = [
   F.savingsGoals,
   F.businessWorkspaces,
   F.businessCashbooks,
+  F.teamSeats,
   F.reportsExcel,
   F.reportsCustomRange,
 ];
@@ -67,6 +68,7 @@ String planLimitText(AppLocalizations l10n, PlanLimitException refusal, String p
         F.savingsGoals => l10n.limitGoals(plan, limit),
         F.businessCashbooks => l10n.limitCashbooks(plan, limit),
         F.businessWorkspaces => l10n.limitWorkspaces(plan, limit),
+        F.teamSeats => l10n.limitSeats(plan, limit),
         F.insightsTrendMonths => l10n.limitTrendMonths(plan, limit),
         _ => l10n.limitGeneric(plan),
       },

@@ -1877,7 +1877,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureCustomFields.
   ///
   /// In en, this message translates to:
-  /// **'Extra fields on entries'**
+  /// **'Custom fields on entries'**
   String get featureCustomFields;
 
   /// No description provided for @featureStorage.
@@ -6211,6 +6211,336 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PDF bills'**
   String get featureStoragePdf;
+
+  /// No description provided for @fieldsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom fields'**
+  String get fieldsTitle;
+
+  /// No description provided for @fieldsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the details your business tracks to every entry in this book. They show on entries and in reports.'**
+  String get fieldsIntro;
+
+  /// No description provided for @fieldsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max} fields'**
+  String fieldsCount(int count, int max);
+
+  /// No description provided for @fieldsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track what matters to your business'**
+  String get fieldsEmptyTitle;
+
+  /// No description provided for @fieldsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add fields like an invoice number or the party you paid. They appear on every entry in this book and in its reports.'**
+  String get fieldsEmptyBody;
+
+  /// No description provided for @fieldsTryOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with one of these'**
+  String get fieldsTryOne;
+
+  /// No description provided for @fieldsExampleInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice no'**
+  String get fieldsExampleInvoice;
+
+  /// No description provided for @fieldsExampleParty.
+  ///
+  /// In en, this message translates to:
+  /// **'Party'**
+  String get fieldsExampleParty;
+
+  /// No description provided for @fieldsExampleDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get fieldsExampleDue;
+
+  /// No description provided for @fieldNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New field'**
+  String get fieldNew;
+
+  /// No description provided for @fieldEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit field'**
+  String get fieldEdit;
+
+  /// No description provided for @fieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'Field name'**
+  String get fieldName;
+
+  /// No description provided for @fieldNameNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the field a name.'**
+  String get fieldNameNeeded;
+
+  /// No description provided for @fieldNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This book already has a field called that.'**
+  String get fieldNameTaken;
+
+  /// No description provided for @fieldKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get fieldKind;
+
+  /// No description provided for @fieldKindText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get fieldKindText;
+
+  /// No description provided for @fieldKindNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get fieldKindNumber;
+
+  /// No description provided for @fieldKindDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get fieldKindDate;
+
+  /// No description provided for @fieldKindChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Choice'**
+  String get fieldKindChoice;
+
+  /// No description provided for @fieldKindTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Codes, names, notes'**
+  String get fieldKindTextHint;
+
+  /// No description provided for @fieldKindNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantities, weights'**
+  String get fieldKindNumberHint;
+
+  /// No description provided for @fieldKindDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Due or delivery dates'**
+  String get fieldKindDateHint;
+
+  /// No description provided for @fieldKindChoiceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick from a list'**
+  String get fieldKindChoiceHint;
+
+  /// No description provided for @fieldKindFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'The type can\'t change once the field is made.'**
+  String get fieldKindFixed;
+
+  /// No description provided for @fieldOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get fieldOptions;
+
+  /// No description provided for @fieldOptionAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an option'**
+  String get fieldOptionAdd;
+
+  /// No description provided for @fieldOptionsNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one option.'**
+  String get fieldOptionsNeeded;
+
+  /// No description provided for @fieldOptionsFull.
+  ///
+  /// In en, this message translates to:
+  /// **'A field can offer up to {max} options.'**
+  String fieldOptionsFull(int max);
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get fieldRequired;
+
+  /// No description provided for @fieldRequiredDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'New entries can\'t be saved without it.'**
+  String get fieldRequiredDetail;
+
+  /// No description provided for @fieldShowInList.
+  ///
+  /// In en, this message translates to:
+  /// **'Show on entry list'**
+  String get fieldShowInList;
+
+  /// No description provided for @fieldShowInListDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown under each entry in this book. Only one field can be.'**
+  String get fieldShowInListDetail;
+
+  /// No description provided for @fieldPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'How it looks on an entry'**
+  String get fieldPreview;
+
+  /// No description provided for @fieldDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete field'**
+  String get fieldDelete;
+
+  /// No description provided for @fieldDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this field? Values already filled in stay with the entries but are no longer shown.'**
+  String get fieldDeleteConfirm;
+
+  /// No description provided for @fieldsFull.
+  ///
+  /// In en, this message translates to:
+  /// **'A book can have up to {max} fields.'**
+  String fieldsFull(int max);
+
+  /// No description provided for @fieldPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'On list'**
+  String get fieldPinned;
+
+  /// No description provided for @fieldsReorderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold and drag to change the order.'**
+  String get fieldsReorderHint;
+
+  /// No description provided for @fieldOptionsMore.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count}'**
+  String fieldOptionsMore(int count);
+
+  /// No description provided for @fieldsDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get fieldsDetails;
+
+  /// No description provided for @fieldFillIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill this in.'**
+  String get fieldFillIn;
+
+  /// No description provided for @fieldNeedsNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number, like 1250 or 12.5.'**
+  String get fieldNeedsNumber;
+
+  /// No description provided for @fieldPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get fieldPickDate;
+
+  /// No description provided for @fieldClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get fieldClear;
+
+  /// No description provided for @fieldsHintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your own fields'**
+  String get fieldsHintTitle;
+
+  /// No description provided for @fieldsHintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Track invoice numbers, parties and more on every entry.'**
+  String get fieldsHintBody;
+
+  /// No description provided for @fieldsLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom fields come with Business'**
+  String get fieldsLockedTitle;
+
+  /// No description provided for @fieldsLockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your own fields to entries and see them on the list and in reports. Fields and values you already have stay as they are.'**
+  String get fieldsLockedBody;
+
+  /// No description provided for @fieldsReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Your plan keeps these values as they are. Upgrade to change them.'**
+  String get fieldsReadOnly;
+
+  /// No description provided for @historyFieldCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a custom field'**
+  String get historyFieldCreated;
+
+  /// No description provided for @historyFieldUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed a custom field'**
+  String get historyFieldUpdated;
+
+  /// No description provided for @historyFieldDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted a custom field'**
+  String get historyFieldDeleted;
+
+  /// No description provided for @historyFieldRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored a custom field'**
+  String get historyFieldRestored;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
 }
 
 class _AppLocalizationsDelegate

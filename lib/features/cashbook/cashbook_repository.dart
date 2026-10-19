@@ -7,6 +7,7 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/entitlements/plan_guard.dart';
 import '../../core/providers.dart';
+import '../fields/field_repository.dart';
 import 'book_access.dart';
 
 /// Seeded into every new cashbook, same lists as the server uses.
@@ -30,8 +31,11 @@ class CashbookSummary {
   int get balanceMinor => cashInMinor - cashOutMinor;
 }
 
+/// The book's pinned field and this entry's value for it, for the entry list.
+typedef PinnedValue = ({String name, String kind, String value});
+
 class EntryView {
-  EntryView(this.entry, this.categoryName, this.paymentMethodName, {this.categoryColor, this.billCount = 0});
+  EntryView(this.entry, this.categoryName, this.paymentMethodName, {this.categoryColor, this.billCount = 0, this.pinned});
 
   final Entry entry;
   final String? categoryName;
@@ -42,6 +46,9 @@ class EntryView {
 
   /// Bills kept with the entry, those still on their way included.
   final int billCount;
+
+  /// The value of the field the book shows on its list; null when there is none.
+  final PinnedValue? pinned;
 
   bool get isCashIn => entry.entryType == 'cash_in';
 }
@@ -112,15 +119,19 @@ class CashbookRepository {
   Stream<List<EntryView>> watchEntries(String bookId) => db
       .customSelect(
         'SELECT e.*, c.category_name AS c_name, c.color AS c_color, p.payment_method_name AS p_name, '
+        // The book's pinned field: the first by position, should two phones have pinned one each
+        'f.name AS f_name, f.kind AS f_kind, json_extract(e.custom_values, \'\$."\' || f.id || \'"\') AS f_value, '
         '(SELECT COUNT(*) FROM entry_bills b WHERE b.entry_id = e.id AND b.deleted_at IS NULL '
         "  AND b.id NOT IN (SELECT id FROM bill_queue WHERE op = 'remove')) "
         "+ (SELECT COUNT(*) FROM bill_queue q WHERE q.entry_id = e.id AND q.op = 'upload') AS bill_count "
         'FROM entries e '
         'LEFT JOIN entry_categories c ON c.id = e.category_id '
         'LEFT JOIN payment_methods p ON p.id = e.payment_method_id '
+        'LEFT JOIN entry_fields f ON f.id = (SELECT id FROM entry_fields WHERE cashbook_id = e.cashbook_id '
+        '  AND deleted_at IS NULL AND show_in_list = 1 ORDER BY position, created_at LIMIT 1) '
         'WHERE e.cashbook_id = ? AND e.deleted_at IS NULL ORDER BY e.entry_date DESC, e.created_at DESC',
         variables: [Variable<String>(bookId)],
-        readsFrom: {db.entries, db.entryCategories, db.paymentMethods, db.entryBills, db.billQueue},
+        readsFrom: {db.entries, db.entryCategories, db.paymentMethods, db.entryBills, db.billQueue, db.entryFields},
       )
       .watch()
       .map((rows) => [
@@ -131,8 +142,16 @@ class CashbookRepository {
                 row.readNullable<String>('p_name'),
                 categoryColor: row.readNullable<String>('c_color'),
                 billCount: row.read<int>('bill_count'),
+                pinned: _pinned(row),
               ),
           ]);
+
+  static PinnedValue? _pinned(QueryRow row) {
+    final name = row.readNullable<String>('f_name');
+    final value = row.readNullable<String>('f_value');
+    if (name == null || value == null || value.trim().isEmpty) return null;
+    return (name: name, kind: row.read<String>('f_kind'), value: value);
+  }
 
   Stream<List<EntryCategory>> watchCategories(String bookId) => (db.select(db.entryCategories)
         ..where((c) => c.cashbookId.equals(bookId) & c.deletedAt.isNull())
@@ -221,7 +240,7 @@ class CashbookRepository {
   Future<void> deleteCashbook(String bookId) => db.transaction(() async {
         await store.remove('cashbooks', bookId);
         final now = nowIso();
-        for (final table in const ['entries', 'entry_categories', 'payment_methods', 'cashbook_members']) {
+        for (final table in const ['entries', 'entry_categories', 'payment_methods', 'entry_fields', 'cashbook_members']) {
           await db.customUpdate(
             'UPDATE "$table" SET deleted_at = ?, updated_at = ? WHERE cashbook_id = ? AND deleted_at IS NULL',
             variables: [Variable<String>(now), Variable<String>(now), Variable<String>(bookId)],
@@ -266,9 +285,12 @@ class CashbookRepository {
     String? remarks,
     String? categoryId,
     String? paymentMethodId,
+    Map<String, String> customValues = const {},
   }) async {
     // A locked book is read-only, entries included
     plan?.writable(F.businessCashbooks, book.id);
+    final values = cleanValues(customValues);
+    if (values.isNotEmpty) await plan?.require(F.customFields, book.workspaceId);
     return store.create(
       'entries',
       book.workspaceId,
@@ -282,12 +304,15 @@ class CashbookRepository {
         'category_id': categoryId,
         'payment_method_id': paymentMethodId,
         'source': 'manual',
+        // With the entry itself: a contributor may add an entry but not change one after
+        if (values.isNotEmpty) 'custom_values': values,
       },
       localOnly: {'currency': book.currency},
     );
   }
 
-  /// Sends only the fields that differ from [original].
+  /// Sends only the fields that differ from [original]. Changed field values go
+  /// on their own, so the rest of the edit still lands should the plan refuse them.
   Future<void> updateEntry(
     Entry original, {
     required int amountMinor,
@@ -296,9 +321,13 @@ class CashbookRepository {
     String? remarks,
     String? categoryId,
     String? paymentMethodId,
+    Map<String, String>? customValues,
   }) async {
     plan?.writable(F.businessCashbooks, original.cashbookId);
-    return store.update('entries', original.id, {
+    final values = customValues == null ? null : cleanValues(customValues);
+    final valuesChanged = values != null && !sameValues(values, customValuesOf(original));
+    if (valuesChanged) await plan?.require(F.customFields, original.workspaceId);
+    await store.update('entries', original.id, {
       if (amountMinor != original.amountMinor) 'amount_minor': amountMinor,
       if (entryDate != original.entryDate) 'entry_date': entryDate,
       if (title != original.title) 'title': title,
@@ -306,6 +335,7 @@ class CashbookRepository {
       if (categoryId != original.categoryId) 'category_id': categoryId,
       if (paymentMethodId != original.paymentMethodId) 'payment_method_id': paymentMethodId,
     });
+    if (valuesChanged) await store.update('entries', original.id, {'custom_values': values});
   }
 
   Future<void> deleteEntry(String entryId) => store.remove('entries', entryId);

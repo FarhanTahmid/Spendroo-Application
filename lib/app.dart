@@ -17,6 +17,7 @@ import 'features/insights/year_review_page.dart';
 import 'features/auth/auth_pages.dart';
 import 'features/cashbook/access_page.dart';
 import 'features/cashbook/cashbook_pages.dart';
+import 'features/fields/fields_page.dart';
 import 'features/onboarding/onboarding_page.dart';
 import 'features/personal/account_page.dart';
 import 'features/personal/categories_page.dart';
@@ -129,6 +130,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => CashbookCategoriesPage(bookId: state.pathParameters['id']!),
           ),
           GoRoute(path: 'access', builder: (_, state) => CashbookAccessPage(bookId: state.pathParameters['id']!)),
+          GoRoute(path: 'fields', builder: (_, state) => FieldsPage(bookId: state.pathParameters['id']!)),
         ],
       ),
     ],

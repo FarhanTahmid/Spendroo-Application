@@ -4,6 +4,7 @@ import '../../core/money.dart';
 import '../../core/ui.dart';
 import '../cashbook/access_page.dart' show accessLabel;
 import '../cashbook/book_access.dart';
+import '../fields/field_text.dart';
 import '../team/team_roles.dart';
 import 'history_repository.dart';
 
@@ -35,6 +36,10 @@ String historySentence(BuildContext context, HistoryEvent event) {
     (HistoryKind.paymentMethod, HistoryAction.deleted) => l10n.historyMethodDeleted,
     (HistoryKind.paymentMethod, HistoryAction.restored) => l10n.historyMethodRestored,
     (HistoryKind.paymentMethod, _) => l10n.historyMethodUpdated,
+    (HistoryKind.field, HistoryAction.created) => l10n.historyFieldCreated,
+    (HistoryKind.field, HistoryAction.deleted) => l10n.historyFieldDeleted,
+    (HistoryKind.field, HistoryAction.restored) => l10n.historyFieldRestored,
+    (HistoryKind.field, _) => l10n.historyFieldUpdated,
     (HistoryKind.access, HistoryAction.created || HistoryAction.restored) => l10n.historyAccessGiven(name),
     (HistoryKind.access, HistoryAction.deleted) => l10n.historyAccessTaken(name),
     (HistoryKind.access, _) => l10n.historyAccessChanged(name),
@@ -68,9 +73,11 @@ String? historyAmount(BuildContext context, HistoryEvent event) {
   return Money.format(amount, event.currency ?? 'BDT', locale: context.languageCode);
 }
 
-String fieldLabel(BuildContext context, HistoryEvent event, String field) {
+String fieldLabel(BuildContext context, HistoryEvent event, FieldChange change) {
   final l10n = context.l10n;
-  return switch (field) {
+  return switch (change.field) {
+    // The business's own name for it, as written
+    FieldChange.customValue => change.name ?? l10n.fieldsTitle,
     'amount_minor' => l10n.historyFieldAmount,
     'entry_type' => l10n.historyFieldType,
     'entry_date' => l10n.historyFieldDate,
@@ -78,20 +85,26 @@ String fieldLabel(BuildContext context, HistoryEvent event, String field) {
     'remarks' => l10n.historyFieldNote,
     'category' => l10n.historyFieldCategory,
     'payment_method' => l10n.historyFieldMethod,
-    'book_name' || 'category_name' || 'payment_method_name' => l10n.historyFieldName,
+    'book_name' || 'category_name' || 'payment_method_name' || 'name' => l10n.historyFieldName,
+    'options' => l10n.fieldOptions,
+    'required' => l10n.fieldRequired,
+    'show_in_list' => l10n.fieldShowInList,
     'description' => l10n.historyFieldDescription,
     'currency' => l10n.historyFieldCurrency,
     'color' => l10n.historyFieldColour,
     'role' => event.kind == HistoryKind.access ? l10n.historyFieldAccess : l10n.historyFieldRole,
-    _ => field,
+    _ => change.field,
   };
 }
 
 /// A field's value in words; null when it was empty.
-String? fieldValue(BuildContext context, HistoryEvent event, String field, Object? value) {
+String? fieldValue(BuildContext context, HistoryEvent event, FieldChange change, Object? value) {
   if (value == null || value == '') return null;
   final l10n = context.l10n;
-  return switch (field) {
+  return switch (change.field) {
+    FieldChange.customValue when value is String => fieldDisplay(context, change.kind ?? '', value),
+    'options' when value is List => value.join(', '),
+    'required' || 'show_in_list' when value is bool => value ? l10n.yes : l10n.no,
     'amount_minor' when value is num =>
       Money.format(value.toInt(), event.currency ?? 'BDT', locale: context.languageCode),
     'entry_type' => value == 'cash_in' ? l10n.cashIn : l10n.cashOut,
@@ -110,7 +123,7 @@ Color? fieldSwatch(String field, Object? value) {
 
 /// The fields a change touched, named: "Amount, Category".
 String changedFields(BuildContext context, HistoryEvent event) =>
-    event.changes.map((change) => fieldLabel(context, event, change.field)).toSet().join(', ');
+    event.changes.map((change) => fieldLabel(context, event, change)).toSet().join(', ');
 
 /// "3:45 PM" in the user's own clock.
 String historyTime(BuildContext context, DateTime at) =>
@@ -139,6 +152,7 @@ IconData kindIcon(String kind) => switch (kind) {
       HistoryKind.cashbook => Icons.menu_book_outlined,
       HistoryKind.category => Icons.sell_outlined,
       HistoryKind.paymentMethod => Icons.account_balance_wallet_outlined,
+      HistoryKind.field => Icons.dashboard_customize_outlined,
       HistoryKind.access => Icons.key_outlined,
       _ => Icons.group_outlined,
     };

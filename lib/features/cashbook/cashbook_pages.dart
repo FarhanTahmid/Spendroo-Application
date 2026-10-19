@@ -11,6 +11,9 @@ import '../../core/providers.dart';
 import '../../core/ui.dart';
 import '../bills/bill_repository.dart';
 import '../bills/bill_widgets.dart';
+import '../fields/field_inputs.dart';
+import '../fields/field_repository.dart';
+import '../fields/field_text.dart';
 import '../history/history_page.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
@@ -257,6 +260,8 @@ class CashbookPage extends ConsumerWidget {
                 onSelected: (action) async {
                   if (action == 'categories') {
                     context.push('/cashbook/$bookId/categories');
+                  } else if (action == 'fields') {
+                    context.push('/cashbook/$bookId/fields');
                   } else if (action == 'access') {
                     context.push('/cashbook/$bookId/access');
                   } else if (action == 'history') {
@@ -278,6 +283,17 @@ class CashbookPage extends ConsumerWidget {
                 itemBuilder: (context) => [
                   PopupMenuItem(value: 'rename', child: Text(l10n.rename)),
                   if (access.canManage) PopupMenuItem(value: 'categories', child: Text(l10n.categories)),
+                  // A business's feature: a personal space has no use for it
+                  if (access.canManage && workspace?.kind == 'business')
+                    PopupMenuItem(
+                      value: 'fields',
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(l10n.fieldsTitle)),
+                          if (featureLocked(ref, workspace!, F.customFields)) const LockedTag(),
+                        ],
+                      ),
+                    ),
                   if (canShare) PopupMenuItem(value: 'access', child: Text(l10n.whoHasAccess)),
                   if (showsHistory(workspace))
                     PopupMenuItem(
@@ -418,9 +434,13 @@ class _EntryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final entry = view.entry;
-    final details = [formatDate(context, entry.entryDate), view.categoryName, view.paymentMethodName]
-        .whereType<String>()
-        .join(' · ');
+    final pinned = view.pinned;
+    final details = [
+      formatDate(context, entry.entryDate),
+      view.categoryName,
+      view.paymentMethodName,
+      if (pinned != null) '${pinned.name} ${fieldDisplay(context, pinned.kind, pinned.value)}',
+    ].whereType<String>().join(' · ');
     return MoneyRow(
       icon: view.isCashIn ? Icons.south_west_rounded : Icons.north_east_rounded,
       tint: entry.categoryId == null
@@ -481,6 +501,7 @@ Future<void> showEntryDetails(
           final entry = view.entry;
           final me = ref.watch(profileProvider).value?.id;
           final mine = me != null && entry.createdById == me;
+          final fields = ref.watch(entryFieldsProvider(entry.cashbookId)).value ?? const <EntryField>[];
           Widget line(IconData icon, String value) => Padding(
                 padding: const EdgeInsets.only(bottom: AppSpace.sm),
                 child: Row(
@@ -507,6 +528,7 @@ Future<void> showEntryDetails(
               if (view.categoryName != null) line(Icons.sell_outlined, view.categoryName!),
               if (view.paymentMethodName != null) line(Icons.account_balance_wallet_outlined, view.paymentMethodName!),
               if (entry.remarks?.isNotEmpty ?? false) line(Icons.notes_rounded, entry.remarks!),
+              FieldValueLines(fields: fields, values: customValuesOf(entry)),
               const SizedBox(height: AppSpace.md),
               BillsSection(
                 workspace: workspace,
@@ -544,6 +566,10 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
   late String _date = widget.entry?.entryDate ?? todayIso();
   late String? _categoryId = widget.entry?.categoryId;
   late String? _paymentMethodId = widget.entry?.paymentMethodId;
+
+  /// Values for the book's own fields as typed; numbers are tidied on save.
+  late final Map<String, String> _values = widget.entry == null ? {} : {...customValuesOf(widget.entry!)};
+  late final Set<String> _filledBefore = _values.keys.toSet();
   int _refused = 0;
 
   /// Bills picked before a new entry is saved; they are queued once it is.
@@ -562,10 +588,33 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
 
   Future<void> _save() => guarded(context, _write);
 
+  /// Whether the form waits for this field. Entries made before a field was
+  /// required are never made to fill it in; one that had a value keeps it.
+  bool _mustFill(EntryField field) =>
+      field.isRequired && (widget.entry == null || _filledBefore.contains(field.id));
+
+  /// Once a save was refused, each field says at once when it is put right.
+  AutovalidateMode _validation = AutovalidateMode.disabled;
+  final _fieldsKey = GlobalKey();
+
   Future<void> _write() async {
-    if (!_formKey.currentState!.validate()) return setState(() => _refused++);
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _refused++;
+        _validation = AutovalidateMode.onUserInteraction;
+      });
+      // The book's own fields sit low on the form: bring them into view when one of them is the reason
+      final amountOk = Money.evaluate(_amount.text, widget.book.currency) != null;
+      final fieldsContext = _fieldsKey.currentContext;
+      if (amountOk && fieldsContext != null) {
+        await Scrollable.ensureVisible(fieldsContext, duration: context.motion(AppMotion.emphasised), curve: AppMotion.ease);
+      }
+      return;
+    }
     final repo = ref.read(cashbookRepositoryProvider);
     final amount = Money.evaluate(_amount.text, widget.book.currency)!;
+    final fields = ref.read(entryFieldsProvider(widget.book.id)).value ?? const <EntryField>[];
+    final values = _valuesLocked ? null : valuesToSave(fields, _values);
     if (widget.entry == null) {
       final entryId = await repo.addEntry(
         widget.book,
@@ -576,6 +625,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         remarks: _blankToNull(_remarks.text),
         categoryId: _categoryId,
         paymentMethodId: _paymentMethodId,
+        customValues: values ?? const {},
       );
       await _staged.attachTo(
         ref.read(billRepositoryProvider),
@@ -592,6 +642,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         remarks: _blankToNull(_remarks.text),
         categoryId: _categoryId,
         paymentMethodId: _paymentMethodId,
+        customValues: values,
       );
     }
     if (!mounted) return;
@@ -604,10 +655,20 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
     Navigator.pop(context);
   }
 
+  /// The plan no longer covers changing values: they are shown as they are.
+  bool get _valuesLocked {
+    final workspace = (ref.read(workspacesProvider).value ?? const <Workspace>[])
+        .where((w) => w.id == widget.book.workspaceId)
+        .firstOrNull;
+    return workspace != null && featureLocked(ref, workspace, F.customFields);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final repo = ref.read(cashbookRepositoryProvider);
+    final fields = ref.watch(entryFieldsProvider(widget.book.id)).value ?? const <EntryField>[];
+    ref.watch(entitlementsProvider);
     final categories = ref.watch(entryCategoriesProvider(widget.book.id)).value ?? const <EntryCategory>[];
     final methods = ref.watch(paymentMethodsProvider(widget.book.id)).value ?? const <PaymentMethod>[];
     final isIn = widget.entryType == 'cash_in';
@@ -659,6 +720,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
       ),
       body: Form(
         key: _formKey,
+        autovalidateMode: _validation,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.lg),
           children: [
@@ -709,6 +771,32 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(labelText: l10n.remarks),
               maxLines: 3,
+            ),
+            AnimatedSize(
+              duration: context.motion(AppMotion.emphasised),
+              curve: AppMotion.ease,
+              alignment: Alignment.topCenter,
+              child: fields.isNotEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: AppSpace.xl),
+                      child: EntryFieldsSection(
+                        key: _fieldsKey,
+                        fields: fields,
+                        values: _values,
+                        readOnly: _valuesLocked,
+                        mustFill: _mustFill,
+                        onChanged: (id, value) => setState(() {
+                          if (value == null || value.trim().isEmpty) {
+                            _values.remove(id);
+                          } else {
+                            _values[id] = value;
+                          }
+                        }),
+                      ),
+                    )
+                  : widget.entry == null && workspace != null
+                      ? FieldsHintCard(book: widget.book, workspace: workspace)
+                      : const SizedBox(width: double.infinity),
             ),
             const SizedBox(height: AppSpace.xl),
             BillsSection(workspace: workspace, entry: widget.entry, staged: widget.entry == null ? _staged : null),

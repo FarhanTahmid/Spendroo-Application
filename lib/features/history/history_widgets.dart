@@ -297,7 +297,7 @@ class _Details extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            fieldLabel(context, event, change.field).toUpperCase(),
+                            fieldLabel(context, event, change).toUpperCase(),
                             style: text.labelSmall?.copyWith(color: colors.muted, letterSpacing: 0.8, fontWeight: FontWeight.w700),
                           ),
                           const SizedBox(height: 4),
@@ -307,13 +307,13 @@ class _Details extends StatelessWidget {
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               _Value(
-                                text: fieldValue(context, event, change.field, change.before),
+                                text: fieldValue(context, event, change, change.before),
                                 swatch: fieldSwatch(change.field, change.before),
                                 old: true,
                               ),
                               Icon(Icons.arrow_forward_rounded, size: 14, color: colors.muted),
                               _Value(
-                                text: fieldValue(context, event, change.field, change.after),
+                                text: fieldValue(context, event, change, change.after),
                                 swatch: fieldSwatch(change.field, change.after),
                               ),
                             ],

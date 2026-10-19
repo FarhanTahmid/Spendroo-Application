@@ -57,6 +57,27 @@ class PaymentMethods extends Table with SyncColumns {
   BoolColumn get isDefault => boolean().withDefault(const Constant(false))();
 }
 
+/// A field a business adds to every entry of one book (invoice no., party…).
+/// Entries keep their values in [Entries.customValues].
+@TableIndex(name: 'entry_fields_book', columns: {#cashbookId})
+class EntryFields extends Table with SyncColumns {
+  TextColumn get cashbookId => text()();
+  TextColumn get name => text()();
+
+  /// text, number, date or choice. Fixed once the field exists.
+  TextColumn get kind => text()();
+
+  /// JSON list of what a choice field offers; '[]' for every other kind.
+  TextColumn get options => text().withDefault(const Constant('[]'))();
+
+  /// Asked for by the app on new entries only; the server never refuses a missing value.
+  BoolColumn get isRequired => boolean().named('required').withDefault(const Constant(false))();
+
+  /// The one field shown on the book's entry list.
+  BoolColumn get showInList => boolean().withDefault(const Constant(false))();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+}
+
 @TableIndex(name: 'entries_book_date', columns: {#cashbookId, #entryDate})
 class Entries extends Table with SyncColumns {
   TextColumn get cashbookId => text()();
@@ -70,6 +91,9 @@ class Entries extends Table with SyncColumns {
   TextColumn get entryDate => text()();
   TextColumn get source => text().withDefault(const Constant('manual'))();
   TextColumn get createdById => text().nullable()();
+
+  /// JSON map of the book's own fields: {field id: value as text}.
+  TextColumn get customValues => text().withDefault(const Constant('{}'))();
 }
 
 /// A photo or PDF kept with a business entry as proof. Rows arrive by sync
@@ -348,7 +372,7 @@ class Settings extends Table {
 }
 
 @DriftDatabase(tables: [
-  Workspaces, Cashbooks, EntryCategories, PaymentMethods, Entries, EntryBills, CashbookMembers,
+  Workspaces, Cashbooks, EntryCategories, PaymentMethods, EntryFields, Entries, EntryBills, CashbookMembers,
   Accounts, Categories, Transactions, Budgets, RecurringRules, RecurringOccurrences, InboxItems, SavingsGoals,
   Outbox, BillQueue, SyncCursors, SyncFailures, Settings,
 ])
@@ -358,7 +382,7 @@ class AppDatabase extends _$AppDatabase {
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -403,12 +427,19 @@ class AppDatabase extends _$AppDatabase {
             // Bills already on the server were never pulled: pull again
             await customStatement('DELETE FROM sync_cursors');
           },
+          from8To9: (m, schema) async {
+            await m.createTable(schema.entryFields);
+            await m.createIndex(schema.entryFieldsBook);
+            await m.addColumn(schema.entries, schema.entries.customValues);
+            // Fields and values already on the server were never pulled: pull again
+            await customStatement('DELETE FROM sync_cursors');
+          },
         ),
       );
 
   /// Synced tables in the order rows must be applied: parents before children.
   static const syncedTables = [
-    'cashbooks', 'entry_categories', 'payment_methods', 'entries', 'entry_bills', 'cashbook_members',
+    'cashbooks', 'entry_categories', 'payment_methods', 'entry_fields', 'entries', 'entry_bills', 'cashbook_members',
     'accounts', 'savings_goals', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions', 'budgets',
     'inbox_items',
   ];

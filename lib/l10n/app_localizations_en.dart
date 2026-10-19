@@ -1044,7 +1044,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureAuditTrail => 'History of every change';
 
   @override
-  String get featureCustomFields => 'Extra fields on entries';
+  String get featureCustomFields => 'Custom fields on entries';
 
   @override
   String get featureStorage => 'Storage for bills';
@@ -3750,4 +3750,184 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureStoragePdf => 'PDF bills';
+
+  @override
+  String get fieldsTitle => 'Custom fields';
+
+  @override
+  String get fieldsIntro =>
+      'Add the details your business tracks to every entry in this book. They show on entries and in reports.';
+
+  @override
+  String fieldsCount(int count, int max) {
+    return '$count of $max fields';
+  }
+
+  @override
+  String get fieldsEmptyTitle => 'Track what matters to your business';
+
+  @override
+  String get fieldsEmptyBody =>
+      'Add fields like an invoice number or the party you paid. They appear on every entry in this book and in its reports.';
+
+  @override
+  String get fieldsTryOne => 'Start with one of these';
+
+  @override
+  String get fieldsExampleInvoice => 'Invoice no';
+
+  @override
+  String get fieldsExampleParty => 'Party';
+
+  @override
+  String get fieldsExampleDue => 'Due date';
+
+  @override
+  String get fieldNew => 'New field';
+
+  @override
+  String get fieldEdit => 'Edit field';
+
+  @override
+  String get fieldName => 'Field name';
+
+  @override
+  String get fieldNameNeeded => 'Give the field a name.';
+
+  @override
+  String get fieldNameTaken => 'This book already has a field called that.';
+
+  @override
+  String get fieldKind => 'Type';
+
+  @override
+  String get fieldKindText => 'Text';
+
+  @override
+  String get fieldKindNumber => 'Number';
+
+  @override
+  String get fieldKindDate => 'Date';
+
+  @override
+  String get fieldKindChoice => 'Choice';
+
+  @override
+  String get fieldKindTextHint => 'Codes, names, notes';
+
+  @override
+  String get fieldKindNumberHint => 'Quantities, weights';
+
+  @override
+  String get fieldKindDateHint => 'Due or delivery dates';
+
+  @override
+  String get fieldKindChoiceHint => 'Pick from a list';
+
+  @override
+  String get fieldKindFixed => 'The type can\'t change once the field is made.';
+
+  @override
+  String get fieldOptions => 'Options';
+
+  @override
+  String get fieldOptionAdd => 'Add an option';
+
+  @override
+  String get fieldOptionsNeeded => 'Add at least one option.';
+
+  @override
+  String fieldOptionsFull(int max) {
+    return 'A field can offer up to $max options.';
+  }
+
+  @override
+  String get fieldRequired => 'Required';
+
+  @override
+  String get fieldRequiredDetail => 'New entries can\'t be saved without it.';
+
+  @override
+  String get fieldShowInList => 'Show on entry list';
+
+  @override
+  String get fieldShowInListDetail =>
+      'Shown under each entry in this book. Only one field can be.';
+
+  @override
+  String get fieldPreview => 'How it looks on an entry';
+
+  @override
+  String get fieldDelete => 'Delete field';
+
+  @override
+  String get fieldDeleteConfirm =>
+      'Delete this field? Values already filled in stay with the entries but are no longer shown.';
+
+  @override
+  String fieldsFull(int max) {
+    return 'A book can have up to $max fields.';
+  }
+
+  @override
+  String get fieldPinned => 'On list';
+
+  @override
+  String get fieldsReorderHint => 'Hold and drag to change the order.';
+
+  @override
+  String fieldOptionsMore(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get fieldsDetails => 'Details';
+
+  @override
+  String get fieldFillIn => 'Fill this in.';
+
+  @override
+  String get fieldNeedsNumber => 'Enter a number, like 1250 or 12.5.';
+
+  @override
+  String get fieldPickDate => 'Pick a date';
+
+  @override
+  String get fieldClear => 'Clear';
+
+  @override
+  String get fieldsHintTitle => 'Add your own fields';
+
+  @override
+  String get fieldsHintBody =>
+      'Track invoice numbers, parties and more on every entry.';
+
+  @override
+  String get fieldsLockedTitle => 'Custom fields come with Business';
+
+  @override
+  String get fieldsLockedBody =>
+      'Add your own fields to entries and see them on the list and in reports. Fields and values you already have stay as they are.';
+
+  @override
+  String get fieldsReadOnly =>
+      'Your plan keeps these values as they are. Upgrade to change them.';
+
+  @override
+  String get historyFieldCreated => 'Added a custom field';
+
+  @override
+  String get historyFieldUpdated => 'Changed a custom field';
+
+  @override
+  String get historyFieldDeleted => 'Deleted a custom field';
+
+  @override
+  String get historyFieldRestored => 'Restored a custom field';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
 }

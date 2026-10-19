@@ -23,6 +23,7 @@ const shownFeatures = [
   F.businessCashbooks,
   F.teamSeats,
   F.auditTrail,
+  F.customFields,
   F.storageMb,
   F.storageFileMb,
   F.storagePdf,

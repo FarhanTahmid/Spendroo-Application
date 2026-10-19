@@ -1012,7 +1012,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get featureAuditTrail => 'প্রতিটি পরিবর্তনের ইতিহাস';
 
   @override
-  String get featureCustomFields => 'এন্ট্রিতে বাড়তি ঘর';
+  String get featureCustomFields => 'এন্ট্রিতে নিজস্ব ঘর';
 
   @override
   String get featureStorage => 'বিল রাখার জায়গা';
@@ -3641,4 +3641,184 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get featureStoragePdf => 'PDF বিল';
+
+  @override
+  String get fieldsTitle => 'নিজস্ব ঘর';
+
+  @override
+  String get fieldsIntro =>
+      'এই বইয়ের প্রতিটি এন্ট্রিতে আপনার ব্যবসার দরকারি তথ্য যোগ করুন। এগুলো এন্ট্রি ও রিপোর্টে দেখা যাবে।';
+
+  @override
+  String fieldsCount(int count, int max) {
+    return '$maxটির মধ্যে $countটি ঘর';
+  }
+
+  @override
+  String get fieldsEmptyTitle => 'আপনার ব্যবসার দরকারি তথ্য রাখুন';
+
+  @override
+  String get fieldsEmptyBody =>
+      'ইনভয়েস নম্বর বা যাকে টাকা দিয়েছেন তার নামের মতো ঘর যোগ করুন। এগুলো এই বইয়ের প্রতিটি এন্ট্রি ও রিপোর্টে থাকবে।';
+
+  @override
+  String get fieldsTryOne => 'এগুলোর একটি দিয়ে শুরু করুন';
+
+  @override
+  String get fieldsExampleInvoice => 'ইনভয়েস নং';
+
+  @override
+  String get fieldsExampleParty => 'পার্টি';
+
+  @override
+  String get fieldsExampleDue => 'শেষ তারিখ';
+
+  @override
+  String get fieldNew => 'নতুন ঘর';
+
+  @override
+  String get fieldEdit => 'ঘর বদলান';
+
+  @override
+  String get fieldName => 'ঘরের নাম';
+
+  @override
+  String get fieldNameNeeded => 'ঘরটির একটি নাম দিন।';
+
+  @override
+  String get fieldNameTaken => 'এই বইয়ে এই নামে একটি ঘর আগেই আছে।';
+
+  @override
+  String get fieldKind => 'ধরন';
+
+  @override
+  String get fieldKindText => 'লেখা';
+
+  @override
+  String get fieldKindNumber => 'সংখ্যা';
+
+  @override
+  String get fieldKindDate => 'তারিখ';
+
+  @override
+  String get fieldKindChoice => 'বাছাই';
+
+  @override
+  String get fieldKindTextHint => 'কোড, নাম, নোট';
+
+  @override
+  String get fieldKindNumberHint => 'পরিমাণ, ওজন';
+
+  @override
+  String get fieldKindDateHint => 'শেষ বা ডেলিভারির তারিখ';
+
+  @override
+  String get fieldKindChoiceHint => 'তালিকা থেকে বেছে নিন';
+
+  @override
+  String get fieldKindFixed => 'ঘর তৈরির পর ধরন বদলানো যায় না।';
+
+  @override
+  String get fieldOptions => 'বিকল্পগুলো';
+
+  @override
+  String get fieldOptionAdd => 'একটি বিকল্প যোগ করুন';
+
+  @override
+  String get fieldOptionsNeeded => 'অন্তত একটি বিকল্প যোগ করুন।';
+
+  @override
+  String fieldOptionsFull(int max) {
+    return 'একটি ঘরে সর্বোচ্চ $maxটি বিকল্প থাকতে পারে।';
+  }
+
+  @override
+  String get fieldRequired => 'আবশ্যক';
+
+  @override
+  String get fieldRequiredDetail => 'এটি ছাড়া নতুন এন্ট্রি সেভ হবে না।';
+
+  @override
+  String get fieldShowInList => 'এন্ট্রির তালিকায় দেখান';
+
+  @override
+  String get fieldShowInListDetail =>
+      'এই বইয়ের প্রতিটি এন্ট্রির নিচে দেখাবে। শুধু একটি ঘর দেখানো যায়।';
+
+  @override
+  String get fieldPreview => 'এন্ট্রিতে যেমন দেখাবে';
+
+  @override
+  String get fieldDelete => 'ঘর মুছুন';
+
+  @override
+  String get fieldDeleteConfirm =>
+      'এই ঘরটি মুছবেন? আগে লেখা মানগুলো এন্ট্রিতে থেকে যাবে, তবে আর দেখাবে না।';
+
+  @override
+  String fieldsFull(int max) {
+    return 'একটি বইয়ে সর্বোচ্চ $maxটি ঘর থাকতে পারে।';
+  }
+
+  @override
+  String get fieldPinned => 'তালিকায়';
+
+  @override
+  String get fieldsReorderHint => 'ক্রম বদলাতে চেপে ধরে টানুন।';
+
+  @override
+  String fieldOptionsMore(int count) {
+    return 'আরও $count';
+  }
+
+  @override
+  String get fieldsDetails => 'বিস্তারিত';
+
+  @override
+  String get fieldFillIn => 'এটি পূরণ করুন।';
+
+  @override
+  String get fieldNeedsNumber => 'একটি সংখ্যা লিখুন, যেমন ১২৫০ বা ১২.৫।';
+
+  @override
+  String get fieldPickDate => 'তারিখ বেছে নিন';
+
+  @override
+  String get fieldClear => 'মুছে ফেলুন';
+
+  @override
+  String get fieldsHintTitle => 'নিজের ঘর যোগ করুন';
+
+  @override
+  String get fieldsHintBody =>
+      'প্রতিটি এন্ট্রিতে ইনভয়েস নম্বর, পার্টি ও আরও অনেক কিছু রাখুন।';
+
+  @override
+  String get fieldsLockedTitle => 'নিজস্ব ঘর বিজনেস প্ল্যানে পাওয়া যায়';
+
+  @override
+  String get fieldsLockedBody =>
+      'এন্ট্রিতে নিজের ঘর যোগ করুন, তালিকা ও রিপোর্টে দেখুন। আগের ঘর ও মানগুলো যেমন আছে তেমনই থাকবে।';
+
+  @override
+  String get fieldsReadOnly =>
+      'আপনার প্ল্যানে এই মানগুলো যেমন আছে তেমন থাকবে। বদলাতে আপগ্রেড করুন।';
+
+  @override
+  String get historyFieldCreated => 'একটি নিজস্ব ঘর যোগ করেছেন';
+
+  @override
+  String get historyFieldUpdated => 'একটি নিজস্ব ঘর বদলেছেন';
+
+  @override
+  String get historyFieldDeleted => 'একটি নিজস্ব ঘর মুছেছেন';
+
+  @override
+  String get historyFieldRestored => 'একটি নিজস্ব ঘর ফিরিয়েছেন';
+
+  @override
+  String get yes => 'হ্যাঁ';
+
+  @override
+  String get no => 'না';
 }

@@ -12,6 +12,9 @@ abstract final class HistoryKind {
   static const cashbook = 'cashbook';
   static const category = 'category';
   static const paymentMethod = 'payment_method';
+
+  /// One of a book's own fields (features/fields).
+  static const field = 'field';
   static const access = 'access';
   static const member = 'member';
 }
@@ -45,14 +48,26 @@ class HistoryActor {
 /// One field of a change: what it was, and what it became. Links (a
 /// category, a payment method) come as names.
 class FieldChange {
-  const FieldChange(this.field, this.before, this.after);
+  const FieldChange(this.field, this.before, this.after, {this.name, this.kind});
 
-  factory FieldChange.fromJson(Map<String, dynamic> json) =>
-      FieldChange(json['field'] as String? ?? '', json['before'], json['after']);
+  factory FieldChange.fromJson(Map<String, dynamic> json) => FieldChange(
+        json['field'] as String? ?? '',
+        json['before'],
+        json['after'],
+        name: json['name'] as String?,
+        kind: json['kind'] as String?,
+      );
 
+  /// A column of the row, or [customValue] for one of the book's own fields.
   final String field;
   final Object? before;
   final Object? after;
+
+  /// For [customValue]: the field's name as the business wrote it, and its kind.
+  final String? name;
+  final String? kind;
+
+  static const customValue = 'custom_value';
 }
 
 /// One change in a business, as the owner sees it in the edit history.

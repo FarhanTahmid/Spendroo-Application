@@ -10,6 +10,8 @@ import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
 import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
+import 'generated/schema_v8.dart' as v8;
+import 'generated/schema_v9.dart' as v9;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -269,6 +271,45 @@ void main() {
         expect((category.id, category.name, category.isDefault, category.color), ('c1', 'Food', true, null));
         final entryCategory = await newDb.select(newDb.entryCategories).getSingle();
         expect((entryCategory.id, entryCategory.categoryName, entryCategory.color), ('e1', 'Rent', null));
+        expect(await newDb.select(newDb.syncCursors).get(), isEmpty);
+      },
+    );
+  });
+
+  // Version 9 adds a book's own fields and the values entries keep for them.
+  // Entries already on the phone have none; the pull starts over to fetch them.
+  test('migration from v8 to v9 keeps entries, with no values yet, and pulls them again', () async {
+    await verifier.testWithDataIntegrity(
+      oldVersion: 8,
+      newVersion: 9,
+      createOld: v8.DatabaseAtV8.new,
+      createNew: v9.DatabaseAtV9.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) {
+        batch.insert(
+          oldDb.entries,
+          const v8.EntriesData(
+            id: 'e1',
+            workspaceId: 'w1',
+            version: 2,
+            serverSeq: 30,
+            createdAt: '2026-10-01T00:00:00Z',
+            updatedAt: '2026-10-02T00:00:00Z',
+            cashbookId: 'b1',
+            entryType: 'cash_in',
+            amountMinor: 5000,
+            currency: 'BDT',
+            title: 'Sale',
+            entryDate: '2026-10-01',
+            source: 'manual',
+          ),
+        );
+        batch.insert(oldDb.syncCursors, const v8.SyncCursorsData(workspaceId: 'w1', since: 40));
+      },
+      validateItems: (newDb) async {
+        final entry = await newDb.select(newDb.entries).getSingle();
+        expect((entry.id, entry.title, entry.amountMinor, entry.customValues), ('e1', 'Sale', 5000, '{}'));
+        expect(await newDb.select(newDb.entryFields).get(), isEmpty);
         expect(await newDb.select(newDb.syncCursors).get(), isEmpty);
       },
     );

@@ -183,6 +183,49 @@ void main() {
     expect(month.byCategory.map((c) => (c.name, c.amountMinor)).toList(), [('Food', 300), (null, 200)]);
   });
 
+  test("a book's fields and an entry's values are pulled, and leave with the book", () async {
+    const fieldId = '00000000-0000-0000-0000-0000000000f1';
+    var access = [bookId];
+    respond = (request) async => switch (request.url.path) {
+          '/api/v1/workspaces/' => json(workspaces('business')),
+          '/api/v1/sync/pull/' => json({
+              ...emptyPull(),
+              'next_since': 3,
+              'accessible_cashbook_ids': access,
+              'changes': {
+                'cashbooks': [serverRow(bookId, 1, {'book_name': 'Till', 'description': null, 'currency': 'BDT'})],
+                'entry_fields': [
+                  serverRow(fieldId, 2, {
+                    'cashbook_id': bookId, 'name': 'Party', 'kind': 'choice', 'options': ['Rahim', 'Karim'],
+                    'required': true, 'show_in_list': true, 'position': 0,
+                  }),
+                ],
+                'entries': [
+                  serverRow(entryId, 3, {
+                    'cashbook_id': bookId, 'category_id': null, 'payment_method_id': null, 'entry_type': 'cash_in',
+                    'amount_minor': 500, 'title': 'Sale', 'remarks': null, 'entry_date': '2026-10-01',
+                    'source': 'manual', 'currency': 'BDT', 'created_by_id': null,
+                    'custom_values': {fieldId: 'Rahim'},
+                  }),
+                ],
+              },
+            }),
+          _ => json({}, 404),
+        };
+
+    await engine().sync();
+    final field = await db.select(db.entryFields).getSingle();
+    expect((field.name, field.kind, field.isRequired, field.showInList), ('Party', 'choice', true, true));
+    expect(jsonDecode(field.options), ['Rahim', 'Karim']);
+    final entries = await CashbookRepository(db, store).watchEntries(bookId).first;
+    expect(entries.single.pinned, (name: 'Party', kind: 'choice', value: 'Rahim'));
+
+    // Access to the book taken away: its fields go with it
+    access = [];
+    await engine().sync();
+    expect(await db.select(db.entryFields).get(), isEmpty);
+  });
+
   test('a transfer leg the server refuses is undone and reported', () async {
     respond = (request) async {
       if (request.url.path == '/api/v1/workspaces/') return json(workspaces('personal'));

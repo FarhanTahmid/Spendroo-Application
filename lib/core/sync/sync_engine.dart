@@ -281,7 +281,7 @@ class SyncEngine {
   Future<void> _purgeCashbook(String bookId) async {
     // Files of its bills go on the bill outbox's next run (BillFiles.keepOnly)
     for (final table in const [
-      'entries', 'entry_bills', 'bill_queue', 'entry_categories', 'payment_methods', 'cashbook_members',
+      'entries', 'entry_bills', 'bill_queue', 'entry_categories', 'payment_methods', 'entry_fields', 'cashbook_members',
     ]) {
       await db.customUpdate(
         'DELETE FROM "$table" WHERE cashbook_id = ?',

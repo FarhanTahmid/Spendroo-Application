@@ -275,7 +275,13 @@ class SyncStatus {
 class SyncController extends Notifier<SyncStatus> {
   Timer? _debounce;
   Timer? _periodic;
+  Timer? _retry;
   bool _again = false;
+
+  /// Waits before trying again after the server could not be reached, so a
+  /// moment's drop does not hold a change back until the next minute
+  static const _retryWaits = [Duration(seconds: 5), Duration(seconds: 15), Duration(seconds: 30)];
+  int _failures = 0;
 
   @override
   SyncStatus build() {
@@ -284,6 +290,7 @@ class SyncController extends Notifier<SyncStatus> {
     ref.onDispose(() {
       _debounce?.cancel();
       _periodic?.cancel();
+      _retry?.cancel();
     });
     return const SyncStatus();
   }
@@ -300,14 +307,18 @@ class SyncController extends Notifier<SyncStatus> {
       _again = true; // a write landed mid-run: go round once more
       return;
     }
+    _retry?.cancel();
     state = state.copyWith(syncing: true);
     try {
       await ref.read(syncEngineProvider).sync();
       // Bills follow their entries, now on the server
       await ref.read(billOutboxProvider).run();
       state = SyncStatus(lastSyncedAt: DateTime.now());
+      _failures = 0;
     } on OfflineException {
       state = state.copyWith(syncing: false, offline: true, clearError: true);
+      // Past the last wait the minute's sync carries on
+      if (_failures < _retryWaits.length) _retry = Timer(_retryWaits[_failures++], syncNow);
     } on SessionExpiredException {
       state = const SyncStatus();
       await ref.read(authControllerProvider.notifier).sessionExpired();

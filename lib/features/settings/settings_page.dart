@@ -8,6 +8,7 @@ import '../../core/config.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../history/history_page.dart';
 import '../home_widget/home_widget_tile.dart';
 import '../profile/profile_page.dart';
 import '../profile/profile_repository.dart';
@@ -152,6 +153,14 @@ class SettingsPage extends ConsumerWidget {
                 subtitle: Text(l10n.teamHint),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => context.push('/team'),
+              ),
+            if (showsHistory(workspace))
+              ListTile(
+                leading: const Icon(Icons.history_rounded),
+                title: Text(l10n.historyTitle),
+                subtitle: Text(l10n.historyHint),
+                trailing: HistoryTrailing(workspace: workspace!),
+                onTap: () => openHistory(context),
               ),
             if (workspace != null && workspace.kind == 'personal') ...[
               ListTile(

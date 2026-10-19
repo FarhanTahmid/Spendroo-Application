@@ -9,6 +9,7 @@ import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/money.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../history/history_page.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
@@ -255,6 +256,8 @@ class CashbookPage extends ConsumerWidget {
                     context.push('/cashbook/$bookId/categories');
                   } else if (action == 'access') {
                     context.push('/cashbook/$bookId/access');
+                  } else if (action == 'history') {
+                    openHistory(context, book: bookId);
                   } else if (action == 'rename') {
                     final name =
                         await promptText(context, title: l10n.rename, label: l10n.cashbookName, initial: book.bookName);
@@ -272,6 +275,16 @@ class CashbookPage extends ConsumerWidget {
                   PopupMenuItem(value: 'rename', child: Text(l10n.rename)),
                   if (access.canManage) PopupMenuItem(value: 'categories', child: Text(l10n.categories)),
                   if (canShare) PopupMenuItem(value: 'access', child: Text(l10n.whoHasAccess)),
+                  if (showsHistory(workspace))
+                    PopupMenuItem(
+                      value: 'history',
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(l10n.historyTitle)),
+                          HistoryTrailing(workspace: workspace!, chevron: false),
+                        ],
+                      ),
+                    ),
                   if (workspace?.role == 'owner') PopupMenuItem(value: 'delete', child: Text(l10n.delete)),
                 ],
               ),
@@ -496,6 +509,9 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
     final categories = ref.watch(entryCategoriesProvider(widget.book.id)).value ?? const <EntryCategory>[];
     final methods = ref.watch(paymentMethodsProvider(widget.book.id)).value ?? const <PaymentMethod>[];
     final isIn = widget.entryType == 'cash_in';
+    final workspace = (ref.watch(workspacesProvider).value ?? const <Workspace>[])
+        .where((w) => w.id == widget.book.workspaceId)
+        .firstOrNull;
 
     return Scaffold(
       backgroundColor: context.colors.sheet,
@@ -503,6 +519,12 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         backgroundColor: context.colors.sheet,
         title: Text(widget.entry != null ? l10n.editEntry : (isIn ? l10n.cashIn : l10n.cashOut)),
         actions: [
+          if (widget.entry != null && showsHistory(workspace))
+            IconButton(
+              tooltip: l10n.historyOfEntry,
+              icon: const Icon(Icons.history_rounded),
+              onPressed: () => openHistory(context, entry: widget.entry!.id),
+            ),
           if (widget.entry != null)
             IconButton(
               tooltip: l10n.delete,

@@ -9,6 +9,7 @@ import 'core/push/push_controller.dart';
 import 'core/ui.dart';
 import 'features/goals/goal_page.dart';
 import 'features/goals/goals_page.dart';
+import 'features/history/history_page.dart';
 import 'features/home_widget/home_widget_controller.dart';
 import 'features/home_widget/quick_add_page.dart';
 import 'features/home_widget/widget_launch.dart';
@@ -108,6 +109,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(path: '/join', builder: (_, _) => const JoinPage()),
+      GoRoute(
+        path: '/history',
+        builder: (_, state) => HistoryPage(
+          bookId: state.uri.queryParameters['book'],
+          personId: state.uri.queryParameters['person'],
+          entryId: state.uri.queryParameters['entry'],
+        ),
+      ),
       GoRoute(path: '/year-review', builder: (_, _) => const YearReviewPage()),
       GoRoute(path: '/goal/:id', builder: (_, state) => GoalPage(goalId: state.pathParameters['id']!)),
       GoRoute(

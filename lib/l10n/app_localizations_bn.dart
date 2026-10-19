@@ -3256,4 +3256,222 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get seatsNone => 'এই প্ল্যানে কোনো টিম আসন নেই';
+
+  @override
+  String get historyTitle => 'সম্পাদনার ইতিহাস';
+
+  @override
+  String get historyHint => 'কে কখন কী বদলেছেন';
+
+  @override
+  String get historyOfEntry => 'এই এন্ট্রির ইতিহাস';
+
+  @override
+  String get historyTheirChanges => 'তাঁর পরিবর্তনগুলো দেখুন';
+
+  @override
+  String historyTheirChangesHint(String name) {
+    return '$name যা যোগ, সম্পাদনা বা মুছেছেন';
+  }
+
+  @override
+  String historyChangesBy(String name) {
+    return '$name-এর পরিবর্তন';
+  }
+
+  @override
+  String get historyNobody => 'স্পেন্ডরু';
+
+  @override
+  String get historySomeone => 'কেউ একজন';
+
+  @override
+  String get historyChanged => 'একটি পরিবর্তন করেছেন';
+
+  @override
+  String get historyEntryCreated => 'একটি এন্ট্রি যোগ করেছেন';
+
+  @override
+  String get historyEntryUpdated => 'একটি এন্ট্রি সম্পাদনা করেছেন';
+
+  @override
+  String get historyEntryDeleted => 'একটি এন্ট্রি মুছেছেন';
+
+  @override
+  String get historyEntryRestored => 'একটি এন্ট্রি ফিরিয়ে এনেছেন';
+
+  @override
+  String get historyCashbookCreated => 'একটি ক্যাশবুক তৈরি করেছেন';
+
+  @override
+  String get historyCashbookUpdated => 'একটি ক্যাশবুক বদলেছেন';
+
+  @override
+  String get historyCashbookDeleted => 'একটি ক্যাশবুক মুছেছেন';
+
+  @override
+  String get historyCashbookRestored => 'একটি ক্যাশবুক ফিরিয়ে এনেছেন';
+
+  @override
+  String get historyCategoryCreated => 'একটি ক্যাটাগরি যোগ করেছেন';
+
+  @override
+  String get historyCategoryUpdated => 'একটি ক্যাটাগরি বদলেছেন';
+
+  @override
+  String get historyCategoryDeleted => 'একটি ক্যাটাগরি সরিয়েছেন';
+
+  @override
+  String get historyCategoryRestored => 'একটি ক্যাটাগরি ফিরিয়ে এনেছেন';
+
+  @override
+  String get historyMethodCreated => 'একটি পেমেন্ট পদ্ধতি যোগ করেছেন';
+
+  @override
+  String get historyMethodUpdated => 'একটি পেমেন্ট পদ্ধতি বদলেছেন';
+
+  @override
+  String get historyMethodDeleted => 'একটি পেমেন্ট পদ্ধতি সরিয়েছেন';
+
+  @override
+  String get historyMethodRestored => 'একটি পেমেন্ট পদ্ধতি ফিরিয়ে এনেছেন';
+
+  @override
+  String historyAccessGiven(String name) {
+    return '$name-কে অ্যাক্সেস দিয়েছেন';
+  }
+
+  @override
+  String historyAccessChanged(String name) {
+    return '$name-এর অ্যাক্সেস বদলেছেন';
+  }
+
+  @override
+  String historyAccessTaken(String name) {
+    return '$name-এর অ্যাক্সেস তুলে নিয়েছেন';
+  }
+
+  @override
+  String historyMemberJoined(String name) {
+    return '$name-কে টিমে যুক্ত করেছেন';
+  }
+
+  @override
+  String historyMemberRole(String name) {
+    return '$name-এর ভূমিকা বদলেছেন';
+  }
+
+  @override
+  String historyMemberLeft(String name) {
+    return '$name আর টিমে নেই';
+  }
+
+  @override
+  String get historyFieldAmount => 'পরিমাণ';
+
+  @override
+  String get historyFieldType => 'ধরন';
+
+  @override
+  String get historyFieldDate => 'তারিখ';
+
+  @override
+  String get historyFieldTitle => 'শিরোনাম';
+
+  @override
+  String get historyFieldNote => 'নোট';
+
+  @override
+  String get historyFieldCategory => 'ক্যাটাগরি';
+
+  @override
+  String get historyFieldMethod => 'পেমেন্ট পদ্ধতি';
+
+  @override
+  String get historyFieldName => 'নাম';
+
+  @override
+  String get historyFieldDescription => 'বিবরণ';
+
+  @override
+  String get historyFieldCurrency => 'মুদ্রা';
+
+  @override
+  String get historyFieldColour => 'রং';
+
+  @override
+  String get historyFieldRole => 'ভূমিকা';
+
+  @override
+  String get historyFieldAccess => 'অ্যাক্সেস';
+
+  @override
+  String get historyEmptyValue => 'ফাঁকা';
+
+  @override
+  String get historyAnyBook => 'সব ক্যাশবুক';
+
+  @override
+  String get historyAnyone => 'সবাই';
+
+  @override
+  String get historyAnyTime => 'যেকোনো সময়';
+
+  @override
+  String get historyPickBook => 'যে ক্যাশবুকের পরিবর্তন দেখবেন';
+
+  @override
+  String get historyPickPerson => 'যাঁর পরিবর্তন দেখবেন';
+
+  @override
+  String get historyClearAll => 'সব মুছুন';
+
+  @override
+  String get historyEmpty =>
+      'এখনো কিছু বদলায়নি। আপনার টিম যা যোগ, সম্পাদনা বা মুছবে, সবই এখানে দেখা যাবে।';
+
+  @override
+  String get historyEmptyFiltered => 'এই ফিল্টারে কোনো পরিবর্তন মেলেনি।';
+
+  @override
+  String get historyEmptyEntry =>
+      'এই এন্ট্রি এখনো সার্ভারে পৌঁছায়নি। সিঙ্ক হলে এর ইতিহাস দেখা যাবে।';
+
+  @override
+  String get historyTheStart => 'এই পর্যন্তই সব';
+
+  @override
+  String get historyMoreFailed => 'আর লোড করা গেল না।';
+
+  @override
+  String get historyOwnerOnly =>
+      'শুধু ব্যবসার মালিক সম্পাদনার ইতিহাস দেখতে পারেন।';
+
+  @override
+  String get historyBusinessOnly =>
+      'সম্পাদনার ইতিহাস শুধু ব্যবসার জন্য রাখা হয়।';
+
+  @override
+  String get historyLockedTitle => 'কে কখন কী বদলেছেন, দেখুন';
+
+  @override
+  String get historyLockedBody =>
+      'ব্যবসার প্রতিটি পরিবর্তনের পুরো হিসাব রেখে টিমকে জবাবদিহির মধ্যে রাখুন।';
+
+  @override
+  String get historyLockedPoint1 => 'প্রতিটি সম্পাদনা, আগে ও পরের মানসহ';
+
+  @override
+  String get historyLockedPoint2 => 'ক্যাশবুক, ব্যক্তি বা তারিখ দিয়ে ফিল্টার';
+
+  @override
+  String get historyLockedPoint3 => 'মোছা এন্ট্রিও চোখের আড়াল হয় না';
+
+  @override
+  String get historyBackToTop => 'সবচেয়ে নতুনে ফিরুন';
+
+  @override
+  String historyChangeCount(int count) {
+    return '$countটি পরিবর্তন';
+  }
 }

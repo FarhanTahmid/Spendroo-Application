@@ -21,6 +21,7 @@ const shownFeatures = [
   F.businessWorkspaces,
   F.businessCashbooks,
   F.teamSeats,
+  F.auditTrail,
   F.reportsExcel,
   F.reportsCustomRange,
 ];

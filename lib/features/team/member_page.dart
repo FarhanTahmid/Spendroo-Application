@@ -10,6 +10,7 @@ import '../cashbook/access_page.dart';
 import '../cashbook/access_repository.dart';
 import '../cashbook/book_access.dart';
 import '../cashbook/cashbook_repository.dart';
+import '../history/history_page.dart';
 import '../plan/upgrade_sheet.dart';
 import '../profile/profile_repository.dart';
 import 'invite_sheet.dart' show RoleOption;
@@ -116,9 +117,25 @@ class _MemberPageState extends ConsumerState<MemberPage> {
                 ],
               ),
             ),
-          if (TeamRole.canHandOver(space.role, member.role) || manages || (isMe && TeamRole.canLeave(member.role)))
+          if (showsHistory(space))
             Entrance(
               index: 2,
+              child: SectionCard(
+                padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.history_rounded, color: Theme.of(context).colorScheme.primary),
+                    title: Text(l10n.historyTheirChanges),
+                    subtitle: Text(l10n.historyTheirChangesHint(member.displayName)),
+                    trailing: HistoryTrailing(workspace: space),
+                    onTap: () => openHistory(context, person: member.userId),
+                  ),
+                ],
+              ),
+            ),
+          if (TeamRole.canHandOver(space.role, member.role) || manages || (isMe && TeamRole.canLeave(member.role)))
+            Entrance(
+              index: 3,
               child: SectionCard(
                 padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
                 children: [

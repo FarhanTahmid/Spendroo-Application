@@ -5557,6 +5557,396 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No team seats on this plan'**
   String get seatsNone;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit history'**
+  String get historyTitle;
+
+  /// No description provided for @historyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Who changed what, and when'**
+  String get historyHint;
+
+  /// No description provided for @historyOfEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'History of this entry'**
+  String get historyOfEntry;
+
+  /// No description provided for @historyTheirChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'See their changes'**
+  String get historyTheirChanges;
+
+  /// No description provided for @historyTheirChangesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything {name} added, edited or deleted'**
+  String historyTheirChangesHint(String name);
+
+  /// No description provided for @historyChangesBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes by {name}'**
+  String historyChangesBy(String name);
+
+  /// No description provided for @historyNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'Spendroo'**
+  String get historyNobody;
+
+  /// No description provided for @historySomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'someone'**
+  String get historySomeone;
+
+  /// No description provided for @historyChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Made a change'**
+  String get historyChanged;
+
+  /// No description provided for @historyEntryCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added an entry'**
+  String get historyEntryCreated;
+
+  /// No description provided for @historyEntryUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited an entry'**
+  String get historyEntryUpdated;
+
+  /// No description provided for @historyEntryDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted an entry'**
+  String get historyEntryDeleted;
+
+  /// No description provided for @historyEntryRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back an entry'**
+  String get historyEntryRestored;
+
+  /// No description provided for @historyCashbookCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Created a cashbook'**
+  String get historyCashbookCreated;
+
+  /// No description provided for @historyCashbookUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed a cashbook'**
+  String get historyCashbookUpdated;
+
+  /// No description provided for @historyCashbookDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted a cashbook'**
+  String get historyCashbookDeleted;
+
+  /// No description provided for @historyCashbookRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back a cashbook'**
+  String get historyCashbookRestored;
+
+  /// No description provided for @historyCategoryCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a category'**
+  String get historyCategoryCreated;
+
+  /// No description provided for @historyCategoryUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed a category'**
+  String get historyCategoryUpdated;
+
+  /// No description provided for @historyCategoryDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed a category'**
+  String get historyCategoryDeleted;
+
+  /// No description provided for @historyCategoryRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back a category'**
+  String get historyCategoryRestored;
+
+  /// No description provided for @historyMethodCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a payment method'**
+  String get historyMethodCreated;
+
+  /// No description provided for @historyMethodUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed a payment method'**
+  String get historyMethodUpdated;
+
+  /// No description provided for @historyMethodDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed a payment method'**
+  String get historyMethodDeleted;
+
+  /// No description provided for @historyMethodRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back a payment method'**
+  String get historyMethodRestored;
+
+  /// No description provided for @historyAccessGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'Gave {name} access'**
+  String historyAccessGiven(String name);
+
+  /// No description provided for @historyAccessChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed {name}’s access'**
+  String historyAccessChanged(String name);
+
+  /// No description provided for @historyAccessTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Took away {name}’s access'**
+  String historyAccessTaken(String name);
+
+  /// No description provided for @historyMemberJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought {name} into the team'**
+  String historyMemberJoined(String name);
+
+  /// No description provided for @historyMemberRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed {name}’s role'**
+  String historyMemberRole(String name);
+
+  /// No description provided for @historyMemberLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is no longer on the team'**
+  String historyMemberLeft(String name);
+
+  /// No description provided for @historyFieldAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get historyFieldAmount;
+
+  /// No description provided for @historyFieldType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get historyFieldType;
+
+  /// No description provided for @historyFieldDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get historyFieldDate;
+
+  /// No description provided for @historyFieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get historyFieldTitle;
+
+  /// No description provided for @historyFieldNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get historyFieldNote;
+
+  /// No description provided for @historyFieldCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get historyFieldCategory;
+
+  /// No description provided for @historyFieldMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method'**
+  String get historyFieldMethod;
+
+  /// No description provided for @historyFieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get historyFieldName;
+
+  /// No description provided for @historyFieldDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get historyFieldDescription;
+
+  /// No description provided for @historyFieldCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get historyFieldCurrency;
+
+  /// No description provided for @historyFieldColour.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour'**
+  String get historyFieldColour;
+
+  /// No description provided for @historyFieldRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get historyFieldRole;
+
+  /// No description provided for @historyFieldAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Access'**
+  String get historyFieldAccess;
+
+  /// No description provided for @historyEmptyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get historyEmptyValue;
+
+  /// No description provided for @historyAnyBook.
+  ///
+  /// In en, this message translates to:
+  /// **'All cashbooks'**
+  String get historyAnyBook;
+
+  /// No description provided for @historyAnyone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone'**
+  String get historyAnyone;
+
+  /// No description provided for @historyAnyTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Any time'**
+  String get historyAnyTime;
+
+  /// No description provided for @historyPickBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Show changes in'**
+  String get historyPickBook;
+
+  /// No description provided for @historyPickPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Show changes by'**
+  String get historyPickPerson;
+
+  /// No description provided for @historyClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get historyClearAll;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has changed yet. Every entry your team adds, edits or deletes will show up here.'**
+  String get historyEmpty;
+
+  /// No description provided for @historyEmptyFiltered.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes match these filters.'**
+  String get historyEmptyFiltered;
+
+  /// No description provided for @historyEmptyEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry hasn’t reached the server yet. Its history shows once it syncs.'**
+  String get historyEmptyEntry;
+
+  /// No description provided for @historyTheStart.
+  ///
+  /// In en, this message translates to:
+  /// **'That’s everything'**
+  String get historyTheStart;
+
+  /// No description provided for @historyMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t load more.'**
+  String get historyMoreFailed;
+
+  /// No description provided for @historyOwnerOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the business owner can see the edit history.'**
+  String get historyOwnerOnly;
+
+  /// No description provided for @historyBusinessOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit history is kept for businesses.'**
+  String get historyBusinessOnly;
+
+  /// No description provided for @historyLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See who changed what, and when'**
+  String get historyLockedTitle;
+
+  /// No description provided for @historyLockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your team accountable with a full record of every change in your business.'**
+  String get historyLockedBody;
+
+  /// No description provided for @historyLockedPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Every edit, with before and after'**
+  String get historyLockedPoint1;
+
+  /// No description provided for @historyLockedPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by cashbook, person or date'**
+  String get historyLockedPoint2;
+
+  /// No description provided for @historyLockedPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted entries never vanish from view'**
+  String get historyLockedPoint3;
+
+  /// No description provided for @historyBackToTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the newest'**
+  String get historyBackToTop;
+
+  /// No description provided for @historyChangeCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 change} other{{count} changes}}'**
+  String historyChangeCount(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -3359,4 +3359,227 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seatsNone => 'No team seats on this plan';
+
+  @override
+  String get historyTitle => 'Edit history';
+
+  @override
+  String get historyHint => 'Who changed what, and when';
+
+  @override
+  String get historyOfEntry => 'History of this entry';
+
+  @override
+  String get historyTheirChanges => 'See their changes';
+
+  @override
+  String historyTheirChangesHint(String name) {
+    return 'Everything $name added, edited or deleted';
+  }
+
+  @override
+  String historyChangesBy(String name) {
+    return 'Changes by $name';
+  }
+
+  @override
+  String get historyNobody => 'Spendroo';
+
+  @override
+  String get historySomeone => 'someone';
+
+  @override
+  String get historyChanged => 'Made a change';
+
+  @override
+  String get historyEntryCreated => 'Added an entry';
+
+  @override
+  String get historyEntryUpdated => 'Edited an entry';
+
+  @override
+  String get historyEntryDeleted => 'Deleted an entry';
+
+  @override
+  String get historyEntryRestored => 'Brought back an entry';
+
+  @override
+  String get historyCashbookCreated => 'Created a cashbook';
+
+  @override
+  String get historyCashbookUpdated => 'Changed a cashbook';
+
+  @override
+  String get historyCashbookDeleted => 'Deleted a cashbook';
+
+  @override
+  String get historyCashbookRestored => 'Brought back a cashbook';
+
+  @override
+  String get historyCategoryCreated => 'Added a category';
+
+  @override
+  String get historyCategoryUpdated => 'Changed a category';
+
+  @override
+  String get historyCategoryDeleted => 'Removed a category';
+
+  @override
+  String get historyCategoryRestored => 'Brought back a category';
+
+  @override
+  String get historyMethodCreated => 'Added a payment method';
+
+  @override
+  String get historyMethodUpdated => 'Changed a payment method';
+
+  @override
+  String get historyMethodDeleted => 'Removed a payment method';
+
+  @override
+  String get historyMethodRestored => 'Brought back a payment method';
+
+  @override
+  String historyAccessGiven(String name) {
+    return 'Gave $name access';
+  }
+
+  @override
+  String historyAccessChanged(String name) {
+    return 'Changed $name’s access';
+  }
+
+  @override
+  String historyAccessTaken(String name) {
+    return 'Took away $name’s access';
+  }
+
+  @override
+  String historyMemberJoined(String name) {
+    return 'Brought $name into the team';
+  }
+
+  @override
+  String historyMemberRole(String name) {
+    return 'Changed $name’s role';
+  }
+
+  @override
+  String historyMemberLeft(String name) {
+    return '$name is no longer on the team';
+  }
+
+  @override
+  String get historyFieldAmount => 'Amount';
+
+  @override
+  String get historyFieldType => 'Type';
+
+  @override
+  String get historyFieldDate => 'Date';
+
+  @override
+  String get historyFieldTitle => 'Title';
+
+  @override
+  String get historyFieldNote => 'Note';
+
+  @override
+  String get historyFieldCategory => 'Category';
+
+  @override
+  String get historyFieldMethod => 'Payment method';
+
+  @override
+  String get historyFieldName => 'Name';
+
+  @override
+  String get historyFieldDescription => 'Description';
+
+  @override
+  String get historyFieldCurrency => 'Currency';
+
+  @override
+  String get historyFieldColour => 'Colour';
+
+  @override
+  String get historyFieldRole => 'Role';
+
+  @override
+  String get historyFieldAccess => 'Access';
+
+  @override
+  String get historyEmptyValue => 'Empty';
+
+  @override
+  String get historyAnyBook => 'All cashbooks';
+
+  @override
+  String get historyAnyone => 'Everyone';
+
+  @override
+  String get historyAnyTime => 'Any time';
+
+  @override
+  String get historyPickBook => 'Show changes in';
+
+  @override
+  String get historyPickPerson => 'Show changes by';
+
+  @override
+  String get historyClearAll => 'Clear all';
+
+  @override
+  String get historyEmpty =>
+      'Nothing has changed yet. Every entry your team adds, edits or deletes will show up here.';
+
+  @override
+  String get historyEmptyFiltered => 'No changes match these filters.';
+
+  @override
+  String get historyEmptyEntry =>
+      'This entry hasn’t reached the server yet. Its history shows once it syncs.';
+
+  @override
+  String get historyTheStart => 'That’s everything';
+
+  @override
+  String get historyMoreFailed => 'Couldn’t load more.';
+
+  @override
+  String get historyOwnerOnly =>
+      'Only the business owner can see the edit history.';
+
+  @override
+  String get historyBusinessOnly => 'Edit history is kept for businesses.';
+
+  @override
+  String get historyLockedTitle => 'See who changed what, and when';
+
+  @override
+  String get historyLockedBody =>
+      'Keep your team accountable with a full record of every change in your business.';
+
+  @override
+  String get historyLockedPoint1 => 'Every edit, with before and after';
+
+  @override
+  String get historyLockedPoint2 => 'Filter by cashbook, person or date';
+
+  @override
+  String get historyLockedPoint3 => 'Deleted entries never vanish from view';
+
+  @override
+  String get historyBackToTop => 'Back to the newest';
+
+  @override
+  String historyChangeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes',
+      one: '1 change',
+    );
+    return '$_temp0';
+  }
 }

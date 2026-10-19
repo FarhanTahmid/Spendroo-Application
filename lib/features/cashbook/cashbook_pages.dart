@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -23,15 +22,20 @@ import '../reports/report_repository.dart';
 import '../reports/report_sheet.dart';
 import 'book_access.dart';
 import 'cashbook_repository.dart';
+import 'insights/insights_cards.dart' show InsightsPeriodBar;
+import 'insights/insights_pages.dart';
 
 /// Light enough to read as "money out" on the navy header.
 const _outOnHeader = Color(0xFFFF9AA2);
 
 /// Home of a business workspace: its cashbooks with their balances.
 class CashbooksPage extends ConsumerWidget {
-  const CashbooksPage({super.key, required this.workspace});
+  const CashbooksPage({super.key, required this.workspace, this.tabs});
 
   final Workspace workspace;
+
+  /// The Books / Insights switch, above the balance.
+  final Widget? tabs;
 
   bool get _canManage => workspace.role == 'owner' || workspace.role == 'admin';
 
@@ -53,7 +57,13 @@ class CashbooksPage extends ConsumerWidget {
 
     return Scaffold(
       body: PassbookBody(
-        header: HeaderFigure(label: l10n.balance, amountMinor: total, currency: workspace.defaultCurrency),
+        header: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (tabs != null) ...[tabs!, const SizedBox(height: AppSpace.md)],
+            HeaderFigure(label: l10n.balance, amountMinor: total, currency: workspace.defaultCurrency),
+          ],
+        ),
         child: RefreshIndicator(
           onRefresh: ref.read(syncControllerProvider.notifier).syncNow,
           child: AsyncView(
@@ -214,14 +224,27 @@ class _CashbookFormState extends ConsumerState<_CashbookForm> {
   }
 }
 
-/// One cashbook: balance, entries, and the Cash in / Cash out buttons.
-class CashbookPage extends ConsumerWidget {
-  const CashbookPage({super.key, required this.bookId});
+/// One cashbook: balance, entries, and the Cash in / Cash out buttons; or,
+/// on its Insights tab, the book in numbers.
+class CashbookPage extends ConsumerStatefulWidget {
+  const CashbookPage({super.key, required this.bookId, this.insights = false});
 
   final String bookId;
 
+  /// Opens on the Insights tab.
+  final bool insights;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CashbookPage> createState() => _CashbookPageState();
+}
+
+class _CashbookPageState extends ConsumerState<CashbookPage> {
+  late bool _insights = widget.insights;
+
+  String get bookId => widget.bookId;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
     final summary = ref.watch(cashbookProvider(bookId)).value;
     final workspaces = ref.watch(workspacesProvider).value ?? const <Workspace>[];
@@ -243,11 +266,6 @@ class CashbookPage extends ConsumerWidget {
         return PassbookScaffold(
           title: Text(book.bookName),
           actions: [
-            IconButton(
-              tooltip: l10n.report,
-              icon: const Icon(Icons.pie_chart_outline_rounded),
-              onPressed: () => context.push('/cashbook/$bookId/report'),
-            ),
             if (workspace != null)
               ReportButton(
                 scope: ReportScope.cashbook,
@@ -309,8 +327,30 @@ class CashbookPage extends ConsumerWidget {
                 ],
               ),
           ],
-          header: _BalanceHeader(summary: summary),
-          body: Column(
+          header: AnimatedSize(
+            duration: context.motion(AppMotion.emphasised),
+            curve: AppMotion.ease,
+            alignment: Alignment.topCenter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SlidingSegmented<bool>(
+                  onHeader: true,
+                  segments: {false: l10n.entriesTab, true: l10n.insights},
+                  value: _insights,
+                  onChanged: (value) => setState(() => _insights = value),
+                ),
+                const SizedBox(height: AppSpace.md),
+                if (_insights && workspace != null)
+                  InsightsPeriodBar(workspace: workspace, scopeId: bookId)
+                else
+                  _BalanceHeader(summary: summary),
+              ],
+            ),
+          ),
+          body: _insights
+              ? BookInsightsView(book: book, workspace: workspace, access: access)
+              : Column(
             children: [
               if (!canEdit)
                 Padding(
@@ -347,7 +387,7 @@ class CashbookPage extends ConsumerWidget {
               ),
             ],
           ),
-          bottomNavigationBar: access.canAdd
+          bottomNavigationBar: access.canAdd && !_insights
               ? DecoratedBox(
                   decoration: BoxDecoration(
                     color: context.colors.sheet,
@@ -802,167 +842,6 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
             BillsSection(workspace: workspace, entry: widget.entry, staged: widget.entry == null ? _staged : null),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// Totals by category and by payment method, computed on the device.
-class CashbookReportPage extends ConsumerWidget {
-  const CashbookReportPage({super.key, required this.bookId});
-
-  final String bookId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.l10n;
-    final text = Theme.of(context).textTheme;
-    final summary = ref.watch(cashbookProvider(bookId)).value;
-    final repo = ref.watch(cashbookRepositoryProvider);
-    if (summary == null) return Scaffold(appBar: AppBar(title: Text(l10n.report)));
-    final currency = summary.book.currency;
-
-    Widget section(String title, bool byCategory) => StreamBuilder<List<BreakdownRow>>(
-          stream: repo.watchBreakdown(bookId, byCategory: byCategory),
-          builder: (context, snapshot) {
-            final rows = snapshot.data ?? const <BreakdownRow>[];
-            // Bars share one scale, so the longest is the biggest figure in the section
-            final largest = rows.fold<int>(
-                1, (max, r) => [max, r.cashInMinor, r.cashOutMinor].reduce((a, b) => a > b ? a : b));
-            Widget bar(int amount, Color color) => Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: amount / largest),
-                    duration: context.motion(const Duration(milliseconds: 450)),
-                    curve: AppMotion.ease,
-                    builder: (context, value, _) => Align(
-                      alignment: Alignment.centerLeft,
-                      child: FractionallySizedBox(
-                        widthFactor: value.clamp(0.02, 1.0),
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-            final spent = byCategory ? rows.where((r) => r.cashOutMinor > 0).toList() : const <BreakdownRow>[];
-            return SectionCard(title: title, children: [
-              // Where the money went, each category in its own colour
-              if (spent.isNotEmpty)
-                SizedBox(
-                  height: 190,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      PieChart(
-                        PieChartData(
-                          sectionsSpace: 3,
-                          centerSpaceRadius: 62,
-                          startDegreeOffset: -90,
-                          sections: [
-                            for (final row in spent)
-                              PieChartSectionData(
-                                value: row.cashOutMinor.toDouble(),
-                                color: categoryFill(row.color, row.id),
-                                showTitle: false,
-                                radius: 26,
-                              ),
-                          ],
-                        ),
-                        duration: context.motion(AppMotion.emphasised),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(l10n.totalOut, style: text.bodySmall),
-                          SizedBox(
-                            width: 108,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                Money.compact(summary.cashOutMinor, currency, locale: context.languageCode),
-                                style: text.headlineSmall?.copyWith(fontFeatures: tabularFigures),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              for (final row in rows)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (byCategory)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4, right: 10),
-                              child: ColorDot(categoryFill(row.color, row.id)),
-                            ),
-                          Expanded(child: Text(row.name ?? l10n.uncategorised, overflow: TextOverflow.ellipsis)),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              if (row.cashInMinor > 0)
-                                Text(
-                                  '+${context.money(row.cashInMinor, currency)}',
-                                  style: text.bodyMedium?.copyWith(
-                                    color: context.amountColor(true),
-                                    fontWeight: FontWeight.w600,
-                                    fontFeatures: tabularFigures,
-                                  ),
-                                ),
-                              if (row.cashOutMinor > 0)
-                                Text(
-                                  '-${context.money(row.cashOutMinor, currency)}',
-                                  style: text.bodyMedium?.copyWith(
-                                    color: context.amountColor(false),
-                                    fontWeight: FontWeight.w600,
-                                    fontFeatures: tabularFigures,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      if (row.cashInMinor > 0) bar(row.cashInMinor, amountColor(true)),
-                      if (row.cashOutMinor > 0) bar(row.cashOutMinor, amountColor(false)),
-                    ],
-                  ),
-                ),
-            ]);
-          },
-        );
-
-    final workspace = (ref.watch(workspacesProvider).value ?? const <Workspace>[])
-        .where((w) => w.id == summary.book.workspaceId)
-        .firstOrNull;
-
-    return PassbookScaffold(
-      title: Text('${l10n.report}: ${summary.book.bookName}'),
-      actions: [
-        if (workspace != null)
-          ReportButton(
-            scope: ReportScope.cashbook,
-            workspace: workspace,
-            subjectId: bookId,
-            subjectName: summary.book.bookName,
-          ),
-      ],
-      header: _BalanceHeader(summary: summary),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.xl),
-        children: [
-          section(l10n.byCategory, true),
-          section(l10n.byPaymentMethod, false),
-        ],
       ),
     );
   }

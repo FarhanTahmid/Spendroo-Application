@@ -11,6 +11,7 @@ import '../../core/providers.dart';
 import '../../core/push/push_controller.dart';
 import '../../core/ui.dart';
 import '../cashbook/cashbook_pages.dart';
+import '../cashbook/insights/insights_pages.dart';
 import '../personal/planner_page.dart';
 import '../personal/personal_pages.dart';
 import '../plan/offer_banner.dart';
@@ -212,7 +213,14 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             PlannerPage(workspace: workspace),
             AccountsPage(workspace: workspace, onOpenGoals: () => _openPlanner(PlannerView.goals)),
           ]
-        : [CashbooksPage(workspace: workspace)];
+        : () {
+            // Books and Insights switch on the header; the switcher sits on both pages
+            final tabs = BusinessTabs(insights: _tab == 1, onChanged: (insights) => setState(() => _tab = insights ? 1 : 0));
+            return [
+              CashbooksPage(workspace: workspace, tabs: tabs),
+              BusinessInsightsPage(workspace: workspace, tabs: tabs),
+            ];
+          }();
     final tab = _tab < pages.length ? _tab : 0;
 
     return Scaffold(

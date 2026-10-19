@@ -122,9 +122,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/goal/:id', builder: (_, state) => GoalPage(goalId: state.pathParameters['id']!)),
       GoRoute(
         path: '/cashbook/:id',
-        builder: (_, state) => CashbookPage(bookId: state.pathParameters['id']!),
+        builder: (_, state) => CashbookPage(
+          bookId: state.pathParameters['id']!,
+          insights: state.uri.queryParameters['tab'] == 'insights',
+        ),
         routes: [
-          GoRoute(path: 'report', builder: (_, state) => CashbookReportPage(bookId: state.pathParameters['id']!)),
+          // The report screen became the book's Insights tab
+          GoRoute(
+            path: 'report',
+            redirect: (_, state) => '/cashbook/${state.pathParameters['id']}?tab=insights',
+          ),
           GoRoute(
             path: 'categories',
             builder: (_, state) => CashbookCategoriesPage(bookId: state.pathParameters['id']!),

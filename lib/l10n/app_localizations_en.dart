@@ -3930,4 +3930,272 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no => 'No';
+
+  @override
+  String get booksTab => 'Books';
+
+  @override
+  String get entriesTab => 'Entries';
+
+  @override
+  String get featureBusinessInsights => 'Advanced business insights';
+
+  @override
+  String get insNetFlow => 'Net cash flow';
+
+  @override
+  String get insClosingBalance => 'Balance at the end';
+
+  @override
+  String get insNoActivity => 'No entries in this period yet';
+
+  @override
+  String get insNoActivityHint =>
+      'Entries added here turn into charts and insights.';
+
+  @override
+  String get insNothingHere => 'Nothing in this period';
+
+  @override
+  String get insWhereMoneyWent => 'Where the money went';
+
+  @override
+  String get insWhereMoneyCame => 'Where the money came from';
+
+  @override
+  String get insPaymentMethods => 'Payment methods';
+
+  @override
+  String get insNoPaymentMethod => 'No payment method';
+
+  @override
+  String get insIn => 'In';
+
+  @override
+  String get insOut => 'Out';
+
+  @override
+  String get insBalanceTrend => 'Balance over time';
+
+  @override
+  String get insOpening => 'Opening';
+
+  @override
+  String get insClosing => 'Closing';
+
+  @override
+  String get insLowest => 'Lowest';
+
+  @override
+  String get insActivity => 'Activity';
+
+  @override
+  String get insTapDay => 'Tap a day for details';
+
+  @override
+  String get insLess => 'Less';
+
+  @override
+  String get insMore => 'More';
+
+  @override
+  String get insHealth => 'Cash health';
+
+  @override
+  String get insOutRatio => 'Cash out against cash in';
+
+  @override
+  String get insOutRatioNone => 'Nothing came in this period.';
+
+  @override
+  String insOutRatioKept(String percent) {
+    return '$percent% of what came in is still here.';
+  }
+
+  @override
+  String insOutRatioOver(String percent) {
+    return '$percent% more went out than came in.';
+  }
+
+  @override
+  String get insAvgDailyOut => 'Cash out a day';
+
+  @override
+  String get insRunway => 'Lasts';
+
+  @override
+  String get insRunwayDetail => 'at this rate';
+
+  @override
+  String get insRunwaySafe => 'Growing';
+
+  @override
+  String get insRunwaySafeDetail => 'more in than out';
+
+  @override
+  String insDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+      zero: '0 days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insBusiestDay => 'Busiest day';
+
+  @override
+  String get insAvgEntry => 'Average entry';
+
+  @override
+  String get insActiveDays => 'Active days';
+
+  @override
+  String insActiveDaysValue(String active, String days) {
+    return '$active of $days';
+  }
+
+  @override
+  String get insTopEntries => 'Biggest entries';
+
+  @override
+  String get insTeam => 'Team activity';
+
+  @override
+  String get insYou => 'You';
+
+  @override
+  String get insSomeone => 'Someone';
+
+  @override
+  String get insMostActive => 'Most active';
+
+  @override
+  String get insStreak => 'Streak';
+
+  @override
+  String get insPeople => 'People';
+
+  @override
+  String get insBills => 'Bills kept';
+
+  @override
+  String insBillsShare(String kept, String total) {
+    return '$kept of $total cash outs have a bill';
+  }
+
+  @override
+  String get insBillsAll => 'Every cash out has its bill.';
+
+  @override
+  String insBillsMissing(String amount) {
+    return '$amount has no bill yet.';
+  }
+
+  @override
+  String get insByField => 'By your own field';
+
+  @override
+  String get insFieldEmpty => 'No values for this field in this period.';
+
+  @override
+  String get insBookLeague => 'Books compared';
+
+  @override
+  String insShare(String percent) {
+    return '$percent% of all';
+  }
+
+  @override
+  String insOtherCurrencies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count books in other currencies are not counted here.',
+      one: '1 book in another currency is not counted here.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insBusinessChip => 'Business';
+
+  @override
+  String get insUnlockBody =>
+      'Running balance, activity calendar, cash health, team, bills and comparing books come with the Business plan.';
+
+  @override
+  String get insUnlockAction => 'Unlock with Business';
+
+  @override
+  String insMoreWithBusiness(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count more charts with Business',
+      one: '1 more chart with Business',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insPeriodTotal => 'Total';
+
+  @override
+  String get insPeakDay => 'Peak day';
+
+  @override
+  String get insQuietDays => 'Quiet days';
+
+  @override
+  String get insWeekRhythm => 'Your week';
+
+  @override
+  String insBusiestOn(String day) {
+    return 'Busiest on $day';
+  }
+
+  @override
+  String insTimesAverage(String times) {
+    return '$times× a usual day';
+  }
+
+  @override
+  String get insAvgIn => 'Usual month in';
+
+  @override
+  String get insAvgOut => 'Usual month out';
+
+  @override
+  String get insBestMonth => 'Best month';
+
+  @override
+  String get insAboveUsual => 'Better than usual';
+
+  @override
+  String get insBelowUsual => 'Below usual';
+
+  @override
+  String insKept(String percent) {
+    return '$percent% of cash in kept';
+  }
+
+  @override
+  String insOverspent(String percent) {
+    return '$percent% more went out than came in';
+  }
+
+  @override
+  String insActiveDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active days',
+      one: '1 active day',
+    );
+    return '$_temp0';
+  }
 }

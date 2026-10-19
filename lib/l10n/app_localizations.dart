@@ -6541,6 +6541,432 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No'**
   String get no;
+
+  /// No description provided for @booksTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Books'**
+  String get booksTab;
+
+  /// No description provided for @entriesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get entriesTab;
+
+  /// No description provided for @featureBusinessInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced business insights'**
+  String get featureBusinessInsights;
+
+  /// No description provided for @insNetFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Net cash flow'**
+  String get insNetFlow;
+
+  /// No description provided for @insClosingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance at the end'**
+  String get insClosingBalance;
+
+  /// No description provided for @insNoActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries in this period yet'**
+  String get insNoActivity;
+
+  /// No description provided for @insNoActivityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries added here turn into charts and insights.'**
+  String get insNoActivityHint;
+
+  /// No description provided for @insNothingHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in this period'**
+  String get insNothingHere;
+
+  /// No description provided for @insWhereMoneyWent.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the money went'**
+  String get insWhereMoneyWent;
+
+  /// No description provided for @insWhereMoneyCame.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the money came from'**
+  String get insWhereMoneyCame;
+
+  /// No description provided for @insPaymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment methods'**
+  String get insPaymentMethods;
+
+  /// No description provided for @insNoPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment method'**
+  String get insNoPaymentMethod;
+
+  /// No description provided for @insIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In'**
+  String get insIn;
+
+  /// No description provided for @insOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Out'**
+  String get insOut;
+
+  /// No description provided for @insBalanceTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance over time'**
+  String get insBalanceTrend;
+
+  /// No description provided for @insOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening'**
+  String get insOpening;
+
+  /// No description provided for @insClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing'**
+  String get insClosing;
+
+  /// No description provided for @insLowest.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest'**
+  String get insLowest;
+
+  /// No description provided for @insActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get insActivity;
+
+  /// No description provided for @insTapDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a day for details'**
+  String get insTapDay;
+
+  /// No description provided for @insLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get insLess;
+
+  /// No description provided for @insMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get insMore;
+
+  /// No description provided for @insHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash health'**
+  String get insHealth;
+
+  /// No description provided for @insOutRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out against cash in'**
+  String get insOutRatio;
+
+  /// No description provided for @insOutRatioNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing came in this period.'**
+  String get insOutRatioNone;
+
+  /// No description provided for @insOutRatioKept.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of what came in is still here.'**
+  String insOutRatioKept(String percent);
+
+  /// No description provided for @insOutRatioOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% more went out than came in.'**
+  String insOutRatioOver(String percent);
+
+  /// No description provided for @insAvgDailyOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out a day'**
+  String get insAvgDailyOut;
+
+  /// No description provided for @insRunway.
+  ///
+  /// In en, this message translates to:
+  /// **'Lasts'**
+  String get insRunway;
+
+  /// No description provided for @insRunwayDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'at this rate'**
+  String get insRunwayDetail;
+
+  /// No description provided for @insRunwaySafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Growing'**
+  String get insRunwaySafe;
+
+  /// No description provided for @insRunwaySafeDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'more in than out'**
+  String get insRunwaySafeDetail;
+
+  /// No description provided for @insDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 days} =1{1 day} other{{count} days}}'**
+  String insDays(int count);
+
+  /// No description provided for @insBusiestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest day'**
+  String get insBusiestDay;
+
+  /// No description provided for @insAvgEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Average entry'**
+  String get insAvgEntry;
+
+  /// No description provided for @insActiveDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Active days'**
+  String get insActiveDays;
+
+  /// No description provided for @insActiveDaysValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{active} of {days}'**
+  String insActiveDaysValue(String active, String days);
+
+  /// No description provided for @insTopEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest entries'**
+  String get insTopEntries;
+
+  /// No description provided for @insTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team activity'**
+  String get insTeam;
+
+  /// No description provided for @insYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get insYou;
+
+  /// No description provided for @insSomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone'**
+  String get insSomeone;
+
+  /// No description provided for @insMostActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Most active'**
+  String get insMostActive;
+
+  /// No description provided for @insStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get insStreak;
+
+  /// No description provided for @insPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get insPeople;
+
+  /// No description provided for @insBills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills kept'**
+  String get insBills;
+
+  /// No description provided for @insBillsShare.
+  ///
+  /// In en, this message translates to:
+  /// **'{kept} of {total} cash outs have a bill'**
+  String insBillsShare(String kept, String total);
+
+  /// No description provided for @insBillsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Every cash out has its bill.'**
+  String get insBillsAll;
+
+  /// No description provided for @insBillsMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} has no bill yet.'**
+  String insBillsMissing(String amount);
+
+  /// No description provided for @insByField.
+  ///
+  /// In en, this message translates to:
+  /// **'By your own field'**
+  String get insByField;
+
+  /// No description provided for @insFieldEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No values for this field in this period.'**
+  String get insFieldEmpty;
+
+  /// No description provided for @insBookLeague.
+  ///
+  /// In en, this message translates to:
+  /// **'Books compared'**
+  String get insBookLeague;
+
+  /// No description provided for @insShare.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of all'**
+  String insShare(String percent);
+
+  /// No description provided for @insOtherCurrencies.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 book in another currency is not counted here.} other{{count} books in other currencies are not counted here.}}'**
+  String insOtherCurrencies(int count);
+
+  /// No description provided for @insBusinessChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get insBusinessChip;
+
+  /// No description provided for @insUnlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Running balance, activity calendar, cash health, team, bills and comparing books come with the Business plan.'**
+  String get insUnlockBody;
+
+  /// No description provided for @insUnlockAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with Business'**
+  String get insUnlockAction;
+
+  /// No description provided for @insMoreWithBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 more chart with Business} other{{count} more charts with Business}}'**
+  String insMoreWithBusiness(int count);
+
+  /// No description provided for @insPeriodTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get insPeriodTotal;
+
+  /// No description provided for @insPeakDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak day'**
+  String get insPeakDay;
+
+  /// No description provided for @insQuietDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet days'**
+  String get insQuietDays;
+
+  /// No description provided for @insWeekRhythm.
+  ///
+  /// In en, this message translates to:
+  /// **'Your week'**
+  String get insWeekRhythm;
+
+  /// No description provided for @insBusiestOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest on {day}'**
+  String insBusiestOn(String day);
+
+  /// No description provided for @insTimesAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'{times}× a usual day'**
+  String insTimesAverage(String times);
+
+  /// No description provided for @insAvgIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Usual month in'**
+  String get insAvgIn;
+
+  /// No description provided for @insAvgOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Usual month out'**
+  String get insAvgOut;
+
+  /// No description provided for @insBestMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Best month'**
+  String get insBestMonth;
+
+  /// No description provided for @insAboveUsual.
+  ///
+  /// In en, this message translates to:
+  /// **'Better than usual'**
+  String get insAboveUsual;
+
+  /// No description provided for @insBelowUsual.
+  ///
+  /// In en, this message translates to:
+  /// **'Below usual'**
+  String get insBelowUsual;
+
+  /// No description provided for @insKept.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of cash in kept'**
+  String insKept(String percent);
+
+  /// No description provided for @insOverspent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% more went out than came in'**
+  String insOverspent(String percent);
+
+  /// No description provided for @insActiveDaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 active day} other{{count} active days}}'**
+  String insActiveDaysCount(int count);
 }
 
 class _AppLocalizationsDelegate

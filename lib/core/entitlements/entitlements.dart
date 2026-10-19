@@ -9,6 +9,7 @@ abstract final class F {
   static const insightsCustomRange = 'insights.custom_range';
   static const insightsYearReview = 'insights.year_review';
   static const insightsTrendMonths = 'insights.trend_months';
+  static const insightsBusinessAdvanced = 'insights.business_advanced';
   static const recurringTransactions = 'recurring.transactions';
   static const remindersStandalone = 'reminders.standalone';
   static const savingsGoals = 'goals.savings';

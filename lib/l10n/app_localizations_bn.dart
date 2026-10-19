@@ -3821,4 +3821,267 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get no => 'না';
+
+  @override
+  String get booksTab => 'খাতা';
+
+  @override
+  String get entriesTab => 'এন্ট্রি';
+
+  @override
+  String get featureBusinessInsights => 'ব্যবসার বিস্তারিত বিশ্লেষণ';
+
+  @override
+  String get insNetFlow => 'নিট নগদ প্রবাহ';
+
+  @override
+  String get insClosingBalance => 'শেষে ব্যালান্স';
+
+  @override
+  String get insNoActivity => 'এই সময়ে এখনও কোনো এন্ট্রি নেই';
+
+  @override
+  String get insNoActivityHint =>
+      'এখানে এন্ট্রি যোগ করলে তা চার্ট ও বিশ্লেষণে দেখা যাবে।';
+
+  @override
+  String get insNothingHere => 'এই সময়ে কিছু নেই';
+
+  @override
+  String get insWhereMoneyWent => 'টাকা কোথায় গেল';
+
+  @override
+  String get insWhereMoneyCame => 'টাকা কোথা থেকে এল';
+
+  @override
+  String get insPaymentMethods => 'পেমেন্টের মাধ্যম';
+
+  @override
+  String get insNoPaymentMethod => 'মাধ্যম দেওয়া নেই';
+
+  @override
+  String get insIn => 'জমা';
+
+  @override
+  String get insOut => 'খরচ';
+
+  @override
+  String get insBalanceTrend => 'সময়ের সাথে ব্যালান্স';
+
+  @override
+  String get insOpening => 'শুরুতে';
+
+  @override
+  String get insClosing => 'শেষে';
+
+  @override
+  String get insLowest => 'সর্বনিম্ন';
+
+  @override
+  String get insActivity => 'কার্যক্রম';
+
+  @override
+  String get insTapDay => 'বিস্তারিত দেখতে একটি দিনে চাপুন';
+
+  @override
+  String get insLess => 'কম';
+
+  @override
+  String get insMore => 'বেশি';
+
+  @override
+  String get insHealth => 'নগদের অবস্থা';
+
+  @override
+  String get insOutRatio => 'জমার তুলনায় খরচ';
+
+  @override
+  String get insOutRatioNone => 'এই সময়ে কোনো জমা আসেনি।';
+
+  @override
+  String insOutRatioKept(String percent) {
+    return 'যা জমা এসেছে তার $percent% এখনও হাতে আছে।';
+  }
+
+  @override
+  String insOutRatioOver(String percent) {
+    return 'জমার চেয়ে $percent% বেশি খরচ হয়েছে।';
+  }
+
+  @override
+  String get insAvgDailyOut => 'দিনে গড় খরচ';
+
+  @override
+  String get insRunway => 'টিকবে';
+
+  @override
+  String get insRunwayDetail => 'এই হারে চললে';
+
+  @override
+  String get insRunwaySafe => 'বাড়ছে';
+
+  @override
+  String get insRunwaySafeDetail => 'খরচের চেয়ে জমা বেশি';
+
+  @override
+  String insDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count দিন',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insBusiestDay => 'সবচেয়ে ব্যস্ত দিন';
+
+  @override
+  String get insAvgEntry => 'গড় এন্ট্রি';
+
+  @override
+  String get insActiveDays => 'সক্রিয় দিন';
+
+  @override
+  String insActiveDaysValue(String active, String days) {
+    return '$days-এর মধ্যে $active';
+  }
+
+  @override
+  String get insTopEntries => 'সবচেয়ে বড় এন্ট্রি';
+
+  @override
+  String get insTeam => 'টিমের কার্যক্রম';
+
+  @override
+  String get insYou => 'আপনি';
+
+  @override
+  String get insSomeone => 'কেউ একজন';
+
+  @override
+  String get insMostActive => 'সবচেয়ে সক্রিয়';
+
+  @override
+  String get insStreak => 'টানা';
+
+  @override
+  String get insPeople => 'সদস্য';
+
+  @override
+  String get insBills => 'রাখা বিল';
+
+  @override
+  String insBillsShare(String kept, String total) {
+    return '$totalটি খরচের মধ্যে $keptটিতে বিল আছে';
+  }
+
+  @override
+  String get insBillsAll => 'প্রতিটি খরচের বিল আছে।';
+
+  @override
+  String insBillsMissing(String amount) {
+    return '$amount-এর এখনও কোনো বিল নেই।';
+  }
+
+  @override
+  String get insByField => 'নিজের ঘর অনুযায়ী';
+
+  @override
+  String get insFieldEmpty => 'এই সময়ে এই ঘরে কোনো মান নেই।';
+
+  @override
+  String get insBookLeague => 'খাতার তুলনা';
+
+  @override
+  String insShare(String percent) {
+    return 'মোটের $percent%';
+  }
+
+  @override
+  String insOtherCurrencies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'অন্য মুদ্রার $countটি খাতা এখানে গোনা হয়নি।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insBusinessChip => 'বিজনেস';
+
+  @override
+  String get insUnlockBody =>
+      'চলতি ব্যালান্স, কার্যক্রমের ক্যালেন্ডার, নগদের অবস্থা, টিম, বিল আর খাতার তুলনা পাবেন বিজনেস প্ল্যানে।';
+
+  @override
+  String get insUnlockAction => 'বিজনেস দিয়ে খুলুন';
+
+  @override
+  String insMoreWithBusiness(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'বিজনেসে আরও $countটি চার্ট',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insPeriodTotal => 'মোট';
+
+  @override
+  String get insPeakDay => 'সবচেয়ে বেশি';
+
+  @override
+  String get insQuietDays => 'চুপচাপ দিন';
+
+  @override
+  String get insWeekRhythm => 'আপনার সপ্তাহ';
+
+  @override
+  String insBusiestOn(String day) {
+    return '$day সবচেয়ে ব্যস্ত';
+  }
+
+  @override
+  String insTimesAverage(String times) {
+    return 'সাধারণ দিনের $times গুণ';
+  }
+
+  @override
+  String get insAvgIn => 'মাসে গড় জমা';
+
+  @override
+  String get insAvgOut => 'মাসে গড় খরচ';
+
+  @override
+  String get insBestMonth => 'সেরা মাস';
+
+  @override
+  String get insAboveUsual => 'সাধারণের চেয়ে ভালো';
+
+  @override
+  String get insBelowUsual => 'সাধারণের চেয়ে কম';
+
+  @override
+  String insKept(String percent) {
+    return 'জমার $percent% হাতে রইল';
+  }
+
+  @override
+  String insOverspent(String percent) {
+    return 'জমার চেয়ে $percent% বেশি খরচ';
+  }
+
+  @override
+  String insActiveDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি সক্রিয় দিন',
+    );
+    return '$_temp0';
+  }
 }

@@ -13,6 +13,8 @@ import 'db/local_store.dart';
 import 'entitlements/entitlements.dart';
 import 'entitlements/entitlements_controller.dart';
 import 'push/push_controller.dart';
+import 'sync/bill_files.dart';
+import 'sync/bill_outbox.dart';
 import 'sync/sync_engine.dart';
 
 // ---------------------------------------------------------------- plumbing
@@ -70,6 +72,36 @@ final syncEngineProvider = Provider<SyncEngine>(
       // The phone's idea of the plan was out of date, or it would have stopped this itself
       ref.read(entitlementsProvider.notifier).refresh();
     },
+  ),
+);
+
+/// Where bill files sit on the phone. Tests point it at a temporary folder.
+final billFilesProvider = Provider<BillFiles>((ref) => BillFiles());
+
+/// How much of each bill being sent has gone: bill id to a share from 0 to 1.
+class BillProgress extends Notifier<Map<String, double>> {
+  @override
+  Map<String, double> build() => const {};
+
+  void report(String billId, double? sent) =>
+      state = {...state}..removeWhere((id, _) => id == billId)..addAll({if (sent != null) billId: sent});
+}
+
+final billProgressProvider = NotifierProvider<BillProgress, Map<String, double>>(BillProgress.new);
+
+final billOutboxProvider = Provider<BillOutbox>(
+  (ref) => BillOutbox(
+    ref.watch(databaseProvider),
+    ref.watch(apiClientProvider),
+    ref.watch(localStoreProvider),
+    ref.watch(billFilesProvider),
+    onPlanLimit: (body) {
+      ref.read(planLimitNoticeProvider.notifier).raise(PlanLimitException.fromJson(body));
+      ref.read(entitlementsProvider.notifier).refresh();
+    },
+    onProgress: (id, sent) => ref.read(billProgressProvider.notifier).report(id, sent),
+    // The storage meter moved
+    onStored: () => ref.read(entitlementsProvider.notifier).refresh(),
   ),
 );
 
@@ -203,6 +235,7 @@ class AuthController extends Notifier<AuthState> {
   Future<void> _signedOutCleanup() async {
     await ref.read(pushControllerProvider.notifier).signedOut();
     await _db.wipe();
+    await ref.read(billFilesProvider).clear();
     await _db.setSetting(_stepKey, null);
     await _db.setSetting(_emailKey, null);
     await _db.setSetting(CurrentWorkspaceController.settingKey, null);
@@ -270,6 +303,8 @@ class SyncController extends Notifier<SyncStatus> {
     state = state.copyWith(syncing: true);
     try {
       await ref.read(syncEngineProvider).sync();
+      // Bills follow their entries, now on the server
+      await ref.read(billOutboxProvider).run();
       state = SyncStatus(lastSyncedAt: DateTime.now());
     } on OfflineException {
       state = state.copyWith(syncing: false, offline: true, clearError: true);

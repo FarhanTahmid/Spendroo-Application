@@ -249,7 +249,7 @@ class _UpgradeSheetState extends ConsumerState<_UpgradeSheet> {
                       Expanded(child: Text(featureLabel(l10n, feature, names[feature]), style: text.bodyMedium)),
                       if (!value.isFlag)
                         Text(
-                          value.unlimited ? l10n.planUnlimited : '${value.limit ?? 0}',
+                          featureAmount(l10n, feature, value),
                           style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600, fontFeatures: tabularFigures),
                         ),
                     ],

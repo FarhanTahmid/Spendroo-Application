@@ -31,7 +31,7 @@ class CashbookSummary {
 }
 
 class EntryView {
-  EntryView(this.entry, this.categoryName, this.paymentMethodName, {this.categoryColor});
+  EntryView(this.entry, this.categoryName, this.paymentMethodName, {this.categoryColor, this.billCount = 0});
 
   final Entry entry;
   final String? categoryName;
@@ -39,6 +39,9 @@ class EntryView {
   /// What was chosen for the category, if anything (see categoryFill).
   final String? categoryColor;
   final String? paymentMethodName;
+
+  /// Bills kept with the entry, those still on their way included.
+  final int billCount;
 
   bool get isCashIn => entry.entryType == 'cash_in';
 }
@@ -108,12 +111,16 @@ class CashbookRepository {
 
   Stream<List<EntryView>> watchEntries(String bookId) => db
       .customSelect(
-        'SELECT e.*, c.category_name AS c_name, c.color AS c_color, p.payment_method_name AS p_name FROM entries e '
+        'SELECT e.*, c.category_name AS c_name, c.color AS c_color, p.payment_method_name AS p_name, '
+        '(SELECT COUNT(*) FROM entry_bills b WHERE b.entry_id = e.id AND b.deleted_at IS NULL '
+        "  AND b.id NOT IN (SELECT id FROM bill_queue WHERE op = 'remove')) "
+        "+ (SELECT COUNT(*) FROM bill_queue q WHERE q.entry_id = e.id AND q.op = 'upload') AS bill_count "
+        'FROM entries e '
         'LEFT JOIN entry_categories c ON c.id = e.category_id '
         'LEFT JOIN payment_methods p ON p.id = e.payment_method_id '
         'WHERE e.cashbook_id = ? AND e.deleted_at IS NULL ORDER BY e.entry_date DESC, e.created_at DESC',
         variables: [Variable<String>(bookId)],
-        readsFrom: {db.entries, db.entryCategories, db.paymentMethods},
+        readsFrom: {db.entries, db.entryCategories, db.paymentMethods, db.entryBills, db.billQueue},
       )
       .watch()
       .map((rows) => [
@@ -123,6 +130,7 @@ class CashbookRepository {
                 row.readNullable<String>('c_name'),
                 row.readNullable<String>('p_name'),
                 categoryColor: row.readNullable<String>('c_color'),
+                billCount: row.read<int>('bill_count'),
               ),
           ]);
 

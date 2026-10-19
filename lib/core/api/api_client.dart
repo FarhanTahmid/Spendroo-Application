@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 /// The request never reached the server (no network, timeout, server down).
 class OfflineException implements Exception {
@@ -65,6 +66,9 @@ class ApiClient {
   /// A file the server makes on request is laid out while the phone waits
   static const _downloadTimeout = Duration(seconds: 90);
 
+  /// A bill of tens of megabytes on a slow connection
+  static const _uploadTimeout = Duration(minutes: 5);
+
   Future<ApiResponse> get(String path, {Map<String, String>? query}) => _send('GET', path, query: query);
   Future<ApiResponse> post(String path, [Object? body]) => _send('POST', path, body: body);
   Future<ApiResponse> patch(String path, [Object? body]) => _send('PATCH', path, body: body);
@@ -72,10 +76,36 @@ class ApiClient {
   Future<ApiResponse> delete(String path) => _send('DELETE', path);
 
   /// Sends one file as multipart form data, the way Django expects an upload.
-  Future<ApiResponse> upload(String path, {required String field, required List<int> bytes, required String filename}) async {
-    final request = http.MultipartRequest('POST', Uri.parse('$baseUrl$path'))
-      ..files.add(http.MultipartFile.fromBytes(field, bytes, filename: filename));
-    return _decode(await _fetch(request));
+  /// [fields] go along as form fields; [onProgress] hears the share sent so far (0 to 1).
+  Future<ApiResponse> upload(
+    String path, {
+    required String field,
+    required List<int> bytes,
+    required String filename,
+    String? contentType,
+    Map<String, String> fields = const {},
+    void Function(double sent)? onProgress,
+  }) async {
+    final request = _ProgressRequest('POST', Uri.parse('$baseUrl$path'), onProgress)
+      ..fields.addAll(fields)
+      ..files.add(http.MultipartFile.fromBytes(
+        field,
+        bytes,
+        filename: filename,
+        contentType: contentType == null ? null : MediaType.parse(contentType),
+      ));
+    return _decode(await _fetch(request, timeout: _uploadTimeout));
+  }
+
+  /// A file behind a link the server handed out: a path on this server, or a
+  /// full address on a file store. The session goes only to this server.
+  Future<http.Response> fetchFile(String location) {
+    final absolute = location.startsWith('http://') || location.startsWith('https://');
+    return _fetch(
+      http.Request('GET', Uri.parse(absolute ? location : '$baseUrl$location')),
+      timeout: _downloadTimeout,
+      withSession: !absolute,
+    );
   }
 
   /// The raw body, such as a picture. Null when the server has nothing there.
@@ -113,9 +143,9 @@ class ApiClient {
     return ApiResponse(response.statusCode, decoded);
   }
 
-  Future<http.Response> _fetch(http.BaseRequest request, {Duration timeout = _timeout}) async {
+  Future<http.Response> _fetch(http.BaseRequest request, {Duration timeout = _timeout, bool withSession = true}) async {
     request.headers['Accept'] = 'application/json';
-    final token = await tokenStore.read();
+    final token = withSession ? await tokenStore.read() : null;
     if (token != null) request.headers['X-Session-Token'] = token;
     try {
       return await http.Response.fromStream(await _http.send(request).timeout(timeout));
@@ -126,5 +156,26 @@ class ApiClient {
     } on http.ClientException {
       throw const OfflineException();
     }
+  }
+}
+
+/// A multipart request that says how much of its body has gone out.
+class _ProgressRequest extends http.MultipartRequest {
+  _ProgressRequest(super.method, super.url, this.onProgress);
+
+  final void Function(double sent)? onProgress;
+
+  @override
+  http.ByteStream finalize() {
+    final body = super.finalize();
+    final listener = onProgress;
+    if (listener == null) return body;
+    final total = contentLength;
+    var sent = 0;
+    return http.ByteStream(body.map((chunk) {
+      sent += chunk.length;
+      if (total > 0) listener(sent / total);
+      return chunk;
+    }));
   }
 }

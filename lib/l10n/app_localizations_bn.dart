@@ -1015,7 +1015,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get featureCustomFields => 'এন্ট্রিতে বাড়তি ঘর';
 
   @override
-  String get featureStorage => 'বিল রাখার জায়গা, MB';
+  String get featureStorage => 'বিল রাখার জায়গা';
 
   @override
   String get featureAiCredits => 'মাসে AI ক্রেডিট';
@@ -3474,4 +3474,171 @@ class AppLocalizationsBn extends AppLocalizations {
   String historyChangeCount(int count) {
     return '$countটি পরিবর্তন';
   }
+
+  @override
+  String get bills => 'বিল';
+
+  @override
+  String get billsHint => 'এই এন্ট্রির সাথে রসিদের ছবি বা PDF রেখে দিন।';
+
+  @override
+  String get billAttach => 'বিল যোগ করুন';
+
+  @override
+  String get billTakePhoto => 'ছবি তুলুন';
+
+  @override
+  String get billTakePhotoHint =>
+      'কাগজের রসিদের ছবি তুলুন। স্পষ্ট ও ছোট আকারে রাখা হবে।';
+
+  @override
+  String get billChoosePhoto => 'ছবি বেছে নিন';
+
+  @override
+  String get billChoosePhotoHint => 'ফোনে আগে থেকে থাকা ছবি বা স্ক্রিনশট';
+
+  @override
+  String get billChoosePdf => 'PDF বেছে নিন';
+
+  @override
+  String get billChoosePdfHint => 'PDF হিসেবে পাওয়া ইনভয়েস ও স্টেটমেন্ট';
+
+  @override
+  String billPerFile(String size) {
+    return 'প্রতি বিলে সর্বোচ্চ $size';
+  }
+
+  @override
+  String billRoomLeft(String size) {
+    return '$size বাকি';
+  }
+
+  @override
+  String billStorageUsed(String used, String total) {
+    return '$total-এর মধ্যে $used ব্যবহৃত';
+  }
+
+  @override
+  String get billStaged => 'সেভ করলে যুক্ত হবে';
+
+  @override
+  String get billWaiting => 'আপলোডের অপেক্ষায়';
+
+  @override
+  String billUploading(int percent) {
+    return 'আপলোড হচ্ছে $percent%';
+  }
+
+  @override
+  String get billFailed => 'যুক্ত করা যায়নি';
+
+  @override
+  String get billRefused => 'আপনার প্ল্যানে জায়গা নেই';
+
+  @override
+  String get billRetry => 'আবার চেষ্টা করুন';
+
+  @override
+  String get billRemove => 'বিল সরান';
+
+  @override
+  String get billRemoveConfirm =>
+      'এই বিলটি সরাবেন? ব্যবসার সবার কাছ থেকে ফাইলটি মুছে যাবে।';
+
+  @override
+  String get billRemoved => 'বিল সরানো হয়েছে';
+
+  @override
+  String get billAdded => 'বিল যুক্ত হয়েছে। পেছনে আপলোড হচ্ছে।';
+
+  @override
+  String get billShare => 'শেয়ার করুন';
+
+  @override
+  String get billOpenElsewhere => 'অন্য অ্যাপে খুলুন';
+
+  @override
+  String billPages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count পৃষ্ঠা',
+      one: '১ পৃষ্ঠা',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String billCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি বিল',
+      one: '১টি বিল',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String billOf(int index, int total) {
+    return '$totalটির মধ্যে $index';
+  }
+
+  @override
+  String get billOpenOffline =>
+      'এই বিলটি এখনো এই ফোনে রাখা হয়নি। খুলতে ইন্টারনেটে যুক্ত হোন।';
+
+  @override
+  String get billGone => 'এই বিলটি আর পাওয়া যাচ্ছে না।';
+
+  @override
+  String get billOpenFailed => 'বিলটি খোলা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get billErrorType => 'এই ফাইলটি ছবি বা PDF নয়।';
+
+  @override
+  String get billErrorUnsafe =>
+      'এই ফাইলে স্ক্রিপ্ট বা লুকানো কিছু আছে, তাই রাখা যাবে না।';
+
+  @override
+  String get billErrorCorrupt => 'ফাইলটি নষ্ট, খোলা যাচ্ছে না।';
+
+  @override
+  String get billErrorTooLarge => 'ফাইলটি যুক্ত করার জন্য অনেক বড়।';
+
+  @override
+  String get billErrorForbidden => 'এই এন্ট্রিতে আপনি বিল যোগ করতে পারবেন না।';
+
+  @override
+  String get billErrorGone => 'এই এন্ট্রিটি আর সার্ভারে নেই।';
+
+  @override
+  String get billErrorMissing =>
+      'ফাইলটি আর এই ফোনে নেই। সরিয়ে আবার যুক্ত করুন।';
+
+  @override
+  String get billErrorGeneric => 'বিলটি যুক্ত করা যায়নি।';
+
+  @override
+  String get billViewOnly => 'আপনি এই বিলগুলো দেখতে পারবেন, বদলাতে পারবেন না।';
+
+  @override
+  String get entryDetails => 'এন্ট্রি';
+
+  @override
+  String limitStorage(String plan, String size) {
+    return 'আপনার $plan প্ল্যানে সর্বোচ্চ $size বিল রাখা যায়। কিছু সরান, বা আরও জায়গার জন্য আপগ্রেড করুন।';
+  }
+
+  @override
+  String limitBillSize(String plan, String size) {
+    return 'আপনার $plan প্ল্যানে একটি বিল সর্বোচ্চ $size হতে পারে।';
+  }
+
+  @override
+  String get featureStorageFile => 'সবচেয়ে বড় বিল';
+
+  @override
+  String get featureStoragePdf => 'PDF বিল';
 }

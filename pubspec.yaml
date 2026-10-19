@@ -16,6 +16,8 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   http: ^1.5.0
+  # Content types of uploaded bills
+  http_parser: ^4.1.2
   flutter_secure_storage: ^9.2.4
   google_sign_in: ^7.2.0
 
@@ -45,6 +47,10 @@ dependencies:
   timezone: ^0.11.2
   package_info_plus: ^9.0.1
   home_widget: ^0.10.0
+  # Picks PDF bills; photos come through image_picker
+  file_picker: ^10.2.4
+  # Renders PDF bills in the app (features/bills/bill_viewer_page.dart)
+  pdfrx: ^2.6.5
 
 dev_dependencies:
   flutter_test:

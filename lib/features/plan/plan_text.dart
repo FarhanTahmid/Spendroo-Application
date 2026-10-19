@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/ui.dart';
 import '../../l10n/app_localizations.dart';
+import '../bills/bill_text.dart';
 
 /// The features this version of the app has, in the order the upgrade screen
 /// lists them. The server knows of more (see its catalog); one is added here
@@ -22,6 +23,9 @@ const shownFeatures = [
   F.businessCashbooks,
   F.teamSeats,
   F.auditTrail,
+  F.storageMb,
+  F.storageFileMb,
+  F.storagePdf,
   F.reportsExcel,
   F.reportsCustomRange,
 ];
@@ -47,12 +51,21 @@ String featureLabel(AppLocalizations l10n, String feature, [String? fallback]) =
       F.auditTrail => l10n.featureAuditTrail,
       F.customFields => l10n.featureCustomFields,
       F.storageMb => l10n.featureStorage,
+      F.storageFileMb => l10n.featureStorageFile,
+      F.storagePdf => l10n.featureStoragePdf,
       F.aiCredits => l10n.featureAiCredits,
       F.pdfPages => l10n.featurePdfPages,
       F.devicesMax => l10n.featureDevices,
       F.ads => l10n.featureNoAds,
       _ => fallback ?? feature,
     };
+
+/// How much of a limit a plan gives, in its own unit: "1 GB" of storage, "4" accounts.
+String featureAmount(AppLocalizations l10n, String feature, FeatureValue value) {
+  if (value.unlimited) return l10n.planUnlimited;
+  final limit = value.limit ?? 0;
+  return const {F.storageMb, F.storageFileMb}.contains(feature) ? formatMegabytes(limit, l10n.localeName) : '$limit';
+}
 
 /// One sentence saying what the plan did not allow.
 String planLimitText(AppLocalizations l10n, PlanLimitException refusal, String plan) {
@@ -71,6 +84,8 @@ String planLimitText(AppLocalizations l10n, PlanLimitException refusal, String p
         F.businessWorkspaces => l10n.limitWorkspaces(plan, limit),
         F.teamSeats => l10n.limitSeats(plan, limit),
         F.insightsTrendMonths => l10n.limitTrendMonths(plan, limit),
+        F.storageMb => l10n.limitStorage(plan, formatMegabytes(limit, l10n.localeName)),
+        F.storageFileMb => l10n.limitBillSize(plan, formatMegabytes(limit, l10n.localeName)),
         _ => l10n.limitGeneric(plan),
       },
   };

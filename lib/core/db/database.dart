@@ -72,6 +72,24 @@ class Entries extends Table with SyncColumns {
   TextColumn get createdById => text().nullable()();
 }
 
+/// A photo or PDF kept with a business entry as proof. Rows arrive by sync
+/// only (the server checks each file); the file itself is fetched when opened
+/// and cached (features/bills/bill_files.dart).
+@TableIndex(name: 'entry_bills_entry', columns: {#entryId})
+class EntryBills extends Table with SyncColumns {
+  TextColumn get entryId => text()();
+  TextColumn get cashbookId => text()();
+  TextColumn get createdById => text().nullable()();
+
+  /// What the server found the file to be: image/jpeg, image/png or application/pdf.
+  TextColumn get contentType => text()();
+  TextColumn get originalName => text().withDefault(const Constant(''))();
+  IntColumn get sizeBytes => integer().withDefault(const Constant(0))();
+  IntColumn get pageCount => integer().nullable()();
+  IntColumn get width => integer().nullable()();
+  IntColumn get height => integer().nullable()();
+}
+
 class CashbookMembers extends Table with SyncColumns {
   TextColumn get cashbookId => text()();
   TextColumn get memberId => text()();
@@ -237,6 +255,43 @@ class Outbox extends Table {
   TextColumn get data => text()();
 }
 
+/// Bills waiting for the server: files to send, and bills to take away. Apart
+/// from the outbox because a file travels in a request of its own, once its
+/// entry is on the server (core/sync/bill_outbox.dart). Never synced.
+class BillQueue extends Table {
+  /// The bill's id, made here; the server keeps it, so a resend is recognised.
+  TextColumn get id => text()();
+
+  /// 'upload' or 'remove'.
+  TextColumn get op => text()();
+  TextColumn get workspaceId => text()();
+  TextColumn get cashbookId => text()();
+  TextColumn get entryId => text()();
+
+  /// The file waiting to go, for an upload.
+  TextColumn get path => text().nullable()();
+  TextColumn get contentType => text().withDefault(const Constant(''))();
+  TextColumn get originalName => text().withDefault(const Constant(''))();
+  IntColumn get sizeBytes => integer().withDefault(const Constant(0))();
+  IntColumn get width => integer().nullable()();
+  IntColumn get height => integer().nullable()();
+
+  /// 'queued' (waiting its turn), 'failed' (the server refused the file) or
+  /// 'refused' (the plan has no room for it).
+  TextColumn get state => text().withDefault(const Constant('queued'))();
+
+  /// Why it failed: a code from the server, such as bill_unsafe, or a plan feature.
+  TextColumn get error => text().nullable()();
+  IntColumn get attempts => integer().withDefault(const Constant(0))();
+
+  /// Not tried again before this moment (ISO), after the server could not be reached.
+  TextColumn get nextTryAt => text().nullable()();
+  TextColumn get createdAt => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// How far each workspace has been pulled.
 class SyncCursors extends Table {
   TextColumn get workspaceId => text()();
@@ -293,9 +348,9 @@ class Settings extends Table {
 }
 
 @DriftDatabase(tables: [
-  Workspaces, Cashbooks, EntryCategories, PaymentMethods, Entries, CashbookMembers,
+  Workspaces, Cashbooks, EntryCategories, PaymentMethods, Entries, EntryBills, CashbookMembers,
   Accounts, Categories, Transactions, Budgets, RecurringRules, RecurringOccurrences, InboxItems, SavingsGoals,
-  Outbox, SyncCursors, SyncFailures, Settings,
+  Outbox, BillQueue, SyncCursors, SyncFailures, Settings,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'spendroo'));
@@ -303,7 +358,7 @@ class AppDatabase extends _$AppDatabase {
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -341,12 +396,19 @@ class AppDatabase extends _$AppDatabase {
           from6To7: (m, schema) async {
             await m.createTable(schema.savingsGoals);
           },
+          from7To8: (m, schema) async {
+            await m.createTable(schema.entryBills);
+            await m.createIndex(schema.entryBillsEntry);
+            await m.createTable(schema.billQueue);
+            // Bills already on the server were never pulled: pull again
+            await customStatement('DELETE FROM sync_cursors');
+          },
         ),
       );
 
   /// Synced tables in the order rows must be applied: parents before children.
   static const syncedTables = [
-    'cashbooks', 'entry_categories', 'payment_methods', 'entries', 'cashbook_members',
+    'cashbooks', 'entry_categories', 'payment_methods', 'entries', 'entry_bills', 'cashbook_members',
     'accounts', 'savings_goals', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions', 'budgets',
     'inbox_items',
   ];

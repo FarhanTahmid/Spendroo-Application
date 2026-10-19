@@ -1047,7 +1047,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureCustomFields => 'Extra fields on entries';
 
   @override
-  String get featureStorage => 'Storage for bills, in MB';
+  String get featureStorage => 'Storage for bills';
 
   @override
   String get featureAiCredits => 'AI credits a month';
@@ -3582,4 +3582,172 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get bills => 'Bills';
+
+  @override
+  String get billsHint => 'Keep a photo or PDF of the receipt with this entry.';
+
+  @override
+  String get billAttach => 'Attach bill';
+
+  @override
+  String get billTakePhoto => 'Take a photo';
+
+  @override
+  String get billTakePhotoHint =>
+      'Snap a paper receipt. It\'s kept sharp and small.';
+
+  @override
+  String get billChoosePhoto => 'Choose a photo';
+
+  @override
+  String get billChoosePhotoHint =>
+      'A photo or screenshot already on your phone';
+
+  @override
+  String get billChoosePdf => 'Choose a PDF';
+
+  @override
+  String get billChoosePdfHint => 'Invoices and statements that came as a PDF';
+
+  @override
+  String billPerFile(String size) {
+    return 'Up to $size per bill';
+  }
+
+  @override
+  String billRoomLeft(String size) {
+    return '$size left';
+  }
+
+  @override
+  String billStorageUsed(String used, String total) {
+    return '$used of $total used';
+  }
+
+  @override
+  String get billStaged => 'Attached when you save';
+
+  @override
+  String get billWaiting => 'Waiting to upload';
+
+  @override
+  String billUploading(int percent) {
+    return 'Uploading $percent%';
+  }
+
+  @override
+  String get billFailed => 'Couldn\'t attach';
+
+  @override
+  String get billRefused => 'No room on your plan';
+
+  @override
+  String get billRetry => 'Try again';
+
+  @override
+  String get billRemove => 'Remove bill';
+
+  @override
+  String get billRemoveConfirm =>
+      'Remove this bill? The file is deleted for everyone in this business.';
+
+  @override
+  String get billRemoved => 'Bill removed';
+
+  @override
+  String get billAdded => 'Bill attached. It uploads in the background.';
+
+  @override
+  String get billShare => 'Share';
+
+  @override
+  String get billOpenElsewhere => 'Open in another app';
+
+  @override
+  String billPages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pages',
+      one: '1 page',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String billCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bills',
+      one: '1 bill',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String billOf(int index, int total) {
+    return '$index of $total';
+  }
+
+  @override
+  String get billOpenOffline =>
+      'This bill isn\'t saved on this phone yet. Connect to the internet to open it.';
+
+  @override
+  String get billGone => 'This bill is no longer available.';
+
+  @override
+  String get billOpenFailed => 'The bill couldn\'t be opened. Try again.';
+
+  @override
+  String get billErrorType => 'That file isn\'t a photo or a PDF.';
+
+  @override
+  String get billErrorUnsafe =>
+      'This file has scripts or hidden content in it, so it can\'t be kept.';
+
+  @override
+  String get billErrorCorrupt => 'This file is damaged and can\'t be opened.';
+
+  @override
+  String get billErrorTooLarge => 'This file is too large to attach.';
+
+  @override
+  String get billErrorForbidden => 'You can\'t add bills to this entry.';
+
+  @override
+  String get billErrorGone => 'This entry isn\'t on the server any more.';
+
+  @override
+  String get billErrorMissing =>
+      'The file is no longer on this phone. Remove it and attach it again.';
+
+  @override
+  String get billErrorGeneric => 'The bill couldn\'t be attached.';
+
+  @override
+  String get billViewOnly => 'You can view these bills but not change them.';
+
+  @override
+  String get entryDetails => 'Entry';
+
+  @override
+  String limitStorage(String plan, String size) {
+    return 'Your $plan plan keeps up to $size of bills. Remove some, or upgrade for more room.';
+  }
+
+  @override
+  String limitBillSize(String plan, String size) {
+    return 'On your $plan plan, one bill can be up to $size.';
+  }
+
+  @override
+  String get featureStorageFile => 'Largest bill';
+
+  @override
+  String get featureStoragePdf => 'PDF bills';
 }

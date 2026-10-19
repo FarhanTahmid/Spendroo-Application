@@ -279,7 +279,10 @@ class SyncEngine {
       );
 
   Future<void> _purgeCashbook(String bookId) async {
-    for (final table in const ['entries', 'entry_categories', 'payment_methods', 'cashbook_members']) {
+    // Files of its bills go on the bill outbox's next run (BillFiles.keepOnly)
+    for (final table in const [
+      'entries', 'entry_bills', 'bill_queue', 'entry_categories', 'payment_methods', 'cashbook_members',
+    ]) {
       await db.customUpdate(
         'DELETE FROM "$table" WHERE cashbook_id = ?',
         variables: [Variable<String>(bookId)],
@@ -291,7 +294,7 @@ class SyncEngine {
   }
 
   Future<void> _purgeWorkspace(String workspaceId) async {
-    for (final table in [...AppDatabase.syncedTables, 'outbox', 'sync_cursors']) {
+    for (final table in [...AppDatabase.syncedTables, 'outbox', 'bill_queue', 'sync_cursors']) {
       await db.customUpdate(
         'DELETE FROM "$table" WHERE workspace_id = ?',
         variables: [Variable<String>(workspaceId)],

@@ -85,7 +85,7 @@ void main() {
       return (h, bookId);
     }
 
-    testWidgets('add access: Cash in and out, but entries open for nobody', (tester) async {
+    testWidgets('add access: Cash in and out, but entries open read-only', (tester) async {
       final (h, _) = await open(tester, 'staff', grantRole: 'contributor');
       expect(find.text('Cash in'), findsOneWidget);
       expect(find.text('You can add entries to this cashbook but not change them.'), findsOneWidget);
@@ -93,6 +93,7 @@ void main() {
       await tester.tap(find.text('Sale'));
       await h.settle();
       expect(find.byType(EntryFormPage), findsNothing);
+      expect(find.text('Entry'), findsOneWidget, reason: 'its details and bills, to look at');
       await h.stop();
     });
 

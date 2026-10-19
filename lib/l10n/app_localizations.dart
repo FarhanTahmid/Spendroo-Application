@@ -1883,7 +1883,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureStorage.
   ///
   /// In en, this message translates to:
-  /// **'Storage for bills, in MB'**
+  /// **'Storage for bills'**
   String get featureStorage;
 
   /// No description provided for @featureAiCredits.
@@ -5947,6 +5947,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 change} other{{count} changes}}'**
   String historyChangeCount(int count);
+
+  /// No description provided for @bills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills'**
+  String get bills;
+
+  /// No description provided for @billsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a photo or PDF of the receipt with this entry.'**
+  String get billsHint;
+
+  /// No description provided for @billAttach.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach bill'**
+  String get billAttach;
+
+  /// No description provided for @billTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get billTakePhoto;
+
+  /// No description provided for @billTakePhotoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap a paper receipt. It\'s kept sharp and small.'**
+  String get billTakePhotoHint;
+
+  /// No description provided for @billChoosePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a photo'**
+  String get billChoosePhoto;
+
+  /// No description provided for @billChoosePhotoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A photo or screenshot already on your phone'**
+  String get billChoosePhotoHint;
+
+  /// No description provided for @billChoosePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a PDF'**
+  String get billChoosePdf;
+
+  /// No description provided for @billChoosePdfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices and statements that came as a PDF'**
+  String get billChoosePdfHint;
+
+  /// No description provided for @billPerFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {size} per bill'**
+  String billPerFile(String size);
+
+  /// No description provided for @billRoomLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} left'**
+  String billRoomLeft(String size);
+
+  /// No description provided for @billStorageUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} of {total} used'**
+  String billStorageUsed(String used, String total);
+
+  /// No description provided for @billStaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Attached when you save'**
+  String get billStaged;
+
+  /// No description provided for @billWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to upload'**
+  String get billWaiting;
+
+  /// No description provided for @billUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading {percent}%'**
+  String billUploading(int percent);
+
+  /// No description provided for @billFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t attach'**
+  String get billFailed;
+
+  /// No description provided for @billRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'No room on your plan'**
+  String get billRefused;
+
+  /// No description provided for @billRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get billRetry;
+
+  /// No description provided for @billRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bill'**
+  String get billRemove;
+
+  /// No description provided for @billRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this bill? The file is deleted for everyone in this business.'**
+  String get billRemoveConfirm;
+
+  /// No description provided for @billRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill removed'**
+  String get billRemoved;
+
+  /// No description provided for @billAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill attached. It uploads in the background.'**
+  String get billAdded;
+
+  /// No description provided for @billShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get billShare;
+
+  /// No description provided for @billOpenElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in another app'**
+  String get billOpenElsewhere;
+
+  /// No description provided for @billPages.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 page} other{{count} pages}}'**
+  String billPages(int count);
+
+  /// No description provided for @billCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 bill} other{{count} bills}}'**
+  String billCount(int count);
+
+  /// No description provided for @billOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{index} of {total}'**
+  String billOf(int index, int total);
+
+  /// No description provided for @billOpenOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'This bill isn\'t saved on this phone yet. Connect to the internet to open it.'**
+  String get billOpenOffline;
+
+  /// No description provided for @billGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This bill is no longer available.'**
+  String get billGone;
+
+  /// No description provided for @billOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The bill couldn\'t be opened. Try again.'**
+  String get billOpenFailed;
+
+  /// No description provided for @billErrorType.
+  ///
+  /// In en, this message translates to:
+  /// **'That file isn\'t a photo or a PDF.'**
+  String get billErrorType;
+
+  /// No description provided for @billErrorUnsafe.
+  ///
+  /// In en, this message translates to:
+  /// **'This file has scripts or hidden content in it, so it can\'t be kept.'**
+  String get billErrorUnsafe;
+
+  /// No description provided for @billErrorCorrupt.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is damaged and can\'t be opened.'**
+  String get billErrorCorrupt;
+
+  /// No description provided for @billErrorTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is too large to attach.'**
+  String get billErrorTooLarge;
+
+  /// No description provided for @billErrorForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t add bills to this entry.'**
+  String get billErrorForbidden;
+
+  /// No description provided for @billErrorGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry isn\'t on the server any more.'**
+  String get billErrorGone;
+
+  /// No description provided for @billErrorMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is no longer on this phone. Remove it and attach it again.'**
+  String get billErrorMissing;
+
+  /// No description provided for @billErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'The bill couldn\'t be attached.'**
+  String get billErrorGeneric;
+
+  /// No description provided for @billViewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'You can view these bills but not change them.'**
+  String get billViewOnly;
+
+  /// No description provided for @entryDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry'**
+  String get entryDetails;
+
+  /// No description provided for @limitStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {plan} plan keeps up to {size} of bills. Remove some, or upgrade for more room.'**
+  String limitStorage(String plan, String size);
+
+  /// No description provided for @limitBillSize.
+  ///
+  /// In en, this message translates to:
+  /// **'On your {plan} plan, one bill can be up to {size}.'**
+  String limitBillSize(String plan, String size);
+
+  /// No description provided for @featureStorageFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Largest bill'**
+  String get featureStorageFile;
+
+  /// No description provided for @featureStoragePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF bills'**
+  String get featureStoragePdf;
 }
 
 class _AppLocalizationsDelegate

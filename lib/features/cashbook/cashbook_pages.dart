@@ -9,10 +9,13 @@ import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/money.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../bills/bill_repository.dart';
+import '../bills/bill_widgets.dart';
 import '../history/history_page.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
+import '../profile/profile_repository.dart';
 import '../reports/report_repository.dart';
 import '../reports/report_sheet.dart';
 import 'book_access.dart';
@@ -266,6 +269,7 @@ class CashbookPage extends ConsumerWidget {
                     }
                   } else if (await confirm(context, l10n.deleteConfirm)) {
                     await repo.deleteCashbook(bookId);
+                    await ref.read(billRepositoryProvider).forgetCashbook(bookId);
                     if (!context.mounted) return;
                     showEventBurst(context, AppEvent.deleted);
                     context.pop();
@@ -317,7 +321,10 @@ class CashbookPage extends ConsumerWidget {
                           itemCount: entries.length,
                           itemBuilder: (context, index) => _EntryTile(
                             view: entries[index],
-                            onTap: canEdit ? () => _openForm(context, book, entry: entries[index].entry) : null,
+                            // Someone who cannot edit still opens the entry, to see its bills
+                            onTap: canEdit
+                                ? () => _openForm(context, book, entry: entries[index].entry)
+                                : () => showEntryDetails(context, entries[index], workspace: workspace, access: access),
                           ),
                         ),
                 ),
@@ -424,9 +431,94 @@ class _EntryTile extends StatelessWidget {
       amount: context.money(entry.amountMinor, entry.currency),
       amountColor: context.amountColor(view.isCashIn),
       onTap: onTap,
+      badge: view.billCount == 0 ? null : _BillBadge(count: view.billCount),
     );
   }
 }
+
+/// A paperclip and how many bills the entry keeps.
+class _BillBadge extends StatelessWidget {
+  const _BillBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = context.colors.muted;
+    return Semantics(
+      label: context.l10n.billCount(count),
+      child: ExcludeSemantics(
+        child: PopSwitcher(
+          child: Row(
+            key: ValueKey(count),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.attach_file_rounded, size: 15, color: muted),
+              if (count > 1)
+                Text('$count', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: muted)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// An entry for someone who may not change it: what it says, and its bills
+/// to open. Someone who only adds may attach bills to entries they added.
+Future<void> showEntryDetails(
+  BuildContext context,
+  EntryView view, {
+  required Workspace? workspace,
+  required BookAccess access,
+}) =>
+    showAppSheet<void>(
+      context,
+      title: context.l10n.entryDetails,
+      builder: (sheet) => Consumer(
+        builder: (context, ref, _) {
+          final text = Theme.of(context).textTheme;
+          final entry = view.entry;
+          final me = ref.watch(profileProvider).value?.id;
+          final mine = me != null && entry.createdById == me;
+          Widget line(IconData icon, String value) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                child: Row(
+                  children: [
+                    Icon(icon, size: 18, color: context.colors.muted),
+                    const SizedBox(width: AppSpace.sm),
+                    Expanded(child: Text(value, style: text.bodyMedium)),
+                  ],
+                ),
+              );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                '${view.isCashIn ? '+' : '−'}${context.money(entry.amountMinor, entry.currency)}',
+                style: text.headlineMedium?.copyWith(
+                  color: context.amountColor(view.isCashIn),
+                  fontFeatures: tabularFigures,
+                ),
+              ),
+              if (entry.title?.isNotEmpty ?? false) Text(entry.title!, style: text.titleMedium),
+              const SizedBox(height: AppSpace.md),
+              line(Icons.event_outlined, formatDate(context, entry.entryDate)),
+              if (view.categoryName != null) line(Icons.sell_outlined, view.categoryName!),
+              if (view.paymentMethodName != null) line(Icons.account_balance_wallet_outlined, view.paymentMethodName!),
+              if (entry.remarks?.isNotEmpty ?? false) line(Icons.notes_rounded, entry.remarks!),
+              const SizedBox(height: AppSpace.md),
+              BillsSection(
+                workspace: workspace,
+                entry: entry,
+                canAttach: access.canEdit || (access.canAdd && mine),
+                canRemove: access.canEdit,
+              ),
+            ],
+          );
+        },
+      ),
+    );
 
 /// Add or edit one cash-in or cash-out entry.
 class EntryFormPage extends ConsumerStatefulWidget {
@@ -454,11 +546,15 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
   late String? _paymentMethodId = widget.entry?.paymentMethodId;
   int _refused = 0;
 
+  /// Bills picked before a new entry is saved; they are queued once it is.
+  final _staged = StagedBills();
+
   @override
   void dispose() {
     _amount.dispose();
     _title.dispose();
     _remarks.dispose();
+    _staged.dispose();
     super.dispose();
   }
 
@@ -471,7 +567,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
     final repo = ref.read(cashbookRepositoryProvider);
     final amount = Money.evaluate(_amount.text, widget.book.currency)!;
     if (widget.entry == null) {
-      await repo.addEntry(
+      final entryId = await repo.addEntry(
         widget.book,
         entryType: widget.entryType,
         amountMinor: amount,
@@ -480,6 +576,12 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         remarks: _blankToNull(_remarks.text),
         categoryId: _categoryId,
         paymentMethodId: _paymentMethodId,
+      );
+      await _staged.attachTo(
+        ref.read(billRepositoryProvider),
+        workspaceId: widget.book.workspaceId,
+        cashbookId: widget.book.id,
+        entryId: entryId,
       );
     } else {
       await repo.updateEntry(
@@ -532,6 +634,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
               onPressed: () async {
                 if (await confirm(context, l10n.deleteConfirm)) {
                   await repo.deleteEntry(widget.entry!.id);
+                  await ref.read(billRepositoryProvider).forgetEntry(widget.entry!.id);
                   if (!context.mounted) return;
                   showEventBurst(context, AppEvent.deleted);
                   Navigator.pop(context);
@@ -607,6 +710,8 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
               decoration: InputDecoration(labelText: l10n.remarks),
               maxLines: 3,
             ),
+            const SizedBox(height: AppSpace.xl),
+            BillsSection(workspace: workspace, entry: widget.entry, staged: widget.entry == null ? _staged : null),
           ],
         ),
       ),

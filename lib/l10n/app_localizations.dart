@@ -4831,6 +4831,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Left this month'**
   String get widgetLeftThisMonth;
+
+  /// No description provided for @featureBusinessWidget.
+  ///
+  /// In en, this message translates to:
+  /// **'Business home-screen widgets'**
+  String get featureBusinessWidget;
+
+  /// No description provided for @bizWidgetSevenDays.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days'**
+  String get bizWidgetSevenDays;
+
+  /// No description provided for @bizWidgetVsYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'vs yesterday'**
+  String get bizWidgetVsYesterday;
+
+  /// No description provided for @bizWidgetVsPrevious7.
+  ///
+  /// In en, this message translates to:
+  /// **'vs previous 7 days'**
+  String get bizWidgetVsPrevious7;
+
+  /// No description provided for @bizWidgetVsLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'vs last month'**
+  String get bizWidgetVsLastMonth;
+
+  /// No description provided for @bizWidgetBooks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No cashbooks} =1{1 cashbook} other{{count} cashbooks}}'**
+  String bizWidgetBooks(int count);
+
+  /// No description provided for @bizWidgetOtherCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} in {currency}'**
+  String bizWidgetOtherCurrency(int count, String currency);
+
+  /// No description provided for @bizWidgetUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See where your business stands'**
+  String get bizWidgetUnlockTitle;
+
+  /// No description provided for @bizWidgetUnlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Today, 7 days and the month, a 14-day cash chart and smart insights'**
+  String get bizWidgetUnlockBody;
+
+  /// No description provided for @bizWidgetChooseBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a business'**
+  String get bizWidgetChooseBusiness;
+
+  /// No description provided for @bizWidgetChooseBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a cashbook'**
+  String get bizWidgetChooseBook;
+
+  /// No description provided for @bizWidgetChooseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to pick what this widget shows'**
+  String get bizWidgetChooseBody;
+
+  /// No description provided for @bizWidgetGoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No longer available'**
+  String get bizWidgetGoneTitle;
+
+  /// No description provided for @bizWidgetGoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to choose another'**
+  String get bizWidgetGoneBody;
+
+  /// No description provided for @bizWidgetSignInBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your business at a glance will show here'**
+  String get bizWidgetSignInBody;
+
+  /// No description provided for @bizWidgetBooksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashbooks'**
+  String get bizWidgetBooksTitle;
+
+  /// No description provided for @bizWidgetRecentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get bizWidgetRecentTitle;
+
+  /// No description provided for @bizWidgetNoEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries yet. Tap Cash in or Cash out to start.'**
+  String get bizWidgetNoEntries;
+
+  /// No description provided for @bizWidgetQuietChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in or out in the last 14 days'**
+  String get bizWidgetQuietChart;
+
+  /// No description provided for @bizWidgetNoBooks.
+  ///
+  /// In en, this message translates to:
+  /// **'No cashbooks yet. Open the business to add one.'**
+  String get bizWidgetNoBooks;
+
+  /// No description provided for @bizWidgetNextInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Next insight'**
+  String get bizWidgetNextInsight;
+
+  /// No description provided for @bizWidgetRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Open and refresh'**
+  String get bizWidgetRefresh;
+
+  /// No description provided for @bizWidgetPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Change period'**
+  String get bizWidgetPeriod;
+
+  /// No description provided for @bizWidgetPickerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No businesses yet. Create one in Spendroo first.'**
+  String get bizWidgetPickerEmpty;
+
+  /// No description provided for @bizWidgetPickerBooksEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This business has no cashbooks yet.'**
+  String get bizWidgetPickerBooksEmpty;
+
+  /// No description provided for @bizWidgetSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Business widgets'**
+  String get bizWidgetSettingsTitle;
+
+  /// No description provided for @bizWidgetSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A whole business or one cashbook on your home screen'**
+  String get bizWidgetSettingsBody;
+
+  /// No description provided for @bizWidgetAddBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business widget'**
+  String get bizWidgetAddBusiness;
+
+  /// No description provided for @bizWidgetAddBusinessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance, cash in and out, and insights across every cashbook'**
+  String get bizWidgetAddBusinessBody;
+
+  /// No description provided for @bizWidgetAddBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashbook widget'**
+  String get bizWidgetAddBook;
+
+  /// No description provided for @bizWidgetAddBookBody.
+  ///
+  /// In en, this message translates to:
+  /// **'One cashbook, with one-tap Cash in and Cash out'**
+  String get bizWidgetAddBookBody;
+
+  /// No description provided for @bizChooseBookTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to which cashbook?'**
+  String get bizChooseBookTitle;
+
+  /// No description provided for @bizChooseBookNone.
+  ///
+  /// In en, this message translates to:
+  /// **'You can only view this business\'s cashbooks.'**
+  String get bizChooseBookNone;
+
+  /// No description provided for @bizInsightNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance is {amount} below zero'**
+  String bizInsightNegative(String amount);
+
+  /// No description provided for @bizInsightNegativeMasked.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance is below zero'**
+  String get bizInsightNegativeMasked;
+
+  /// No description provided for @bizInsightNegativeBook.
+  ///
+  /// In en, this message translates to:
+  /// **'{book} is {amount} below zero'**
+  String bizInsightNegativeBook(String book, String amount);
+
+  /// No description provided for @bizInsightNegativeBookMasked.
+  ///
+  /// In en, this message translates to:
+  /// **'{book} is below zero'**
+  String bizInsightNegativeBookMasked(String book);
+
+  /// No description provided for @bizInsightIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries since {date}'**
+  String bizInsightIdle(String date);
+
+  /// No description provided for @bizInsightOutUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out is up {percent} on last month'**
+  String bizInsightOutUp(String percent);
+
+  /// No description provided for @bizInsightOutDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out is down {percent} on last month'**
+  String bizInsightOutDown(String percent);
+
+  /// No description provided for @bizInsightInUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in is up {percent} on last month'**
+  String bizInsightInUp(String percent);
+
+  /// No description provided for @bizInsightInDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in is down {percent} on last month'**
+  String bizInsightInDown(String percent);
+
+  /// No description provided for @bizInsightTopCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'{category} is {percent} of this month\'s cash out'**
+  String bizInsightTopCategory(String category, String percent);
+
+  /// No description provided for @bizInsightBiggestOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest cash out this week: {label}, {amount}'**
+  String bizInsightBiggestOut(String label, String amount);
+
+  /// No description provided for @bizInsightBiggestOutMasked.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest cash out this week: {label}'**
+  String bizInsightBiggestOutMasked(String label);
+
+  /// No description provided for @bizInsightStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in beat cash out {days} days running'**
+  String bizInsightStreak(String days);
+
+  /// No description provided for @bizInsightProjection.
+  ///
+  /// In en, this message translates to:
+  /// **'At this pace, {month} ends at {amount}'**
+  String bizInsightProjection(String month, String amount);
+
+  /// No description provided for @bizInsightProjectionAhead.
+  ///
+  /// In en, this message translates to:
+  /// **'At this pace, {month} ends ahead'**
+  String bizInsightProjectionAhead(String month);
+
+  /// No description provided for @bizInsightProjectionBehind.
+  ///
+  /// In en, this message translates to:
+  /// **'At this pace, {month} ends behind'**
+  String bizInsightProjectionBehind(String month);
+
+  /// No description provided for @bizInsightLeadBook.
+  ///
+  /// In en, this message translates to:
+  /// **'{book} leads this month at {amount}'**
+  String bizInsightLeadBook(String book, String amount);
+
+  /// No description provided for @bizInsightLeadBookMasked.
+  ///
+  /// In en, this message translates to:
+  /// **'{book} leads this month'**
+  String bizInsightLeadBookMasked(String book);
+
+  /// No description provided for @bizInsightLosingBook.
+  ///
+  /// In en, this message translates to:
+  /// **'{book} is at {amount} this month'**
+  String bizInsightLosingBook(String book, String amount);
+
+  /// No description provided for @bizInsightLosingBookMasked.
+  ///
+  /// In en, this message translates to:
+  /// **'{book} is losing money this month'**
+  String bizInsightLosingBookMasked(String book);
+
+  /// No description provided for @bizInsightQuietMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries yet this month'**
+  String get bizInsightQuietMonth;
+
+  /// No description provided for @bizInsightEmptyBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first entry to see insights here'**
+  String get bizInsightEmptyBook;
+
+  /// No description provided for @bizInsightSteady.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in and out are close to last month'**
+  String get bizInsightSteady;
 }
 
 class _AppLocalizationsDelegate

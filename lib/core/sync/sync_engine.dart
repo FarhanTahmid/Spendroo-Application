@@ -162,10 +162,17 @@ class SyncEngine {
     }
   }
 
+  /// Brings one workspace's changes and nothing else: no push, no census.
+  /// For a widget told by a silent push that a teammate changed something.
+  Future<void> pullWorkspace(String workspaceId) => _pull(workspaceId);
+
+  /// How far this phone has pulled [workspaceId] (a server_seq).
+  Future<int> cursorOf(String workspaceId) async =>
+      (await (db.select(db.syncCursors)..where((c) => c.workspaceId.equals(workspaceId))).getSingleOrNull())?.since ??
+      0;
+
   Future<void> _pull(String workspaceId) async {
-    var since = (await (db.select(db.syncCursors)..where((c) => c.workspaceId.equals(workspaceId))).getSingleOrNull())
-            ?.since ??
-        0;
+    var since = await cursorOf(workspaceId);
     var restarted = false;
     while (true) {
       final response = _check(await api.get('/api/v1/sync/pull/', query: {'workspace': workspaceId, 'since': '$since'}));

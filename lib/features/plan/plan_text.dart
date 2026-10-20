@@ -20,6 +20,7 @@ const shownFeatures = [
   F.savingsGoals,
   F.businessWorkspaces,
   F.businessCashbooks,
+  F.businessWidget,
   F.reportsExcel,
   F.reportsCustomRange,
 ];
@@ -37,6 +38,7 @@ String featureLabel(AppLocalizations l10n, String feature, [String? fallback]) =
       F.remindersStandalone => l10n.featureReminders,
       F.savingsGoals => l10n.featureSavingsGoals,
       F.homeWidget => l10n.featureHomeWidget,
+      F.businessWidget => l10n.featureBusinessWidget,
       F.businessWorkspaces => l10n.featureBusinesses,
       F.businessCashbooks => l10n.featureCashbooks,
       F.teamSeats => l10n.featureTeamSeats,

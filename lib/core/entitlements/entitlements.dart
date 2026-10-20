@@ -13,6 +13,7 @@ abstract final class F {
   static const remindersStandalone = 'reminders.standalone';
   static const savingsGoals = 'goals.savings';
   static const homeWidget = 'widget.home';
+  static const businessWidget = 'widget.business';
   static const businessWorkspaces = 'business.workspaces';
   static const businessCashbooks = 'business.cashbooks';
   static const teamSeats = 'team.seats';

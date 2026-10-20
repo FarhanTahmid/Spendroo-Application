@@ -2807,4 +2807,227 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get widgetLeftThisMonth => 'এ মাসে বাকি';
+
+  @override
+  String get featureBusinessWidget => 'ব্যবসার হোম স্ক্রিন উইজেট';
+
+  @override
+  String get bizWidgetSevenDays => '৭ দিন';
+
+  @override
+  String get bizWidgetVsYesterday => 'গতকালের তুলনায়';
+
+  @override
+  String get bizWidgetVsPrevious7 => 'আগের ৭ দিনের তুলনায়';
+
+  @override
+  String get bizWidgetVsLastMonth => 'গত মাসের তুলনায়';
+
+  @override
+  String bizWidgetBooks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি ক্যাশবুক',
+      zero: 'কোনো ক্যাশবুক নেই',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bizWidgetOtherCurrency(int count, String currency) {
+    return '$currency-এ আরও $countটি';
+  }
+
+  @override
+  String get bizWidgetUnlockTitle => 'আপনার ব্যবসার পুরো চিত্র দেখুন';
+
+  @override
+  String get bizWidgetUnlockBody =>
+      'আজ, ৭ দিন ও মাসের হিসাব, ১৪ দিনের নগদ চার্ট আর স্মার্ট পরামর্শ';
+
+  @override
+  String get bizWidgetChooseBusiness => 'একটি ব্যবসা বেছে নিন';
+
+  @override
+  String get bizWidgetChooseBook => 'একটি ক্যাশবুক বেছে নিন';
+
+  @override
+  String get bizWidgetChooseBody => 'উইজেটে কী দেখাবে তা বাছতে ট্যাপ করুন';
+
+  @override
+  String get bizWidgetGoneTitle => 'আর পাওয়া যাচ্ছে না';
+
+  @override
+  String get bizWidgetGoneBody => 'অন্য একটি বাছতে ট্যাপ করুন';
+
+  @override
+  String get bizWidgetSignInBody => 'আপনার ব্যবসার এক নজরের হিসাব এখানে দেখাবে';
+
+  @override
+  String get bizWidgetBooksTitle => 'ক্যাশবুক';
+
+  @override
+  String get bizWidgetRecentTitle => 'সাম্প্রতিক';
+
+  @override
+  String get bizWidgetNoEntries =>
+      'এখনো কোনো এন্ট্রি নেই। শুরু করতে জমা বা খরচে ট্যাপ করুন।';
+
+  @override
+  String get bizWidgetQuietChart => 'গত ১৪ দিনে কোনো জমা-খরচ নেই';
+
+  @override
+  String get bizWidgetNoBooks =>
+      'এখনো কোনো ক্যাশবুক নেই। যোগ করতে ব্যবসাটি খুলুন।';
+
+  @override
+  String get bizWidgetNextInsight => 'পরের পরামর্শ';
+
+  @override
+  String get bizWidgetRefresh => 'খুলে হালনাগাদ করুন';
+
+  @override
+  String get bizWidgetPeriod => 'সময়কাল বদলান';
+
+  @override
+  String get bizWidgetPickerEmpty =>
+      'এখনো কোনো ব্যবসা নেই। আগে স্পেন্ড্রুতে একটি তৈরি করুন।';
+
+  @override
+  String get bizWidgetPickerBooksEmpty => 'এই ব্যবসায় এখনো কোনো ক্যাশবুক নেই।';
+
+  @override
+  String get bizWidgetSettingsTitle => 'ব্যবসার উইজেট';
+
+  @override
+  String get bizWidgetSettingsBody =>
+      'পুরো ব্যবসা বা একটি ক্যাশবুক, হোম স্ক্রিনেই';
+
+  @override
+  String get bizWidgetAddBusiness => 'ব্যবসার উইজেট';
+
+  @override
+  String get bizWidgetAddBusinessBody =>
+      'সব ক্যাশবুক মিলিয়ে ব্যালেন্স, জমা-খরচ আর পরামর্শ';
+
+  @override
+  String get bizWidgetAddBook => 'ক্যাশবুক উইজেট';
+
+  @override
+  String get bizWidgetAddBookBody => 'একটি ক্যাশবুক, এক ট্যাপে জমা ও খরচ';
+
+  @override
+  String get bizChooseBookTitle => 'কোন ক্যাশবুকে যোগ করবেন?';
+
+  @override
+  String get bizChooseBookNone =>
+      'এই ব্যবসার ক্যাশবুকগুলো আপনি শুধু দেখতে পারেন।';
+
+  @override
+  String bizInsightNegative(String amount) {
+    return 'ব্যালেন্স শূন্যের $amount নিচে';
+  }
+
+  @override
+  String get bizInsightNegativeMasked => 'ব্যালেন্স শূন্যের নিচে';
+
+  @override
+  String bizInsightNegativeBook(String book, String amount) {
+    return '$book শূন্যের $amount নিচে';
+  }
+
+  @override
+  String bizInsightNegativeBookMasked(String book) {
+    return '$book শূন্যের নিচে';
+  }
+
+  @override
+  String bizInsightIdle(String date) {
+    return '$date-এর পর কোনো এন্ট্রি নেই';
+  }
+
+  @override
+  String bizInsightOutUp(String percent) {
+    return 'গত মাসের চেয়ে খরচ $percent বেশি';
+  }
+
+  @override
+  String bizInsightOutDown(String percent) {
+    return 'গত মাসের চেয়ে খরচ $percent কম';
+  }
+
+  @override
+  String bizInsightInUp(String percent) {
+    return 'গত মাসের চেয়ে জমা $percent বেশি';
+  }
+
+  @override
+  String bizInsightInDown(String percent) {
+    return 'গত মাসের চেয়ে জমা $percent কম';
+  }
+
+  @override
+  String bizInsightTopCategory(String category, String percent) {
+    return 'এ মাসের খরচের $percent $category';
+  }
+
+  @override
+  String bizInsightBiggestOut(String label, String amount) {
+    return 'এ সপ্তাহের সবচেয়ে বড় খরচ: $label, $amount';
+  }
+
+  @override
+  String bizInsightBiggestOutMasked(String label) {
+    return 'এ সপ্তাহের সবচেয়ে বড় খরচ: $label';
+  }
+
+  @override
+  String bizInsightStreak(String days) {
+    return 'টানা $days দিন খরচের চেয়ে জমা বেশি';
+  }
+
+  @override
+  String bizInsightProjection(String month, String amount) {
+    return 'এভাবে চললে $month শেষ হবে $amount-এ';
+  }
+
+  @override
+  String bizInsightProjectionAhead(String month) {
+    return 'এভাবে চললে $month লাভে শেষ হবে';
+  }
+
+  @override
+  String bizInsightProjectionBehind(String month) {
+    return 'এভাবে চললে $month ঘাটতিতে শেষ হবে';
+  }
+
+  @override
+  String bizInsightLeadBook(String book, String amount) {
+    return 'এ মাসে সবার আগে $book, $amount';
+  }
+
+  @override
+  String bizInsightLeadBookMasked(String book) {
+    return 'এ মাসে সবার আগে $book';
+  }
+
+  @override
+  String bizInsightLosingBook(String book, String amount) {
+    return 'এ মাসে $book $amount-এ আছে';
+  }
+
+  @override
+  String bizInsightLosingBookMasked(String book) {
+    return 'এ মাসে $book-এ ঘাটতি চলছে';
+  }
+
+  @override
+  String get bizInsightQuietMonth => 'এ মাসে এখনো কোনো এন্ট্রি নেই';
+
+  @override
+  String get bizInsightEmptyBook => 'পরামর্শ দেখতে প্রথম এন্ট্রিটি যোগ করুন';
+
+  @override
+  String get bizInsightSteady => 'জমা-খরচ গত মাসের কাছাকাছি';
 }

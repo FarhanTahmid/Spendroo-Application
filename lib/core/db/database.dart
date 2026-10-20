@@ -298,7 +298,10 @@ class Settings extends Table {
   Outbox, SyncCursors, SyncFailures, Settings,
 ])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'spendroo'));
+  // Shared across isolates: a widget refreshed by a silent push (biz_widget_background.dart)
+  // writes through the same connection, so the open app's screens see its changes
+  AppDatabase([QueryExecutor? executor])
+      : super(executor ?? driftDatabase(name: 'spendroo', native: const DriftNativeOptions(shareAcrossIsolates: true)));
 
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.

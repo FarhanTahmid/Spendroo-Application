@@ -9,6 +9,8 @@ import 'core/push/push_controller.dart';
 import 'core/ui.dart';
 import 'features/goals/goal_page.dart';
 import 'features/goals/goals_page.dart';
+import 'features/home_widget/business/biz_quick_add.dart';
+import 'features/home_widget/business/biz_widget_controller.dart';
 import 'features/home_widget/home_widget_controller.dart';
 import 'features/home_widget/quick_add_page.dart';
 import 'features/home_widget/widget_launch.dart';
@@ -107,7 +109,29 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'categories',
             builder: (_, state) => CashbookCategoriesPage(bookId: state.pathParameters['id']!),
           ),
+          // The entry form on its own, for the cashbook widget's Cash in / Cash out
+          GoRoute(
+            path: 'entry',
+            pageBuilder: (_, state) => MaterialPage(
+              fullscreenDialog: true,
+              child: CashbookEntryLauncher(
+                bookId: state.pathParameters['id']!,
+                type: state.uri.queryParameters['type'],
+              ),
+            ),
+          ),
         ],
+      ),
+      // Which book a business widget's Cash in / Cash out goes in
+      GoRoute(
+        path: '/business/:ws/add',
+        pageBuilder: (_, state) => MaterialPage(
+          fullscreenDialog: true,
+          child: BusinessQuickAddPage(
+            workspaceId: state.pathParameters['ws']!,
+            type: state.uri.queryParameters['type'],
+          ),
+        ),
       ),
     ],
   );
@@ -153,6 +177,7 @@ class SpendrooApp extends ConsumerWidget {
     ref.watch(pushControllerProvider);
     // Keeps the home-screen widget's figures current, and hears its buttons
     ref.watch(homeWidgetControllerProvider);
+    ref.watch(bizWidgetControllerProvider);
     ref.watch(widgetLaunchControllerProvider);
     final router = ref.watch(routerProvider);
 
@@ -162,9 +187,13 @@ class SpendrooApp extends ConsumerWidget {
       if (route == null) return;
       if (ref.read(authControllerProvider).step != AuthStep.signedIn || ref.read(onboardedProvider) != true) return;
       ref.read(pushRouteProvider.notifier).done();
+      // A business widget's link names its business: open that one, so going back lands in it
+      final uri = Uri.parse(route);
+      final workspace = uri.queryParameters['ws'];
+      if (workspace != null) ref.read(currentWorkspaceIdProvider.notifier).select(workspace);
       // From home, so going back leads somewhere
       router.go('/');
-      if (route != '/') WidgetsBinding.instance.addPostFrameCallback((_) => router.push(route));
+      if (uri.path != '/') WidgetsBinding.instance.addPostFrameCallback((_) => router.push(route));
     }
 
     ref.listen(pushRouteProvider, (_, _) => follow());

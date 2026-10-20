@@ -7,4 +7,17 @@
     <string name="widget_preview_today">এই মাসের খরচ</string>
     <string name="widget_preview_amount">৳১৮,৪২০</string>
     <string name="widget_preview_month">আজ · ৳৪৫০</string>
+
+    <!-- The business and cashbook widgets (widget/business) -->
+    <string name="widget_biz_label">ব্যবসা</string>
+    <string name="widget_biz_description">পুরো ব্যবসা এক নজরে: ব্যালেন্স, জমা-খরচ আর পরামর্শ</string>
+    <string name="widget_book_label">ক্যাশবুক</string>
+    <string name="widget_book_description">একটি ক্যাশবুক, এক ট্যাপে জমা ও খরচ</string>
+    <string name="widget_biz_open_first">আপনার ব্যবসাগুলো আনতে একবার স্পেন্ড্রু খুলুন</string>
+    <string name="widget_biz_open">স্পেন্ড্রু খুলুন</string>
+    <string name="widget_biz_preview_name">রহমান ট্রেডার্স</string>
+    <string name="widget_book_preview_name">দোকানের ক্যাশ</string>
+    <string name="widget_biz_preview_balance">৳১,২৪,৫০০</string>
+    <string name="widget_book_preview_balance">৳৩৮,২৪০</string>
+    <string name="widget_biz_preview_flow">আজ · ↓ ৳৮,২০০ · ↑ ৳৩,১৫০</string>
 </resources>

@@ -5,11 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:spendroo/core/providers.dart';
 import 'package:spendroo/core/push/push_controller.dart';
 import 'package:spendroo/core/push/push_service.dart';
+import 'package:spendroo/features/home_widget/business/biz_widget_targets.dart';
 import 'package:spendroo/features/personal/ledger_repository.dart';
 import 'package:spendroo/features/recurring/inbox.dart';
 import 'package:spendroo/features/settings/notification_settings_page.dart';
 
 import 'app_flow_test.dart';
+import 'biz_widget_background_test.dart' show FixedTargets;
 
 /// The phone, as far as notifications go: what the app asked of it, and a way to make things arrive.
 class FakePushService implements PushService {
@@ -116,6 +118,29 @@ void main() {
     expect(app.server.devices.where((device) => device['token'] == 'phone-token-2'), isEmpty);
     expect(app.server.pushCalls.sublist(app.server.pushCalls.length - 2), ['forget', 'logout']);
     expect(phone.daily, isNull);
+    await app.stop();
+  }, timeout: const Timeout(Duration(seconds: 90)));
+
+  testWidgets('the server hears what the business widgets show, and their silent push shows nothing', (tester) async {
+    final phone = FakePushService();
+    final app = Harness(
+      tester,
+      FakeServer(onboardedAt: onboarded),
+      overrides: [
+        pushServiceProvider.overrideWithValue(phone),
+        bizWidgetTargetSourceProvider.overrideWithValue(
+          FixedTargets(const BizWidgetTargets(workspaces: {'shop'}, books: {'till', 'bank'})),
+        ),
+      ],
+    );
+    await app.start();
+    await app.logIn();
+    expect(app.server.devices.last, containsPair('widget_workspaces', ['shop']));
+    expect(app.server.devices.last, containsPair('widget_books', ['bank', 'till']));
+
+    phone.arrive(const PushMessage(data: {'kind': 'widgets', 'workspace_id': 'shop', 'seq': '9'}));
+    await app.settle();
+    expect(phone.shown, isEmpty);
     await app.stop();
   }, timeout: const Timeout(Duration(seconds: 90)));
 

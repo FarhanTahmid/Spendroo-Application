@@ -12,6 +12,7 @@ import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.currentState
+import com.spendroo.app.widget.business.BizWidgets
 import com.spendroo.app.widget.ui.SpendrooContent
 import es.antonborri.home_widget.HomeWidgetGlanceState
 import es.antonborri.home_widget.HomeWidgetGlanceStateDefinition
@@ -70,12 +71,14 @@ class SpendrooWidgetReceiver : HomeWidgetGlanceWidgetReceiver<SpendrooWidget>() 
     override fun previewFingerprint(context: Context): String = "sample-v2"
 }
 
-/** The eye on the widget: hides or shows every amount, without opening the app. */
+/** The eye on a widget: hides or shows every amount on every Spendroo widget, without opening the app. */
 class PrivacyToggleAction : ActionCallback {
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
         val preferences = HomeWidgetPlugin.getData(context)
         val hidden = preferences.getBoolean(SpendrooWidget.HIDE_AMOUNTS, false)
         preferences.edit().putBoolean(SpendrooWidget.HIDE_AMOUNTS, !hidden).commit()
         SpendrooWidget.refreshAll(context)
+        // One choice for every Spendroo widget, the business ones too
+        BizWidgets.refreshAll(context)
     }
 }

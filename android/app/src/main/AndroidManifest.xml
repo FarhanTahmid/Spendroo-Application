@@ -68,6 +68,48 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/spendroo_widget_info" />
         </receiver>
+        <!-- The business and cashbook widgets (widget/business); fed through home_widget like the one above -->
+        <receiver
+            android:name=".widget.business.BusinessWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_biz_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/business_widget_info" />
+        </receiver>
+        <receiver
+            android:name=".widget.business.CashbookWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_book_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/cashbook_widget_info" />
+        </receiver>
+        <!-- Which business or cashbook a business widget shows: opened by the launcher as one is placed -->
+        <activity
+            android:name=".widget.business.WidgetPickerActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Material.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <!-- Runs the app's Dart, with no screen, when a business widget's choice changes (bizWidgetCallback) -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="es.antonborri.home_widget.action.BACKGROUND" />
+            </intent-filter>
+        </receiver>
         <!-- Redraws the widget at the midnights the app schedules, so a new day starts at nothing spent.
              Inexact on purpose: a few minutes late is fine, so no exact-alarm permission -->
         <receiver

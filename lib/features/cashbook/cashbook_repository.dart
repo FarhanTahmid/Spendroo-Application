@@ -55,6 +55,14 @@ class BreakdownRow {
   final int cashOutMinor;
 }
 
+/// What a member with [workspaceRole] may do in a book: 'admin', 'edit' or 'view'.
+/// [grantRole] is staff's own grant on that book, if any.
+String bookPermission(String workspaceRole, String? grantRole) {
+  if (workspaceRole == 'owner' || workspaceRole == 'admin') return 'admin';
+  if (workspaceRole == 'viewer') return 'view';
+  return switch (grantRole) { 'admin' => 'admin', 'editor' => 'edit', _ => 'view' };
+}
+
 class CashbookRepository {
   CashbookRepository(this.db, this.store, [this.plan]);
 
@@ -164,14 +172,13 @@ class CashbookRepository {
 
   /// What the signed-in user may do in this book: 'admin', 'edit' or 'view'.
   Future<String> permissionFor(Cashbook book, Workspace workspace) async {
-    if (workspace.role == 'owner' || workspace.role == 'admin') return 'admin';
-    if (workspace.role == 'viewer') return 'view';
+    if (workspace.role != 'staff') return bookPermission(workspace.role, null);
     // Staff only ever receive their own grants
     final grant = await (db.select(db.cashbookMembers)
           ..where((m) => m.cashbookId.equals(book.id) & m.deletedAt.isNull())
           ..limit(1))
         .getSingleOrNull();
-    return switch (grant?.role) { 'admin' => 'admin', 'editor' => 'edit', _ => 'view' };
+    return bookPermission(workspace.role, grant?.role);
   }
 
   Future<String> createCashbook(String workspaceId, String name, String currency) async {

@@ -2873,4 +2873,229 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetLeftThisMonth => 'Left this month';
+
+  @override
+  String get featureBusinessWidget => 'Business home-screen widgets';
+
+  @override
+  String get bizWidgetSevenDays => '7 days';
+
+  @override
+  String get bizWidgetVsYesterday => 'vs yesterday';
+
+  @override
+  String get bizWidgetVsPrevious7 => 'vs previous 7 days';
+
+  @override
+  String get bizWidgetVsLastMonth => 'vs last month';
+
+  @override
+  String bizWidgetBooks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cashbooks',
+      one: '1 cashbook',
+      zero: 'No cashbooks',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bizWidgetOtherCurrency(int count, String currency) {
+    return '+$count in $currency';
+  }
+
+  @override
+  String get bizWidgetUnlockTitle => 'See where your business stands';
+
+  @override
+  String get bizWidgetUnlockBody =>
+      'Today, 7 days and the month, a 14-day cash chart and smart insights';
+
+  @override
+  String get bizWidgetChooseBusiness => 'Choose a business';
+
+  @override
+  String get bizWidgetChooseBook => 'Choose a cashbook';
+
+  @override
+  String get bizWidgetChooseBody => 'Tap to pick what this widget shows';
+
+  @override
+  String get bizWidgetGoneTitle => 'No longer available';
+
+  @override
+  String get bizWidgetGoneBody => 'Tap to choose another';
+
+  @override
+  String get bizWidgetSignInBody => 'Your business at a glance will show here';
+
+  @override
+  String get bizWidgetBooksTitle => 'Cashbooks';
+
+  @override
+  String get bizWidgetRecentTitle => 'Recent';
+
+  @override
+  String get bizWidgetNoEntries =>
+      'No entries yet. Tap Cash in or Cash out to start.';
+
+  @override
+  String get bizWidgetQuietChart => 'Nothing in or out in the last 14 days';
+
+  @override
+  String get bizWidgetNoBooks =>
+      'No cashbooks yet. Open the business to add one.';
+
+  @override
+  String get bizWidgetNextInsight => 'Next insight';
+
+  @override
+  String get bizWidgetRefresh => 'Open and refresh';
+
+  @override
+  String get bizWidgetPeriod => 'Change period';
+
+  @override
+  String get bizWidgetPickerEmpty =>
+      'No businesses yet. Create one in Spendroo first.';
+
+  @override
+  String get bizWidgetPickerBooksEmpty => 'This business has no cashbooks yet.';
+
+  @override
+  String get bizWidgetSettingsTitle => 'Business widgets';
+
+  @override
+  String get bizWidgetSettingsBody =>
+      'A whole business or one cashbook on your home screen';
+
+  @override
+  String get bizWidgetAddBusiness => 'Business widget';
+
+  @override
+  String get bizWidgetAddBusinessBody =>
+      'Balance, cash in and out, and insights across every cashbook';
+
+  @override
+  String get bizWidgetAddBook => 'Cashbook widget';
+
+  @override
+  String get bizWidgetAddBookBody =>
+      'One cashbook, with one-tap Cash in and Cash out';
+
+  @override
+  String get bizChooseBookTitle => 'Add to which cashbook?';
+
+  @override
+  String get bizChooseBookNone =>
+      'You can only view this business\'s cashbooks.';
+
+  @override
+  String bizInsightNegative(String amount) {
+    return 'Balance is $amount below zero';
+  }
+
+  @override
+  String get bizInsightNegativeMasked => 'Balance is below zero';
+
+  @override
+  String bizInsightNegativeBook(String book, String amount) {
+    return '$book is $amount below zero';
+  }
+
+  @override
+  String bizInsightNegativeBookMasked(String book) {
+    return '$book is below zero';
+  }
+
+  @override
+  String bizInsightIdle(String date) {
+    return 'No entries since $date';
+  }
+
+  @override
+  String bizInsightOutUp(String percent) {
+    return 'Cash out is up $percent on last month';
+  }
+
+  @override
+  String bizInsightOutDown(String percent) {
+    return 'Cash out is down $percent on last month';
+  }
+
+  @override
+  String bizInsightInUp(String percent) {
+    return 'Cash in is up $percent on last month';
+  }
+
+  @override
+  String bizInsightInDown(String percent) {
+    return 'Cash in is down $percent on last month';
+  }
+
+  @override
+  String bizInsightTopCategory(String category, String percent) {
+    return '$category is $percent of this month\'s cash out';
+  }
+
+  @override
+  String bizInsightBiggestOut(String label, String amount) {
+    return 'Biggest cash out this week: $label, $amount';
+  }
+
+  @override
+  String bizInsightBiggestOutMasked(String label) {
+    return 'Biggest cash out this week: $label';
+  }
+
+  @override
+  String bizInsightStreak(String days) {
+    return 'Cash in beat cash out $days days running';
+  }
+
+  @override
+  String bizInsightProjection(String month, String amount) {
+    return 'At this pace, $month ends at $amount';
+  }
+
+  @override
+  String bizInsightProjectionAhead(String month) {
+    return 'At this pace, $month ends ahead';
+  }
+
+  @override
+  String bizInsightProjectionBehind(String month) {
+    return 'At this pace, $month ends behind';
+  }
+
+  @override
+  String bizInsightLeadBook(String book, String amount) {
+    return '$book leads this month at $amount';
+  }
+
+  @override
+  String bizInsightLeadBookMasked(String book) {
+    return '$book leads this month';
+  }
+
+  @override
+  String bizInsightLosingBook(String book, String amount) {
+    return '$book is at $amount this month';
+  }
+
+  @override
+  String bizInsightLosingBookMasked(String book) {
+    return '$book is losing money this month';
+  }
+
+  @override
+  String get bizInsightQuietMonth => 'No entries yet this month';
+
+  @override
+  String get bizInsightEmptyBook => 'Add the first entry to see insights here';
+
+  @override
+  String get bizInsightSteady => 'Cash in and out are close to last month';
 }

@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../features/home_widget/business/biz_widget_targets.dart';
 import '../../l10n/app_localizations.dart';
 import '../api/api_client.dart';
 import '../auth/auth_repository.dart';
@@ -16,6 +17,32 @@ import 'push_service.dart';
 
 const notificationPrefsSettingKey = 'notification_prefs';
 const pushAskedSettingKey = 'push_asked';
+
+/// What PUT /api/v1/me/devices/ is sent; null without a push address. Also
+/// used with no app open, when a widget's choice changed (biz_widget_background.dart).
+Future<Map<String, Object?>?> devicePayload(
+  PushService service, {
+  required String locale,
+  BizWidgetTargets? targets,
+}) async {
+  final token = await service.token();
+  if (token == null) return null;
+  var version = '';
+  try {
+    final info = await PackageInfo.fromPlatform();
+    version = '${info.version}+${info.buildNumber}';
+  } on Object {
+    // Not worth failing over
+  }
+  return {
+    'token': token,
+    'platform': defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
+    'locale': locale,
+    'timezone': await service.timeZone() ?? '',
+    'app_version': version,
+    ...?targets?.toJson(),
+  };
+}
 
 /// What the user wants to be told, as /api/v1/me/notification-settings/ keeps it.
 class NotificationPrefs {
@@ -112,10 +139,11 @@ class PushRoute extends Notifier<String?> {
   void open(String? route) => state = _known.contains(route) ? route : '/inbox';
 
   /// Screens a home-screen widget button opens (features/home_widget/widget_launch.dart).
-  static const _fromWidget = {'/', '/plan', '/add'};
+  /// The business widgets add a cashbook, its entry form, and a business's book chooser.
+  static final _fromWidget = RegExp(r'^(/|/plan|/add|/cashbook/[^/]+|/cashbook/[^/]+/entry|/business/[^/]+/add)$');
 
   void openFromWidget(String route) {
-    if (_fromWidget.contains(Uri.parse(route).path)) state = route;
+    if (_fromWidget.hasMatch(Uri.parse(route).path)) state = route;
   }
 
   void done() => state = null;
@@ -189,27 +217,18 @@ class PushController extends Notifier<PushState> {
     await _nudge();
   }
 
-  /// Tells the server this phone's address, language and time zone. Safe to call again and again.
+  /// Tells the server this phone's address, language, time zone and what its
+  /// business widgets show. Safe to call again and again.
   Future<void> register() async {
     if (!_signedIn) return;
-    final token = await _service.token();
-    if (token == null) return;
-    var version = '';
+    final targets = await ref.read(bizWidgetTargetSourceProvider).read();
+    final device = await devicePayload(_service, locale: ref.read(localeProvider).languageCode, targets: targets);
+    if (device == null) return;
     try {
-      final info = await PackageInfo.fromPlatform();
-      version = '${info.version}+${info.buildNumber}';
-    } on Object {
-      // Not worth failing over
-    }
-    try {
-      final response = await _api.put('/api/v1/me/devices/', {
-        'token': token,
-        'platform': defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
-        'locale': ref.read(localeProvider).languageCode,
-        'timezone': await _service.timeZone() ?? '',
-        'app_version': version,
-      });
-      if (response.ok) _registered = token;
+      final response = await _api.put('/api/v1/me/devices/', device);
+      if (!response.ok) return;
+      _registered = device['token'] as String;
+      if (targets != null) await _db.setSetting(widgetTargetsSettingKey, targets.fingerprint);
     } on OfflineException {
       // Tried again at the next launch
     }

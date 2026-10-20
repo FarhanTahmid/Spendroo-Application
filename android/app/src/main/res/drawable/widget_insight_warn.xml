@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An insight that wants attention: a coral wash -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#2EFF8A7A" />
+    <corners android:radius="12dp" />
+</shape>

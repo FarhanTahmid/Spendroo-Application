@@ -9,4 +9,17 @@
     <string name="widget_preview_today">Spent this month</string>
     <string name="widget_preview_amount">৳18,420</string>
     <string name="widget_preview_month">Today · ৳450</string>
+
+    <!-- The business and cashbook widgets (widget/business) -->
+    <string name="widget_biz_label">Business</string>
+    <string name="widget_biz_description">A whole business at a glance: balance, cash in and out, and insights</string>
+    <string name="widget_book_label">Cashbook</string>
+    <string name="widget_book_description">One cashbook, with one-tap Cash in and Cash out</string>
+    <string name="widget_biz_open_first">Open Spendroo once to load your businesses</string>
+    <string name="widget_biz_open">Open Spendroo</string>
+    <string name="widget_biz_preview_name">Rahman Traders</string>
+    <string name="widget_book_preview_name">Shop cash</string>
+    <string name="widget_biz_preview_balance">৳1,24,500</string>
+    <string name="widget_book_preview_balance">৳38,240</string>
+    <string name="widget_biz_preview_flow">Today · ↓ ৳8,200 · ↑ ৳3,150</string>
 </resources>

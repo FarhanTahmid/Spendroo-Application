@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The business widgets' card: deep ledger green, a touch lighter towards the bottom right.
+     Set apart from the personal widget's navy, so a home screen with both reads at a glance -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="315"
+        android:endColor="#FF145A4C"
+        android:startColor="#FF0A3730"
+        android:type="linear" />
+    <corners android:radius="@dimen/widget_radius" />
+</shape>

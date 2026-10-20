@@ -87,8 +87,11 @@ class AuthState {
   final bool ready;
 }
 
+/// Where the sign-in step is kept; read with no app open too (biz_widget_background.dart).
+const authStepSettingKey = 'auth_step';
+
 class AuthController extends Notifier<AuthState> {
-  static const _stepKey = 'auth_step';
+  static const _stepKey = authStepSettingKey;
   static const _emailKey = 'auth_email';
 
   @override
@@ -345,8 +348,10 @@ final currentWorkspaceProvider = Provider<Workspace?>((ref) {
 
 // ----------------------------------------------------------- preferences
 
+const localeSettingKey = 'locale';
+
 class LocaleController extends Notifier<Locale> {
-  static const _key = 'locale';
+  static const _key = localeSettingKey;
 
   bool _chosen = false;
 

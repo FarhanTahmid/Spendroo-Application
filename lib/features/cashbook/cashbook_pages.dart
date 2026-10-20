@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,21 +8,34 @@ import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/money.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../bills/bill_repository.dart';
+import '../bills/bill_widgets.dart';
+import '../fields/field_inputs.dart';
+import '../fields/field_repository.dart';
+import '../fields/field_text.dart';
+import '../history/history_page.dart';
 import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
+import '../profile/profile_repository.dart';
 import '../reports/report_repository.dart';
 import '../reports/report_sheet.dart';
+import 'book_access.dart';
 import 'cashbook_repository.dart';
+import 'insights/insights_cards.dart' show InsightsPeriodBar;
+import 'insights/insights_pages.dart';
 
 /// Light enough to read as "money out" on the navy header.
 const _outOnHeader = Color(0xFFFF9AA2);
 
 /// Home of a business workspace: its cashbooks with their balances.
 class CashbooksPage extends ConsumerWidget {
-  const CashbooksPage({super.key, required this.workspace});
+  const CashbooksPage({super.key, required this.workspace, this.tabs});
 
   final Workspace workspace;
+
+  /// The Books / Insights switch, above the balance.
+  final Widget? tabs;
 
   bool get _canManage => workspace.role == 'owner' || workspace.role == 'admin';
 
@@ -45,7 +57,13 @@ class CashbooksPage extends ConsumerWidget {
 
     return Scaffold(
       body: PassbookBody(
-        header: HeaderFigure(label: l10n.balance, amountMinor: total, currency: workspace.defaultCurrency),
+        header: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (tabs != null) ...[tabs!, const SizedBox(height: AppSpace.md)],
+            HeaderFigure(label: l10n.balance, amountMinor: total, currency: workspace.defaultCurrency),
+          ],
+        ),
         child: RefreshIndicator(
           onRefresh: ref.read(syncControllerProvider.notifier).syncNow,
           child: AsyncView(
@@ -56,7 +74,7 @@ class CashbooksPage extends ConsumerWidget {
                       height: 380,
                       child: EmptyState(
                         icon: Icons.menu_book_outlined,
-                        message: l10n.noCashbooks,
+                        message: _canManage ? l10n.noCashbooks : l10n.noCashbooksForStaff,
                         actionLabel: _canManage ? l10n.addCashbook : null,
                         onAction: addCashbook,
                       ),
@@ -206,14 +224,27 @@ class _CashbookFormState extends ConsumerState<_CashbookForm> {
   }
 }
 
-/// One cashbook: balance, entries, and the Cash in / Cash out buttons.
-class CashbookPage extends ConsumerWidget {
-  const CashbookPage({super.key, required this.bookId});
+/// One cashbook: balance, entries, and the Cash in / Cash out buttons; or,
+/// on its Insights tab, the book in numbers.
+class CashbookPage extends ConsumerStatefulWidget {
+  const CashbookPage({super.key, required this.bookId, this.insights = false});
 
   final String bookId;
 
+  /// Opens on the Insights tab.
+  final bool insights;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CashbookPage> createState() => _CashbookPageState();
+}
+
+class _CashbookPageState extends ConsumerState<CashbookPage> {
+  late bool _insights = widget.insights;
+
+  String get bookId => widget.bookId;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
     final summary = ref.watch(cashbookProvider(bookId)).value;
     final workspaces = ref.watch(workspacesProvider).value ?? const <Workspace>[];
@@ -225,19 +256,16 @@ class CashbookPage extends ConsumerWidget {
     final workspace = workspaces.where((w) => w.id == book.workspaceId).firstOrNull;
     final repo = ref.read(cashbookRepositoryProvider);
 
-    return FutureBuilder<String>(
-      future: workspace == null ? Future.value('view') : repo.permissionFor(book, workspace),
+    return FutureBuilder<BookAccess>(
+      future: workspace == null ? Future.value(BookAccess.view) : repo.accessFor(book, workspace),
       builder: (context, snapshot) {
-        final permission = snapshot.data ?? 'view';
-        final canEdit = permission != 'view';
+        final access = snapshot.data ?? BookAccess.view;
+        final canEdit = access.canEdit;
+        // Who may use a book is a business's question; a personal space has no team
+        final canShare = access.canManage && workspace?.kind == 'business' && workspace?.isDemo != true;
         return PassbookScaffold(
           title: Text(book.bookName),
           actions: [
-            IconButton(
-              tooltip: l10n.report,
-              icon: const Icon(Icons.pie_chart_outline_rounded),
-              onPressed: () => context.push('/cashbook/$bookId/report'),
-            ),
             if (workspace != null)
               ReportButton(
                 scope: ReportScope.cashbook,
@@ -250,6 +278,12 @@ class CashbookPage extends ConsumerWidget {
                 onSelected: (action) async {
                   if (action == 'categories') {
                     context.push('/cashbook/$bookId/categories');
+                  } else if (action == 'fields') {
+                    context.push('/cashbook/$bookId/fields');
+                  } else if (action == 'access') {
+                    context.push('/cashbook/$bookId/access');
+                  } else if (action == 'history') {
+                    openHistory(context, book: bookId);
                   } else if (action == 'rename') {
                     final name =
                         await promptText(context, title: l10n.rename, label: l10n.cashbookName, initial: book.bookName);
@@ -258,6 +292,7 @@ class CashbookPage extends ConsumerWidget {
                     }
                   } else if (await confirm(context, l10n.deleteConfirm)) {
                     await repo.deleteCashbook(bookId);
+                    await ref.read(billRepositoryProvider).forgetCashbook(bookId);
                     if (!context.mounted) return;
                     showEventBurst(context, AppEvent.deleted);
                     context.pop();
@@ -265,22 +300,70 @@ class CashbookPage extends ConsumerWidget {
                 },
                 itemBuilder: (context) => [
                   PopupMenuItem(value: 'rename', child: Text(l10n.rename)),
-                  if (permission == 'admin') PopupMenuItem(value: 'categories', child: Text(l10n.categories)),
+                  if (access.canManage) PopupMenuItem(value: 'categories', child: Text(l10n.categories)),
+                  // A business's feature: a personal space has no use for it
+                  if (access.canManage && workspace?.kind == 'business')
+                    PopupMenuItem(
+                      value: 'fields',
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(l10n.fieldsTitle)),
+                          if (featureLocked(ref, workspace!, F.customFields)) const LockedTag(),
+                        ],
+                      ),
+                    ),
+                  if (canShare) PopupMenuItem(value: 'access', child: Text(l10n.whoHasAccess)),
+                  if (showsHistory(workspace))
+                    PopupMenuItem(
+                      value: 'history',
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(l10n.historyTitle)),
+                          HistoryTrailing(workspace: workspace!, chevron: false),
+                        ],
+                      ),
+                    ),
                   if (workspace?.role == 'owner') PopupMenuItem(value: 'delete', child: Text(l10n.delete)),
                 ],
               ),
           ],
-          header: _BalanceHeader(summary: summary),
-          body: Column(
+          header: AnimatedSize(
+            duration: context.motion(AppMotion.emphasised),
+            curve: AppMotion.ease,
+            alignment: Alignment.topCenter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SlidingSegmented<bool>(
+                  onHeader: true,
+                  segments: {false: l10n.entriesTab, true: l10n.insights},
+                  value: _insights,
+                  onChanged: (value) => setState(() => _insights = value),
+                ),
+                const SizedBox(height: AppSpace.md),
+                if (_insights && workspace != null)
+                  InsightsPeriodBar(workspace: workspace, scopeId: bookId)
+                else
+                  _BalanceHeader(summary: summary),
+              ],
+            ),
+          ),
+          body: _insights
+              ? BookInsightsView(book: book, workspace: workspace, access: access)
+              : Column(
             children: [
               if (!canEdit)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, 0),
                   child: Row(
                     children: [
-                      Icon(Icons.visibility_outlined, size: 18, color: context.colors.muted),
+                      Icon(access.canAdd ? Icons.add_circle_outline_rounded : Icons.visibility_outlined,
+                          size: 18, color: context.colors.muted),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(l10n.readOnly, style: Theme.of(context).textTheme.bodySmall)),
+                      Expanded(
+                        child: Text(access.canAdd ? l10n.addOnly : l10n.readOnly,
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ),
                     ],
                   ),
                 ),
@@ -294,14 +377,17 @@ class CashbookPage extends ConsumerWidget {
                           itemCount: entries.length,
                           itemBuilder: (context, index) => _EntryTile(
                             view: entries[index],
-                            onTap: canEdit ? () => _openForm(context, book, entry: entries[index].entry) : null,
+                            // Someone who cannot edit still opens the entry, to see its bills
+                            onTap: canEdit
+                                ? () => _openForm(context, book, entry: entries[index].entry)
+                                : () => showEntryDetails(context, entries[index], workspace: workspace, access: access),
                           ),
                         ),
                 ),
               ),
             ],
           ),
-          bottomNavigationBar: canEdit
+          bottomNavigationBar: access.canAdd && !_insights
               ? DecoratedBox(
                   decoration: BoxDecoration(
                     color: context.colors.sheet,
@@ -388,9 +474,13 @@ class _EntryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final entry = view.entry;
-    final details = [formatDate(context, entry.entryDate), view.categoryName, view.paymentMethodName]
-        .whereType<String>()
-        .join(' · ');
+    final pinned = view.pinned;
+    final details = [
+      formatDate(context, entry.entryDate),
+      view.categoryName,
+      view.paymentMethodName,
+      if (pinned != null) '${pinned.name} ${fieldDisplay(context, pinned.kind, pinned.value)}',
+    ].whereType<String>().join(' · ');
     return MoneyRow(
       icon: view.isCashIn ? Icons.south_west_rounded : Icons.north_east_rounded,
       tint: entry.categoryId == null
@@ -401,9 +491,96 @@ class _EntryTile extends StatelessWidget {
       amount: context.money(entry.amountMinor, entry.currency),
       amountColor: context.amountColor(view.isCashIn),
       onTap: onTap,
+      badge: view.billCount == 0 ? null : _BillBadge(count: view.billCount),
     );
   }
 }
+
+/// A paperclip and how many bills the entry keeps.
+class _BillBadge extends StatelessWidget {
+  const _BillBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = context.colors.muted;
+    return Semantics(
+      label: context.l10n.billCount(count),
+      child: ExcludeSemantics(
+        child: PopSwitcher(
+          child: Row(
+            key: ValueKey(count),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.attach_file_rounded, size: 15, color: muted),
+              if (count > 1)
+                Text('$count', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: muted)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// An entry for someone who may not change it: what it says, and its bills
+/// to open. Someone who only adds may attach bills to entries they added.
+Future<void> showEntryDetails(
+  BuildContext context,
+  EntryView view, {
+  required Workspace? workspace,
+  required BookAccess access,
+}) =>
+    showAppSheet<void>(
+      context,
+      title: context.l10n.entryDetails,
+      builder: (sheet) => Consumer(
+        builder: (context, ref, _) {
+          final text = Theme.of(context).textTheme;
+          final entry = view.entry;
+          final me = ref.watch(profileProvider).value?.id;
+          final mine = me != null && entry.createdById == me;
+          final fields = ref.watch(entryFieldsProvider(entry.cashbookId)).value ?? const <EntryField>[];
+          Widget line(IconData icon, String value) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                child: Row(
+                  children: [
+                    Icon(icon, size: 18, color: context.colors.muted),
+                    const SizedBox(width: AppSpace.sm),
+                    Expanded(child: Text(value, style: text.bodyMedium)),
+                  ],
+                ),
+              );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                '${view.isCashIn ? '+' : '−'}${context.money(entry.amountMinor, entry.currency)}',
+                style: text.headlineMedium?.copyWith(
+                  color: context.amountColor(view.isCashIn),
+                  fontFeatures: tabularFigures,
+                ),
+              ),
+              if (entry.title?.isNotEmpty ?? false) Text(entry.title!, style: text.titleMedium),
+              const SizedBox(height: AppSpace.md),
+              line(Icons.event_outlined, formatDate(context, entry.entryDate)),
+              if (view.categoryName != null) line(Icons.sell_outlined, view.categoryName!),
+              if (view.paymentMethodName != null) line(Icons.account_balance_wallet_outlined, view.paymentMethodName!),
+              if (entry.remarks?.isNotEmpty ?? false) line(Icons.notes_rounded, entry.remarks!),
+              FieldValueLines(fields: fields, values: customValuesOf(entry)),
+              const SizedBox(height: AppSpace.md),
+              BillsSection(
+                workspace: workspace,
+                entry: entry,
+                canAttach: access.canEdit || (access.canAdd && mine),
+                canRemove: access.canEdit,
+              ),
+            ],
+          );
+        },
+      ),
+    );
 
 /// Add or edit one cash-in or cash-out entry.
 class EntryFormPage extends ConsumerStatefulWidget {
@@ -429,13 +606,21 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
   late String _date = widget.entry?.entryDate ?? todayIso();
   late String? _categoryId = widget.entry?.categoryId;
   late String? _paymentMethodId = widget.entry?.paymentMethodId;
+
+  /// Values for the book's own fields as typed; numbers are tidied on save.
+  late final Map<String, String> _values = widget.entry == null ? {} : {...customValuesOf(widget.entry!)};
+  late final Set<String> _filledBefore = _values.keys.toSet();
   int _refused = 0;
+
+  /// Bills picked before a new entry is saved; they are queued once it is.
+  final _staged = StagedBills();
 
   @override
   void dispose() {
     _amount.dispose();
     _title.dispose();
     _remarks.dispose();
+    _staged.dispose();
     super.dispose();
   }
 
@@ -443,12 +628,35 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
 
   Future<void> _save() => guarded(context, _write);
 
+  /// Whether the form waits for this field. Entries made before a field was
+  /// required are never made to fill it in; one that had a value keeps it.
+  bool _mustFill(EntryField field) =>
+      field.isRequired && (widget.entry == null || _filledBefore.contains(field.id));
+
+  /// Once a save was refused, each field says at once when it is put right.
+  AutovalidateMode _validation = AutovalidateMode.disabled;
+  final _fieldsKey = GlobalKey();
+
   Future<void> _write() async {
-    if (!_formKey.currentState!.validate()) return setState(() => _refused++);
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _refused++;
+        _validation = AutovalidateMode.onUserInteraction;
+      });
+      // The book's own fields sit low on the form: bring them into view when one of them is the reason
+      final amountOk = Money.evaluate(_amount.text, widget.book.currency) != null;
+      final fieldsContext = _fieldsKey.currentContext;
+      if (amountOk && fieldsContext != null) {
+        await Scrollable.ensureVisible(fieldsContext, duration: context.motion(AppMotion.emphasised), curve: AppMotion.ease);
+      }
+      return;
+    }
     final repo = ref.read(cashbookRepositoryProvider);
     final amount = Money.evaluate(_amount.text, widget.book.currency)!;
+    final fields = ref.read(entryFieldsProvider(widget.book.id)).value ?? const <EntryField>[];
+    final values = _valuesLocked ? null : valuesToSave(fields, _values);
     if (widget.entry == null) {
-      await repo.addEntry(
+      final entryId = await repo.addEntry(
         widget.book,
         entryType: widget.entryType,
         amountMinor: amount,
@@ -457,6 +665,13 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         remarks: _blankToNull(_remarks.text),
         categoryId: _categoryId,
         paymentMethodId: _paymentMethodId,
+        customValues: values ?? const {},
+      );
+      await _staged.attachTo(
+        ref.read(billRepositoryProvider),
+        workspaceId: widget.book.workspaceId,
+        cashbookId: widget.book.id,
+        entryId: entryId,
       );
     } else {
       await repo.updateEntry(
@@ -467,6 +682,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         remarks: _blankToNull(_remarks.text),
         categoryId: _categoryId,
         paymentMethodId: _paymentMethodId,
+        customValues: values,
       );
     }
     if (!mounted) return;
@@ -479,13 +695,26 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
     Navigator.pop(context);
   }
 
+  /// The plan no longer covers changing values: they are shown as they are.
+  bool get _valuesLocked {
+    final workspace = (ref.read(workspacesProvider).value ?? const <Workspace>[])
+        .where((w) => w.id == widget.book.workspaceId)
+        .firstOrNull;
+    return workspace != null && featureLocked(ref, workspace, F.customFields);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final repo = ref.read(cashbookRepositoryProvider);
+    final fields = ref.watch(entryFieldsProvider(widget.book.id)).value ?? const <EntryField>[];
+    ref.watch(entitlementsProvider);
     final categories = ref.watch(entryCategoriesProvider(widget.book.id)).value ?? const <EntryCategory>[];
     final methods = ref.watch(paymentMethodsProvider(widget.book.id)).value ?? const <PaymentMethod>[];
     final isIn = widget.entryType == 'cash_in';
+    final workspace = (ref.watch(workspacesProvider).value ?? const <Workspace>[])
+        .where((w) => w.id == widget.book.workspaceId)
+        .firstOrNull;
 
     return Scaffold(
       backgroundColor: context.colors.sheet,
@@ -493,6 +722,12 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         backgroundColor: context.colors.sheet,
         title: Text(widget.entry != null ? l10n.editEntry : (isIn ? l10n.cashIn : l10n.cashOut)),
         actions: [
+          if (widget.entry != null && showsHistory(workspace))
+            IconButton(
+              tooltip: l10n.historyOfEntry,
+              icon: const Icon(Icons.history_rounded),
+              onPressed: () => openHistory(context, entry: widget.entry!.id),
+            ),
           if (widget.entry != null)
             IconButton(
               tooltip: l10n.delete,
@@ -500,6 +735,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
               onPressed: () async {
                 if (await confirm(context, l10n.deleteConfirm)) {
                   await repo.deleteEntry(widget.entry!.id);
+                  await ref.read(billRepositoryProvider).forgetEntry(widget.entry!.id);
                   if (!context.mounted) return;
                   showEventBurst(context, AppEvent.deleted);
                   Navigator.pop(context);
@@ -524,6 +760,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
       ),
       body: Form(
         key: _formKey,
+        autovalidateMode: _validation,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.lg),
           children: [
@@ -575,169 +812,36 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
               decoration: InputDecoration(labelText: l10n.remarks),
               maxLines: 3,
             ),
+            AnimatedSize(
+              duration: context.motion(AppMotion.emphasised),
+              curve: AppMotion.ease,
+              alignment: Alignment.topCenter,
+              child: fields.isNotEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: AppSpace.xl),
+                      child: EntryFieldsSection(
+                        key: _fieldsKey,
+                        fields: fields,
+                        values: _values,
+                        readOnly: _valuesLocked,
+                        mustFill: _mustFill,
+                        onChanged: (id, value) => setState(() {
+                          if (value == null || value.trim().isEmpty) {
+                            _values.remove(id);
+                          } else {
+                            _values[id] = value;
+                          }
+                        }),
+                      ),
+                    )
+                  : widget.entry == null && workspace != null
+                      ? FieldsHintCard(book: widget.book, workspace: workspace)
+                      : const SizedBox(width: double.infinity),
+            ),
+            const SizedBox(height: AppSpace.xl),
+            BillsSection(workspace: workspace, entry: widget.entry, staged: widget.entry == null ? _staged : null),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// Totals by category and by payment method, computed on the device.
-class CashbookReportPage extends ConsumerWidget {
-  const CashbookReportPage({super.key, required this.bookId});
-
-  final String bookId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.l10n;
-    final text = Theme.of(context).textTheme;
-    final summary = ref.watch(cashbookProvider(bookId)).value;
-    final repo = ref.watch(cashbookRepositoryProvider);
-    if (summary == null) return Scaffold(appBar: AppBar(title: Text(l10n.report)));
-    final currency = summary.book.currency;
-
-    Widget section(String title, bool byCategory) => StreamBuilder<List<BreakdownRow>>(
-          stream: repo.watchBreakdown(bookId, byCategory: byCategory),
-          builder: (context, snapshot) {
-            final rows = snapshot.data ?? const <BreakdownRow>[];
-            // Bars share one scale, so the longest is the biggest figure in the section
-            final largest = rows.fold<int>(
-                1, (max, r) => [max, r.cashInMinor, r.cashOutMinor].reduce((a, b) => a > b ? a : b));
-            Widget bar(int amount, Color color) => Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: amount / largest),
-                    duration: context.motion(const Duration(milliseconds: 450)),
-                    curve: AppMotion.ease,
-                    builder: (context, value, _) => Align(
-                      alignment: Alignment.centerLeft,
-                      child: FractionallySizedBox(
-                        widthFactor: value.clamp(0.02, 1.0),
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-            final spent = byCategory ? rows.where((r) => r.cashOutMinor > 0).toList() : const <BreakdownRow>[];
-            return SectionCard(title: title, children: [
-              // Where the money went, each category in its own colour
-              if (spent.isNotEmpty)
-                SizedBox(
-                  height: 190,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      PieChart(
-                        PieChartData(
-                          sectionsSpace: 3,
-                          centerSpaceRadius: 62,
-                          startDegreeOffset: -90,
-                          sections: [
-                            for (final row in spent)
-                              PieChartSectionData(
-                                value: row.cashOutMinor.toDouble(),
-                                color: categoryFill(row.color, row.id),
-                                showTitle: false,
-                                radius: 26,
-                              ),
-                          ],
-                        ),
-                        duration: context.motion(AppMotion.emphasised),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(l10n.totalOut, style: text.bodySmall),
-                          SizedBox(
-                            width: 108,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                Money.compact(summary.cashOutMinor, currency, locale: context.languageCode),
-                                style: text.headlineSmall?.copyWith(fontFeatures: tabularFigures),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              for (final row in rows)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (byCategory)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4, right: 10),
-                              child: ColorDot(categoryFill(row.color, row.id)),
-                            ),
-                          Expanded(child: Text(row.name ?? l10n.uncategorised, overflow: TextOverflow.ellipsis)),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              if (row.cashInMinor > 0)
-                                Text(
-                                  '+${context.money(row.cashInMinor, currency)}',
-                                  style: text.bodyMedium?.copyWith(
-                                    color: context.amountColor(true),
-                                    fontWeight: FontWeight.w600,
-                                    fontFeatures: tabularFigures,
-                                  ),
-                                ),
-                              if (row.cashOutMinor > 0)
-                                Text(
-                                  '-${context.money(row.cashOutMinor, currency)}',
-                                  style: text.bodyMedium?.copyWith(
-                                    color: context.amountColor(false),
-                                    fontWeight: FontWeight.w600,
-                                    fontFeatures: tabularFigures,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      if (row.cashInMinor > 0) bar(row.cashInMinor, amountColor(true)),
-                      if (row.cashOutMinor > 0) bar(row.cashOutMinor, amountColor(false)),
-                    ],
-                  ),
-                ),
-            ]);
-          },
-        );
-
-    final workspace = (ref.watch(workspacesProvider).value ?? const <Workspace>[])
-        .where((w) => w.id == summary.book.workspaceId)
-        .firstOrNull;
-
-    return PassbookScaffold(
-      title: Text('${l10n.report}: ${summary.book.bookName}'),
-      actions: [
-        if (workspace != null)
-          ReportButton(
-            scope: ReportScope.cashbook,
-            workspace: workspace,
-            subjectId: bookId,
-            subjectName: summary.book.bookName,
-          ),
-      ],
-      header: _BalanceHeader(summary: summary),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.lg, AppSpace.page, AppSpace.xl),
-        children: [
-          section(l10n.byCategory, true),
-          section(l10n.byPaymentMethod, false),
-        ],
       ),
     );
   }

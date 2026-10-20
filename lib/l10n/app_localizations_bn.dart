@@ -398,6 +398,56 @@ class AppLocalizationsBn extends AppLocalizations {
   String get readOnly => 'আপনি এই ক্যাশবুক দেখতে পারবেন, বদলাতে পারবেন না।';
 
   @override
+  String get addOnly =>
+      'আপনি এই ক্যাশবুকে এন্ট্রি যোগ করতে পারবেন, বদলাতে পারবেন না।';
+
+  @override
+  String get whoHasAccess => 'কারা দেখতে পারে';
+
+  @override
+  String get accessIntro =>
+      'মালিক, অ্যাডমিন ও দর্শক সব ক্যাশবুক দেখেন। এই ক্যাশবুকে প্রত্যেক স্টাফ কী করতে পারবেন, তা বেছে নিন।';
+
+  @override
+  String get noStaff =>
+      'এখনো কোনো স্টাফ নেই। যাঁরা স্টাফ হিসেবে এই ব্যবসায় যোগ দেবেন, তাঁরা এখানে দেখা যাবেন।';
+
+  @override
+  String get accessNone => 'অনুমতি নেই';
+
+  @override
+  String get accessNoneHint => 'এই ক্যাশবুক দেখতে পারবেন না';
+
+  @override
+  String get accessView => 'দেখা';
+
+  @override
+  String get accessViewHint => 'এন্ট্রি দেখতে পারবেন, কিছু বদলাতে পারবেন না';
+
+  @override
+  String get accessAdd => 'যোগ';
+
+  @override
+  String get accessAddHint =>
+      'এন্ট্রি যোগ করতে পারবেন, বদলাতে বা মুছতে পারবেন না';
+
+  @override
+  String get accessEdit => 'সম্পাদনা';
+
+  @override
+  String get accessEditHint => 'এন্ট্রি যোগ, বদল ও মুছতে পারবেন';
+
+  @override
+  String get accessManage => 'পরিচালনা';
+
+  @override
+  String get accessManageHint =>
+      'খাত, পরিশোধের মাধ্যম এবং কারা দেখতে পারে, সেটাও';
+
+  @override
+  String get accessRefused => 'আপনি এই পরিবর্তন করতে পারবেন না।';
+
+  @override
   String get language => 'ভাষা';
 
   @override
@@ -962,10 +1012,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get featureAuditTrail => 'প্রতিটি পরিবর্তনের ইতিহাস';
 
   @override
-  String get featureCustomFields => 'এন্ট্রিতে বাড়তি ঘর';
+  String get featureCustomFields => 'এন্ট্রিতে নিজস্ব ঘর';
 
   @override
-  String get featureStorage => 'বিল রাখার জায়গা, MB';
+  String get featureStorage => 'বিল রাখার জায়গা';
 
   @override
   String get featureAiCredits => 'মাসে AI ক্রেডিট';
@@ -2807,6 +2857,1233 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get widgetLeftThisMonth => 'এ মাসে বাকি';
+
+  @override
+  String get team => 'টিম';
+
+  @override
+  String get teamOpen => 'টিম সামলান';
+
+  @override
+  String get teamHint => 'সদস্য, ভূমিকা ও আমন্ত্রণ';
+
+  @override
+  String get teamBusinessOnly =>
+      'টিম থাকে ব্যবসায়। এর সদস্যদের দেখতে কোনো ব্যবসায় যান।';
+
+  @override
+  String get you => 'আপনি';
+
+  @override
+  String get role => 'ভূমিকা';
+
+  @override
+  String yourRole(String role) {
+    return 'এখানে আপনি $role';
+  }
+
+  @override
+  String peopleCount(int count) {
+    return '$count জন';
+  }
+
+  @override
+  String get roleOwner => 'মালিক';
+
+  @override
+  String get roleAdmin => 'অ্যাডমিন';
+
+  @override
+  String get roleStaff => 'স্টাফ';
+
+  @override
+  String get roleViewer => 'দর্শক';
+
+  @override
+  String get roleOwnerHint => 'ব্যবসা ও এর প্ল্যানের মালিক। সবকিছু করতে পারেন।';
+
+  @override
+  String get roleAdminHint =>
+      'সব ক্যাশবুক চালান, স্টাফ ও দর্শককে আমন্ত্রণ জানান।';
+
+  @override
+  String get roleStaffHint => 'শুধু আপনার খুলে দেওয়া ক্যাশবুকে কাজ করেন।';
+
+  @override
+  String get roleViewerHint => 'সব ক্যাশবুক দেখেন, কিছু বদলাতে পারেন না।';
+
+  @override
+  String get groupAdmins => 'অ্যাডমিন';
+
+  @override
+  String get groupStaff => 'স্টাফ';
+
+  @override
+  String get groupViewers => 'দর্শক';
+
+  @override
+  String get groupInvited => 'আমন্ত্রিত';
+
+  @override
+  String seatsUsed(int used, int limit) {
+    return '$limitটি আসনের $usedটি ব্যবহৃত';
+  }
+
+  @override
+  String seatsLeft(int count) {
+    return '$countটি আসন বাকি';
+  }
+
+  @override
+  String get seatsFull => 'সব আসন ভরা';
+
+  @override
+  String seatsUnlimited(int count) {
+    return '$countটি আসন ব্যবহৃত';
+  }
+
+  @override
+  String get seatsFullAskOwner =>
+      'এই ব্যবসার সব আসন ভরা। জায়গা করতে বা প্ল্যান বাড়াতে মালিককে বলুন।';
+
+  @override
+  String limitSeats(String plan, int limit) {
+    return 'আপনার $plan প্ল্যানে প্রতি ব্যবসায় $limitটি টিম আসন আছে।';
+  }
+
+  @override
+  String get teamUpsellTitle => 'আপনার টিম আনুন';
+
+  @override
+  String get teamUpsellBody =>
+      'বিজনেস প্ল্যানে স্টাফদের জন্য আসন পাবেন। তাঁদের আমন্ত্রণ জানান, কে কোন ক্যাশবুকে কাজ করবেন বেছে নিন, আর সব হিসাব এক জায়গায় দেখুন।';
+
+  @override
+  String get teamEmptyTitle => 'এখন পর্যন্ত শুধু আপনি';
+
+  @override
+  String get teamEmptyBody =>
+      'যাঁরা আপনার সঙ্গে হিসাব রাখেন তাঁদের আমন্ত্রণ জানান। কে কী দেখবেন ও করবেন, তা আপনি ঠিক করবেন।';
+
+  @override
+  String get invite => 'আমন্ত্রণ';
+
+  @override
+  String get inviteSomeone => 'কাউকে আমন্ত্রণ জানান';
+
+  @override
+  String inviteTitle(String business) {
+    return '$business-এ আমন্ত্রণ';
+  }
+
+  @override
+  String get inviteIntro =>
+      'তাঁরা একবার ব্যবহারযোগ্য কোড দিয়ে যোগ দেবেন, যা ৭ দিন চলবে।';
+
+  @override
+  String get inviteEmailHint => 'name@example.com ঠিকানা';
+
+  @override
+  String get invitePhoneHint => '+৮৮০ ১৭XX-XXXXXX';
+
+  @override
+  String get inviteByEmailNote =>
+      'আমরা তাঁকে কোডটি ইমেইল করব। শুধু এই ইমেইলের অ্যাকাউন্টই এটি ব্যবহার করতে পারবে।';
+
+  @override
+  String get inviteByPhoneNote =>
+      'আপনি একটি কোড পাবেন, যা এসএমএস বা যেকোনো চ্যাট অ্যাপে নিজে পাঠাবেন।';
+
+  @override
+  String get inviteAs => 'যে ভূমিকায় আমন্ত্রণ';
+
+  @override
+  String inviteUsesSeat(int seat, int limit) {
+    return 'যোগ দেওয়া বা আমন্ত্রণ শেষ না হওয়া পর্যন্ত এটি $limitটির মধ্যে $seat নম্বর আসন নেবে।';
+  }
+
+  @override
+  String get inviteSend => 'আমন্ত্রণ পাঠান';
+
+  @override
+  String get inviteMakeCode => 'কোড তৈরি করুন';
+
+  @override
+  String get inviteEmailNeeded => 'তাঁর ইমেইল লিখুন।';
+
+  @override
+  String get invitePhoneNeeded => 'তাঁর ফোন নম্বর লিখুন।';
+
+  @override
+  String get inviteEmailInvalid => 'এটি ইমেইল ঠিকানা মনে হচ্ছে না।';
+
+  @override
+  String get invitePhoneInvalid => 'এটি ফোন নম্বর মনে হচ্ছে না।';
+
+  @override
+  String inviteTicketTitle(String business) {
+    return '$business-এ আমন্ত্রণ';
+  }
+
+  @override
+  String inviteEmailed(String email) {
+    return '$email-এ পাঠানো হয়েছে। চাইলে কোডটি নিজেও পাঠাতে পারেন।';
+  }
+
+  @override
+  String get inviteShareOnce =>
+      'কোডটি এখনই তাঁকে পাঠান। এটি শুধু একবারই দেখানো হয়।';
+
+  @override
+  String inviteValidDays(int days) {
+    return '$days দিন চলবে, একবারই ব্যবহার করা যাবে।';
+  }
+
+  @override
+  String inviteShareText(String business, String code) {
+    return 'Spendroo-তে $business-এ যোগ দিন। অ্যাপ খুলে ওপরে ব্যবসার নাম ছুঁয়ে “ব্যবসায় যোগ দিন” বেছে নিন, তারপর এই কোড দিন: $code';
+  }
+
+  @override
+  String inviteExpiresIn(int days) {
+    return '$days দিনের মধ্যে শেষ হবে';
+  }
+
+  @override
+  String get inviteCancel => 'আমন্ত্রণ ফিরিয়ে নিন';
+
+  @override
+  String inviteCancelConfirm(String contact) {
+    return '$contact-এর আমন্ত্রণ বাতিল করবেন? তাঁর কোড আর কাজ করবে না এবং আসনটি খালি হবে।';
+  }
+
+  @override
+  String get codeCopied => 'কোড কপি হয়েছে';
+
+  @override
+  String get copy => 'কপি';
+
+  @override
+  String get share => 'শেয়ার';
+
+  @override
+  String get paste => 'পেস্ট';
+
+  @override
+  String get change => 'বদলান';
+
+  @override
+  String get cashbookAccess => 'ক্যাশবুকে প্রবেশ';
+
+  @override
+  String booksOpenCount(int open, int total) {
+    return '$totalটির $openটি খোলা';
+  }
+
+  @override
+  String get accessByRoleAll => 'ভূমিকার কারণে সব ক্যাশবুকে প্রবেশ করতে পারেন।';
+
+  @override
+  String get accessByRoleView =>
+      'সব ক্যাশবুক দেখতে পারেন, কিন্তু কিছু বদলাতে পারেন না।';
+
+  @override
+  String get accessByRoleStaff =>
+      'মালিক বা অ্যাডমিন যেসব ক্যাশবুক খুলে দেন, শুধু সেখানে কাজ করেন।';
+
+  @override
+  String get roleChangeNotYours => 'শুধু মালিক এই ভূমিকা বদলাতে পারেন।';
+
+  @override
+  String roleChangeDropsAccess(String name, String role) {
+    return '$name-কে $role করবেন? আলাদা ক্যাশবুকে তাঁর প্রবেশাধিকার মুছে যাবে।';
+  }
+
+  @override
+  String joinedOn(String date) {
+    return 'যোগ দিয়েছেন $date';
+  }
+
+  @override
+  String get memberGone => 'এই ব্যক্তি আর ব্যবসায় নেই।';
+
+  @override
+  String get removeMember => 'ব্যবসা থেকে সরান';
+
+  @override
+  String get removeMemberHint =>
+      'তিনি সঙ্গে সঙ্গে প্রবেশাধিকার হারাবেন। পরে আবার আমন্ত্রণ জানাতে পারবেন।';
+
+  @override
+  String removeMemberConfirm(String name, String business) {
+    return '$business থেকে $name-কে সরাবেন? তাঁর এন্ট্রিগুলো থেকে যাবে।';
+  }
+
+  @override
+  String get memberRemoved => 'সরানো হয়েছে';
+
+  @override
+  String get handOver => 'মালিক করুন';
+
+  @override
+  String get handOverTitle => 'ব্যবসা হস্তান্তর';
+
+  @override
+  String handOverHint(String name) {
+    return 'ব্যবসা ও এর প্ল্যান $name-কে দিন';
+  }
+
+  @override
+  String handOverBody(String name, String business) {
+    return '$name হবেন $business-এর মালিক, আর এরপর এটি চলবে তাঁর প্ল্যানে। আপনি অ্যাডমিন থাকবেন, আর শুধু তিনিই আবার ফিরিয়ে দিতে পারবেন।';
+  }
+
+  @override
+  String handOverTypeName(String business) {
+    return 'নিশ্চিত করতে “$business” লিখুন';
+  }
+
+  @override
+  String handedOver(String name) {
+    return '$name এখন মালিক';
+  }
+
+  @override
+  String handOverNoRoom(String name) {
+    return '$name-এর প্ল্যানে এখনো এই ব্যবসার জায়গা নেই। আগে তাঁর এমন প্ল্যান দরকার, যাতে যথেষ্ট ব্যবসা, টিম আসন ও ক্যাশবুক আছে।';
+  }
+
+  @override
+  String get leaveBusiness => 'ব্যবসা ছাড়ুন';
+
+  @override
+  String leaveBusinessConfirm(String business) {
+    return '$business ছাড়বেন? এটি এই ফোন থেকে চলে যাবে, ফিরতে নতুন আমন্ত্রণ লাগবে।';
+  }
+
+  @override
+  String leftBusiness(String business) {
+    return 'আপনি $business ছেড়েছেন';
+  }
+
+  @override
+  String get joinBusiness => 'ব্যবসায় যোগ দিন';
+
+  @override
+  String get joinIntro =>
+      'আমন্ত্রণ কোড পেয়েছেন? যে ব্যবসা পাঠিয়েছে, তাতে যোগ দিতে কোডটি লিখুন।';
+
+  @override
+  String get joinCodeHint =>
+      'আপনার পাওয়া ইমেইল বা মেসেজের ১০টি অক্ষর ও সংখ্যা';
+
+  @override
+  String invitedBy(String name) {
+    return '$name আমন্ত্রণ জানিয়েছেন';
+  }
+
+  @override
+  String joinAs(String role) {
+    return '$role হিসেবে যোগ দিন';
+  }
+
+  @override
+  String joinedBusiness(String business) {
+    return '$business-এ স্বাগতম';
+  }
+
+  @override
+  String get teamErrorAlreadyMember => 'এই ব্যক্তি আগে থেকেই ব্যবসায় আছেন।';
+
+  @override
+  String get teamErrorInvalidCode =>
+      'এই কোডের কোনো আমন্ত্রণ নেই। দেখে আবার চেষ্টা করুন।';
+
+  @override
+  String get teamErrorExpired =>
+      'এই আমন্ত্রণের মেয়াদ শেষ। নতুন একটি চেয়ে নিন।';
+
+  @override
+  String get teamErrorUsed => 'এই কোড আগেই ব্যবহার হয়েছে।';
+
+  @override
+  String get teamErrorWrongAccount =>
+      'এই আমন্ত্রণ অন্য ইমেইলে পাঠানো হয়েছে। ব্যবহার করতে সেই অ্যাকাউন্টে ঢুকুন।';
+
+  @override
+  String get teamErrorNoSeats =>
+      'এই ব্যবসায় এখন কোনো খালি আসন নেই। মালিককে জায়গা করতে বলুন।';
+
+  @override
+  String get teamErrorTooMany =>
+      'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।';
+
+  @override
+  String get teamErrorBadInput => 'যা লিখেছেন দেখে আবার চেষ্টা করুন।';
+
+  @override
+  String get teamErrorRefused => 'আপনি এই পরিবর্তন করতে পারবেন না।';
+
+  @override
+  String get teamErrorFailed => 'হয়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get haveInviteCode => 'আমার কাছে আমন্ত্রণ কোড আছে';
+
+  @override
+  String get haveInviteCodeHint =>
+      'যে ব্যবসা আপনাকে আমন্ত্রণ জানিয়েছে, তাতে যোগ দিন।';
+
+  @override
+  String get joinRoleAdminHint =>
+      'আপনি সব ক্যাশবুক চালাবেন, আর স্টাফ ও দর্শককে আমন্ত্রণ জানাতে পারবেন।';
+
+  @override
+  String get joinRoleStaffHint =>
+      'মালিক বা অ্যাডমিন যেসব ক্যাশবুক খুলে দেবেন, আপনি সেখানে কাজ করবেন।';
+
+  @override
+  String get joinRoleViewerHint =>
+      'আপনি সব ক্যাশবুক দেখবেন, কিন্তু কিছু বদলাবেন না।';
+
+  @override
+  String get noCashbooksForStaff =>
+      'এখনো কোনো ক্যাশবুক আপনার জন্য খোলা হয়নি। প্রবেশাধিকার দিতে মালিক বা অ্যাডমিনকে বলুন।';
+
+  @override
+  String get roleChangeManagersOnly =>
+      'শুধু মালিক বা অ্যাডমিন এই ভূমিকা বদলাতে পারেন।';
+
+  @override
+  String get seatsNone => 'এই প্ল্যানে কোনো টিম আসন নেই';
+
+  @override
+  String get historyTitle => 'সম্পাদনার ইতিহাস';
+
+  @override
+  String get historyHint => 'কে কখন কী বদলেছেন';
+
+  @override
+  String get historyOfEntry => 'এই এন্ট্রির ইতিহাস';
+
+  @override
+  String get historyTheirChanges => 'তাঁর পরিবর্তনগুলো দেখুন';
+
+  @override
+  String historyTheirChangesHint(String name) {
+    return '$name যা যোগ, সম্পাদনা বা মুছেছেন';
+  }
+
+  @override
+  String historyChangesBy(String name) {
+    return '$name-এর পরিবর্তন';
+  }
+
+  @override
+  String get historyNobody => 'স্পেন্ডরু';
+
+  @override
+  String get historySomeone => 'কেউ একজন';
+
+  @override
+  String get historyChanged => 'একটি পরিবর্তন করেছেন';
+
+  @override
+  String get historyEntryCreated => 'একটি এন্ট্রি যোগ করেছেন';
+
+  @override
+  String get historyEntryUpdated => 'একটি এন্ট্রি সম্পাদনা করেছেন';
+
+  @override
+  String get historyEntryDeleted => 'একটি এন্ট্রি মুছেছেন';
+
+  @override
+  String get historyEntryRestored => 'একটি এন্ট্রি ফিরিয়ে এনেছেন';
+
+  @override
+  String get historyCashbookCreated => 'একটি ক্যাশবুক তৈরি করেছেন';
+
+  @override
+  String get historyCashbookUpdated => 'একটি ক্যাশবুক বদলেছেন';
+
+  @override
+  String get historyCashbookDeleted => 'একটি ক্যাশবুক মুছেছেন';
+
+  @override
+  String get historyCashbookRestored => 'একটি ক্যাশবুক ফিরিয়ে এনেছেন';
+
+  @override
+  String get historyCategoryCreated => 'একটি ক্যাটাগরি যোগ করেছেন';
+
+  @override
+  String get historyCategoryUpdated => 'একটি ক্যাটাগরি বদলেছেন';
+
+  @override
+  String get historyCategoryDeleted => 'একটি ক্যাটাগরি সরিয়েছেন';
+
+  @override
+  String get historyCategoryRestored => 'একটি ক্যাটাগরি ফিরিয়ে এনেছেন';
+
+  @override
+  String get historyMethodCreated => 'একটি পেমেন্ট পদ্ধতি যোগ করেছেন';
+
+  @override
+  String get historyMethodUpdated => 'একটি পেমেন্ট পদ্ধতি বদলেছেন';
+
+  @override
+  String get historyMethodDeleted => 'একটি পেমেন্ট পদ্ধতি সরিয়েছেন';
+
+  @override
+  String get historyMethodRestored => 'একটি পেমেন্ট পদ্ধতি ফিরিয়ে এনেছেন';
+
+  @override
+  String historyAccessGiven(String name) {
+    return '$name-কে অ্যাক্সেস দিয়েছেন';
+  }
+
+  @override
+  String historyAccessChanged(String name) {
+    return '$name-এর অ্যাক্সেস বদলেছেন';
+  }
+
+  @override
+  String historyAccessTaken(String name) {
+    return '$name-এর অ্যাক্সেস তুলে নিয়েছেন';
+  }
+
+  @override
+  String historyMemberJoined(String name) {
+    return '$name-কে টিমে যুক্ত করেছেন';
+  }
+
+  @override
+  String historyMemberRole(String name) {
+    return '$name-এর ভূমিকা বদলেছেন';
+  }
+
+  @override
+  String historyMemberLeft(String name) {
+    return '$name আর টিমে নেই';
+  }
+
+  @override
+  String get historyFieldAmount => 'পরিমাণ';
+
+  @override
+  String get historyFieldType => 'ধরন';
+
+  @override
+  String get historyFieldDate => 'তারিখ';
+
+  @override
+  String get historyFieldTitle => 'শিরোনাম';
+
+  @override
+  String get historyFieldNote => 'নোট';
+
+  @override
+  String get historyFieldCategory => 'ক্যাটাগরি';
+
+  @override
+  String get historyFieldMethod => 'পেমেন্ট পদ্ধতি';
+
+  @override
+  String get historyFieldName => 'নাম';
+
+  @override
+  String get historyFieldDescription => 'বিবরণ';
+
+  @override
+  String get historyFieldCurrency => 'মুদ্রা';
+
+  @override
+  String get historyFieldColour => 'রং';
+
+  @override
+  String get historyFieldRole => 'ভূমিকা';
+
+  @override
+  String get historyFieldAccess => 'অ্যাক্সেস';
+
+  @override
+  String get historyEmptyValue => 'ফাঁকা';
+
+  @override
+  String get historyAnyBook => 'সব ক্যাশবুক';
+
+  @override
+  String get historyAnyone => 'সবাই';
+
+  @override
+  String get historyAnyTime => 'যেকোনো সময়';
+
+  @override
+  String get historyPickBook => 'যে ক্যাশবুকের পরিবর্তন দেখবেন';
+
+  @override
+  String get historyPickPerson => 'যাঁর পরিবর্তন দেখবেন';
+
+  @override
+  String get historyClearAll => 'সব মুছুন';
+
+  @override
+  String get historyEmpty =>
+      'এখনো কিছু বদলায়নি। আপনার টিম যা যোগ, সম্পাদনা বা মুছবে, সবই এখানে দেখা যাবে।';
+
+  @override
+  String get historyEmptyFiltered => 'এই ফিল্টারে কোনো পরিবর্তন মেলেনি।';
+
+  @override
+  String get historyEmptyEntry =>
+      'এই এন্ট্রি এখনো সার্ভারে পৌঁছায়নি। সিঙ্ক হলে এর ইতিহাস দেখা যাবে।';
+
+  @override
+  String get historyTheStart => 'এই পর্যন্তই সব';
+
+  @override
+  String get historyMoreFailed => 'আর লোড করা গেল না।';
+
+  @override
+  String get historyOwnerOnly =>
+      'শুধু ব্যবসার মালিক সম্পাদনার ইতিহাস দেখতে পারেন।';
+
+  @override
+  String get historyBusinessOnly =>
+      'সম্পাদনার ইতিহাস শুধু ব্যবসার জন্য রাখা হয়।';
+
+  @override
+  String get historyLockedTitle => 'কে কখন কী বদলেছেন, দেখুন';
+
+  @override
+  String get historyLockedBody =>
+      'ব্যবসার প্রতিটি পরিবর্তনের পুরো হিসাব রেখে টিমকে জবাবদিহির মধ্যে রাখুন।';
+
+  @override
+  String get historyLockedPoint1 => 'প্রতিটি সম্পাদনা, আগে ও পরের মানসহ';
+
+  @override
+  String get historyLockedPoint2 => 'ক্যাশবুক, ব্যক্তি বা তারিখ দিয়ে ফিল্টার';
+
+  @override
+  String get historyLockedPoint3 => 'মোছা এন্ট্রিও চোখের আড়াল হয় না';
+
+  @override
+  String get historyBackToTop => 'সবচেয়ে নতুনে ফিরুন';
+
+  @override
+  String historyChangeCount(int count) {
+    return '$countটি পরিবর্তন';
+  }
+
+  @override
+  String get bills => 'বিল';
+
+  @override
+  String get billsHint => 'এই এন্ট্রির সাথে রসিদের ছবি বা PDF রেখে দিন।';
+
+  @override
+  String get billAttach => 'বিল যোগ করুন';
+
+  @override
+  String get billTakePhoto => 'ছবি তুলুন';
+
+  @override
+  String get billTakePhotoHint =>
+      'কাগজের রসিদের ছবি তুলুন। স্পষ্ট ও ছোট আকারে রাখা হবে।';
+
+  @override
+  String get billChoosePhoto => 'ছবি বেছে নিন';
+
+  @override
+  String get billChoosePhotoHint => 'ফোনে আগে থেকে থাকা ছবি বা স্ক্রিনশট';
+
+  @override
+  String get billChoosePdf => 'PDF বেছে নিন';
+
+  @override
+  String get billChoosePdfHint => 'PDF হিসেবে পাওয়া ইনভয়েস ও স্টেটমেন্ট';
+
+  @override
+  String billPerFile(String size) {
+    return 'প্রতি বিলে সর্বোচ্চ $size';
+  }
+
+  @override
+  String billRoomLeft(String size) {
+    return '$size বাকি';
+  }
+
+  @override
+  String billStorageUsed(String used, String total) {
+    return '$total-এর মধ্যে $used ব্যবহৃত';
+  }
+
+  @override
+  String get billStaged => 'সেভ করলে যুক্ত হবে';
+
+  @override
+  String get billWaiting => 'আপলোডের অপেক্ষায়';
+
+  @override
+  String billUploading(int percent) {
+    return 'আপলোড হচ্ছে $percent%';
+  }
+
+  @override
+  String get billFailed => 'যুক্ত করা যায়নি';
+
+  @override
+  String get billRefused => 'আপনার প্ল্যানে জায়গা নেই';
+
+  @override
+  String get billRetry => 'আবার চেষ্টা করুন';
+
+  @override
+  String get billRemove => 'বিল সরান';
+
+  @override
+  String get billRemoveConfirm =>
+      'এই বিলটি সরাবেন? ব্যবসার সবার কাছ থেকে ফাইলটি মুছে যাবে।';
+
+  @override
+  String get billRemoved => 'বিল সরানো হয়েছে';
+
+  @override
+  String get billAdded => 'বিল যুক্ত হয়েছে। পেছনে আপলোড হচ্ছে।';
+
+  @override
+  String get billShare => 'শেয়ার করুন';
+
+  @override
+  String get billOpenElsewhere => 'অন্য অ্যাপে খুলুন';
+
+  @override
+  String billPages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count পৃষ্ঠা',
+      one: '১ পৃষ্ঠা',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String billCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি বিল',
+      one: '১টি বিল',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String billOf(int index, int total) {
+    return '$totalটির মধ্যে $index';
+  }
+
+  @override
+  String get billOpenOffline =>
+      'এই বিলটি এখনো এই ফোনে রাখা হয়নি। খুলতে ইন্টারনেটে যুক্ত হোন।';
+
+  @override
+  String get billGone => 'এই বিলটি আর পাওয়া যাচ্ছে না।';
+
+  @override
+  String get billOpenFailed => 'বিলটি খোলা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get billErrorType => 'এই ফাইলটি ছবি বা PDF নয়।';
+
+  @override
+  String get billErrorUnsafe =>
+      'এই ফাইলে স্ক্রিপ্ট বা লুকানো কিছু আছে, তাই রাখা যাবে না।';
+
+  @override
+  String get billErrorCorrupt => 'ফাইলটি নষ্ট, খোলা যাচ্ছে না।';
+
+  @override
+  String get billErrorTooLarge => 'ফাইলটি যুক্ত করার জন্য অনেক বড়।';
+
+  @override
+  String get billErrorForbidden => 'এই এন্ট্রিতে আপনি বিল যোগ করতে পারবেন না।';
+
+  @override
+  String get billErrorGone => 'এই এন্ট্রিটি আর সার্ভারে নেই।';
+
+  @override
+  String get billErrorMissing =>
+      'ফাইলটি আর এই ফোনে নেই। সরিয়ে আবার যুক্ত করুন।';
+
+  @override
+  String get billErrorGeneric => 'বিলটি যুক্ত করা যায়নি।';
+
+  @override
+  String get billViewOnly => 'আপনি এই বিলগুলো দেখতে পারবেন, বদলাতে পারবেন না।';
+
+  @override
+  String get entryDetails => 'এন্ট্রি';
+
+  @override
+  String limitStorage(String plan, String size) {
+    return 'আপনার $plan প্ল্যানে সর্বোচ্চ $size বিল রাখা যায়। কিছু সরান, বা আরও জায়গার জন্য আপগ্রেড করুন।';
+  }
+
+  @override
+  String limitBillSize(String plan, String size) {
+    return 'আপনার $plan প্ল্যানে একটি বিল সর্বোচ্চ $size হতে পারে।';
+  }
+
+  @override
+  String get featureStorageFile => 'সবচেয়ে বড় বিল';
+
+  @override
+  String get featureStoragePdf => 'PDF বিল';
+
+  @override
+  String get fieldsTitle => 'নিজস্ব ঘর';
+
+  @override
+  String get fieldsIntro =>
+      'এই বইয়ের প্রতিটি এন্ট্রিতে আপনার ব্যবসার দরকারি তথ্য যোগ করুন। এগুলো এন্ট্রি ও রিপোর্টে দেখা যাবে।';
+
+  @override
+  String fieldsCount(int count, int max) {
+    return '$maxটির মধ্যে $countটি ঘর';
+  }
+
+  @override
+  String get fieldsEmptyTitle => 'আপনার ব্যবসার দরকারি তথ্য রাখুন';
+
+  @override
+  String get fieldsEmptyBody =>
+      'ইনভয়েস নম্বর বা যাকে টাকা দিয়েছেন তার নামের মতো ঘর যোগ করুন। এগুলো এই বইয়ের প্রতিটি এন্ট্রি ও রিপোর্টে থাকবে।';
+
+  @override
+  String get fieldsTryOne => 'এগুলোর একটি দিয়ে শুরু করুন';
+
+  @override
+  String get fieldsExampleInvoice => 'ইনভয়েস নং';
+
+  @override
+  String get fieldsExampleParty => 'পার্টি';
+
+  @override
+  String get fieldsExampleDue => 'শেষ তারিখ';
+
+  @override
+  String get fieldNew => 'নতুন ঘর';
+
+  @override
+  String get fieldEdit => 'ঘর বদলান';
+
+  @override
+  String get fieldName => 'ঘরের নাম';
+
+  @override
+  String get fieldNameNeeded => 'ঘরটির একটি নাম দিন।';
+
+  @override
+  String get fieldNameTaken => 'এই বইয়ে এই নামে একটি ঘর আগেই আছে।';
+
+  @override
+  String get fieldKind => 'ধরন';
+
+  @override
+  String get fieldKindText => 'লেখা';
+
+  @override
+  String get fieldKindNumber => 'সংখ্যা';
+
+  @override
+  String get fieldKindDate => 'তারিখ';
+
+  @override
+  String get fieldKindChoice => 'বাছাই';
+
+  @override
+  String get fieldKindTextHint => 'কোড, নাম, নোট';
+
+  @override
+  String get fieldKindNumberHint => 'পরিমাণ, ওজন';
+
+  @override
+  String get fieldKindDateHint => 'শেষ বা ডেলিভারির তারিখ';
+
+  @override
+  String get fieldKindChoiceHint => 'তালিকা থেকে বেছে নিন';
+
+  @override
+  String get fieldKindFixed => 'ঘর তৈরির পর ধরন বদলানো যায় না।';
+
+  @override
+  String get fieldOptions => 'বিকল্পগুলো';
+
+  @override
+  String get fieldOptionAdd => 'একটি বিকল্প যোগ করুন';
+
+  @override
+  String get fieldOptionsNeeded => 'অন্তত একটি বিকল্প যোগ করুন।';
+
+  @override
+  String fieldOptionsFull(int max) {
+    return 'একটি ঘরে সর্বোচ্চ $maxটি বিকল্প থাকতে পারে।';
+  }
+
+  @override
+  String get fieldRequired => 'আবশ্যক';
+
+  @override
+  String get fieldRequiredDetail => 'এটি ছাড়া নতুন এন্ট্রি সেভ হবে না।';
+
+  @override
+  String get fieldShowInList => 'এন্ট্রির তালিকায় দেখান';
+
+  @override
+  String get fieldShowInListDetail =>
+      'এই বইয়ের প্রতিটি এন্ট্রির নিচে দেখাবে। শুধু একটি ঘর দেখানো যায়।';
+
+  @override
+  String get fieldPreview => 'এন্ট্রিতে যেমন দেখাবে';
+
+  @override
+  String get fieldDelete => 'ঘর মুছুন';
+
+  @override
+  String get fieldDeleteConfirm =>
+      'এই ঘরটি মুছবেন? আগে লেখা মানগুলো এন্ট্রিতে থেকে যাবে, তবে আর দেখাবে না।';
+
+  @override
+  String fieldsFull(int max) {
+    return 'একটি বইয়ে সর্বোচ্চ $maxটি ঘর থাকতে পারে।';
+  }
+
+  @override
+  String get fieldPinned => 'তালিকায়';
+
+  @override
+  String get fieldsReorderHint => 'ক্রম বদলাতে চেপে ধরে টানুন।';
+
+  @override
+  String fieldOptionsMore(int count) {
+    return 'আরও $count';
+  }
+
+  @override
+  String get fieldsDetails => 'বিস্তারিত';
+
+  @override
+  String get fieldFillIn => 'এটি পূরণ করুন।';
+
+  @override
+  String get fieldNeedsNumber => 'একটি সংখ্যা লিখুন, যেমন ১২৫০ বা ১২.৫।';
+
+  @override
+  String get fieldPickDate => 'তারিখ বেছে নিন';
+
+  @override
+  String get fieldClear => 'মুছে ফেলুন';
+
+  @override
+  String get fieldsHintTitle => 'নিজের ঘর যোগ করুন';
+
+  @override
+  String get fieldsHintBody =>
+      'প্রতিটি এন্ট্রিতে ইনভয়েস নম্বর, পার্টি ও আরও অনেক কিছু রাখুন।';
+
+  @override
+  String get fieldsLockedTitle => 'নিজস্ব ঘর বিজনেস প্ল্যানে পাওয়া যায়';
+
+  @override
+  String get fieldsLockedBody =>
+      'এন্ট্রিতে নিজের ঘর যোগ করুন, তালিকা ও রিপোর্টে দেখুন। আগের ঘর ও মানগুলো যেমন আছে তেমনই থাকবে।';
+
+  @override
+  String get fieldsReadOnly =>
+      'আপনার প্ল্যানে এই মানগুলো যেমন আছে তেমন থাকবে। বদলাতে আপগ্রেড করুন।';
+
+  @override
+  String get historyFieldCreated => 'একটি নিজস্ব ঘর যোগ করেছেন';
+
+  @override
+  String get historyFieldUpdated => 'একটি নিজস্ব ঘর বদলেছেন';
+
+  @override
+  String get historyFieldDeleted => 'একটি নিজস্ব ঘর মুছেছেন';
+
+  @override
+  String get historyFieldRestored => 'একটি নিজস্ব ঘর ফিরিয়েছেন';
+
+  @override
+  String get yes => 'হ্যাঁ';
+
+  @override
+  String get no => 'না';
+
+  @override
+  String get booksTab => 'খাতা';
+
+  @override
+  String get entriesTab => 'এন্ট্রি';
+
+  @override
+  String get featureBusinessInsights => 'ব্যবসার বিস্তারিত বিশ্লেষণ';
+
+  @override
+  String get insNetFlow => 'নিট নগদ প্রবাহ';
+
+  @override
+  String get insClosingBalance => 'শেষে ব্যালান্স';
+
+  @override
+  String get insNoActivity => 'এই সময়ে এখনও কোনো এন্ট্রি নেই';
+
+  @override
+  String get insNoActivityHint =>
+      'এখানে এন্ট্রি যোগ করলে তা চার্ট ও বিশ্লেষণে দেখা যাবে।';
+
+  @override
+  String get insNothingHere => 'এই সময়ে কিছু নেই';
+
+  @override
+  String get insWhereMoneyWent => 'টাকা কোথায় গেল';
+
+  @override
+  String get insWhereMoneyCame => 'টাকা কোথা থেকে এল';
+
+  @override
+  String get insPaymentMethods => 'পেমেন্টের মাধ্যম';
+
+  @override
+  String get insNoPaymentMethod => 'মাধ্যম দেওয়া নেই';
+
+  @override
+  String get insIn => 'জমা';
+
+  @override
+  String get insOut => 'খরচ';
+
+  @override
+  String get insBalanceTrend => 'সময়ের সাথে ব্যালান্স';
+
+  @override
+  String get insOpening => 'শুরুতে';
+
+  @override
+  String get insClosing => 'শেষে';
+
+  @override
+  String get insLowest => 'সর্বনিম্ন';
+
+  @override
+  String get insActivity => 'কার্যক্রম';
+
+  @override
+  String get insTapDay => 'বিস্তারিত দেখতে একটি দিনে চাপুন';
+
+  @override
+  String get insLess => 'কম';
+
+  @override
+  String get insMore => 'বেশি';
+
+  @override
+  String get insHealth => 'নগদের অবস্থা';
+
+  @override
+  String get insOutRatio => 'জমার তুলনায় খরচ';
+
+  @override
+  String get insOutRatioNone => 'এই সময়ে কোনো জমা আসেনি।';
+
+  @override
+  String insOutRatioKept(String percent) {
+    return 'যা জমা এসেছে তার $percent% এখনও হাতে আছে।';
+  }
+
+  @override
+  String insOutRatioOver(String percent) {
+    return 'জমার চেয়ে $percent% বেশি খরচ হয়েছে।';
+  }
+
+  @override
+  String get insAvgDailyOut => 'দিনে গড় খরচ';
+
+  @override
+  String get insRunway => 'টিকবে';
+
+  @override
+  String get insRunwayDetail => 'এই হারে চললে';
+
+  @override
+  String get insRunwaySafe => 'বাড়ছে';
+
+  @override
+  String get insRunwaySafeDetail => 'খরচের চেয়ে জমা বেশি';
+
+  @override
+  String insDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count দিন',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insBusiestDay => 'সবচেয়ে ব্যস্ত দিন';
+
+  @override
+  String get insAvgEntry => 'গড় এন্ট্রি';
+
+  @override
+  String get insActiveDays => 'সক্রিয় দিন';
+
+  @override
+  String insActiveDaysValue(String active, String days) {
+    return '$days-এর মধ্যে $active';
+  }
+
+  @override
+  String get insTopEntries => 'সবচেয়ে বড় এন্ট্রি';
+
+  @override
+  String get insTeam => 'টিমের কার্যক্রম';
+
+  @override
+  String get insYou => 'আপনি';
+
+  @override
+  String get insSomeone => 'কেউ একজন';
+
+  @override
+  String get insMostActive => 'সবচেয়ে সক্রিয়';
+
+  @override
+  String get insStreak => 'টানা';
+
+  @override
+  String get insPeople => 'সদস্য';
+
+  @override
+  String get insBills => 'রাখা বিল';
+
+  @override
+  String insBillsShare(String kept, String total) {
+    return '$totalটি খরচের মধ্যে $keptটিতে বিল আছে';
+  }
+
+  @override
+  String get insBillsAll => 'প্রতিটি খরচের বিল আছে।';
+
+  @override
+  String insBillsMissing(String amount) {
+    return '$amount-এর এখনও কোনো বিল নেই।';
+  }
+
+  @override
+  String get insByField => 'নিজের ঘর অনুযায়ী';
+
+  @override
+  String get insFieldEmpty => 'এই সময়ে এই ঘরে কোনো মান নেই।';
+
+  @override
+  String get insBookLeague => 'খাতার তুলনা';
+
+  @override
+  String insShare(String percent) {
+    return 'মোটের $percent%';
+  }
+
+  @override
+  String insOtherCurrencies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'অন্য মুদ্রার $countটি খাতা এখানে গোনা হয়নি।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insBusinessChip => 'বিজনেস';
+
+  @override
+  String get insUnlockBody =>
+      'চলতি ব্যালান্স, কার্যক্রমের ক্যালেন্ডার, নগদের অবস্থা, টিম, বিল আর খাতার তুলনা পাবেন বিজনেস প্ল্যানে।';
+
+  @override
+  String get insUnlockAction => 'বিজনেস দিয়ে খুলুন';
+
+  @override
+  String insMoreWithBusiness(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'বিজনেসে আরও $countটি চার্ট',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insPeriodTotal => 'মোট';
+
+  @override
+  String get insPeakDay => 'সবচেয়ে বেশি';
+
+  @override
+  String get insQuietDays => 'চুপচাপ দিন';
+
+  @override
+  String get insWeekRhythm => 'আপনার সপ্তাহ';
+
+  @override
+  String insBusiestOn(String day) {
+    return '$day সবচেয়ে ব্যস্ত';
+  }
+
+  @override
+  String insTimesAverage(String times) {
+    return 'সাধারণ দিনের $times গুণ';
+  }
+
+  @override
+  String get insAvgIn => 'মাসে গড় জমা';
+
+  @override
+  String get insAvgOut => 'মাসে গড় খরচ';
+
+  @override
+  String get insBestMonth => 'সেরা মাস';
+
+  @override
+  String get insAboveUsual => 'সাধারণের চেয়ে ভালো';
+
+  @override
+  String get insBelowUsual => 'সাধারণের চেয়ে কম';
+
+  @override
+  String insKept(String percent) {
+    return 'জমার $percent% হাতে রইল';
+  }
+
+  @override
+  String insOverspent(String percent) {
+    return 'জমার চেয়ে $percent% বেশি খরচ';
+  }
+
+  @override
+  String insActiveDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি সক্রিয় দিন',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get featureBusinessWidget => 'ব্যবসার হোম স্ক্রিন উইজেট';

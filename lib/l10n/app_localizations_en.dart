@@ -396,6 +396,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get readOnly => 'You can view this cashbook but not change it.';
 
   @override
+  String get addOnly =>
+      'You can add entries to this cashbook but not change them.';
+
+  @override
+  String get whoHasAccess => 'Who has access';
+
+  @override
+  String get accessIntro =>
+      'Owners, admins and viewers see every cashbook. Choose what each staff member may do in this one.';
+
+  @override
+  String get noStaff =>
+      'No staff yet. People who join this business as staff appear here.';
+
+  @override
+  String get accessNone => 'No access';
+
+  @override
+  String get accessNoneHint => 'Can\'t see this cashbook';
+
+  @override
+  String get accessView => 'View';
+
+  @override
+  String get accessViewHint => 'Sees the entries but can\'t change anything';
+
+  @override
+  String get accessAdd => 'Add';
+
+  @override
+  String get accessAddHint => 'Adds entries but can\'t change or delete them';
+
+  @override
+  String get accessEdit => 'Edit';
+
+  @override
+  String get accessEditHint => 'Adds, changes and deletes entries';
+
+  @override
+  String get accessManage => 'Manage';
+
+  @override
+  String get accessManageHint =>
+      'Also categories, payment methods and who has access';
+
+  @override
+  String get accessRefused => 'You can\'t make that change.';
+
+  @override
   String get language => 'Language';
 
   @override
@@ -995,10 +1044,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureAuditTrail => 'History of every change';
 
   @override
-  String get featureCustomFields => 'Extra fields on entries';
+  String get featureCustomFields => 'Custom fields on entries';
 
   @override
-  String get featureStorage => 'Storage for bills, in MB';
+  String get featureStorage => 'Storage for bills';
 
   @override
   String get featureAiCredits => 'AI credits a month';
@@ -2873,6 +2922,1282 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetLeftThisMonth => 'Left this month';
+
+  @override
+  String get team => 'Team';
+
+  @override
+  String get teamOpen => 'Manage team';
+
+  @override
+  String get teamHint => 'People, roles and invitations';
+
+  @override
+  String get teamBusinessOnly =>
+      'A team belongs to a business. Switch to one to see its people.';
+
+  @override
+  String get you => 'You';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String yourRole(String role) {
+    return 'You are $role here';
+  }
+
+  @override
+  String peopleCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people',
+      one: '1 person',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roleOwner => 'Owner';
+
+  @override
+  String get roleAdmin => 'Admin';
+
+  @override
+  String get roleStaff => 'Staff';
+
+  @override
+  String get roleViewer => 'Viewer';
+
+  @override
+  String get roleOwnerHint =>
+      'Owns the business and its plan. Can do everything.';
+
+  @override
+  String get roleAdminHint =>
+      'Runs every cashbook and invites staff and viewers.';
+
+  @override
+  String get roleStaffHint => 'Works only in the cashbooks you open to them.';
+
+  @override
+  String get roleViewerHint => 'Sees every cashbook but changes nothing.';
+
+  @override
+  String get groupAdmins => 'Admins';
+
+  @override
+  String get groupStaff => 'Staff';
+
+  @override
+  String get groupViewers => 'Viewers';
+
+  @override
+  String get groupInvited => 'Invited';
+
+  @override
+  String seatsUsed(int used, int limit) {
+    return '$used of $limit seats used';
+  }
+
+  @override
+  String seatsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seats left',
+      one: '1 seat left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get seatsFull => 'All seats taken';
+
+  @override
+  String seatsUnlimited(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seats in use',
+      one: '1 seat in use',
+      zero: 'No one invited yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get seatsFullAskOwner =>
+      'Every seat on this business is taken. Ask the owner to make room or upgrade the plan.';
+
+  @override
+  String limitSeats(String plan, int limit) {
+    String _temp0 = intl.Intl.pluralLogic(
+      limit,
+      locale: localeName,
+      other: '$limit team seats',
+      one: '1 team seat',
+      zero: 'no team seats',
+    );
+    return 'Your $plan plan gives $_temp0 per business.';
+  }
+
+  @override
+  String get teamUpsellTitle => 'Bring your team';
+
+  @override
+  String get teamUpsellBody =>
+      'The Business plan gives you seats for staff. Invite them, choose who works in which cashbook, and see every entry in one place.';
+
+  @override
+  String get teamEmptyTitle => 'Just you so far';
+
+  @override
+  String get teamEmptyBody =>
+      'Invite the people who keep the books with you. You decide what each of them can see and do.';
+
+  @override
+  String get invite => 'Invite';
+
+  @override
+  String get inviteSomeone => 'Invite someone';
+
+  @override
+  String inviteTitle(String business) {
+    return 'Invite to $business';
+  }
+
+  @override
+  String get inviteIntro => 'They join with a one-time code, valid for 7 days.';
+
+  @override
+  String get inviteEmailHint => 'name@example.com';
+
+  @override
+  String get invitePhoneHint => '+880 17XX-XXXXXX';
+
+  @override
+  String get inviteByEmailNote =>
+      'We email them the code. Only the account with this email can use it.';
+
+  @override
+  String get inviteByPhoneNote =>
+      'You get a code to send them yourself, by SMS or any chat app.';
+
+  @override
+  String get inviteAs => 'Invite as';
+
+  @override
+  String inviteUsesSeat(int seat, int limit) {
+    return 'This takes seat $seat of $limit until they join or the invitation ends.';
+  }
+
+  @override
+  String get inviteSend => 'Send invitation';
+
+  @override
+  String get inviteMakeCode => 'Create code';
+
+  @override
+  String get inviteEmailNeeded => 'Enter their email.';
+
+  @override
+  String get invitePhoneNeeded => 'Enter their phone number.';
+
+  @override
+  String get inviteEmailInvalid => 'That doesn’t look like an email address.';
+
+  @override
+  String get invitePhoneInvalid => 'That doesn’t look like a phone number.';
+
+  @override
+  String inviteTicketTitle(String business) {
+    return 'Invitation to $business';
+  }
+
+  @override
+  String inviteEmailed(String email) {
+    return 'Sent to $email. You can also pass the code on yourself.';
+  }
+
+  @override
+  String get inviteShareOnce =>
+      'Send this code to them now. It is shown only once.';
+
+  @override
+  String inviteValidDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Works for $days days, once.',
+      one: 'Works for 1 day, once.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String inviteShareText(String business, String code) {
+    return 'Join $business on Spendroo. Open the app, tap the business name at the top, choose “Join a business” and enter this code: $code';
+  }
+
+  @override
+  String inviteExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Ends in $days days',
+      one: 'Ends tomorrow',
+      zero: 'Ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get inviteCancel => 'Withdraw invitation';
+
+  @override
+  String inviteCancelConfirm(String contact) {
+    return 'Withdraw the invitation to $contact? Their code will stop working and the seat is freed.';
+  }
+
+  @override
+  String get codeCopied => 'Code copied';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get paste => 'Paste';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get cashbookAccess => 'Cashbook access';
+
+  @override
+  String booksOpenCount(int open, int total) {
+    return '$open of $total open';
+  }
+
+  @override
+  String get accessByRoleAll => 'Reaches every cashbook through their role.';
+
+  @override
+  String get accessByRoleView =>
+      'Can look at every cashbook, but not change anything.';
+
+  @override
+  String get accessByRoleStaff =>
+      'Works only in the cashbooks the owner or an admin opens to them.';
+
+  @override
+  String get roleChangeNotYours => 'Only the owner can change this role.';
+
+  @override
+  String roleChangeDropsAccess(String name, String role) {
+    return 'Make $name $role? Their access to single cashbooks will be removed.';
+  }
+
+  @override
+  String joinedOn(String date) {
+    return 'Joined $date';
+  }
+
+  @override
+  String get memberGone => 'This person is no longer in the business.';
+
+  @override
+  String get removeMember => 'Remove from business';
+
+  @override
+  String get removeMemberHint =>
+      'They lose access straight away. You can invite them again.';
+
+  @override
+  String removeMemberConfirm(String name, String business) {
+    return 'Remove $name from $business? Their entries stay.';
+  }
+
+  @override
+  String get memberRemoved => 'Removed';
+
+  @override
+  String get handOver => 'Make owner';
+
+  @override
+  String get handOverTitle => 'Hand over the business';
+
+  @override
+  String handOverHint(String name) {
+    return 'Hand the business and its plan to $name';
+  }
+
+  @override
+  String handOverBody(String name, String business) {
+    return '$name becomes the owner of $business, and it runs on their plan from then on. You stay on as an admin, and only they can hand it back.';
+  }
+
+  @override
+  String handOverTypeName(String business) {
+    return 'Type “$business” to confirm';
+  }
+
+  @override
+  String handedOver(String name) {
+    return '$name is the owner now';
+  }
+
+  @override
+  String handOverNoRoom(String name) {
+    return '$name’s plan has no room for this business yet. They need a plan with enough businesses, team seats and cashbooks first.';
+  }
+
+  @override
+  String get leaveBusiness => 'Leave business';
+
+  @override
+  String leaveBusinessConfirm(String business) {
+    return 'Leave $business? It will disappear from this phone, and you need a new invitation to come back.';
+  }
+
+  @override
+  String leftBusiness(String business) {
+    return 'You left $business';
+  }
+
+  @override
+  String get joinBusiness => 'Join a business';
+
+  @override
+  String get joinIntro =>
+      'Got an invitation code? Enter it to join the business that sent it.';
+
+  @override
+  String get joinCodeHint =>
+      '10 letters and numbers, from the email or message you got';
+
+  @override
+  String invitedBy(String name) {
+    return 'Invited by $name';
+  }
+
+  @override
+  String joinAs(String role) {
+    return 'Join as $role';
+  }
+
+  @override
+  String joinedBusiness(String business) {
+    return 'Welcome to $business';
+  }
+
+  @override
+  String get teamErrorAlreadyMember =>
+      'This person is already in the business.';
+
+  @override
+  String get teamErrorInvalidCode =>
+      'That code doesn’t match any invitation. Check it and try again.';
+
+  @override
+  String get teamErrorExpired =>
+      'This invitation has ended. Ask for a new one.';
+
+  @override
+  String get teamErrorUsed => 'This code has already been used.';
+
+  @override
+  String get teamErrorWrongAccount =>
+      'This invitation was sent to another email. Sign in with that account to use it.';
+
+  @override
+  String get teamErrorNoSeats =>
+      'This business has no free seat right now. Ask its owner to make room.';
+
+  @override
+  String get teamErrorTooMany => 'Too many tries. Wait a while and try again.';
+
+  @override
+  String get teamErrorBadInput => 'Check what you entered and try again.';
+
+  @override
+  String get teamErrorRefused => 'You can’t make this change.';
+
+  @override
+  String get teamErrorFailed => 'That didn’t work. Try again.';
+
+  @override
+  String get haveInviteCode => 'I have an invitation code';
+
+  @override
+  String get haveInviteCodeHint => 'Join a business someone invited you to.';
+
+  @override
+  String get joinRoleAdminHint =>
+      'You’ll run every cashbook and can invite staff and viewers.';
+
+  @override
+  String get joinRoleStaffHint =>
+      'You’ll work in the cashbooks the owner or an admin opens to you.';
+
+  @override
+  String get joinRoleViewerHint =>
+      'You’ll see every cashbook but won’t change anything.';
+
+  @override
+  String get noCashbooksForStaff =>
+      'No cashbooks are open to you yet. Ask the owner or an admin to give you access.';
+
+  @override
+  String get roleChangeManagersOnly =>
+      'Only the owner or an admin can change this role.';
+
+  @override
+  String get seatsNone => 'No team seats on this plan';
+
+  @override
+  String get historyTitle => 'Edit history';
+
+  @override
+  String get historyHint => 'Who changed what, and when';
+
+  @override
+  String get historyOfEntry => 'History of this entry';
+
+  @override
+  String get historyTheirChanges => 'See their changes';
+
+  @override
+  String historyTheirChangesHint(String name) {
+    return 'Everything $name added, edited or deleted';
+  }
+
+  @override
+  String historyChangesBy(String name) {
+    return 'Changes by $name';
+  }
+
+  @override
+  String get historyNobody => 'Spendroo';
+
+  @override
+  String get historySomeone => 'someone';
+
+  @override
+  String get historyChanged => 'Made a change';
+
+  @override
+  String get historyEntryCreated => 'Added an entry';
+
+  @override
+  String get historyEntryUpdated => 'Edited an entry';
+
+  @override
+  String get historyEntryDeleted => 'Deleted an entry';
+
+  @override
+  String get historyEntryRestored => 'Brought back an entry';
+
+  @override
+  String get historyCashbookCreated => 'Created a cashbook';
+
+  @override
+  String get historyCashbookUpdated => 'Changed a cashbook';
+
+  @override
+  String get historyCashbookDeleted => 'Deleted a cashbook';
+
+  @override
+  String get historyCashbookRestored => 'Brought back a cashbook';
+
+  @override
+  String get historyCategoryCreated => 'Added a category';
+
+  @override
+  String get historyCategoryUpdated => 'Changed a category';
+
+  @override
+  String get historyCategoryDeleted => 'Removed a category';
+
+  @override
+  String get historyCategoryRestored => 'Brought back a category';
+
+  @override
+  String get historyMethodCreated => 'Added a payment method';
+
+  @override
+  String get historyMethodUpdated => 'Changed a payment method';
+
+  @override
+  String get historyMethodDeleted => 'Removed a payment method';
+
+  @override
+  String get historyMethodRestored => 'Brought back a payment method';
+
+  @override
+  String historyAccessGiven(String name) {
+    return 'Gave $name access';
+  }
+
+  @override
+  String historyAccessChanged(String name) {
+    return 'Changed $name’s access';
+  }
+
+  @override
+  String historyAccessTaken(String name) {
+    return 'Took away $name’s access';
+  }
+
+  @override
+  String historyMemberJoined(String name) {
+    return 'Brought $name into the team';
+  }
+
+  @override
+  String historyMemberRole(String name) {
+    return 'Changed $name’s role';
+  }
+
+  @override
+  String historyMemberLeft(String name) {
+    return '$name is no longer on the team';
+  }
+
+  @override
+  String get historyFieldAmount => 'Amount';
+
+  @override
+  String get historyFieldType => 'Type';
+
+  @override
+  String get historyFieldDate => 'Date';
+
+  @override
+  String get historyFieldTitle => 'Title';
+
+  @override
+  String get historyFieldNote => 'Note';
+
+  @override
+  String get historyFieldCategory => 'Category';
+
+  @override
+  String get historyFieldMethod => 'Payment method';
+
+  @override
+  String get historyFieldName => 'Name';
+
+  @override
+  String get historyFieldDescription => 'Description';
+
+  @override
+  String get historyFieldCurrency => 'Currency';
+
+  @override
+  String get historyFieldColour => 'Colour';
+
+  @override
+  String get historyFieldRole => 'Role';
+
+  @override
+  String get historyFieldAccess => 'Access';
+
+  @override
+  String get historyEmptyValue => 'Empty';
+
+  @override
+  String get historyAnyBook => 'All cashbooks';
+
+  @override
+  String get historyAnyone => 'Everyone';
+
+  @override
+  String get historyAnyTime => 'Any time';
+
+  @override
+  String get historyPickBook => 'Show changes in';
+
+  @override
+  String get historyPickPerson => 'Show changes by';
+
+  @override
+  String get historyClearAll => 'Clear all';
+
+  @override
+  String get historyEmpty =>
+      'Nothing has changed yet. Every entry your team adds, edits or deletes will show up here.';
+
+  @override
+  String get historyEmptyFiltered => 'No changes match these filters.';
+
+  @override
+  String get historyEmptyEntry =>
+      'This entry hasn’t reached the server yet. Its history shows once it syncs.';
+
+  @override
+  String get historyTheStart => 'That’s everything';
+
+  @override
+  String get historyMoreFailed => 'Couldn’t load more.';
+
+  @override
+  String get historyOwnerOnly =>
+      'Only the business owner can see the edit history.';
+
+  @override
+  String get historyBusinessOnly => 'Edit history is kept for businesses.';
+
+  @override
+  String get historyLockedTitle => 'See who changed what, and when';
+
+  @override
+  String get historyLockedBody =>
+      'Keep your team accountable with a full record of every change in your business.';
+
+  @override
+  String get historyLockedPoint1 => 'Every edit, with before and after';
+
+  @override
+  String get historyLockedPoint2 => 'Filter by cashbook, person or date';
+
+  @override
+  String get historyLockedPoint3 => 'Deleted entries never vanish from view';
+
+  @override
+  String get historyBackToTop => 'Back to the newest';
+
+  @override
+  String historyChangeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes',
+      one: '1 change',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bills => 'Bills';
+
+  @override
+  String get billsHint => 'Keep a photo or PDF of the receipt with this entry.';
+
+  @override
+  String get billAttach => 'Attach bill';
+
+  @override
+  String get billTakePhoto => 'Take a photo';
+
+  @override
+  String get billTakePhotoHint =>
+      'Snap a paper receipt. It\'s kept sharp and small.';
+
+  @override
+  String get billChoosePhoto => 'Choose a photo';
+
+  @override
+  String get billChoosePhotoHint =>
+      'A photo or screenshot already on your phone';
+
+  @override
+  String get billChoosePdf => 'Choose a PDF';
+
+  @override
+  String get billChoosePdfHint => 'Invoices and statements that came as a PDF';
+
+  @override
+  String billPerFile(String size) {
+    return 'Up to $size per bill';
+  }
+
+  @override
+  String billRoomLeft(String size) {
+    return '$size left';
+  }
+
+  @override
+  String billStorageUsed(String used, String total) {
+    return '$used of $total used';
+  }
+
+  @override
+  String get billStaged => 'Attached when you save';
+
+  @override
+  String get billWaiting => 'Waiting to upload';
+
+  @override
+  String billUploading(int percent) {
+    return 'Uploading $percent%';
+  }
+
+  @override
+  String get billFailed => 'Couldn\'t attach';
+
+  @override
+  String get billRefused => 'No room on your plan';
+
+  @override
+  String get billRetry => 'Try again';
+
+  @override
+  String get billRemove => 'Remove bill';
+
+  @override
+  String get billRemoveConfirm =>
+      'Remove this bill? The file is deleted for everyone in this business.';
+
+  @override
+  String get billRemoved => 'Bill removed';
+
+  @override
+  String get billAdded => 'Bill attached. It uploads in the background.';
+
+  @override
+  String get billShare => 'Share';
+
+  @override
+  String get billOpenElsewhere => 'Open in another app';
+
+  @override
+  String billPages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pages',
+      one: '1 page',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String billCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bills',
+      one: '1 bill',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String billOf(int index, int total) {
+    return '$index of $total';
+  }
+
+  @override
+  String get billOpenOffline =>
+      'This bill isn\'t saved on this phone yet. Connect to the internet to open it.';
+
+  @override
+  String get billGone => 'This bill is no longer available.';
+
+  @override
+  String get billOpenFailed => 'The bill couldn\'t be opened. Try again.';
+
+  @override
+  String get billErrorType => 'That file isn\'t a photo or a PDF.';
+
+  @override
+  String get billErrorUnsafe =>
+      'This file has scripts or hidden content in it, so it can\'t be kept.';
+
+  @override
+  String get billErrorCorrupt => 'This file is damaged and can\'t be opened.';
+
+  @override
+  String get billErrorTooLarge => 'This file is too large to attach.';
+
+  @override
+  String get billErrorForbidden => 'You can\'t add bills to this entry.';
+
+  @override
+  String get billErrorGone => 'This entry isn\'t on the server any more.';
+
+  @override
+  String get billErrorMissing =>
+      'The file is no longer on this phone. Remove it and attach it again.';
+
+  @override
+  String get billErrorGeneric => 'The bill couldn\'t be attached.';
+
+  @override
+  String get billViewOnly => 'You can view these bills but not change them.';
+
+  @override
+  String get entryDetails => 'Entry';
+
+  @override
+  String limitStorage(String plan, String size) {
+    return 'Your $plan plan keeps up to $size of bills. Remove some, or upgrade for more room.';
+  }
+
+  @override
+  String limitBillSize(String plan, String size) {
+    return 'On your $plan plan, one bill can be up to $size.';
+  }
+
+  @override
+  String get featureStorageFile => 'Largest bill';
+
+  @override
+  String get featureStoragePdf => 'PDF bills';
+
+  @override
+  String get fieldsTitle => 'Custom fields';
+
+  @override
+  String get fieldsIntro =>
+      'Add the details your business tracks to every entry in this book. They show on entries and in reports.';
+
+  @override
+  String fieldsCount(int count, int max) {
+    return '$count of $max fields';
+  }
+
+  @override
+  String get fieldsEmptyTitle => 'Track what matters to your business';
+
+  @override
+  String get fieldsEmptyBody =>
+      'Add fields like an invoice number or the party you paid. They appear on every entry in this book and in its reports.';
+
+  @override
+  String get fieldsTryOne => 'Start with one of these';
+
+  @override
+  String get fieldsExampleInvoice => 'Invoice no';
+
+  @override
+  String get fieldsExampleParty => 'Party';
+
+  @override
+  String get fieldsExampleDue => 'Due date';
+
+  @override
+  String get fieldNew => 'New field';
+
+  @override
+  String get fieldEdit => 'Edit field';
+
+  @override
+  String get fieldName => 'Field name';
+
+  @override
+  String get fieldNameNeeded => 'Give the field a name.';
+
+  @override
+  String get fieldNameTaken => 'This book already has a field called that.';
+
+  @override
+  String get fieldKind => 'Type';
+
+  @override
+  String get fieldKindText => 'Text';
+
+  @override
+  String get fieldKindNumber => 'Number';
+
+  @override
+  String get fieldKindDate => 'Date';
+
+  @override
+  String get fieldKindChoice => 'Choice';
+
+  @override
+  String get fieldKindTextHint => 'Codes, names, notes';
+
+  @override
+  String get fieldKindNumberHint => 'Quantities, weights';
+
+  @override
+  String get fieldKindDateHint => 'Due or delivery dates';
+
+  @override
+  String get fieldKindChoiceHint => 'Pick from a list';
+
+  @override
+  String get fieldKindFixed => 'The type can\'t change once the field is made.';
+
+  @override
+  String get fieldOptions => 'Options';
+
+  @override
+  String get fieldOptionAdd => 'Add an option';
+
+  @override
+  String get fieldOptionsNeeded => 'Add at least one option.';
+
+  @override
+  String fieldOptionsFull(int max) {
+    return 'A field can offer up to $max options.';
+  }
+
+  @override
+  String get fieldRequired => 'Required';
+
+  @override
+  String get fieldRequiredDetail => 'New entries can\'t be saved without it.';
+
+  @override
+  String get fieldShowInList => 'Show on entry list';
+
+  @override
+  String get fieldShowInListDetail =>
+      'Shown under each entry in this book. Only one field can be.';
+
+  @override
+  String get fieldPreview => 'How it looks on an entry';
+
+  @override
+  String get fieldDelete => 'Delete field';
+
+  @override
+  String get fieldDeleteConfirm =>
+      'Delete this field? Values already filled in stay with the entries but are no longer shown.';
+
+  @override
+  String fieldsFull(int max) {
+    return 'A book can have up to $max fields.';
+  }
+
+  @override
+  String get fieldPinned => 'On list';
+
+  @override
+  String get fieldsReorderHint => 'Hold and drag to change the order.';
+
+  @override
+  String fieldOptionsMore(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get fieldsDetails => 'Details';
+
+  @override
+  String get fieldFillIn => 'Fill this in.';
+
+  @override
+  String get fieldNeedsNumber => 'Enter a number, like 1250 or 12.5.';
+
+  @override
+  String get fieldPickDate => 'Pick a date';
+
+  @override
+  String get fieldClear => 'Clear';
+
+  @override
+  String get fieldsHintTitle => 'Add your own fields';
+
+  @override
+  String get fieldsHintBody =>
+      'Track invoice numbers, parties and more on every entry.';
+
+  @override
+  String get fieldsLockedTitle => 'Custom fields come with Business';
+
+  @override
+  String get fieldsLockedBody =>
+      'Add your own fields to entries and see them on the list and in reports. Fields and values you already have stay as they are.';
+
+  @override
+  String get fieldsReadOnly =>
+      'Your plan keeps these values as they are. Upgrade to change them.';
+
+  @override
+  String get historyFieldCreated => 'Added a custom field';
+
+  @override
+  String get historyFieldUpdated => 'Changed a custom field';
+
+  @override
+  String get historyFieldDeleted => 'Deleted a custom field';
+
+  @override
+  String get historyFieldRestored => 'Restored a custom field';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get booksTab => 'Books';
+
+  @override
+  String get entriesTab => 'Entries';
+
+  @override
+  String get featureBusinessInsights => 'Advanced business insights';
+
+  @override
+  String get insNetFlow => 'Net cash flow';
+
+  @override
+  String get insClosingBalance => 'Balance at the end';
+
+  @override
+  String get insNoActivity => 'No entries in this period yet';
+
+  @override
+  String get insNoActivityHint =>
+      'Entries added here turn into charts and insights.';
+
+  @override
+  String get insNothingHere => 'Nothing in this period';
+
+  @override
+  String get insWhereMoneyWent => 'Where the money went';
+
+  @override
+  String get insWhereMoneyCame => 'Where the money came from';
+
+  @override
+  String get insPaymentMethods => 'Payment methods';
+
+  @override
+  String get insNoPaymentMethod => 'No payment method';
+
+  @override
+  String get insIn => 'In';
+
+  @override
+  String get insOut => 'Out';
+
+  @override
+  String get insBalanceTrend => 'Balance over time';
+
+  @override
+  String get insOpening => 'Opening';
+
+  @override
+  String get insClosing => 'Closing';
+
+  @override
+  String get insLowest => 'Lowest';
+
+  @override
+  String get insActivity => 'Activity';
+
+  @override
+  String get insTapDay => 'Tap a day for details';
+
+  @override
+  String get insLess => 'Less';
+
+  @override
+  String get insMore => 'More';
+
+  @override
+  String get insHealth => 'Cash health';
+
+  @override
+  String get insOutRatio => 'Cash out against cash in';
+
+  @override
+  String get insOutRatioNone => 'Nothing came in this period.';
+
+  @override
+  String insOutRatioKept(String percent) {
+    return '$percent% of what came in is still here.';
+  }
+
+  @override
+  String insOutRatioOver(String percent) {
+    return '$percent% more went out than came in.';
+  }
+
+  @override
+  String get insAvgDailyOut => 'Cash out a day';
+
+  @override
+  String get insRunway => 'Lasts';
+
+  @override
+  String get insRunwayDetail => 'at this rate';
+
+  @override
+  String get insRunwaySafe => 'Growing';
+
+  @override
+  String get insRunwaySafeDetail => 'more in than out';
+
+  @override
+  String insDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+      zero: '0 days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insBusiestDay => 'Busiest day';
+
+  @override
+  String get insAvgEntry => 'Average entry';
+
+  @override
+  String get insActiveDays => 'Active days';
+
+  @override
+  String insActiveDaysValue(String active, String days) {
+    return '$active of $days';
+  }
+
+  @override
+  String get insTopEntries => 'Biggest entries';
+
+  @override
+  String get insTeam => 'Team activity';
+
+  @override
+  String get insYou => 'You';
+
+  @override
+  String get insSomeone => 'Someone';
+
+  @override
+  String get insMostActive => 'Most active';
+
+  @override
+  String get insStreak => 'Streak';
+
+  @override
+  String get insPeople => 'People';
+
+  @override
+  String get insBills => 'Bills kept';
+
+  @override
+  String insBillsShare(String kept, String total) {
+    return '$kept of $total cash outs have a bill';
+  }
+
+  @override
+  String get insBillsAll => 'Every cash out has its bill.';
+
+  @override
+  String insBillsMissing(String amount) {
+    return '$amount has no bill yet.';
+  }
+
+  @override
+  String get insByField => 'By your own field';
+
+  @override
+  String get insFieldEmpty => 'No values for this field in this period.';
+
+  @override
+  String get insBookLeague => 'Books compared';
+
+  @override
+  String insShare(String percent) {
+    return '$percent% of all';
+  }
+
+  @override
+  String insOtherCurrencies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count books in other currencies are not counted here.',
+      one: '1 book in another currency is not counted here.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insBusinessChip => 'Business';
+
+  @override
+  String get insUnlockBody =>
+      'Running balance, activity calendar, cash health, team, bills and comparing books come with the Business plan.';
+
+  @override
+  String get insUnlockAction => 'Unlock with Business';
+
+  @override
+  String insMoreWithBusiness(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count more charts with Business',
+      one: '1 more chart with Business',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insPeriodTotal => 'Total';
+
+  @override
+  String get insPeakDay => 'Peak day';
+
+  @override
+  String get insQuietDays => 'Quiet days';
+
+  @override
+  String get insWeekRhythm => 'Your week';
+
+  @override
+  String insBusiestOn(String day) {
+    return 'Busiest on $day';
+  }
+
+  @override
+  String insTimesAverage(String times) {
+    return '$times× a usual day';
+  }
+
+  @override
+  String get insAvgIn => 'Usual month in';
+
+  @override
+  String get insAvgOut => 'Usual month out';
+
+  @override
+  String get insBestMonth => 'Best month';
+
+  @override
+  String get insAboveUsual => 'Better than usual';
+
+  @override
+  String get insBelowUsual => 'Below usual';
+
+  @override
+  String insKept(String percent) {
+    return '$percent% of cash in kept';
+  }
+
+  @override
+  String insOverspent(String percent) {
+    return '$percent% more went out than came in';
+  }
+
+  @override
+  String insActiveDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active days',
+      one: '1 active day',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get featureBusinessWidget => 'Business home-screen widgets';

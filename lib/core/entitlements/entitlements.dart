@@ -9,6 +9,7 @@ abstract final class F {
   static const insightsCustomRange = 'insights.custom_range';
   static const insightsYearReview = 'insights.year_review';
   static const insightsTrendMonths = 'insights.trend_months';
+  static const insightsBusinessAdvanced = 'insights.business_advanced';
   static const recurringTransactions = 'recurring.transactions';
   static const remindersStandalone = 'reminders.standalone';
   static const savingsGoals = 'goals.savings';
@@ -22,6 +23,8 @@ abstract final class F {
   static const auditTrail = 'history.audit_trail';
   static const customFields = 'entries.custom_fields';
   static const storageMb = 'storage.attachments_mb';
+  static const storageFileMb = 'storage.attachment_file_mb';
+  static const storagePdf = 'storage.attachment_pdf';
   static const aiCredits = 'ai.credits';
   static const pdfPages = 'statements.pdf_pages';
   static const devicesMax = 'devices.max';
@@ -42,6 +45,7 @@ class FeatureValue {
     this.used = 0,
     this.bonus = 0,
     this.resetsAt,
+    this.usedBytes,
   });
 
   factory FeatureValue.fromJson(Map<String, dynamic> json) => FeatureValue(
@@ -52,6 +56,7 @@ class FeatureValue {
         used: (json['used'] as num?)?.toInt() ?? 0,
         bonus: (json['bonus'] as num?)?.toInt() ?? 0,
         resetsAt: _time(json['resets_at']),
+        usedBytes: (json['used_bytes'] as num?)?.toInt(),
       );
 
   /// 'flag' (on or off), 'limit' (how many at one time) or 'quota' (how much a month).
@@ -66,6 +71,9 @@ class FeatureValue {
   final int used;
   final int bonus;
   final DateTime? resetsAt;
+
+  /// For a limit on storage: the bytes stored so far, across the account.
+  final int? usedBytes;
 
   bool get isFlag => kind == 'flag';
 

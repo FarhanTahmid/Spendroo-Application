@@ -8,6 +8,7 @@ import '../../core/config.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../history/history_page.dart';
 import '../home_widget/home_widget_tile.dart';
 import '../profile/profile_page.dart';
 import '../profile/profile_repository.dart';
@@ -144,6 +145,22 @@ class SettingsPage extends ConsumerWidget {
                   final changed = await ref.read(workspaceActionsProvider).setDefaultCurrency(workspace.id, code);
                   if (context.mounted && !changed) context.showMessage(l10n.needsConnection);
                 },
+              ),
+            if (workspace != null && workspace.kind == 'business' && !workspace.isDemo)
+              ListTile(
+                leading: const Icon(Icons.groups_2_outlined),
+                title: Text(l10n.team),
+                subtitle: Text(l10n.teamHint),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => context.push('/team'),
+              ),
+            if (showsHistory(workspace))
+              ListTile(
+                leading: const Icon(Icons.history_rounded),
+                title: Text(l10n.historyTitle),
+                subtitle: Text(l10n.historyHint),
+                trailing: HistoryTrailing(workspace: workspace!),
+                onTap: () => openHistory(context),
               ),
             if (workspace != null && workspace.kind == 'personal') ...[
               ListTile(

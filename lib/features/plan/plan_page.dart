@@ -8,8 +8,10 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/providers.dart';
 import '../../core/ui.dart';
+import '../team/team_page.dart';
 import 'offer_banner.dart';
 import 'plan_repository.dart';
+import '../bills/bill_text.dart';
 import 'plan_text.dart';
 import 'upgrade_sheet.dart';
 
@@ -97,6 +99,11 @@ class PlanPage extends ConsumerWidget {
                 // Cashbooks are counted per business, and only its owner's plan decides
                 if (current != null && current.kind == 'business' && current.role == 'owner')
                   _Meter(feature: F.businessCashbooks, workspaceId: current.id, detail: current.name),
+                // Seats are counted on the server: members and invitations waiting
+                if (current != null && current.kind == 'business' && current.role == 'owner' && !current.isDemo)
+                  SeatUsageRow(workspace: current),
+                // Bills of every business the user owns, counted on the server
+                const _StorageMeter(),
               ],
             ),
             Card(
@@ -169,6 +176,45 @@ class _Meter extends ConsumerWidget {
             ],
           ),
           if (use.limited) ...[const SizedBox(height: 2), LimitBar(value: use.share, height: 8)],
+        ],
+      ),
+    );
+  }
+}
+
+/// Storage the user's bills take, against what the plan keeps: "3.2 MB of 10 MB".
+class _StorageMeter extends ConsumerWidget {
+  const _StorageMeter();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final text = Theme.of(context).textTheme;
+    final language = context.languageCode;
+    final value = ref.watch(entitlementsProvider.select((plan) => plan.value?[F.storageMb]));
+    if (value == null) return const SizedBox.shrink();
+    final used = value.usedBytes ?? 0;
+    final limit = value.unlimited ? null : value.limit;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpace.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(featureLabel(l10n, F.storageMb), style: text.bodyMedium)),
+              Text(
+                limit == null
+                    ? '${formatBytes(used, language)} · ${l10n.planUnlimited}'
+                    : l10n.billStorageUsed(formatBytes(used, language), formatMegabytes(limit, language)),
+                style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600, fontFeatures: tabularFigures),
+              ),
+            ],
+          ),
+          if (limit != null && limit > 0) ...[
+            const SizedBox(height: 2),
+            LimitBar(value: used / (limit * megabyte), height: 8),
+          ],
         ],
       ),
     );

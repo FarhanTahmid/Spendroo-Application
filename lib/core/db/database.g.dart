@@ -2313,6 +2313,819 @@ class PaymentMethodsCompanion extends UpdateCompanion<PaymentMethod> {
   }
 }
 
+class $EntryFieldsTable extends EntryFields
+    with TableInfo<$EntryFieldsTable, EntryField> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EntryFieldsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _serverSeqMeta = const VerificationMeta(
+    'serverSeq',
+  );
+  @override
+  late final GeneratedColumn<int> serverSeq = GeneratedColumn<int>(
+    'server_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<String> updatedAt = GeneratedColumn<String>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<String> deletedAt = GeneratedColumn<String>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cashbookIdMeta = const VerificationMeta(
+    'cashbookId',
+  );
+  @override
+  late final GeneratedColumn<String> cashbookId = GeneratedColumn<String>(
+    'cashbook_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _optionsMeta = const VerificationMeta(
+    'options',
+  );
+  @override
+  late final GeneratedColumn<String> options = GeneratedColumn<String>(
+    'options',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _isRequiredMeta = const VerificationMeta(
+    'isRequired',
+  );
+  @override
+  late final GeneratedColumn<bool> isRequired = GeneratedColumn<bool>(
+    'required',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("required" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _showInListMeta = const VerificationMeta(
+    'showInList',
+  );
+  @override
+  late final GeneratedColumn<bool> showInList = GeneratedColumn<bool>(
+    'show_in_list',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("show_in_list" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    cashbookId,
+    name,
+    kind,
+    options,
+    isRequired,
+    showInList,
+    position,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'entry_fields';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EntryField> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('server_seq')) {
+      context.handle(
+        _serverSeqMeta,
+        serverSeq.isAcceptableOrUnknown(data['server_seq']!, _serverSeqMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('cashbook_id')) {
+      context.handle(
+        _cashbookIdMeta,
+        cashbookId.isAcceptableOrUnknown(data['cashbook_id']!, _cashbookIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cashbookIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('options')) {
+      context.handle(
+        _optionsMeta,
+        options.isAcceptableOrUnknown(data['options']!, _optionsMeta),
+      );
+    }
+    if (data.containsKey('required')) {
+      context.handle(
+        _isRequiredMeta,
+        isRequired.isAcceptableOrUnknown(data['required']!, _isRequiredMeta),
+      );
+    }
+    if (data.containsKey('show_in_list')) {
+      context.handle(
+        _showInListMeta,
+        showInList.isAcceptableOrUnknown(
+          data['show_in_list']!,
+          _showInListMeta,
+        ),
+      );
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EntryField map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EntryField(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      serverSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_seq'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      cashbookId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cashbook_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      options: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}options'],
+      )!,
+      isRequired: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}required'],
+      )!,
+      showInList: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}show_in_list'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+    );
+  }
+
+  @override
+  $EntryFieldsTable createAlias(String alias) {
+    return $EntryFieldsTable(attachedDatabase, alias);
+  }
+}
+
+class EntryField extends DataClass implements Insertable<EntryField> {
+  final String id;
+  final String workspaceId;
+  final int version;
+  final int serverSeq;
+  final String createdAt;
+  final String updatedAt;
+  final String? deletedAt;
+  final String cashbookId;
+  final String name;
+
+  /// text, number, date or choice. Fixed once the field exists.
+  final String kind;
+
+  /// JSON list of what a choice field offers; '[]' for every other kind.
+  final String options;
+
+  /// Asked for by the app on new entries only; the server never refuses a missing value.
+  final bool isRequired;
+
+  /// The one field shown on the book's entry list.
+  final bool showInList;
+  final int position;
+  const EntryField({
+    required this.id,
+    required this.workspaceId,
+    required this.version,
+    required this.serverSeq,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.cashbookId,
+    required this.name,
+    required this.kind,
+    required this.options,
+    required this.isRequired,
+    required this.showInList,
+    required this.position,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['version'] = Variable<int>(version);
+    map['server_seq'] = Variable<int>(serverSeq);
+    map['created_at'] = Variable<String>(createdAt);
+    map['updated_at'] = Variable<String>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<String>(deletedAt);
+    }
+    map['cashbook_id'] = Variable<String>(cashbookId);
+    map['name'] = Variable<String>(name);
+    map['kind'] = Variable<String>(kind);
+    map['options'] = Variable<String>(options);
+    map['required'] = Variable<bool>(isRequired);
+    map['show_in_list'] = Variable<bool>(showInList);
+    map['position'] = Variable<int>(position);
+    return map;
+  }
+
+  EntryFieldsCompanion toCompanion(bool nullToAbsent) {
+    return EntryFieldsCompanion(
+      id: Value(id),
+      workspaceId: Value(workspaceId),
+      version: Value(version),
+      serverSeq: Value(serverSeq),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      cashbookId: Value(cashbookId),
+      name: Value(name),
+      kind: Value(kind),
+      options: Value(options),
+      isRequired: Value(isRequired),
+      showInList: Value(showInList),
+      position: Value(position),
+    );
+  }
+
+  factory EntryField.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EntryField(
+      id: serializer.fromJson<String>(json['id']),
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      version: serializer.fromJson<int>(json['version']),
+      serverSeq: serializer.fromJson<int>(json['serverSeq']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      deletedAt: serializer.fromJson<String?>(json['deletedAt']),
+      cashbookId: serializer.fromJson<String>(json['cashbookId']),
+      name: serializer.fromJson<String>(json['name']),
+      kind: serializer.fromJson<String>(json['kind']),
+      options: serializer.fromJson<String>(json['options']),
+      isRequired: serializer.fromJson<bool>(json['isRequired']),
+      showInList: serializer.fromJson<bool>(json['showInList']),
+      position: serializer.fromJson<int>(json['position']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'version': serializer.toJson<int>(version),
+      'serverSeq': serializer.toJson<int>(serverSeq),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
+      'deletedAt': serializer.toJson<String?>(deletedAt),
+      'cashbookId': serializer.toJson<String>(cashbookId),
+      'name': serializer.toJson<String>(name),
+      'kind': serializer.toJson<String>(kind),
+      'options': serializer.toJson<String>(options),
+      'isRequired': serializer.toJson<bool>(isRequired),
+      'showInList': serializer.toJson<bool>(showInList),
+      'position': serializer.toJson<int>(position),
+    };
+  }
+
+  EntryField copyWith({
+    String? id,
+    String? workspaceId,
+    int? version,
+    int? serverSeq,
+    String? createdAt,
+    String? updatedAt,
+    Value<String?> deletedAt = const Value.absent(),
+    String? cashbookId,
+    String? name,
+    String? kind,
+    String? options,
+    bool? isRequired,
+    bool? showInList,
+    int? position,
+  }) => EntryField(
+    id: id ?? this.id,
+    workspaceId: workspaceId ?? this.workspaceId,
+    version: version ?? this.version,
+    serverSeq: serverSeq ?? this.serverSeq,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    cashbookId: cashbookId ?? this.cashbookId,
+    name: name ?? this.name,
+    kind: kind ?? this.kind,
+    options: options ?? this.options,
+    isRequired: isRequired ?? this.isRequired,
+    showInList: showInList ?? this.showInList,
+    position: position ?? this.position,
+  );
+  EntryField copyWithCompanion(EntryFieldsCompanion data) {
+    return EntryField(
+      id: data.id.present ? data.id.value : this.id,
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      version: data.version.present ? data.version.value : this.version,
+      serverSeq: data.serverSeq.present ? data.serverSeq.value : this.serverSeq,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      cashbookId: data.cashbookId.present
+          ? data.cashbookId.value
+          : this.cashbookId,
+      name: data.name.present ? data.name.value : this.name,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      options: data.options.present ? data.options.value : this.options,
+      isRequired: data.isRequired.present
+          ? data.isRequired.value
+          : this.isRequired,
+      showInList: data.showInList.present
+          ? data.showInList.value
+          : this.showInList,
+      position: data.position.present ? data.position.value : this.position,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EntryField(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('cashbookId: $cashbookId, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('options: $options, ')
+          ..write('isRequired: $isRequired, ')
+          ..write('showInList: $showInList, ')
+          ..write('position: $position')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    cashbookId,
+    name,
+    kind,
+    options,
+    isRequired,
+    showInList,
+    position,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EntryField &&
+          other.id == this.id &&
+          other.workspaceId == this.workspaceId &&
+          other.version == this.version &&
+          other.serverSeq == this.serverSeq &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.cashbookId == this.cashbookId &&
+          other.name == this.name &&
+          other.kind == this.kind &&
+          other.options == this.options &&
+          other.isRequired == this.isRequired &&
+          other.showInList == this.showInList &&
+          other.position == this.position);
+}
+
+class EntryFieldsCompanion extends UpdateCompanion<EntryField> {
+  final Value<String> id;
+  final Value<String> workspaceId;
+  final Value<int> version;
+  final Value<int> serverSeq;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
+  final Value<String?> deletedAt;
+  final Value<String> cashbookId;
+  final Value<String> name;
+  final Value<String> kind;
+  final Value<String> options;
+  final Value<bool> isRequired;
+  final Value<bool> showInList;
+  final Value<int> position;
+  final Value<int> rowid;
+  const EntryFieldsCompanion({
+    this.id = const Value.absent(),
+    this.workspaceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.cashbookId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.options = const Value.absent(),
+    this.isRequired = const Value.absent(),
+    this.showInList = const Value.absent(),
+    this.position = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EntryFieldsCompanion.insert({
+    required String id,
+    required String workspaceId,
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    required String createdAt,
+    required String updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String cashbookId,
+    required String name,
+    required String kind,
+    this.options = const Value.absent(),
+    this.isRequired = const Value.absent(),
+    this.showInList = const Value.absent(),
+    this.position = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workspaceId = Value(workspaceId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       cashbookId = Value(cashbookId),
+       name = Value(name),
+       kind = Value(kind);
+  static Insertable<EntryField> custom({
+    Expression<String>? id,
+    Expression<String>? workspaceId,
+    Expression<int>? version,
+    Expression<int>? serverSeq,
+    Expression<String>? createdAt,
+    Expression<String>? updatedAt,
+    Expression<String>? deletedAt,
+    Expression<String>? cashbookId,
+    Expression<String>? name,
+    Expression<String>? kind,
+    Expression<String>? options,
+    Expression<bool>? isRequired,
+    Expression<bool>? showInList,
+    Expression<int>? position,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (version != null) 'version': version,
+      if (serverSeq != null) 'server_seq': serverSeq,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (cashbookId != null) 'cashbook_id': cashbookId,
+      if (name != null) 'name': name,
+      if (kind != null) 'kind': kind,
+      if (options != null) 'options': options,
+      if (isRequired != null) 'required': isRequired,
+      if (showInList != null) 'show_in_list': showInList,
+      if (position != null) 'position': position,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EntryFieldsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workspaceId,
+    Value<int>? version,
+    Value<int>? serverSeq,
+    Value<String>? createdAt,
+    Value<String>? updatedAt,
+    Value<String?>? deletedAt,
+    Value<String>? cashbookId,
+    Value<String>? name,
+    Value<String>? kind,
+    Value<String>? options,
+    Value<bool>? isRequired,
+    Value<bool>? showInList,
+    Value<int>? position,
+    Value<int>? rowid,
+  }) {
+    return EntryFieldsCompanion(
+      id: id ?? this.id,
+      workspaceId: workspaceId ?? this.workspaceId,
+      version: version ?? this.version,
+      serverSeq: serverSeq ?? this.serverSeq,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      cashbookId: cashbookId ?? this.cashbookId,
+      name: name ?? this.name,
+      kind: kind ?? this.kind,
+      options: options ?? this.options,
+      isRequired: isRequired ?? this.isRequired,
+      showInList: showInList ?? this.showInList,
+      position: position ?? this.position,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (serverSeq.present) {
+      map['server_seq'] = Variable<int>(serverSeq.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<String>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<String>(deletedAt.value);
+    }
+    if (cashbookId.present) {
+      map['cashbook_id'] = Variable<String>(cashbookId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (options.present) {
+      map['options'] = Variable<String>(options.value);
+    }
+    if (isRequired.present) {
+      map['required'] = Variable<bool>(isRequired.value);
+    }
+    if (showInList.present) {
+      map['show_in_list'] = Variable<bool>(showInList.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EntryFieldsCompanion(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('cashbookId: $cashbookId, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('options: $options, ')
+          ..write('isRequired: $isRequired, ')
+          ..write('showInList: $showInList, ')
+          ..write('position: $position, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -2513,6 +3326,18 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _customValuesMeta = const VerificationMeta(
+    'customValues',
+  );
+  @override
+  late final GeneratedColumn<String> customValues = GeneratedColumn<String>(
+    'custom_values',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2533,6 +3358,7 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
     entryDate,
     source,
     createdById,
+    customValues,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2681,6 +3507,15 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
         ),
       );
     }
+    if (data.containsKey('custom_values')) {
+      context.handle(
+        _customValuesMeta,
+        customValues.isAcceptableOrUnknown(
+          data['custom_values']!,
+          _customValuesMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2762,6 +3597,10 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
         DriftSqlType.string,
         data['${effectivePrefix}created_by_id'],
       ),
+      customValues: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}custom_values'],
+      )!,
     );
   }
 
@@ -2790,6 +3629,9 @@ class Entry extends DataClass implements Insertable<Entry> {
   final String entryDate;
   final String source;
   final String? createdById;
+
+  /// JSON map of the book's own fields: {field id: value as text}.
+  final String customValues;
   const Entry({
     required this.id,
     required this.workspaceId,
@@ -2809,6 +3651,7 @@ class Entry extends DataClass implements Insertable<Entry> {
     required this.entryDate,
     required this.source,
     this.createdById,
+    required this.customValues,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2843,6 +3686,7 @@ class Entry extends DataClass implements Insertable<Entry> {
     if (!nullToAbsent || createdById != null) {
       map['created_by_id'] = Variable<String>(createdById);
     }
+    map['custom_values'] = Variable<String>(customValues);
     return map;
   }
 
@@ -2878,6 +3722,7 @@ class Entry extends DataClass implements Insertable<Entry> {
       createdById: createdById == null && nullToAbsent
           ? const Value.absent()
           : Value(createdById),
+      customValues: Value(customValues),
     );
   }
 
@@ -2905,6 +3750,7 @@ class Entry extends DataClass implements Insertable<Entry> {
       entryDate: serializer.fromJson<String>(json['entryDate']),
       source: serializer.fromJson<String>(json['source']),
       createdById: serializer.fromJson<String?>(json['createdById']),
+      customValues: serializer.fromJson<String>(json['customValues']),
     );
   }
   @override
@@ -2929,6 +3775,7 @@ class Entry extends DataClass implements Insertable<Entry> {
       'entryDate': serializer.toJson<String>(entryDate),
       'source': serializer.toJson<String>(source),
       'createdById': serializer.toJson<String?>(createdById),
+      'customValues': serializer.toJson<String>(customValues),
     };
   }
 
@@ -2951,6 +3798,7 @@ class Entry extends DataClass implements Insertable<Entry> {
     String? entryDate,
     String? source,
     Value<String?> createdById = const Value.absent(),
+    String? customValues,
   }) => Entry(
     id: id ?? this.id,
     workspaceId: workspaceId ?? this.workspaceId,
@@ -2972,6 +3820,7 @@ class Entry extends DataClass implements Insertable<Entry> {
     entryDate: entryDate ?? this.entryDate,
     source: source ?? this.source,
     createdById: createdById.present ? createdById.value : this.createdById,
+    customValues: customValues ?? this.customValues,
   );
   Entry copyWithCompanion(EntriesCompanion data) {
     return Entry(
@@ -3005,6 +3854,9 @@ class Entry extends DataClass implements Insertable<Entry> {
       createdById: data.createdById.present
           ? data.createdById.value
           : this.createdById,
+      customValues: data.customValues.present
+          ? data.customValues.value
+          : this.customValues,
     );
   }
 
@@ -3028,7 +3880,8 @@ class Entry extends DataClass implements Insertable<Entry> {
           ..write('remarks: $remarks, ')
           ..write('entryDate: $entryDate, ')
           ..write('source: $source, ')
-          ..write('createdById: $createdById')
+          ..write('createdById: $createdById, ')
+          ..write('customValues: $customValues')
           ..write(')'))
         .toString();
   }
@@ -3053,6 +3906,7 @@ class Entry extends DataClass implements Insertable<Entry> {
     entryDate,
     source,
     createdById,
+    customValues,
   );
   @override
   bool operator ==(Object other) =>
@@ -3075,7 +3929,8 @@ class Entry extends DataClass implements Insertable<Entry> {
           other.remarks == this.remarks &&
           other.entryDate == this.entryDate &&
           other.source == this.source &&
-          other.createdById == this.createdById);
+          other.createdById == this.createdById &&
+          other.customValues == this.customValues);
 }
 
 class EntriesCompanion extends UpdateCompanion<Entry> {
@@ -3097,6 +3952,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
   final Value<String> entryDate;
   final Value<String> source;
   final Value<String?> createdById;
+  final Value<String> customValues;
   final Value<int> rowid;
   const EntriesCompanion({
     this.id = const Value.absent(),
@@ -3117,6 +3973,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     this.entryDate = const Value.absent(),
     this.source = const Value.absent(),
     this.createdById = const Value.absent(),
+    this.customValues = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   EntriesCompanion.insert({
@@ -3138,6 +3995,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     required String entryDate,
     this.source = const Value.absent(),
     this.createdById = const Value.absent(),
+    this.customValues = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        workspaceId = Value(workspaceId),
@@ -3167,6 +4025,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     Expression<String>? entryDate,
     Expression<String>? source,
     Expression<String>? createdById,
+    Expression<String>? customValues,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3188,6 +4047,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
       if (entryDate != null) 'entry_date': entryDate,
       if (source != null) 'source': source,
       if (createdById != null) 'created_by_id': createdById,
+      if (customValues != null) 'custom_values': customValues,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3211,6 +4071,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     Value<String>? entryDate,
     Value<String>? source,
     Value<String?>? createdById,
+    Value<String>? customValues,
     Value<int>? rowid,
   }) {
     return EntriesCompanion(
@@ -3232,6 +4093,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
       entryDate: entryDate ?? this.entryDate,
       source: source ?? this.source,
       createdById: createdById ?? this.createdById,
+      customValues: customValues ?? this.customValues,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3293,6 +4155,9 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     if (createdById.present) {
       map['created_by_id'] = Variable<String>(createdById.value);
     }
+    if (customValues.present) {
+      map['custom_values'] = Variable<String>(customValues.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3320,6 +4185,920 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
           ..write('entryDate: $entryDate, ')
           ..write('source: $source, ')
           ..write('createdById: $createdById, ')
+          ..write('customValues: $customValues, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EntryBillsTable extends EntryBills
+    with TableInfo<$EntryBillsTable, EntryBill> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EntryBillsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _serverSeqMeta = const VerificationMeta(
+    'serverSeq',
+  );
+  @override
+  late final GeneratedColumn<int> serverSeq = GeneratedColumn<int>(
+    'server_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<String> updatedAt = GeneratedColumn<String>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<String> deletedAt = GeneratedColumn<String>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<String> entryId = GeneratedColumn<String>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cashbookIdMeta = const VerificationMeta(
+    'cashbookId',
+  );
+  @override
+  late final GeneratedColumn<String> cashbookId = GeneratedColumn<String>(
+    'cashbook_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdByIdMeta = const VerificationMeta(
+    'createdById',
+  );
+  @override
+  late final GeneratedColumn<String> createdById = GeneratedColumn<String>(
+    'created_by_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contentTypeMeta = const VerificationMeta(
+    'contentType',
+  );
+  @override
+  late final GeneratedColumn<String> contentType = GeneratedColumn<String>(
+    'content_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _originalNameMeta = const VerificationMeta(
+    'originalName',
+  );
+  @override
+  late final GeneratedColumn<String> originalName = GeneratedColumn<String>(
+    'original_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sizeBytesMeta = const VerificationMeta(
+    'sizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> sizeBytes = GeneratedColumn<int>(
+    'size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _pageCountMeta = const VerificationMeta(
+    'pageCount',
+  );
+  @override
+  late final GeneratedColumn<int> pageCount = GeneratedColumn<int>(
+    'page_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    entryId,
+    cashbookId,
+    createdById,
+    contentType,
+    originalName,
+    sizeBytes,
+    pageCount,
+    width,
+    height,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'entry_bills';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EntryBill> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('server_seq')) {
+      context.handle(
+        _serverSeqMeta,
+        serverSeq.isAcceptableOrUnknown(data['server_seq']!, _serverSeqMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entryIdMeta);
+    }
+    if (data.containsKey('cashbook_id')) {
+      context.handle(
+        _cashbookIdMeta,
+        cashbookId.isAcceptableOrUnknown(data['cashbook_id']!, _cashbookIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cashbookIdMeta);
+    }
+    if (data.containsKey('created_by_id')) {
+      context.handle(
+        _createdByIdMeta,
+        createdById.isAcceptableOrUnknown(
+          data['created_by_id']!,
+          _createdByIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('content_type')) {
+      context.handle(
+        _contentTypeMeta,
+        contentType.isAcceptableOrUnknown(
+          data['content_type']!,
+          _contentTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contentTypeMeta);
+    }
+    if (data.containsKey('original_name')) {
+      context.handle(
+        _originalNameMeta,
+        originalName.isAcceptableOrUnknown(
+          data['original_name']!,
+          _originalNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('size_bytes')) {
+      context.handle(
+        _sizeBytesMeta,
+        sizeBytes.isAcceptableOrUnknown(data['size_bytes']!, _sizeBytesMeta),
+      );
+    }
+    if (data.containsKey('page_count')) {
+      context.handle(
+        _pageCountMeta,
+        pageCount.isAcceptableOrUnknown(data['page_count']!, _pageCountMeta),
+      );
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EntryBill map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EntryBill(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      serverSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_seq'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      cashbookId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cashbook_id'],
+      )!,
+      createdById: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_id'],
+      ),
+      contentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_type'],
+      )!,
+      originalName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}original_name'],
+      )!,
+      sizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size_bytes'],
+      )!,
+      pageCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}page_count'],
+      ),
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      ),
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
+    );
+  }
+
+  @override
+  $EntryBillsTable createAlias(String alias) {
+    return $EntryBillsTable(attachedDatabase, alias);
+  }
+}
+
+class EntryBill extends DataClass implements Insertable<EntryBill> {
+  final String id;
+  final String workspaceId;
+  final int version;
+  final int serverSeq;
+  final String createdAt;
+  final String updatedAt;
+  final String? deletedAt;
+  final String entryId;
+  final String cashbookId;
+  final String? createdById;
+
+  /// What the server found the file to be: image/jpeg, image/png or application/pdf.
+  final String contentType;
+  final String originalName;
+  final int sizeBytes;
+  final int? pageCount;
+  final int? width;
+  final int? height;
+  const EntryBill({
+    required this.id,
+    required this.workspaceId,
+    required this.version,
+    required this.serverSeq,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.entryId,
+    required this.cashbookId,
+    this.createdById,
+    required this.contentType,
+    required this.originalName,
+    required this.sizeBytes,
+    this.pageCount,
+    this.width,
+    this.height,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['version'] = Variable<int>(version);
+    map['server_seq'] = Variable<int>(serverSeq);
+    map['created_at'] = Variable<String>(createdAt);
+    map['updated_at'] = Variable<String>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<String>(deletedAt);
+    }
+    map['entry_id'] = Variable<String>(entryId);
+    map['cashbook_id'] = Variable<String>(cashbookId);
+    if (!nullToAbsent || createdById != null) {
+      map['created_by_id'] = Variable<String>(createdById);
+    }
+    map['content_type'] = Variable<String>(contentType);
+    map['original_name'] = Variable<String>(originalName);
+    map['size_bytes'] = Variable<int>(sizeBytes);
+    if (!nullToAbsent || pageCount != null) {
+      map['page_count'] = Variable<int>(pageCount);
+    }
+    if (!nullToAbsent || width != null) {
+      map['width'] = Variable<int>(width);
+    }
+    if (!nullToAbsent || height != null) {
+      map['height'] = Variable<int>(height);
+    }
+    return map;
+  }
+
+  EntryBillsCompanion toCompanion(bool nullToAbsent) {
+    return EntryBillsCompanion(
+      id: Value(id),
+      workspaceId: Value(workspaceId),
+      version: Value(version),
+      serverSeq: Value(serverSeq),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      entryId: Value(entryId),
+      cashbookId: Value(cashbookId),
+      createdById: createdById == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdById),
+      contentType: Value(contentType),
+      originalName: Value(originalName),
+      sizeBytes: Value(sizeBytes),
+      pageCount: pageCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pageCount),
+      width: width == null && nullToAbsent
+          ? const Value.absent()
+          : Value(width),
+      height: height == null && nullToAbsent
+          ? const Value.absent()
+          : Value(height),
+    );
+  }
+
+  factory EntryBill.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EntryBill(
+      id: serializer.fromJson<String>(json['id']),
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      version: serializer.fromJson<int>(json['version']),
+      serverSeq: serializer.fromJson<int>(json['serverSeq']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      deletedAt: serializer.fromJson<String?>(json['deletedAt']),
+      entryId: serializer.fromJson<String>(json['entryId']),
+      cashbookId: serializer.fromJson<String>(json['cashbookId']),
+      createdById: serializer.fromJson<String?>(json['createdById']),
+      contentType: serializer.fromJson<String>(json['contentType']),
+      originalName: serializer.fromJson<String>(json['originalName']),
+      sizeBytes: serializer.fromJson<int>(json['sizeBytes']),
+      pageCount: serializer.fromJson<int?>(json['pageCount']),
+      width: serializer.fromJson<int?>(json['width']),
+      height: serializer.fromJson<int?>(json['height']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'version': serializer.toJson<int>(version),
+      'serverSeq': serializer.toJson<int>(serverSeq),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
+      'deletedAt': serializer.toJson<String?>(deletedAt),
+      'entryId': serializer.toJson<String>(entryId),
+      'cashbookId': serializer.toJson<String>(cashbookId),
+      'createdById': serializer.toJson<String?>(createdById),
+      'contentType': serializer.toJson<String>(contentType),
+      'originalName': serializer.toJson<String>(originalName),
+      'sizeBytes': serializer.toJson<int>(sizeBytes),
+      'pageCount': serializer.toJson<int?>(pageCount),
+      'width': serializer.toJson<int?>(width),
+      'height': serializer.toJson<int?>(height),
+    };
+  }
+
+  EntryBill copyWith({
+    String? id,
+    String? workspaceId,
+    int? version,
+    int? serverSeq,
+    String? createdAt,
+    String? updatedAt,
+    Value<String?> deletedAt = const Value.absent(),
+    String? entryId,
+    String? cashbookId,
+    Value<String?> createdById = const Value.absent(),
+    String? contentType,
+    String? originalName,
+    int? sizeBytes,
+    Value<int?> pageCount = const Value.absent(),
+    Value<int?> width = const Value.absent(),
+    Value<int?> height = const Value.absent(),
+  }) => EntryBill(
+    id: id ?? this.id,
+    workspaceId: workspaceId ?? this.workspaceId,
+    version: version ?? this.version,
+    serverSeq: serverSeq ?? this.serverSeq,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    entryId: entryId ?? this.entryId,
+    cashbookId: cashbookId ?? this.cashbookId,
+    createdById: createdById.present ? createdById.value : this.createdById,
+    contentType: contentType ?? this.contentType,
+    originalName: originalName ?? this.originalName,
+    sizeBytes: sizeBytes ?? this.sizeBytes,
+    pageCount: pageCount.present ? pageCount.value : this.pageCount,
+    width: width.present ? width.value : this.width,
+    height: height.present ? height.value : this.height,
+  );
+  EntryBill copyWithCompanion(EntryBillsCompanion data) {
+    return EntryBill(
+      id: data.id.present ? data.id.value : this.id,
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      version: data.version.present ? data.version.value : this.version,
+      serverSeq: data.serverSeq.present ? data.serverSeq.value : this.serverSeq,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      cashbookId: data.cashbookId.present
+          ? data.cashbookId.value
+          : this.cashbookId,
+      createdById: data.createdById.present
+          ? data.createdById.value
+          : this.createdById,
+      contentType: data.contentType.present
+          ? data.contentType.value
+          : this.contentType,
+      originalName: data.originalName.present
+          ? data.originalName.value
+          : this.originalName,
+      sizeBytes: data.sizeBytes.present ? data.sizeBytes.value : this.sizeBytes,
+      pageCount: data.pageCount.present ? data.pageCount.value : this.pageCount,
+      width: data.width.present ? data.width.value : this.width,
+      height: data.height.present ? data.height.value : this.height,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EntryBill(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('entryId: $entryId, ')
+          ..write('cashbookId: $cashbookId, ')
+          ..write('createdById: $createdById, ')
+          ..write('contentType: $contentType, ')
+          ..write('originalName: $originalName, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('pageCount: $pageCount, ')
+          ..write('width: $width, ')
+          ..write('height: $height')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    entryId,
+    cashbookId,
+    createdById,
+    contentType,
+    originalName,
+    sizeBytes,
+    pageCount,
+    width,
+    height,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EntryBill &&
+          other.id == this.id &&
+          other.workspaceId == this.workspaceId &&
+          other.version == this.version &&
+          other.serverSeq == this.serverSeq &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.entryId == this.entryId &&
+          other.cashbookId == this.cashbookId &&
+          other.createdById == this.createdById &&
+          other.contentType == this.contentType &&
+          other.originalName == this.originalName &&
+          other.sizeBytes == this.sizeBytes &&
+          other.pageCount == this.pageCount &&
+          other.width == this.width &&
+          other.height == this.height);
+}
+
+class EntryBillsCompanion extends UpdateCompanion<EntryBill> {
+  final Value<String> id;
+  final Value<String> workspaceId;
+  final Value<int> version;
+  final Value<int> serverSeq;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
+  final Value<String?> deletedAt;
+  final Value<String> entryId;
+  final Value<String> cashbookId;
+  final Value<String?> createdById;
+  final Value<String> contentType;
+  final Value<String> originalName;
+  final Value<int> sizeBytes;
+  final Value<int?> pageCount;
+  final Value<int?> width;
+  final Value<int?> height;
+  final Value<int> rowid;
+  const EntryBillsCompanion({
+    this.id = const Value.absent(),
+    this.workspaceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.entryId = const Value.absent(),
+    this.cashbookId = const Value.absent(),
+    this.createdById = const Value.absent(),
+    this.contentType = const Value.absent(),
+    this.originalName = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.pageCount = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EntryBillsCompanion.insert({
+    required String id,
+    required String workspaceId,
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    required String createdAt,
+    required String updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String entryId,
+    required String cashbookId,
+    this.createdById = const Value.absent(),
+    required String contentType,
+    this.originalName = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.pageCount = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workspaceId = Value(workspaceId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       entryId = Value(entryId),
+       cashbookId = Value(cashbookId),
+       contentType = Value(contentType);
+  static Insertable<EntryBill> custom({
+    Expression<String>? id,
+    Expression<String>? workspaceId,
+    Expression<int>? version,
+    Expression<int>? serverSeq,
+    Expression<String>? createdAt,
+    Expression<String>? updatedAt,
+    Expression<String>? deletedAt,
+    Expression<String>? entryId,
+    Expression<String>? cashbookId,
+    Expression<String>? createdById,
+    Expression<String>? contentType,
+    Expression<String>? originalName,
+    Expression<int>? sizeBytes,
+    Expression<int>? pageCount,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (version != null) 'version': version,
+      if (serverSeq != null) 'server_seq': serverSeq,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (entryId != null) 'entry_id': entryId,
+      if (cashbookId != null) 'cashbook_id': cashbookId,
+      if (createdById != null) 'created_by_id': createdById,
+      if (contentType != null) 'content_type': contentType,
+      if (originalName != null) 'original_name': originalName,
+      if (sizeBytes != null) 'size_bytes': sizeBytes,
+      if (pageCount != null) 'page_count': pageCount,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EntryBillsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workspaceId,
+    Value<int>? version,
+    Value<int>? serverSeq,
+    Value<String>? createdAt,
+    Value<String>? updatedAt,
+    Value<String?>? deletedAt,
+    Value<String>? entryId,
+    Value<String>? cashbookId,
+    Value<String?>? createdById,
+    Value<String>? contentType,
+    Value<String>? originalName,
+    Value<int>? sizeBytes,
+    Value<int?>? pageCount,
+    Value<int?>? width,
+    Value<int?>? height,
+    Value<int>? rowid,
+  }) {
+    return EntryBillsCompanion(
+      id: id ?? this.id,
+      workspaceId: workspaceId ?? this.workspaceId,
+      version: version ?? this.version,
+      serverSeq: serverSeq ?? this.serverSeq,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      entryId: entryId ?? this.entryId,
+      cashbookId: cashbookId ?? this.cashbookId,
+      createdById: createdById ?? this.createdById,
+      contentType: contentType ?? this.contentType,
+      originalName: originalName ?? this.originalName,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      pageCount: pageCount ?? this.pageCount,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (serverSeq.present) {
+      map['server_seq'] = Variable<int>(serverSeq.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<String>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<String>(deletedAt.value);
+    }
+    if (entryId.present) {
+      map['entry_id'] = Variable<String>(entryId.value);
+    }
+    if (cashbookId.present) {
+      map['cashbook_id'] = Variable<String>(cashbookId.value);
+    }
+    if (createdById.present) {
+      map['created_by_id'] = Variable<String>(createdById.value);
+    }
+    if (contentType.present) {
+      map['content_type'] = Variable<String>(contentType.value);
+    }
+    if (originalName.present) {
+      map['original_name'] = Variable<String>(originalName.value);
+    }
+    if (sizeBytes.present) {
+      map['size_bytes'] = Variable<int>(sizeBytes.value);
+    }
+    if (pageCount.present) {
+      map['page_count'] = Variable<int>(pageCount.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EntryBillsCompanion(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('entryId: $entryId, ')
+          ..write('cashbookId: $cashbookId, ')
+          ..write('createdById: $createdById, ')
+          ..write('contentType: $contentType, ')
+          ..write('originalName: $originalName, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('pageCount: $pageCount, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11477,6 +13256,909 @@ class OutboxCompanion extends UpdateCompanion<OutboxData> {
   }
 }
 
+class $BillQueueTable extends BillQueue
+    with TableInfo<$BillQueueTable, BillQueueData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BillQueueTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _opMeta = const VerificationMeta('op');
+  @override
+  late final GeneratedColumn<String> op = GeneratedColumn<String>(
+    'op',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cashbookIdMeta = const VerificationMeta(
+    'cashbookId',
+  );
+  @override
+  late final GeneratedColumn<String> cashbookId = GeneratedColumn<String>(
+    'cashbook_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<String> entryId = GeneratedColumn<String>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+    'path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contentTypeMeta = const VerificationMeta(
+    'contentType',
+  );
+  @override
+  late final GeneratedColumn<String> contentType = GeneratedColumn<String>(
+    'content_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _originalNameMeta = const VerificationMeta(
+    'originalName',
+  );
+  @override
+  late final GeneratedColumn<String> originalName = GeneratedColumn<String>(
+    'original_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sizeBytesMeta = const VerificationMeta(
+    'sizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> sizeBytes = GeneratedColumn<int>(
+    'size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('queued'),
+  );
+  static const VerificationMeta _errorMeta = const VerificationMeta('error');
+  @override
+  late final GeneratedColumn<String> error = GeneratedColumn<String>(
+    'error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _nextTryAtMeta = const VerificationMeta(
+    'nextTryAt',
+  );
+  @override
+  late final GeneratedColumn<String> nextTryAt = GeneratedColumn<String>(
+    'next_try_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    op,
+    workspaceId,
+    cashbookId,
+    entryId,
+    path,
+    contentType,
+    originalName,
+    sizeBytes,
+    width,
+    height,
+    state,
+    error,
+    attempts,
+    nextTryAt,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bill_queue';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BillQueueData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('op')) {
+      context.handle(_opMeta, op.isAcceptableOrUnknown(data['op']!, _opMeta));
+    } else if (isInserting) {
+      context.missing(_opMeta);
+    }
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('cashbook_id')) {
+      context.handle(
+        _cashbookIdMeta,
+        cashbookId.isAcceptableOrUnknown(data['cashbook_id']!, _cashbookIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cashbookIdMeta);
+    }
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entryIdMeta);
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+        _pathMeta,
+        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
+      );
+    }
+    if (data.containsKey('content_type')) {
+      context.handle(
+        _contentTypeMeta,
+        contentType.isAcceptableOrUnknown(
+          data['content_type']!,
+          _contentTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('original_name')) {
+      context.handle(
+        _originalNameMeta,
+        originalName.isAcceptableOrUnknown(
+          data['original_name']!,
+          _originalNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('size_bytes')) {
+      context.handle(
+        _sizeBytesMeta,
+        sizeBytes.isAcceptableOrUnknown(data['size_bytes']!, _sizeBytesMeta),
+      );
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    }
+    if (data.containsKey('error')) {
+      context.handle(
+        _errorMeta,
+        error.isAcceptableOrUnknown(data['error']!, _errorMeta),
+      );
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('next_try_at')) {
+      context.handle(
+        _nextTryAtMeta,
+        nextTryAt.isAcceptableOrUnknown(data['next_try_at']!, _nextTryAtMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BillQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BillQueueData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      op: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}op'],
+      )!,
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      cashbookId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cashbook_id'],
+      )!,
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      path: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}path'],
+      ),
+      contentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_type'],
+      )!,
+      originalName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}original_name'],
+      )!,
+      sizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size_bytes'],
+      )!,
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      ),
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      )!,
+      error: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}error'],
+      ),
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      nextTryAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}next_try_at'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $BillQueueTable createAlias(String alias) {
+    return $BillQueueTable(attachedDatabase, alias);
+  }
+}
+
+class BillQueueData extends DataClass implements Insertable<BillQueueData> {
+  /// The bill's id, made here; the server keeps it, so a resend is recognised.
+  final String id;
+
+  /// 'upload' or 'remove'.
+  final String op;
+  final String workspaceId;
+  final String cashbookId;
+  final String entryId;
+
+  /// The file waiting to go, for an upload.
+  final String? path;
+  final String contentType;
+  final String originalName;
+  final int sizeBytes;
+  final int? width;
+  final int? height;
+
+  /// 'queued' (waiting its turn), 'failed' (the server refused the file) or
+  /// 'refused' (the plan has no room for it).
+  final String state;
+
+  /// Why it failed: a code from the server, such as bill_unsafe, or a plan feature.
+  final String? error;
+  final int attempts;
+
+  /// Not tried again before this moment (ISO), after the server could not be reached.
+  final String? nextTryAt;
+  final String createdAt;
+  const BillQueueData({
+    required this.id,
+    required this.op,
+    required this.workspaceId,
+    required this.cashbookId,
+    required this.entryId,
+    this.path,
+    required this.contentType,
+    required this.originalName,
+    required this.sizeBytes,
+    this.width,
+    this.height,
+    required this.state,
+    this.error,
+    required this.attempts,
+    this.nextTryAt,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['op'] = Variable<String>(op);
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['cashbook_id'] = Variable<String>(cashbookId);
+    map['entry_id'] = Variable<String>(entryId);
+    if (!nullToAbsent || path != null) {
+      map['path'] = Variable<String>(path);
+    }
+    map['content_type'] = Variable<String>(contentType);
+    map['original_name'] = Variable<String>(originalName);
+    map['size_bytes'] = Variable<int>(sizeBytes);
+    if (!nullToAbsent || width != null) {
+      map['width'] = Variable<int>(width);
+    }
+    if (!nullToAbsent || height != null) {
+      map['height'] = Variable<int>(height);
+    }
+    map['state'] = Variable<String>(state);
+    if (!nullToAbsent || error != null) {
+      map['error'] = Variable<String>(error);
+    }
+    map['attempts'] = Variable<int>(attempts);
+    if (!nullToAbsent || nextTryAt != null) {
+      map['next_try_at'] = Variable<String>(nextTryAt);
+    }
+    map['created_at'] = Variable<String>(createdAt);
+    return map;
+  }
+
+  BillQueueCompanion toCompanion(bool nullToAbsent) {
+    return BillQueueCompanion(
+      id: Value(id),
+      op: Value(op),
+      workspaceId: Value(workspaceId),
+      cashbookId: Value(cashbookId),
+      entryId: Value(entryId),
+      path: path == null && nullToAbsent ? const Value.absent() : Value(path),
+      contentType: Value(contentType),
+      originalName: Value(originalName),
+      sizeBytes: Value(sizeBytes),
+      width: width == null && nullToAbsent
+          ? const Value.absent()
+          : Value(width),
+      height: height == null && nullToAbsent
+          ? const Value.absent()
+          : Value(height),
+      state: Value(state),
+      error: error == null && nullToAbsent
+          ? const Value.absent()
+          : Value(error),
+      attempts: Value(attempts),
+      nextTryAt: nextTryAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextTryAt),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory BillQueueData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BillQueueData(
+      id: serializer.fromJson<String>(json['id']),
+      op: serializer.fromJson<String>(json['op']),
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      cashbookId: serializer.fromJson<String>(json['cashbookId']),
+      entryId: serializer.fromJson<String>(json['entryId']),
+      path: serializer.fromJson<String?>(json['path']),
+      contentType: serializer.fromJson<String>(json['contentType']),
+      originalName: serializer.fromJson<String>(json['originalName']),
+      sizeBytes: serializer.fromJson<int>(json['sizeBytes']),
+      width: serializer.fromJson<int?>(json['width']),
+      height: serializer.fromJson<int?>(json['height']),
+      state: serializer.fromJson<String>(json['state']),
+      error: serializer.fromJson<String?>(json['error']),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      nextTryAt: serializer.fromJson<String?>(json['nextTryAt']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'op': serializer.toJson<String>(op),
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'cashbookId': serializer.toJson<String>(cashbookId),
+      'entryId': serializer.toJson<String>(entryId),
+      'path': serializer.toJson<String?>(path),
+      'contentType': serializer.toJson<String>(contentType),
+      'originalName': serializer.toJson<String>(originalName),
+      'sizeBytes': serializer.toJson<int>(sizeBytes),
+      'width': serializer.toJson<int?>(width),
+      'height': serializer.toJson<int?>(height),
+      'state': serializer.toJson<String>(state),
+      'error': serializer.toJson<String?>(error),
+      'attempts': serializer.toJson<int>(attempts),
+      'nextTryAt': serializer.toJson<String?>(nextTryAt),
+      'createdAt': serializer.toJson<String>(createdAt),
+    };
+  }
+
+  BillQueueData copyWith({
+    String? id,
+    String? op,
+    String? workspaceId,
+    String? cashbookId,
+    String? entryId,
+    Value<String?> path = const Value.absent(),
+    String? contentType,
+    String? originalName,
+    int? sizeBytes,
+    Value<int?> width = const Value.absent(),
+    Value<int?> height = const Value.absent(),
+    String? state,
+    Value<String?> error = const Value.absent(),
+    int? attempts,
+    Value<String?> nextTryAt = const Value.absent(),
+    String? createdAt,
+  }) => BillQueueData(
+    id: id ?? this.id,
+    op: op ?? this.op,
+    workspaceId: workspaceId ?? this.workspaceId,
+    cashbookId: cashbookId ?? this.cashbookId,
+    entryId: entryId ?? this.entryId,
+    path: path.present ? path.value : this.path,
+    contentType: contentType ?? this.contentType,
+    originalName: originalName ?? this.originalName,
+    sizeBytes: sizeBytes ?? this.sizeBytes,
+    width: width.present ? width.value : this.width,
+    height: height.present ? height.value : this.height,
+    state: state ?? this.state,
+    error: error.present ? error.value : this.error,
+    attempts: attempts ?? this.attempts,
+    nextTryAt: nextTryAt.present ? nextTryAt.value : this.nextTryAt,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  BillQueueData copyWithCompanion(BillQueueCompanion data) {
+    return BillQueueData(
+      id: data.id.present ? data.id.value : this.id,
+      op: data.op.present ? data.op.value : this.op,
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      cashbookId: data.cashbookId.present
+          ? data.cashbookId.value
+          : this.cashbookId,
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      path: data.path.present ? data.path.value : this.path,
+      contentType: data.contentType.present
+          ? data.contentType.value
+          : this.contentType,
+      originalName: data.originalName.present
+          ? data.originalName.value
+          : this.originalName,
+      sizeBytes: data.sizeBytes.present ? data.sizeBytes.value : this.sizeBytes,
+      width: data.width.present ? data.width.value : this.width,
+      height: data.height.present ? data.height.value : this.height,
+      state: data.state.present ? data.state.value : this.state,
+      error: data.error.present ? data.error.value : this.error,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      nextTryAt: data.nextTryAt.present ? data.nextTryAt.value : this.nextTryAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillQueueData(')
+          ..write('id: $id, ')
+          ..write('op: $op, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('cashbookId: $cashbookId, ')
+          ..write('entryId: $entryId, ')
+          ..write('path: $path, ')
+          ..write('contentType: $contentType, ')
+          ..write('originalName: $originalName, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('state: $state, ')
+          ..write('error: $error, ')
+          ..write('attempts: $attempts, ')
+          ..write('nextTryAt: $nextTryAt, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    op,
+    workspaceId,
+    cashbookId,
+    entryId,
+    path,
+    contentType,
+    originalName,
+    sizeBytes,
+    width,
+    height,
+    state,
+    error,
+    attempts,
+    nextTryAt,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BillQueueData &&
+          other.id == this.id &&
+          other.op == this.op &&
+          other.workspaceId == this.workspaceId &&
+          other.cashbookId == this.cashbookId &&
+          other.entryId == this.entryId &&
+          other.path == this.path &&
+          other.contentType == this.contentType &&
+          other.originalName == this.originalName &&
+          other.sizeBytes == this.sizeBytes &&
+          other.width == this.width &&
+          other.height == this.height &&
+          other.state == this.state &&
+          other.error == this.error &&
+          other.attempts == this.attempts &&
+          other.nextTryAt == this.nextTryAt &&
+          other.createdAt == this.createdAt);
+}
+
+class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
+  final Value<String> id;
+  final Value<String> op;
+  final Value<String> workspaceId;
+  final Value<String> cashbookId;
+  final Value<String> entryId;
+  final Value<String?> path;
+  final Value<String> contentType;
+  final Value<String> originalName;
+  final Value<int> sizeBytes;
+  final Value<int?> width;
+  final Value<int?> height;
+  final Value<String> state;
+  final Value<String?> error;
+  final Value<int> attempts;
+  final Value<String?> nextTryAt;
+  final Value<String> createdAt;
+  final Value<int> rowid;
+  const BillQueueCompanion({
+    this.id = const Value.absent(),
+    this.op = const Value.absent(),
+    this.workspaceId = const Value.absent(),
+    this.cashbookId = const Value.absent(),
+    this.entryId = const Value.absent(),
+    this.path = const Value.absent(),
+    this.contentType = const Value.absent(),
+    this.originalName = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.state = const Value.absent(),
+    this.error = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.nextTryAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BillQueueCompanion.insert({
+    required String id,
+    required String op,
+    required String workspaceId,
+    required String cashbookId,
+    required String entryId,
+    this.path = const Value.absent(),
+    this.contentType = const Value.absent(),
+    this.originalName = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.state = const Value.absent(),
+    this.error = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.nextTryAt = const Value.absent(),
+    required String createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       op = Value(op),
+       workspaceId = Value(workspaceId),
+       cashbookId = Value(cashbookId),
+       entryId = Value(entryId),
+       createdAt = Value(createdAt);
+  static Insertable<BillQueueData> custom({
+    Expression<String>? id,
+    Expression<String>? op,
+    Expression<String>? workspaceId,
+    Expression<String>? cashbookId,
+    Expression<String>? entryId,
+    Expression<String>? path,
+    Expression<String>? contentType,
+    Expression<String>? originalName,
+    Expression<int>? sizeBytes,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<String>? state,
+    Expression<String>? error,
+    Expression<int>? attempts,
+    Expression<String>? nextTryAt,
+    Expression<String>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (op != null) 'op': op,
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (cashbookId != null) 'cashbook_id': cashbookId,
+      if (entryId != null) 'entry_id': entryId,
+      if (path != null) 'path': path,
+      if (contentType != null) 'content_type': contentType,
+      if (originalName != null) 'original_name': originalName,
+      if (sizeBytes != null) 'size_bytes': sizeBytes,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (state != null) 'state': state,
+      if (error != null) 'error': error,
+      if (attempts != null) 'attempts': attempts,
+      if (nextTryAt != null) 'next_try_at': nextTryAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BillQueueCompanion copyWith({
+    Value<String>? id,
+    Value<String>? op,
+    Value<String>? workspaceId,
+    Value<String>? cashbookId,
+    Value<String>? entryId,
+    Value<String?>? path,
+    Value<String>? contentType,
+    Value<String>? originalName,
+    Value<int>? sizeBytes,
+    Value<int?>? width,
+    Value<int?>? height,
+    Value<String>? state,
+    Value<String?>? error,
+    Value<int>? attempts,
+    Value<String?>? nextTryAt,
+    Value<String>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return BillQueueCompanion(
+      id: id ?? this.id,
+      op: op ?? this.op,
+      workspaceId: workspaceId ?? this.workspaceId,
+      cashbookId: cashbookId ?? this.cashbookId,
+      entryId: entryId ?? this.entryId,
+      path: path ?? this.path,
+      contentType: contentType ?? this.contentType,
+      originalName: originalName ?? this.originalName,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      state: state ?? this.state,
+      error: error ?? this.error,
+      attempts: attempts ?? this.attempts,
+      nextTryAt: nextTryAt ?? this.nextTryAt,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (op.present) {
+      map['op'] = Variable<String>(op.value);
+    }
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (cashbookId.present) {
+      map['cashbook_id'] = Variable<String>(cashbookId.value);
+    }
+    if (entryId.present) {
+      map['entry_id'] = Variable<String>(entryId.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    if (contentType.present) {
+      map['content_type'] = Variable<String>(contentType.value);
+    }
+    if (originalName.present) {
+      map['original_name'] = Variable<String>(originalName.value);
+    }
+    if (sizeBytes.present) {
+      map['size_bytes'] = Variable<int>(sizeBytes.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (error.present) {
+      map['error'] = Variable<String>(error.value);
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (nextTryAt.present) {
+      map['next_try_at'] = Variable<String>(nextTryAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillQueueCompanion(')
+          ..write('id: $id, ')
+          ..write('op: $op, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('cashbookId: $cashbookId, ')
+          ..write('entryId: $entryId, ')
+          ..write('path: $path, ')
+          ..write('contentType: $contentType, ')
+          ..write('originalName: $originalName, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('state: $state, ')
+          ..write('error: $error, ')
+          ..write('attempts: $attempts, ')
+          ..write('nextTryAt: $nextTryAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SyncCursorsTable extends SyncCursors
     with TableInfo<$SyncCursorsTable, SyncCursor> {
   @override
@@ -12307,7 +14989,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $PaymentMethodsTable paymentMethods = $PaymentMethodsTable(this);
+  late final $EntryFieldsTable entryFields = $EntryFieldsTable(this);
   late final $EntriesTable entries = $EntriesTable(this);
+  late final $EntryBillsTable entryBills = $EntryBillsTable(this);
   late final $CashbookMembersTable cashbookMembers = $CashbookMembersTable(
     this,
   );
@@ -12321,12 +15005,21 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $InboxItemsTable inboxItems = $InboxItemsTable(this);
   late final $SavingsGoalsTable savingsGoals = $SavingsGoalsTable(this);
   late final $OutboxTable outbox = $OutboxTable(this);
+  late final $BillQueueTable billQueue = $BillQueueTable(this);
   late final $SyncCursorsTable syncCursors = $SyncCursorsTable(this);
   late final $SyncFailuresTable syncFailures = $SyncFailuresTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
+  late final Index entryFieldsBook = Index(
+    'entry_fields_book',
+    'CREATE INDEX entry_fields_book ON entry_fields (cashbook_id)',
+  );
   late final Index entriesBookDate = Index(
     'entries_book_date',
     'CREATE INDEX entries_book_date ON entries (cashbook_id, entry_date)',
+  );
+  late final Index entryBillsEntry = Index(
+    'entry_bills_entry',
+    'CREATE INDEX entry_bills_entry ON entry_bills (entry_id)',
   );
   late final Index transactionsAccountFeed = Index(
     'transactions_account_feed',
@@ -12349,7 +15042,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     cashbooks,
     entryCategories,
     paymentMethods,
+    entryFields,
     entries,
+    entryBills,
     cashbookMembers,
     accounts,
     categories,
@@ -12360,10 +15055,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     inboxItems,
     savingsGoals,
     outbox,
+    billQueue,
     syncCursors,
     syncFailures,
     settings,
+    entryFieldsBook,
     entriesBookDate,
+    entryBillsEntry,
     transactionsAccountFeed,
     transactionsTransferGroup,
     recurringOccurrencesDue,
@@ -13506,6 +16204,385 @@ typedef $$PaymentMethodsTableProcessedTableManager =
       PaymentMethod,
       PrefetchHooks Function()
     >;
+typedef $$EntryFieldsTableCreateCompanionBuilder =
+    EntryFieldsCompanion Function({
+      required String id,
+      required String workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      required String createdAt,
+      required String updatedAt,
+      Value<String?> deletedAt,
+      required String cashbookId,
+      required String name,
+      required String kind,
+      Value<String> options,
+      Value<bool> isRequired,
+      Value<bool> showInList,
+      Value<int> position,
+      Value<int> rowid,
+    });
+typedef $$EntryFieldsTableUpdateCompanionBuilder =
+    EntryFieldsCompanion Function({
+      Value<String> id,
+      Value<String> workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      Value<String> createdAt,
+      Value<String> updatedAt,
+      Value<String?> deletedAt,
+      Value<String> cashbookId,
+      Value<String> name,
+      Value<String> kind,
+      Value<String> options,
+      Value<bool> isRequired,
+      Value<bool> showInList,
+      Value<int> position,
+      Value<int> rowid,
+    });
+
+class $$EntryFieldsTableFilterComposer
+    extends Composer<_$AppDatabase, $EntryFieldsTable> {
+  $$EntryFieldsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get options => $composableBuilder(
+    column: $table.options,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get showInList => $composableBuilder(
+    column: $table.showInList,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EntryFieldsTableOrderingComposer
+    extends Composer<_$AppDatabase, $EntryFieldsTable> {
+  $$EntryFieldsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get options => $composableBuilder(
+    column: $table.options,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get showInList => $composableBuilder(
+    column: $table.showInList,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EntryFieldsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $EntryFieldsTable> {
+  $$EntryFieldsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<int> get serverSeq =>
+      $composableBuilder(column: $table.serverSeq, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get options =>
+      $composableBuilder(column: $table.options, builder: (column) => column);
+
+  GeneratedColumn<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get showInList => $composableBuilder(
+    column: $table.showInList,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+}
+
+class $$EntryFieldsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $EntryFieldsTable,
+          EntryField,
+          $$EntryFieldsTableFilterComposer,
+          $$EntryFieldsTableOrderingComposer,
+          $$EntryFieldsTableAnnotationComposer,
+          $$EntryFieldsTableCreateCompanionBuilder,
+          $$EntryFieldsTableUpdateCompanionBuilder,
+          (
+            EntryField,
+            BaseReferences<_$AppDatabase, $EntryFieldsTable, EntryField>,
+          ),
+          EntryField,
+          PrefetchHooks Function()
+        > {
+  $$EntryFieldsTableTableManager(_$AppDatabase db, $EntryFieldsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EntryFieldsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EntryFieldsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EntryFieldsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workspaceId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> updatedAt = const Value.absent(),
+                Value<String?> deletedAt = const Value.absent(),
+                Value<String> cashbookId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> options = const Value.absent(),
+                Value<bool> isRequired = const Value.absent(),
+                Value<bool> showInList = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EntryFieldsCompanion(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                cashbookId: cashbookId,
+                name: name,
+                kind: kind,
+                options: options,
+                isRequired: isRequired,
+                showInList: showInList,
+                position: position,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workspaceId,
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                required String createdAt,
+                required String updatedAt,
+                Value<String?> deletedAt = const Value.absent(),
+                required String cashbookId,
+                required String name,
+                required String kind,
+                Value<String> options = const Value.absent(),
+                Value<bool> isRequired = const Value.absent(),
+                Value<bool> showInList = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EntryFieldsCompanion.insert(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                cashbookId: cashbookId,
+                name: name,
+                kind: kind,
+                options: options,
+                isRequired: isRequired,
+                showInList: showInList,
+                position: position,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EntryFieldsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $EntryFieldsTable,
+      EntryField,
+      $$EntryFieldsTableFilterComposer,
+      $$EntryFieldsTableOrderingComposer,
+      $$EntryFieldsTableAnnotationComposer,
+      $$EntryFieldsTableCreateCompanionBuilder,
+      $$EntryFieldsTableUpdateCompanionBuilder,
+      (
+        EntryField,
+        BaseReferences<_$AppDatabase, $EntryFieldsTable, EntryField>,
+      ),
+      EntryField,
+      PrefetchHooks Function()
+    >;
 typedef $$EntriesTableCreateCompanionBuilder =
     EntriesCompanion Function({
       required String id,
@@ -13526,6 +16603,7 @@ typedef $$EntriesTableCreateCompanionBuilder =
       required String entryDate,
       Value<String> source,
       Value<String?> createdById,
+      Value<String> customValues,
       Value<int> rowid,
     });
 typedef $$EntriesTableUpdateCompanionBuilder =
@@ -13548,6 +16626,7 @@ typedef $$EntriesTableUpdateCompanionBuilder =
       Value<String> entryDate,
       Value<String> source,
       Value<String?> createdById,
+      Value<String> customValues,
       Value<int> rowid,
     });
 
@@ -13647,6 +16726,11 @@ class $$EntriesTableFilterComposer
 
   ColumnFilters<String> get createdById => $composableBuilder(
     column: $table.createdById,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customValues => $composableBuilder(
+    column: $table.customValues,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -13749,6 +16833,11 @@ class $$EntriesTableOrderingComposer
     column: $table.createdById,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get customValues => $composableBuilder(
+    column: $table.customValues,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$EntriesTableAnnotationComposer
@@ -13825,6 +16914,11 @@ class $$EntriesTableAnnotationComposer
     column: $table.createdById,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get customValues => $composableBuilder(
+    column: $table.customValues,
+    builder: (column) => column,
+  );
 }
 
 class $$EntriesTableTableManager
@@ -13873,6 +16967,7 @@ class $$EntriesTableTableManager
                 Value<String> entryDate = const Value.absent(),
                 Value<String> source = const Value.absent(),
                 Value<String?> createdById = const Value.absent(),
+                Value<String> customValues = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => EntriesCompanion(
                 id: id,
@@ -13893,6 +16988,7 @@ class $$EntriesTableTableManager
                 entryDate: entryDate,
                 source: source,
                 createdById: createdById,
+                customValues: customValues,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -13915,6 +17011,7 @@ class $$EntriesTableTableManager
                 required String entryDate,
                 Value<String> source = const Value.absent(),
                 Value<String?> createdById = const Value.absent(),
+                Value<String> customValues = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => EntriesCompanion.insert(
                 id: id,
@@ -13935,6 +17032,7 @@ class $$EntriesTableTableManager
                 entryDate: entryDate,
                 source: source,
                 createdById: createdById,
+                customValues: customValues,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -13957,6 +17055,422 @@ typedef $$EntriesTableProcessedTableManager =
       $$EntriesTableUpdateCompanionBuilder,
       (Entry, BaseReferences<_$AppDatabase, $EntriesTable, Entry>),
       Entry,
+      PrefetchHooks Function()
+    >;
+typedef $$EntryBillsTableCreateCompanionBuilder =
+    EntryBillsCompanion Function({
+      required String id,
+      required String workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      required String createdAt,
+      required String updatedAt,
+      Value<String?> deletedAt,
+      required String entryId,
+      required String cashbookId,
+      Value<String?> createdById,
+      required String contentType,
+      Value<String> originalName,
+      Value<int> sizeBytes,
+      Value<int?> pageCount,
+      Value<int?> width,
+      Value<int?> height,
+      Value<int> rowid,
+    });
+typedef $$EntryBillsTableUpdateCompanionBuilder =
+    EntryBillsCompanion Function({
+      Value<String> id,
+      Value<String> workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      Value<String> createdAt,
+      Value<String> updatedAt,
+      Value<String?> deletedAt,
+      Value<String> entryId,
+      Value<String> cashbookId,
+      Value<String?> createdById,
+      Value<String> contentType,
+      Value<String> originalName,
+      Value<int> sizeBytes,
+      Value<int?> pageCount,
+      Value<int?> width,
+      Value<int?> height,
+      Value<int> rowid,
+    });
+
+class $$EntryBillsTableFilterComposer
+    extends Composer<_$AppDatabase, $EntryBillsTable> {
+  $$EntryBillsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entryId => $composableBuilder(
+    column: $table.entryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdById => $composableBuilder(
+    column: $table.createdById,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pageCount => $composableBuilder(
+    column: $table.pageCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EntryBillsTableOrderingComposer
+    extends Composer<_$AppDatabase, $EntryBillsTable> {
+  $$EntryBillsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entryId => $composableBuilder(
+    column: $table.entryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdById => $composableBuilder(
+    column: $table.createdById,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pageCount => $composableBuilder(
+    column: $table.pageCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EntryBillsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $EntryBillsTable> {
+  $$EntryBillsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<int> get serverSeq =>
+      $composableBuilder(column: $table.serverSeq, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get entryId =>
+      $composableBuilder(column: $table.entryId, builder: (column) => column);
+
+  GeneratedColumn<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get createdById => $composableBuilder(
+    column: $table.createdById,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sizeBytes =>
+      $composableBuilder(column: $table.sizeBytes, builder: (column) => column);
+
+  GeneratedColumn<int> get pageCount =>
+      $composableBuilder(column: $table.pageCount, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+}
+
+class $$EntryBillsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $EntryBillsTable,
+          EntryBill,
+          $$EntryBillsTableFilterComposer,
+          $$EntryBillsTableOrderingComposer,
+          $$EntryBillsTableAnnotationComposer,
+          $$EntryBillsTableCreateCompanionBuilder,
+          $$EntryBillsTableUpdateCompanionBuilder,
+          (
+            EntryBill,
+            BaseReferences<_$AppDatabase, $EntryBillsTable, EntryBill>,
+          ),
+          EntryBill,
+          PrefetchHooks Function()
+        > {
+  $$EntryBillsTableTableManager(_$AppDatabase db, $EntryBillsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EntryBillsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EntryBillsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EntryBillsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workspaceId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> updatedAt = const Value.absent(),
+                Value<String?> deletedAt = const Value.absent(),
+                Value<String> entryId = const Value.absent(),
+                Value<String> cashbookId = const Value.absent(),
+                Value<String?> createdById = const Value.absent(),
+                Value<String> contentType = const Value.absent(),
+                Value<String> originalName = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<int?> pageCount = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EntryBillsCompanion(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                entryId: entryId,
+                cashbookId: cashbookId,
+                createdById: createdById,
+                contentType: contentType,
+                originalName: originalName,
+                sizeBytes: sizeBytes,
+                pageCount: pageCount,
+                width: width,
+                height: height,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workspaceId,
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                required String createdAt,
+                required String updatedAt,
+                Value<String?> deletedAt = const Value.absent(),
+                required String entryId,
+                required String cashbookId,
+                Value<String?> createdById = const Value.absent(),
+                required String contentType,
+                Value<String> originalName = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<int?> pageCount = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EntryBillsCompanion.insert(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                entryId: entryId,
+                cashbookId: cashbookId,
+                createdById: createdById,
+                contentType: contentType,
+                originalName: originalName,
+                sizeBytes: sizeBytes,
+                pageCount: pageCount,
+                width: width,
+                height: height,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EntryBillsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $EntryBillsTable,
+      EntryBill,
+      $$EntryBillsTableFilterComposer,
+      $$EntryBillsTableOrderingComposer,
+      $$EntryBillsTableAnnotationComposer,
+      $$EntryBillsTableCreateCompanionBuilder,
+      $$EntryBillsTableUpdateCompanionBuilder,
+      (EntryBill, BaseReferences<_$AppDatabase, $EntryBillsTable, EntryBill>),
+      EntryBill,
       PrefetchHooks Function()
     >;
 typedef $$CashbookMembersTableCreateCompanionBuilder =
@@ -17762,6 +21276,423 @@ typedef $$OutboxTableProcessedTableManager =
       OutboxData,
       PrefetchHooks Function()
     >;
+typedef $$BillQueueTableCreateCompanionBuilder =
+    BillQueueCompanion Function({
+      required String id,
+      required String op,
+      required String workspaceId,
+      required String cashbookId,
+      required String entryId,
+      Value<String?> path,
+      Value<String> contentType,
+      Value<String> originalName,
+      Value<int> sizeBytes,
+      Value<int?> width,
+      Value<int?> height,
+      Value<String> state,
+      Value<String?> error,
+      Value<int> attempts,
+      Value<String?> nextTryAt,
+      required String createdAt,
+      Value<int> rowid,
+    });
+typedef $$BillQueueTableUpdateCompanionBuilder =
+    BillQueueCompanion Function({
+      Value<String> id,
+      Value<String> op,
+      Value<String> workspaceId,
+      Value<String> cashbookId,
+      Value<String> entryId,
+      Value<String?> path,
+      Value<String> contentType,
+      Value<String> originalName,
+      Value<int> sizeBytes,
+      Value<int?> width,
+      Value<int?> height,
+      Value<String> state,
+      Value<String?> error,
+      Value<int> attempts,
+      Value<String?> nextTryAt,
+      Value<String> createdAt,
+      Value<int> rowid,
+    });
+
+class $$BillQueueTableFilterComposer
+    extends Composer<_$AppDatabase, $BillQueueTable> {
+  $$BillQueueTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get op => $composableBuilder(
+    column: $table.op,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entryId => $composableBuilder(
+    column: $table.entryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get path => $composableBuilder(
+    column: $table.path,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nextTryAt => $composableBuilder(
+    column: $table.nextTryAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BillQueueTableOrderingComposer
+    extends Composer<_$AppDatabase, $BillQueueTable> {
+  $$BillQueueTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get op => $composableBuilder(
+    column: $table.op,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entryId => $composableBuilder(
+    column: $table.entryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get path => $composableBuilder(
+    column: $table.path,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nextTryAt => $composableBuilder(
+    column: $table.nextTryAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BillQueueTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BillQueueTable> {
+  $$BillQueueTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get op =>
+      $composableBuilder(column: $table.op, builder: (column) => column);
+
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cashbookId => $composableBuilder(
+    column: $table.cashbookId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entryId =>
+      $composableBuilder(column: $table.entryId, builder: (column) => column);
+
+  GeneratedColumn<String> get path =>
+      $composableBuilder(column: $table.path, builder: (column) => column);
+
+  GeneratedColumn<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sizeBytes =>
+      $composableBuilder(column: $table.sizeBytes, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<String> get error =>
+      $composableBuilder(column: $table.error, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<String> get nextTryAt =>
+      $composableBuilder(column: $table.nextTryAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$BillQueueTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BillQueueTable,
+          BillQueueData,
+          $$BillQueueTableFilterComposer,
+          $$BillQueueTableOrderingComposer,
+          $$BillQueueTableAnnotationComposer,
+          $$BillQueueTableCreateCompanionBuilder,
+          $$BillQueueTableUpdateCompanionBuilder,
+          (
+            BillQueueData,
+            BaseReferences<_$AppDatabase, $BillQueueTable, BillQueueData>,
+          ),
+          BillQueueData,
+          PrefetchHooks Function()
+        > {
+  $$BillQueueTableTableManager(_$AppDatabase db, $BillQueueTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BillQueueTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BillQueueTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BillQueueTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> op = const Value.absent(),
+                Value<String> workspaceId = const Value.absent(),
+                Value<String> cashbookId = const Value.absent(),
+                Value<String> entryId = const Value.absent(),
+                Value<String?> path = const Value.absent(),
+                Value<String> contentType = const Value.absent(),
+                Value<String> originalName = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> nextTryAt = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BillQueueCompanion(
+                id: id,
+                op: op,
+                workspaceId: workspaceId,
+                cashbookId: cashbookId,
+                entryId: entryId,
+                path: path,
+                contentType: contentType,
+                originalName: originalName,
+                sizeBytes: sizeBytes,
+                width: width,
+                height: height,
+                state: state,
+                error: error,
+                attempts: attempts,
+                nextTryAt: nextTryAt,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String op,
+                required String workspaceId,
+                required String cashbookId,
+                required String entryId,
+                Value<String?> path = const Value.absent(),
+                Value<String> contentType = const Value.absent(),
+                Value<String> originalName = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> nextTryAt = const Value.absent(),
+                required String createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => BillQueueCompanion.insert(
+                id: id,
+                op: op,
+                workspaceId: workspaceId,
+                cashbookId: cashbookId,
+                entryId: entryId,
+                path: path,
+                contentType: contentType,
+                originalName: originalName,
+                sizeBytes: sizeBytes,
+                width: width,
+                height: height,
+                state: state,
+                error: error,
+                attempts: attempts,
+                nextTryAt: nextTryAt,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BillQueueTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BillQueueTable,
+      BillQueueData,
+      $$BillQueueTableFilterComposer,
+      $$BillQueueTableOrderingComposer,
+      $$BillQueueTableAnnotationComposer,
+      $$BillQueueTableCreateCompanionBuilder,
+      $$BillQueueTableUpdateCompanionBuilder,
+      (
+        BillQueueData,
+        BaseReferences<_$AppDatabase, $BillQueueTable, BillQueueData>,
+      ),
+      BillQueueData,
+      PrefetchHooks Function()
+    >;
 typedef $$SyncCursorsTableCreateCompanionBuilder =
     SyncCursorsCompanion Function({
       required String workspaceId,
@@ -18267,8 +22198,12 @@ class $AppDatabaseManager {
       $$EntryCategoriesTableTableManager(_db, _db.entryCategories);
   $$PaymentMethodsTableTableManager get paymentMethods =>
       $$PaymentMethodsTableTableManager(_db, _db.paymentMethods);
+  $$EntryFieldsTableTableManager get entryFields =>
+      $$EntryFieldsTableTableManager(_db, _db.entryFields);
   $$EntriesTableTableManager get entries =>
       $$EntriesTableTableManager(_db, _db.entries);
+  $$EntryBillsTableTableManager get entryBills =>
+      $$EntryBillsTableTableManager(_db, _db.entryBills);
   $$CashbookMembersTableTableManager get cashbookMembers =>
       $$CashbookMembersTableTableManager(_db, _db.cashbookMembers);
   $$AccountsTableTableManager get accounts =>
@@ -18289,6 +22224,8 @@ class $AppDatabaseManager {
       $$SavingsGoalsTableTableManager(_db, _db.savingsGoals);
   $$OutboxTableTableManager get outbox =>
       $$OutboxTableTableManager(_db, _db.outbox);
+  $$BillQueueTableTableManager get billQueue =>
+      $$BillQueueTableTableManager(_db, _db.billQueue);
   $$SyncCursorsTableTableManager get syncCursors =>
       $$SyncCursorsTableTableManager(_db, _db.syncCursors);
   $$SyncFailuresTableTableManager get syncFailures =>

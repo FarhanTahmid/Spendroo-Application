@@ -8,6 +8,7 @@ import '../../../core/money.dart';
 import '../../../core/providers.dart';
 import '../../../core/ui.dart';
 import '../../cashbook/cashbook_pages.dart';
+import '../../cashbook/book_access.dart';
 import '../../cashbook/cashbook_repository.dart';
 import 'biz_widget_providers.dart';
 
@@ -22,7 +23,7 @@ bool _canAdd(WidgetRef ref, Cashbook book, Workspace? workspace) {
   if (workspace == null) return false;
   final grants = ref.watch(bizGrantsProvider).value ?? const {};
   final locked = ref.watch(entitlementsProvider).value?.isLocked(book.id) ?? false;
-  return bookPermission(workspace.role, grants[book.id]) != 'view' && !locked;
+  return (BookAccess.forRole(workspace.role) ?? BookAccess.fromGrant(grants[book.id])).canAdd && !locked;
 }
 
 /// The entry form for one book as a screen of its own (/cashbook/:id/entry?type=cash_in),

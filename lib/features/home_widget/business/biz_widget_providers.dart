@@ -5,6 +5,7 @@ import '../../../core/db/database.dart';
 import '../../../core/entitlements/entitlements_controller.dart';
 import '../../../core/providers.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../cashbook/book_access.dart';
 import '../../cashbook/cashbook_repository.dart';
 import '../../personal/ledger_repository.dart' show isoDate;
 import '../home_widget_providers.dart' show widgetDayProvider;
@@ -73,7 +74,7 @@ List<BookFacts>? _booksOf(Ref ref, Workspace workspace, DateTime today, Map<Stri
         daily: daily.value![summary.book.id] ?? const {},
         // A book locked after a downgrade is read-only, as in the app
         canAdd:
-            bookPermission(workspace.role, grants[summary.book.id]) != 'view' &&
+            (BookAccess.forRole(workspace.role) ?? BookAccess.fromGrant(grants[summary.book.id])).canAdd &&
             !(plan?.isLocked(summary.book.id) ?? false),
         lastEntry: last.value![summary.book.id],
         monthCategories: categories.value![summary.book.id] ?? const {},

@@ -9,6 +9,7 @@ import 'core/push/push_controller.dart';
 import 'core/ui.dart';
 import 'features/goals/goal_page.dart';
 import 'features/goals/goals_page.dart';
+import 'features/history/history_page.dart';
 import 'features/home_widget/business/biz_quick_add.dart';
 import 'features/home_widget/business/biz_widget_controller.dart';
 import 'features/home_widget/home_widget_controller.dart';
@@ -16,7 +17,9 @@ import 'features/home_widget/quick_add_page.dart';
 import 'features/home_widget/widget_launch.dart';
 import 'features/insights/year_review_page.dart';
 import 'features/auth/auth_pages.dart';
+import 'features/cashbook/access_page.dart';
 import 'features/cashbook/cashbook_pages.dart';
+import 'features/fields/fields_page.dart';
 import 'features/onboarding/onboarding_page.dart';
 import 'features/personal/account_page.dart';
 import 'features/personal/categories_page.dart';
@@ -28,6 +31,9 @@ import 'features/recurring/recurring_pages.dart';
 import 'features/settings/notification_settings_page.dart';
 import 'features/settings/settings_page.dart';
 import 'features/shell/home_shell.dart';
+import 'features/team/join_page.dart';
+import 'features/team/member_page.dart';
+import 'features/team/team_page.dart';
 import 'l10n/app_localizations.dart';
 
 /// Where each sign-in state belongs. The router re-evaluates this whenever
@@ -98,17 +104,42 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/account/:id', builder: (_, state) => AccountPage(accountId: state.pathParameters['id']!)),
       GoRoute(path: '/goals', builder: (_, _) => const GoalsPage()),
+      GoRoute(
+        path: '/team',
+        builder: (_, _) => const TeamPage(),
+        routes: [
+          GoRoute(path: ':membershipId', builder: (_, state) => MemberPage(membershipId: state.pathParameters['membershipId']!)),
+        ],
+      ),
+      GoRoute(path: '/join', builder: (_, _) => const JoinPage()),
+      GoRoute(
+        path: '/history',
+        builder: (_, state) => HistoryPage(
+          bookId: state.uri.queryParameters['book'],
+          personId: state.uri.queryParameters['person'],
+          entryId: state.uri.queryParameters['entry'],
+        ),
+      ),
       GoRoute(path: '/year-review', builder: (_, _) => const YearReviewPage()),
       GoRoute(path: '/goal/:id', builder: (_, state) => GoalPage(goalId: state.pathParameters['id']!)),
       GoRoute(
         path: '/cashbook/:id',
-        builder: (_, state) => CashbookPage(bookId: state.pathParameters['id']!),
+        builder: (_, state) => CashbookPage(
+          bookId: state.pathParameters['id']!,
+          insights: state.uri.queryParameters['tab'] == 'insights',
+        ),
         routes: [
-          GoRoute(path: 'report', builder: (_, state) => CashbookReportPage(bookId: state.pathParameters['id']!)),
+          // The report screen became the book's Insights tab
+          GoRoute(
+            path: 'report',
+            redirect: (_, state) => '/cashbook/${state.pathParameters['id']}?tab=insights',
+          ),
           GoRoute(
             path: 'categories',
             builder: (_, state) => CashbookCategoriesPage(bookId: state.pathParameters['id']!),
           ),
+          GoRoute(path: 'access', builder: (_, state) => CashbookAccessPage(bookId: state.pathParameters['id']!)),
+          GoRoute(path: 'fields', builder: (_, state) => FieldsPage(bookId: state.pathParameters['id']!)),
           // The entry form on its own, for the cashbook widget's Cash in / Cash out
           GoRoute(
             path: 'entry',

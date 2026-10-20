@@ -82,8 +82,9 @@ class ScreenHarness {
 
   Future<T> run<T>(Future<T> Function() action) async => (await tester.runAsync(action)) as T;
 
-  Future<void> show(Widget child, {ThemeData? theme, String locale = 'en'}) async {
-    await db.into(db.workspaces).insert(workspace);
+  /// Shows [child] in [space], the personal one unless said otherwise.
+  Future<void> show(Widget child, {ThemeData? theme, String locale = 'en', Workspace space = workspace}) async {
+    await db.into(db.workspaces).insert(space);
     await tester.pumpWidget(UncontrolledProviderScope(
       container: container,
       child: MaterialApp(

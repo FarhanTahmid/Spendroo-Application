@@ -836,6 +836,96 @@ abstract class AppLocalizations {
   /// **'You can view this cashbook but not change it.'**
   String get readOnly;
 
+  /// No description provided for @addOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'You can add entries to this cashbook but not change them.'**
+  String get addOnly;
+
+  /// No description provided for @whoHasAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Who has access'**
+  String get whoHasAccess;
+
+  /// No description provided for @accessIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners, admins and viewers see every cashbook. Choose what each staff member may do in this one.'**
+  String get accessIntro;
+
+  /// No description provided for @noStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff yet. People who join this business as staff appear here.'**
+  String get noStaff;
+
+  /// No description provided for @accessNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No access'**
+  String get accessNone;
+
+  /// No description provided for @accessNoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t see this cashbook'**
+  String get accessNoneHint;
+
+  /// No description provided for @accessView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get accessView;
+
+  /// No description provided for @accessViewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sees the entries but can\'t change anything'**
+  String get accessViewHint;
+
+  /// No description provided for @accessAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get accessAdd;
+
+  /// No description provided for @accessAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds entries but can\'t change or delete them'**
+  String get accessAddHint;
+
+  /// No description provided for @accessEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get accessEdit;
+
+  /// No description provided for @accessEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds, changes and deletes entries'**
+  String get accessEditHint;
+
+  /// No description provided for @accessManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get accessManage;
+
+  /// No description provided for @accessManageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Also categories, payment methods and who has access'**
+  String get accessManageHint;
+
+  /// No description provided for @accessRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t make that change.'**
+  String get accessRefused;
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
@@ -1787,13 +1877,13 @@ abstract class AppLocalizations {
   /// No description provided for @featureCustomFields.
   ///
   /// In en, this message translates to:
-  /// **'Extra fields on entries'**
+  /// **'Custom fields on entries'**
   String get featureCustomFields;
 
   /// No description provided for @featureStorage.
   ///
   /// In en, this message translates to:
-  /// **'Storage for bills, in MB'**
+  /// **'Storage for bills'**
   String get featureStorage;
 
   /// No description provided for @featureAiCredits.
@@ -4831,6 +4921,2052 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Left this month'**
   String get widgetLeftThisMonth;
+
+  /// No description provided for @team.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get team;
+
+  /// No description provided for @teamOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage team'**
+  String get teamOpen;
+
+  /// No description provided for @teamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'People, roles and invitations'**
+  String get teamHint;
+
+  /// No description provided for @teamBusinessOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'A team belongs to a business. Switch to one to see its people.'**
+  String get teamBusinessOnly;
+
+  /// No description provided for @you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get you;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
+  /// No description provided for @yourRole.
+  ///
+  /// In en, this message translates to:
+  /// **'You are {role} here'**
+  String yourRole(String role);
+
+  /// No description provided for @peopleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person} other{{count} people}}'**
+  String peopleCount(int count);
+
+  /// No description provided for @roleOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get roleOwner;
+
+  /// No description provided for @roleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get roleAdmin;
+
+  /// No description provided for @roleStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get roleStaff;
+
+  /// No description provided for @roleViewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewer'**
+  String get roleViewer;
+
+  /// No description provided for @roleOwnerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Owns the business and its plan. Can do everything.'**
+  String get roleOwnerHint;
+
+  /// No description provided for @roleAdminHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs every cashbook and invites staff and viewers.'**
+  String get roleAdminHint;
+
+  /// No description provided for @roleStaffHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Works only in the cashbooks you open to them.'**
+  String get roleStaffHint;
+
+  /// No description provided for @roleViewerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sees every cashbook but changes nothing.'**
+  String get roleViewerHint;
+
+  /// No description provided for @groupAdmins.
+  ///
+  /// In en, this message translates to:
+  /// **'Admins'**
+  String get groupAdmins;
+
+  /// No description provided for @groupStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get groupStaff;
+
+  /// No description provided for @groupViewers.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewers'**
+  String get groupViewers;
+
+  /// No description provided for @groupInvited.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited'**
+  String get groupInvited;
+
+  /// No description provided for @seatsUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} of {limit} seats used'**
+  String seatsUsed(int used, int limit);
+
+  /// No description provided for @seatsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 seat left} other{{count} seats left}}'**
+  String seatsLeft(int count);
+
+  /// No description provided for @seatsFull.
+  ///
+  /// In en, this message translates to:
+  /// **'All seats taken'**
+  String get seatsFull;
+
+  /// No description provided for @seatsUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No one invited yet} =1{1 seat in use} other{{count} seats in use}}'**
+  String seatsUnlimited(int count);
+
+  /// No description provided for @seatsFullAskOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Every seat on this business is taken. Ask the owner to make room or upgrade the plan.'**
+  String get seatsFullAskOwner;
+
+  /// No description provided for @limitSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {plan} plan gives {limit, plural, =0{no team seats} =1{1 team seat} other{{limit} team seats}} per business.'**
+  String limitSeats(String plan, int limit);
+
+  /// No description provided for @teamUpsellTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring your team'**
+  String get teamUpsellTitle;
+
+  /// No description provided for @teamUpsellBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The Business plan gives you seats for staff. Invite them, choose who works in which cashbook, and see every entry in one place.'**
+  String get teamUpsellBody;
+
+  /// No description provided for @teamEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Just you so far'**
+  String get teamEmptyTitle;
+
+  /// No description provided for @teamEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite the people who keep the books with you. You decide what each of them can see and do.'**
+  String get teamEmptyBody;
+
+  /// No description provided for @invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get invite;
+
+  /// No description provided for @inviteSomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite someone'**
+  String get inviteSomeone;
+
+  /// No description provided for @inviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite to {business}'**
+  String inviteTitle(String business);
+
+  /// No description provided for @inviteIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'They join with a one-time code, valid for 7 days.'**
+  String get inviteIntro;
+
+  /// No description provided for @inviteEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'name@example.com'**
+  String get inviteEmailHint;
+
+  /// No description provided for @invitePhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+880 17XX-XXXXXX'**
+  String get invitePhoneHint;
+
+  /// No description provided for @inviteByEmailNote.
+  ///
+  /// In en, this message translates to:
+  /// **'We email them the code. Only the account with this email can use it.'**
+  String get inviteByEmailNote;
+
+  /// No description provided for @inviteByPhoneNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You get a code to send them yourself, by SMS or any chat app.'**
+  String get inviteByPhoneNote;
+
+  /// No description provided for @inviteAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite as'**
+  String get inviteAs;
+
+  /// No description provided for @inviteUsesSeat.
+  ///
+  /// In en, this message translates to:
+  /// **'This takes seat {seat} of {limit} until they join or the invitation ends.'**
+  String inviteUsesSeat(int seat, int limit);
+
+  /// No description provided for @inviteSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send invitation'**
+  String get inviteSend;
+
+  /// No description provided for @inviteMakeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Create code'**
+  String get inviteMakeCode;
+
+  /// No description provided for @inviteEmailNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter their email.'**
+  String get inviteEmailNeeded;
+
+  /// No description provided for @invitePhoneNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter their phone number.'**
+  String get invitePhoneNeeded;
+
+  /// No description provided for @inviteEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That doesn’t look like an email address.'**
+  String get inviteEmailInvalid;
+
+  /// No description provided for @invitePhoneInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That doesn’t look like a phone number.'**
+  String get invitePhoneInvalid;
+
+  /// No description provided for @inviteTicketTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation to {business}'**
+  String inviteTicketTitle(String business);
+
+  /// No description provided for @inviteEmailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {email}. You can also pass the code on yourself.'**
+  String inviteEmailed(String email);
+
+  /// No description provided for @inviteShareOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Send this code to them now. It is shown only once.'**
+  String get inviteShareOnce;
+
+  /// No description provided for @inviteValidDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Works for 1 day, once.} other{Works for {days} days, once.}}'**
+  String inviteValidDays(int days);
+
+  /// No description provided for @inviteShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Join {business} on Spendroo. Open the app, tap the business name at the top, choose “Join a business” and enter this code: {code}'**
+  String inviteShareText(String business, String code);
+
+  /// No description provided for @inviteExpiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Ends today} =1{Ends tomorrow} other{Ends in {days} days}}'**
+  String inviteExpiresIn(int days);
+
+  /// No description provided for @inviteCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw invitation'**
+  String get inviteCancel;
+
+  /// No description provided for @inviteCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw the invitation to {contact}? Their code will stop working and the seat is freed.'**
+  String inviteCancelConfirm(String contact);
+
+  /// No description provided for @codeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied'**
+  String get codeCopied;
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @paste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get paste;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @cashbookAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashbook access'**
+  String get cashbookAccess;
+
+  /// No description provided for @booksOpenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{open} of {total} open'**
+  String booksOpenCount(int open, int total);
+
+  /// No description provided for @accessByRoleAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Reaches every cashbook through their role.'**
+  String get accessByRoleAll;
+
+  /// No description provided for @accessByRoleView.
+  ///
+  /// In en, this message translates to:
+  /// **'Can look at every cashbook, but not change anything.'**
+  String get accessByRoleView;
+
+  /// No description provided for @accessByRoleStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Works only in the cashbooks the owner or an admin opens to them.'**
+  String get accessByRoleStaff;
+
+  /// No description provided for @roleChangeNotYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the owner can change this role.'**
+  String get roleChangeNotYours;
+
+  /// No description provided for @roleChangeDropsAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Make {name} {role}? Their access to single cashbooks will be removed.'**
+  String roleChangeDropsAccess(String name, String role);
+
+  /// No description provided for @joinedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined {date}'**
+  String joinedOn(String date);
+
+  /// No description provided for @memberGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This person is no longer in the business.'**
+  String get memberGone;
+
+  /// No description provided for @removeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from business'**
+  String get removeMember;
+
+  /// No description provided for @removeMemberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They lose access straight away. You can invite them again.'**
+  String get removeMemberHint;
+
+  /// No description provided for @removeMemberConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from {business}? Their entries stay.'**
+  String removeMemberConfirm(String name, String business);
+
+  /// No description provided for @memberRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get memberRemoved;
+
+  /// No description provided for @handOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Make owner'**
+  String get handOver;
+
+  /// No description provided for @handOverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over the business'**
+  String get handOverTitle;
+
+  /// No description provided for @handOverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand the business and its plan to {name}'**
+  String handOverHint(String name);
+
+  /// No description provided for @handOverBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} becomes the owner of {business}, and it runs on their plan from then on. You stay on as an admin, and only they can hand it back.'**
+  String handOverBody(String name, String business);
+
+  /// No description provided for @handOverTypeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Type “{business}” to confirm'**
+  String handOverTypeName(String business);
+
+  /// No description provided for @handedOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is the owner now'**
+  String handedOver(String name);
+
+  /// No description provided for @handOverNoRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}’s plan has no room for this business yet. They need a plan with enough businesses, team seats and cashbooks first.'**
+  String handOverNoRoom(String name);
+
+  /// No description provided for @leaveBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave business'**
+  String get leaveBusiness;
+
+  /// No description provided for @leaveBusinessConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave {business}? It will disappear from this phone, and you need a new invitation to come back.'**
+  String leaveBusinessConfirm(String business);
+
+  /// No description provided for @leftBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'You left {business}'**
+  String leftBusiness(String business);
+
+  /// No description provided for @joinBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Join a business'**
+  String get joinBusiness;
+
+  /// No description provided for @joinIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Got an invitation code? Enter it to join the business that sent it.'**
+  String get joinIntro;
+
+  /// No description provided for @joinCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'10 letters and numbers, from the email or message you got'**
+  String get joinCodeHint;
+
+  /// No description provided for @invitedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited by {name}'**
+  String invitedBy(String name);
+
+  /// No description provided for @joinAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Join as {role}'**
+  String joinAs(String role);
+
+  /// No description provided for @joinedBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to {business}'**
+  String joinedBusiness(String business);
+
+  /// No description provided for @teamErrorAlreadyMember.
+  ///
+  /// In en, this message translates to:
+  /// **'This person is already in the business.'**
+  String get teamErrorAlreadyMember;
+
+  /// No description provided for @teamErrorInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That code doesn’t match any invitation. Check it and try again.'**
+  String get teamErrorInvalidCode;
+
+  /// No description provided for @teamErrorExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This invitation has ended. Ask for a new one.'**
+  String get teamErrorExpired;
+
+  /// No description provided for @teamErrorUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has already been used.'**
+  String get teamErrorUsed;
+
+  /// No description provided for @teamErrorWrongAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'This invitation was sent to another email. Sign in with that account to use it.'**
+  String get teamErrorWrongAccount;
+
+  /// No description provided for @teamErrorNoSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'This business has no free seat right now. Ask its owner to make room.'**
+  String get teamErrorNoSeats;
+
+  /// No description provided for @teamErrorTooMany.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many tries. Wait a while and try again.'**
+  String get teamErrorTooMany;
+
+  /// No description provided for @teamErrorBadInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Check what you entered and try again.'**
+  String get teamErrorBadInput;
+
+  /// No description provided for @teamErrorRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'You can’t make this change.'**
+  String get teamErrorRefused;
+
+  /// No description provided for @teamErrorFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That didn’t work. Try again.'**
+  String get teamErrorFailed;
+
+  /// No description provided for @haveInviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'I have an invitation code'**
+  String get haveInviteCode;
+
+  /// No description provided for @haveInviteCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Join a business someone invited you to.'**
+  String get haveInviteCodeHint;
+
+  /// No description provided for @joinRoleAdminHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ll run every cashbook and can invite staff and viewers.'**
+  String get joinRoleAdminHint;
+
+  /// No description provided for @joinRoleStaffHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ll work in the cashbooks the owner or an admin opens to you.'**
+  String get joinRoleStaffHint;
+
+  /// No description provided for @joinRoleViewerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ll see every cashbook but won’t change anything.'**
+  String get joinRoleViewerHint;
+
+  /// No description provided for @noCashbooksForStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'No cashbooks are open to you yet. Ask the owner or an admin to give you access.'**
+  String get noCashbooksForStaff;
+
+  /// No description provided for @roleChangeManagersOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the owner or an admin can change this role.'**
+  String get roleChangeManagersOnly;
+
+  /// No description provided for @seatsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No team seats on this plan'**
+  String get seatsNone;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit history'**
+  String get historyTitle;
+
+  /// No description provided for @historyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Who changed what, and when'**
+  String get historyHint;
+
+  /// No description provided for @historyOfEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'History of this entry'**
+  String get historyOfEntry;
+
+  /// No description provided for @historyTheirChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'See their changes'**
+  String get historyTheirChanges;
+
+  /// No description provided for @historyTheirChangesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything {name} added, edited or deleted'**
+  String historyTheirChangesHint(String name);
+
+  /// No description provided for @historyChangesBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes by {name}'**
+  String historyChangesBy(String name);
+
+  /// No description provided for @historyNobody.
+  ///
+  /// In en, this message translates to:
+  /// **'Spendroo'**
+  String get historyNobody;
+
+  /// No description provided for @historySomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'someone'**
+  String get historySomeone;
+
+  /// No description provided for @historyChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Made a change'**
+  String get historyChanged;
+
+  /// No description provided for @historyEntryCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added an entry'**
+  String get historyEntryCreated;
+
+  /// No description provided for @historyEntryUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited an entry'**
+  String get historyEntryUpdated;
+
+  /// No description provided for @historyEntryDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted an entry'**
+  String get historyEntryDeleted;
+
+  /// No description provided for @historyEntryRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back an entry'**
+  String get historyEntryRestored;
+
+  /// No description provided for @historyCashbookCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Created a cashbook'**
+  String get historyCashbookCreated;
+
+  /// No description provided for @historyCashbookUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed a cashbook'**
+  String get historyCashbookUpdated;
+
+  /// No description provided for @historyCashbookDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted a cashbook'**
+  String get historyCashbookDeleted;
+
+  /// No description provided for @historyCashbookRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back a cashbook'**
+  String get historyCashbookRestored;
+
+  /// No description provided for @historyCategoryCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a category'**
+  String get historyCategoryCreated;
+
+  /// No description provided for @historyCategoryUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed a category'**
+  String get historyCategoryUpdated;
+
+  /// No description provided for @historyCategoryDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed a category'**
+  String get historyCategoryDeleted;
+
+  /// No description provided for @historyCategoryRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back a category'**
+  String get historyCategoryRestored;
+
+  /// No description provided for @historyMethodCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a payment method'**
+  String get historyMethodCreated;
+
+  /// No description provided for @historyMethodUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed a payment method'**
+  String get historyMethodUpdated;
+
+  /// No description provided for @historyMethodDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed a payment method'**
+  String get historyMethodDeleted;
+
+  /// No description provided for @historyMethodRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought back a payment method'**
+  String get historyMethodRestored;
+
+  /// No description provided for @historyAccessGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'Gave {name} access'**
+  String historyAccessGiven(String name);
+
+  /// No description provided for @historyAccessChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed {name}’s access'**
+  String historyAccessChanged(String name);
+
+  /// No description provided for @historyAccessTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Took away {name}’s access'**
+  String historyAccessTaken(String name);
+
+  /// No description provided for @historyMemberJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought {name} into the team'**
+  String historyMemberJoined(String name);
+
+  /// No description provided for @historyMemberRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed {name}’s role'**
+  String historyMemberRole(String name);
+
+  /// No description provided for @historyMemberLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is no longer on the team'**
+  String historyMemberLeft(String name);
+
+  /// No description provided for @historyFieldAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get historyFieldAmount;
+
+  /// No description provided for @historyFieldType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get historyFieldType;
+
+  /// No description provided for @historyFieldDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get historyFieldDate;
+
+  /// No description provided for @historyFieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get historyFieldTitle;
+
+  /// No description provided for @historyFieldNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get historyFieldNote;
+
+  /// No description provided for @historyFieldCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get historyFieldCategory;
+
+  /// No description provided for @historyFieldMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method'**
+  String get historyFieldMethod;
+
+  /// No description provided for @historyFieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get historyFieldName;
+
+  /// No description provided for @historyFieldDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get historyFieldDescription;
+
+  /// No description provided for @historyFieldCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get historyFieldCurrency;
+
+  /// No description provided for @historyFieldColour.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour'**
+  String get historyFieldColour;
+
+  /// No description provided for @historyFieldRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get historyFieldRole;
+
+  /// No description provided for @historyFieldAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Access'**
+  String get historyFieldAccess;
+
+  /// No description provided for @historyEmptyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get historyEmptyValue;
+
+  /// No description provided for @historyAnyBook.
+  ///
+  /// In en, this message translates to:
+  /// **'All cashbooks'**
+  String get historyAnyBook;
+
+  /// No description provided for @historyAnyone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone'**
+  String get historyAnyone;
+
+  /// No description provided for @historyAnyTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Any time'**
+  String get historyAnyTime;
+
+  /// No description provided for @historyPickBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Show changes in'**
+  String get historyPickBook;
+
+  /// No description provided for @historyPickPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Show changes by'**
+  String get historyPickPerson;
+
+  /// No description provided for @historyClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get historyClearAll;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has changed yet. Every entry your team adds, edits or deletes will show up here.'**
+  String get historyEmpty;
+
+  /// No description provided for @historyEmptyFiltered.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes match these filters.'**
+  String get historyEmptyFiltered;
+
+  /// No description provided for @historyEmptyEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry hasn’t reached the server yet. Its history shows once it syncs.'**
+  String get historyEmptyEntry;
+
+  /// No description provided for @historyTheStart.
+  ///
+  /// In en, this message translates to:
+  /// **'That’s everything'**
+  String get historyTheStart;
+
+  /// No description provided for @historyMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t load more.'**
+  String get historyMoreFailed;
+
+  /// No description provided for @historyOwnerOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the business owner can see the edit history.'**
+  String get historyOwnerOnly;
+
+  /// No description provided for @historyBusinessOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit history is kept for businesses.'**
+  String get historyBusinessOnly;
+
+  /// No description provided for @historyLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See who changed what, and when'**
+  String get historyLockedTitle;
+
+  /// No description provided for @historyLockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your team accountable with a full record of every change in your business.'**
+  String get historyLockedBody;
+
+  /// No description provided for @historyLockedPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Every edit, with before and after'**
+  String get historyLockedPoint1;
+
+  /// No description provided for @historyLockedPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by cashbook, person or date'**
+  String get historyLockedPoint2;
+
+  /// No description provided for @historyLockedPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted entries never vanish from view'**
+  String get historyLockedPoint3;
+
+  /// No description provided for @historyBackToTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the newest'**
+  String get historyBackToTop;
+
+  /// No description provided for @historyChangeCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 change} other{{count} changes}}'**
+  String historyChangeCount(int count);
+
+  /// No description provided for @bills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills'**
+  String get bills;
+
+  /// No description provided for @billsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a photo or PDF of the receipt with this entry.'**
+  String get billsHint;
+
+  /// No description provided for @billAttach.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach bill'**
+  String get billAttach;
+
+  /// No description provided for @billTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get billTakePhoto;
+
+  /// No description provided for @billTakePhotoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap a paper receipt. It\'s kept sharp and small.'**
+  String get billTakePhotoHint;
+
+  /// No description provided for @billChoosePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a photo'**
+  String get billChoosePhoto;
+
+  /// No description provided for @billChoosePhotoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A photo or screenshot already on your phone'**
+  String get billChoosePhotoHint;
+
+  /// No description provided for @billChoosePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a PDF'**
+  String get billChoosePdf;
+
+  /// No description provided for @billChoosePdfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices and statements that came as a PDF'**
+  String get billChoosePdfHint;
+
+  /// No description provided for @billPerFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {size} per bill'**
+  String billPerFile(String size);
+
+  /// No description provided for @billRoomLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} left'**
+  String billRoomLeft(String size);
+
+  /// No description provided for @billStorageUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} of {total} used'**
+  String billStorageUsed(String used, String total);
+
+  /// No description provided for @billStaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Attached when you save'**
+  String get billStaged;
+
+  /// No description provided for @billWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to upload'**
+  String get billWaiting;
+
+  /// No description provided for @billUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading {percent}%'**
+  String billUploading(int percent);
+
+  /// No description provided for @billFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t attach'**
+  String get billFailed;
+
+  /// No description provided for @billRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'No room on your plan'**
+  String get billRefused;
+
+  /// No description provided for @billRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get billRetry;
+
+  /// No description provided for @billRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bill'**
+  String get billRemove;
+
+  /// No description provided for @billRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this bill? The file is deleted for everyone in this business.'**
+  String get billRemoveConfirm;
+
+  /// No description provided for @billRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill removed'**
+  String get billRemoved;
+
+  /// No description provided for @billAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill attached. It uploads in the background.'**
+  String get billAdded;
+
+  /// No description provided for @billShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get billShare;
+
+  /// No description provided for @billOpenElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in another app'**
+  String get billOpenElsewhere;
+
+  /// No description provided for @billPages.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 page} other{{count} pages}}'**
+  String billPages(int count);
+
+  /// No description provided for @billCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 bill} other{{count} bills}}'**
+  String billCount(int count);
+
+  /// No description provided for @billOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{index} of {total}'**
+  String billOf(int index, int total);
+
+  /// No description provided for @billOpenOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'This bill isn\'t saved on this phone yet. Connect to the internet to open it.'**
+  String get billOpenOffline;
+
+  /// No description provided for @billGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This bill is no longer available.'**
+  String get billGone;
+
+  /// No description provided for @billOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The bill couldn\'t be opened. Try again.'**
+  String get billOpenFailed;
+
+  /// No description provided for @billErrorType.
+  ///
+  /// In en, this message translates to:
+  /// **'That file isn\'t a photo or a PDF.'**
+  String get billErrorType;
+
+  /// No description provided for @billErrorUnsafe.
+  ///
+  /// In en, this message translates to:
+  /// **'This file has scripts or hidden content in it, so it can\'t be kept.'**
+  String get billErrorUnsafe;
+
+  /// No description provided for @billErrorCorrupt.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is damaged and can\'t be opened.'**
+  String get billErrorCorrupt;
+
+  /// No description provided for @billErrorTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is too large to attach.'**
+  String get billErrorTooLarge;
+
+  /// No description provided for @billErrorForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t add bills to this entry.'**
+  String get billErrorForbidden;
+
+  /// No description provided for @billErrorGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry isn\'t on the server any more.'**
+  String get billErrorGone;
+
+  /// No description provided for @billErrorMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is no longer on this phone. Remove it and attach it again.'**
+  String get billErrorMissing;
+
+  /// No description provided for @billErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'The bill couldn\'t be attached.'**
+  String get billErrorGeneric;
+
+  /// No description provided for @billViewOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'You can view these bills but not change them.'**
+  String get billViewOnly;
+
+  /// No description provided for @entryDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry'**
+  String get entryDetails;
+
+  /// No description provided for @limitStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {plan} plan keeps up to {size} of bills. Remove some, or upgrade for more room.'**
+  String limitStorage(String plan, String size);
+
+  /// No description provided for @limitBillSize.
+  ///
+  /// In en, this message translates to:
+  /// **'On your {plan} plan, one bill can be up to {size}.'**
+  String limitBillSize(String plan, String size);
+
+  /// No description provided for @featureStorageFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Largest bill'**
+  String get featureStorageFile;
+
+  /// No description provided for @featureStoragePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF bills'**
+  String get featureStoragePdf;
+
+  /// No description provided for @fieldsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom fields'**
+  String get fieldsTitle;
+
+  /// No description provided for @fieldsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the details your business tracks to every entry in this book. They show on entries and in reports.'**
+  String get fieldsIntro;
+
+  /// No description provided for @fieldsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max} fields'**
+  String fieldsCount(int count, int max);
+
+  /// No description provided for @fieldsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track what matters to your business'**
+  String get fieldsEmptyTitle;
+
+  /// No description provided for @fieldsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add fields like an invoice number or the party you paid. They appear on every entry in this book and in its reports.'**
+  String get fieldsEmptyBody;
+
+  /// No description provided for @fieldsTryOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with one of these'**
+  String get fieldsTryOne;
+
+  /// No description provided for @fieldsExampleInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice no'**
+  String get fieldsExampleInvoice;
+
+  /// No description provided for @fieldsExampleParty.
+  ///
+  /// In en, this message translates to:
+  /// **'Party'**
+  String get fieldsExampleParty;
+
+  /// No description provided for @fieldsExampleDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get fieldsExampleDue;
+
+  /// No description provided for @fieldNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New field'**
+  String get fieldNew;
+
+  /// No description provided for @fieldEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit field'**
+  String get fieldEdit;
+
+  /// No description provided for @fieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'Field name'**
+  String get fieldName;
+
+  /// No description provided for @fieldNameNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the field a name.'**
+  String get fieldNameNeeded;
+
+  /// No description provided for @fieldNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This book already has a field called that.'**
+  String get fieldNameTaken;
+
+  /// No description provided for @fieldKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get fieldKind;
+
+  /// No description provided for @fieldKindText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get fieldKindText;
+
+  /// No description provided for @fieldKindNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get fieldKindNumber;
+
+  /// No description provided for @fieldKindDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get fieldKindDate;
+
+  /// No description provided for @fieldKindChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Choice'**
+  String get fieldKindChoice;
+
+  /// No description provided for @fieldKindTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Codes, names, notes'**
+  String get fieldKindTextHint;
+
+  /// No description provided for @fieldKindNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantities, weights'**
+  String get fieldKindNumberHint;
+
+  /// No description provided for @fieldKindDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Due or delivery dates'**
+  String get fieldKindDateHint;
+
+  /// No description provided for @fieldKindChoiceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick from a list'**
+  String get fieldKindChoiceHint;
+
+  /// No description provided for @fieldKindFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'The type can\'t change once the field is made.'**
+  String get fieldKindFixed;
+
+  /// No description provided for @fieldOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get fieldOptions;
+
+  /// No description provided for @fieldOptionAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an option'**
+  String get fieldOptionAdd;
+
+  /// No description provided for @fieldOptionsNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one option.'**
+  String get fieldOptionsNeeded;
+
+  /// No description provided for @fieldOptionsFull.
+  ///
+  /// In en, this message translates to:
+  /// **'A field can offer up to {max} options.'**
+  String fieldOptionsFull(int max);
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get fieldRequired;
+
+  /// No description provided for @fieldRequiredDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'New entries can\'t be saved without it.'**
+  String get fieldRequiredDetail;
+
+  /// No description provided for @fieldShowInList.
+  ///
+  /// In en, this message translates to:
+  /// **'Show on entry list'**
+  String get fieldShowInList;
+
+  /// No description provided for @fieldShowInListDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown under each entry in this book. Only one field can be.'**
+  String get fieldShowInListDetail;
+
+  /// No description provided for @fieldPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'How it looks on an entry'**
+  String get fieldPreview;
+
+  /// No description provided for @fieldDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete field'**
+  String get fieldDelete;
+
+  /// No description provided for @fieldDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this field? Values already filled in stay with the entries but are no longer shown.'**
+  String get fieldDeleteConfirm;
+
+  /// No description provided for @fieldsFull.
+  ///
+  /// In en, this message translates to:
+  /// **'A book can have up to {max} fields.'**
+  String fieldsFull(int max);
+
+  /// No description provided for @fieldPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'On list'**
+  String get fieldPinned;
+
+  /// No description provided for @fieldsReorderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold and drag to change the order.'**
+  String get fieldsReorderHint;
+
+  /// No description provided for @fieldOptionsMore.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count}'**
+  String fieldOptionsMore(int count);
+
+  /// No description provided for @fieldsDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get fieldsDetails;
+
+  /// No description provided for @fieldFillIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill this in.'**
+  String get fieldFillIn;
+
+  /// No description provided for @fieldNeedsNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number, like 1250 or 12.5.'**
+  String get fieldNeedsNumber;
+
+  /// No description provided for @fieldPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get fieldPickDate;
+
+  /// No description provided for @fieldClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get fieldClear;
+
+  /// No description provided for @fieldsHintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your own fields'**
+  String get fieldsHintTitle;
+
+  /// No description provided for @fieldsHintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Track invoice numbers, parties and more on every entry.'**
+  String get fieldsHintBody;
+
+  /// No description provided for @fieldsLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom fields come with Business'**
+  String get fieldsLockedTitle;
+
+  /// No description provided for @fieldsLockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your own fields to entries and see them on the list and in reports. Fields and values you already have stay as they are.'**
+  String get fieldsLockedBody;
+
+  /// No description provided for @fieldsReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Your plan keeps these values as they are. Upgrade to change them.'**
+  String get fieldsReadOnly;
+
+  /// No description provided for @historyFieldCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a custom field'**
+  String get historyFieldCreated;
+
+  /// No description provided for @historyFieldUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed a custom field'**
+  String get historyFieldUpdated;
+
+  /// No description provided for @historyFieldDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted a custom field'**
+  String get historyFieldDeleted;
+
+  /// No description provided for @historyFieldRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored a custom field'**
+  String get historyFieldRestored;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @booksTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Books'**
+  String get booksTab;
+
+  /// No description provided for @entriesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get entriesTab;
+
+  /// No description provided for @featureBusinessInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced business insights'**
+  String get featureBusinessInsights;
+
+  /// No description provided for @insNetFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Net cash flow'**
+  String get insNetFlow;
+
+  /// No description provided for @insClosingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance at the end'**
+  String get insClosingBalance;
+
+  /// No description provided for @insNoActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries in this period yet'**
+  String get insNoActivity;
+
+  /// No description provided for @insNoActivityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries added here turn into charts and insights.'**
+  String get insNoActivityHint;
+
+  /// No description provided for @insNothingHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in this period'**
+  String get insNothingHere;
+
+  /// No description provided for @insWhereMoneyWent.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the money went'**
+  String get insWhereMoneyWent;
+
+  /// No description provided for @insWhereMoneyCame.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the money came from'**
+  String get insWhereMoneyCame;
+
+  /// No description provided for @insPaymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment methods'**
+  String get insPaymentMethods;
+
+  /// No description provided for @insNoPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment method'**
+  String get insNoPaymentMethod;
+
+  /// No description provided for @insIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In'**
+  String get insIn;
+
+  /// No description provided for @insOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Out'**
+  String get insOut;
+
+  /// No description provided for @insBalanceTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance over time'**
+  String get insBalanceTrend;
+
+  /// No description provided for @insOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening'**
+  String get insOpening;
+
+  /// No description provided for @insClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing'**
+  String get insClosing;
+
+  /// No description provided for @insLowest.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest'**
+  String get insLowest;
+
+  /// No description provided for @insActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get insActivity;
+
+  /// No description provided for @insTapDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a day for details'**
+  String get insTapDay;
+
+  /// No description provided for @insLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get insLess;
+
+  /// No description provided for @insMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get insMore;
+
+  /// No description provided for @insHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash health'**
+  String get insHealth;
+
+  /// No description provided for @insOutRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out against cash in'**
+  String get insOutRatio;
+
+  /// No description provided for @insOutRatioNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing came in this period.'**
+  String get insOutRatioNone;
+
+  /// No description provided for @insOutRatioKept.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of what came in is still here.'**
+  String insOutRatioKept(String percent);
+
+  /// No description provided for @insOutRatioOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% more went out than came in.'**
+  String insOutRatioOver(String percent);
+
+  /// No description provided for @insAvgDailyOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash out a day'**
+  String get insAvgDailyOut;
+
+  /// No description provided for @insRunway.
+  ///
+  /// In en, this message translates to:
+  /// **'Lasts'**
+  String get insRunway;
+
+  /// No description provided for @insRunwayDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'at this rate'**
+  String get insRunwayDetail;
+
+  /// No description provided for @insRunwaySafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Growing'**
+  String get insRunwaySafe;
+
+  /// No description provided for @insRunwaySafeDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'more in than out'**
+  String get insRunwaySafeDetail;
+
+  /// No description provided for @insDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 days} =1{1 day} other{{count} days}}'**
+  String insDays(int count);
+
+  /// No description provided for @insBusiestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest day'**
+  String get insBusiestDay;
+
+  /// No description provided for @insAvgEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Average entry'**
+  String get insAvgEntry;
+
+  /// No description provided for @insActiveDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Active days'**
+  String get insActiveDays;
+
+  /// No description provided for @insActiveDaysValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{active} of {days}'**
+  String insActiveDaysValue(String active, String days);
+
+  /// No description provided for @insTopEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest entries'**
+  String get insTopEntries;
+
+  /// No description provided for @insTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team activity'**
+  String get insTeam;
+
+  /// No description provided for @insYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get insYou;
+
+  /// No description provided for @insSomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone'**
+  String get insSomeone;
+
+  /// No description provided for @insMostActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Most active'**
+  String get insMostActive;
+
+  /// No description provided for @insStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get insStreak;
+
+  /// No description provided for @insPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get insPeople;
+
+  /// No description provided for @insBills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills kept'**
+  String get insBills;
+
+  /// No description provided for @insBillsShare.
+  ///
+  /// In en, this message translates to:
+  /// **'{kept} of {total} cash outs have a bill'**
+  String insBillsShare(String kept, String total);
+
+  /// No description provided for @insBillsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Every cash out has its bill.'**
+  String get insBillsAll;
+
+  /// No description provided for @insBillsMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} has no bill yet.'**
+  String insBillsMissing(String amount);
+
+  /// No description provided for @insByField.
+  ///
+  /// In en, this message translates to:
+  /// **'By your own field'**
+  String get insByField;
+
+  /// No description provided for @insFieldEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No values for this field in this period.'**
+  String get insFieldEmpty;
+
+  /// No description provided for @insBookLeague.
+  ///
+  /// In en, this message translates to:
+  /// **'Books compared'**
+  String get insBookLeague;
+
+  /// No description provided for @insShare.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of all'**
+  String insShare(String percent);
+
+  /// No description provided for @insOtherCurrencies.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 book in another currency is not counted here.} other{{count} books in other currencies are not counted here.}}'**
+  String insOtherCurrencies(int count);
+
+  /// No description provided for @insBusinessChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get insBusinessChip;
+
+  /// No description provided for @insUnlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Running balance, activity calendar, cash health, team, bills and comparing books come with the Business plan.'**
+  String get insUnlockBody;
+
+  /// No description provided for @insUnlockAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with Business'**
+  String get insUnlockAction;
+
+  /// No description provided for @insMoreWithBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 more chart with Business} other{{count} more charts with Business}}'**
+  String insMoreWithBusiness(int count);
+
+  /// No description provided for @insPeriodTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get insPeriodTotal;
+
+  /// No description provided for @insPeakDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak day'**
+  String get insPeakDay;
+
+  /// No description provided for @insQuietDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet days'**
+  String get insQuietDays;
+
+  /// No description provided for @insWeekRhythm.
+  ///
+  /// In en, this message translates to:
+  /// **'Your week'**
+  String get insWeekRhythm;
+
+  /// No description provided for @insBusiestOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest on {day}'**
+  String insBusiestOn(String day);
+
+  /// No description provided for @insTimesAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'{times}× a usual day'**
+  String insTimesAverage(String times);
+
+  /// No description provided for @insAvgIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Usual month in'**
+  String get insAvgIn;
+
+  /// No description provided for @insAvgOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Usual month out'**
+  String get insAvgOut;
+
+  /// No description provided for @insBestMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Best month'**
+  String get insBestMonth;
+
+  /// No description provided for @insAboveUsual.
+  ///
+  /// In en, this message translates to:
+  /// **'Better than usual'**
+  String get insAboveUsual;
+
+  /// No description provided for @insBelowUsual.
+  ///
+  /// In en, this message translates to:
+  /// **'Below usual'**
+  String get insBelowUsual;
+
+  /// No description provided for @insKept.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of cash in kept'**
+  String insKept(String percent);
+
+  /// No description provided for @insOverspent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% more went out than came in'**
+  String insOverspent(String percent);
+
+  /// No description provided for @insActiveDaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 active day} other{{count} active days}}'**
+  String insActiveDaysCount(int count);
 
   /// No description provided for @featureBusinessWidget.
   ///

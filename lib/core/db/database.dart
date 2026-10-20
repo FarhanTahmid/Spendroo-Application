@@ -57,6 +57,27 @@ class PaymentMethods extends Table with SyncColumns {
   BoolColumn get isDefault => boolean().withDefault(const Constant(false))();
 }
 
+/// A field a business adds to every entry of one book (invoice no., party…).
+/// Entries keep their values in [Entries.customValues].
+@TableIndex(name: 'entry_fields_book', columns: {#cashbookId})
+class EntryFields extends Table with SyncColumns {
+  TextColumn get cashbookId => text()();
+  TextColumn get name => text()();
+
+  /// text, number, date or choice. Fixed once the field exists.
+  TextColumn get kind => text()();
+
+  /// JSON list of what a choice field offers; '[]' for every other kind.
+  TextColumn get options => text().withDefault(const Constant('[]'))();
+
+  /// Asked for by the app on new entries only; the server never refuses a missing value.
+  BoolColumn get isRequired => boolean().named('required').withDefault(const Constant(false))();
+
+  /// The one field shown on the book's entry list.
+  BoolColumn get showInList => boolean().withDefault(const Constant(false))();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+}
+
 @TableIndex(name: 'entries_book_date', columns: {#cashbookId, #entryDate})
 class Entries extends Table with SyncColumns {
   TextColumn get cashbookId => text()();
@@ -70,6 +91,27 @@ class Entries extends Table with SyncColumns {
   TextColumn get entryDate => text()();
   TextColumn get source => text().withDefault(const Constant('manual'))();
   TextColumn get createdById => text().nullable()();
+
+  /// JSON map of the book's own fields: {field id: value as text}.
+  TextColumn get customValues => text().withDefault(const Constant('{}'))();
+}
+
+/// A photo or PDF kept with a business entry as proof. Rows arrive by sync
+/// only (the server checks each file); the file itself is fetched when opened
+/// and cached (features/bills/bill_files.dart).
+@TableIndex(name: 'entry_bills_entry', columns: {#entryId})
+class EntryBills extends Table with SyncColumns {
+  TextColumn get entryId => text()();
+  TextColumn get cashbookId => text()();
+  TextColumn get createdById => text().nullable()();
+
+  /// What the server found the file to be: image/jpeg, image/png or application/pdf.
+  TextColumn get contentType => text()();
+  TextColumn get originalName => text().withDefault(const Constant(''))();
+  IntColumn get sizeBytes => integer().withDefault(const Constant(0))();
+  IntColumn get pageCount => integer().nullable()();
+  IntColumn get width => integer().nullable()();
+  IntColumn get height => integer().nullable()();
 }
 
 class CashbookMembers extends Table with SyncColumns {
@@ -237,6 +279,43 @@ class Outbox extends Table {
   TextColumn get data => text()();
 }
 
+/// Bills waiting for the server: files to send, and bills to take away. Apart
+/// from the outbox because a file travels in a request of its own, once its
+/// entry is on the server (core/sync/bill_outbox.dart). Never synced.
+class BillQueue extends Table {
+  /// The bill's id, made here; the server keeps it, so a resend is recognised.
+  TextColumn get id => text()();
+
+  /// 'upload' or 'remove'.
+  TextColumn get op => text()();
+  TextColumn get workspaceId => text()();
+  TextColumn get cashbookId => text()();
+  TextColumn get entryId => text()();
+
+  /// The file waiting to go, for an upload.
+  TextColumn get path => text().nullable()();
+  TextColumn get contentType => text().withDefault(const Constant(''))();
+  TextColumn get originalName => text().withDefault(const Constant(''))();
+  IntColumn get sizeBytes => integer().withDefault(const Constant(0))();
+  IntColumn get width => integer().nullable()();
+  IntColumn get height => integer().nullable()();
+
+  /// 'queued' (waiting its turn), 'failed' (the server refused the file) or
+  /// 'refused' (the plan has no room for it).
+  TextColumn get state => text().withDefault(const Constant('queued'))();
+
+  /// Why it failed: a code from the server, such as bill_unsafe, or a plan feature.
+  TextColumn get error => text().nullable()();
+  IntColumn get attempts => integer().withDefault(const Constant(0))();
+
+  /// Not tried again before this moment (ISO), after the server could not be reached.
+  TextColumn get nextTryAt => text().nullable()();
+  TextColumn get createdAt => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// How far each workspace has been pulled.
 class SyncCursors extends Table {
   TextColumn get workspaceId => text()();
@@ -293,9 +372,9 @@ class Settings extends Table {
 }
 
 @DriftDatabase(tables: [
-  Workspaces, Cashbooks, EntryCategories, PaymentMethods, Entries, CashbookMembers,
+  Workspaces, Cashbooks, EntryCategories, PaymentMethods, EntryFields, Entries, EntryBills, CashbookMembers,
   Accounts, Categories, Transactions, Budgets, RecurringRules, RecurringOccurrences, InboxItems, SavingsGoals,
-  Outbox, SyncCursors, SyncFailures, Settings,
+  Outbox, BillQueue, SyncCursors, SyncFailures, Settings,
 ])
 class AppDatabase extends _$AppDatabase {
   // Shared across isolates: a widget refreshed by a silent push (biz_widget_background.dart)
@@ -306,7 +385,7 @@ class AppDatabase extends _$AppDatabase {
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -344,12 +423,26 @@ class AppDatabase extends _$AppDatabase {
           from6To7: (m, schema) async {
             await m.createTable(schema.savingsGoals);
           },
+          from7To8: (m, schema) async {
+            await m.createTable(schema.entryBills);
+            await m.createIndex(schema.entryBillsEntry);
+            await m.createTable(schema.billQueue);
+            // Bills already on the server were never pulled: pull again
+            await customStatement('DELETE FROM sync_cursors');
+          },
+          from8To9: (m, schema) async {
+            await m.createTable(schema.entryFields);
+            await m.createIndex(schema.entryFieldsBook);
+            await m.addColumn(schema.entries, schema.entries.customValues);
+            // Fields and values already on the server were never pulled: pull again
+            await customStatement('DELETE FROM sync_cursors');
+          },
         ),
       );
 
   /// Synced tables in the order rows must be applied: parents before children.
   static const syncedTables = [
-    'cashbooks', 'entry_categories', 'payment_methods', 'entries', 'cashbook_members',
+    'cashbooks', 'entry_categories', 'payment_methods', 'entry_fields', 'entries', 'entry_bills', 'cashbook_members',
     'accounts', 'savings_goals', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions', 'budgets',
     'inbox_items',
   ];

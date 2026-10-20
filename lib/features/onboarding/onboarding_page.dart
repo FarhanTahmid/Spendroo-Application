@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/api/api_client.dart';
 import '../../core/auth/auth_repository.dart';
@@ -201,6 +202,14 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                       }),
                       choice(2, Icons.science_outlined, l10n.tryDemo, l10n.tryDemoHint,
                           () => _finish('business', actions.createDemo)),
+                      // Someone invited lands here first: straight on to the code
+                      choice(3, Icons.vpn_key_outlined, l10n.haveInviteCode, l10n.haveInviteCodeHint, () async {
+                        final router = GoRouter.of(context);
+                        await _finish('business');
+                        router
+                          ..go('/')
+                          ..push('/join');
+                      }),
                     ],
                   ),
                 ),

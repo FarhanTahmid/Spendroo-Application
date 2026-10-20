@@ -35,6 +35,7 @@ class MoneyRow extends StatelessWidget {
     this.amountColor,
     this.amountDetail,
     this.onTap,
+    this.badge,
   });
 
   final IconData icon;
@@ -49,6 +50,9 @@ class MoneyRow extends StatelessWidget {
   /// A quieter figure under the amount, such as the balance it left.
   final String? amountDetail;
   final VoidCallback? onTap;
+
+  /// Sits after the title, such as a paperclip for an entry's bills.
+  final Widget? badge;
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +73,18 @@ class MoneyRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      if (badge != null) ...[const SizedBox(width: 6), badge!],
+                    ],
                   ),
                   if (detail != null && detail!.isNotEmpty)
                     Text(detail!, maxLines: 1, overflow: TextOverflow.ellipsis, style: text.bodySmall?.copyWith(fontSize: 13)),

@@ -18,6 +18,10 @@ import '../plan/plan_page.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
 import '../profile/profile_repository.dart';
+import '../tags/merchant_field.dart';
+import '../tags/tag_field.dart';
+import '../tags/tag_ids.dart';
+import '../tags/tag_repository.dart';
 import '../reports/report_repository.dart';
 import '../reports/report_sheet.dart';
 import 'book_access.dart';
@@ -240,6 +244,7 @@ class CashbookPage extends ConsumerStatefulWidget {
 
 class _CashbookPageState extends ConsumerState<CashbookPage> {
   late bool _insights = widget.insights;
+  String _query = '';
 
   String get bookId => widget.bookId;
 
@@ -370,19 +375,41 @@ class _CashbookPageState extends ConsumerState<CashbookPage> {
               Expanded(
                 child: AsyncView(
                   value: ref.watch(entriesProvider(bookId)),
-                  builder: (entries) => entries.isEmpty
-                      ? EmptyState(icon: Icons.receipt_long_outlined, message: l10n.noEntries)
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
-                          itemCount: entries.length,
-                          itemBuilder: (context, index) => _EntryTile(
-                            view: entries[index],
-                            // Someone who cannot edit still opens the entry, to see its bills
-                            onTap: canEdit
-                                ? () => _openForm(context, book, entry: entries[index].entry)
-                                : () => showEntryDetails(context, entries[index], workspace: workspace, access: access),
-                          ),
-                        ),
+                  builder: (all) {
+                    if (all.isEmpty) return EmptyState(icon: Icons.receipt_long_outlined, message: l10n.noEntries);
+                    final tags = ref.watch(tagNamesProvider(book.workspaceId));
+                    final entries = all.where((view) => entryMatches(view, _query, tags)).toList();
+                    // The search box scrolls with the entries, so a short screen keeps room for them
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                      itemCount: 1 + (entries.isEmpty ? 1 : entries.length),
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(AppSpace.page, AppSpace.md, AppSpace.page, AppSpace.sm),
+                            child: AppSearchField(
+                              hint: l10n.searchEntries,
+                              onChanged: (value) => setState(() => _query = value),
+                            ),
+                          );
+                        }
+                        if (entries.isEmpty) {
+                          return SizedBox(
+                            height: 240,
+                            child: EmptyState(icon: Icons.search_off_rounded, message: l10n.noResultsFor(_query.trim())),
+                          );
+                        }
+                        final view = entries[index - 1];
+                        return _EntryTile(
+                          view: view,
+                          // Someone who cannot edit still opens the entry, to see its bills
+                          onTap: canEdit
+                              ? () => _openForm(context, book, entry: view.entry)
+                              : () => showEntryDetails(context, view, workspace: workspace, access: access),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ],
@@ -475,7 +502,10 @@ class _EntryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final entry = view.entry;
     final pinned = view.pinned;
+    final titled = entry.title?.isNotEmpty ?? false;
     final details = [
+      // The party leads the line when the title already took the top
+      if (titled && entry.merchant.isNotEmpty) entry.merchant,
       formatDate(context, entry.entryDate),
       view.categoryName,
       view.paymentMethodName,
@@ -486,7 +516,9 @@ class _EntryTile extends StatelessWidget {
       tint: entry.categoryId == null
           ? context.amountColor(view.isCashIn)
           : context.categoryTint(view.categoryColor, entry.categoryId),
-      title: (entry.title?.isNotEmpty ?? false) ? entry.title! : (view.isCashIn ? context.l10n.cashIn : context.l10n.cashOut),
+      title: titled
+          ? entry.title!
+          : (entry.merchant.isNotEmpty ? entry.merchant : (view.isCashIn ? context.l10n.cashIn : context.l10n.cashOut)),
       detail: details,
       amount: context.money(entry.amountMinor, entry.currency),
       amountColor: context.amountColor(view.isCashIn),
@@ -494,6 +526,30 @@ class _EntryTile extends StatelessWidget {
       badge: view.billCount == 0 ? null : _BillBadge(count: view.billCount),
     );
   }
+}
+
+/// Whether an entry is one a search of the book's list is after: by its
+/// title, remarks, party, tags, category, payment method or amount.
+bool entryMatches(EntryView view, String query, Map<String, Tag> tags) {
+  final typed = Money.toAsciiDigits(query.trim().toLowerCase());
+  if (typed.isEmpty) return true;
+  final entry = view.entry;
+  return [
+    entry.title ?? '',
+    entry.remarks ?? '',
+    entry.merchant,
+    // A deleted tag is not searched by its name
+    for (final id in decodeTagIds(entry.tagIds)) tags[id]?.name ?? '',
+    view.categoryName ?? '',
+    view.paymentMethodName ?? '',
+    Money.toInput(entry.amountMinor, entry.currency),
+  ].any((field) => field.toLowerCase().contains(typed));
+}
+
+/// The live tags of a row by name, "Stock, Rush"; null when it has none.
+String? tagLine(String tagIds, Map<String, Tag> tags) {
+  final names = [for (final id in decodeTagIds(tagIds)) if (tags[id] case final tag?) tag.name];
+  return names.isEmpty ? null : names.join(', ');
 }
 
 /// A paperclip and how many bills the entry keeps.
@@ -565,9 +621,12 @@ Future<void> showEntryDetails(
               if (entry.title?.isNotEmpty ?? false) Text(entry.title!, style: text.titleMedium),
               const SizedBox(height: AppSpace.md),
               line(Icons.event_outlined, formatDate(context, entry.entryDate)),
+              if (entry.merchant.isNotEmpty) line(Icons.storefront_outlined, entry.merchant),
               if (view.categoryName != null) line(Icons.sell_outlined, view.categoryName!),
               if (view.paymentMethodName != null) line(Icons.account_balance_wallet_outlined, view.paymentMethodName!),
               if (entry.remarks?.isNotEmpty ?? false) line(Icons.notes_rounded, entry.remarks!),
+              if (tagLine(entry.tagIds, ref.watch(tagNamesProvider(entry.workspaceId))) case final tags?)
+                line(Icons.local_offer_outlined, tags),
               FieldValueLines(fields: fields, values: customValuesOf(entry)),
               const SizedBox(height: AppSpace.md),
               BillsSection(
@@ -603,6 +662,8 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
   );
   late final _title = TextEditingController(text: widget.entry?.title ?? '');
   late final _remarks = TextEditingController(text: widget.entry?.remarks ?? '');
+  late final _merchant = TextEditingController(text: widget.entry?.merchant ?? '');
+  late List<String> _tagIds = widget.entry == null ? const [] : decodeTagIds(widget.entry!.tagIds);
   late String _date = widget.entry?.entryDate ?? todayIso();
   late String? _categoryId = widget.entry?.categoryId;
   late String? _paymentMethodId = widget.entry?.paymentMethodId;
@@ -620,6 +681,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
     _amount.dispose();
     _title.dispose();
     _remarks.dispose();
+    _merchant.dispose();
     _staged.dispose();
     super.dispose();
   }
@@ -665,6 +727,8 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         remarks: _blankToNull(_remarks.text),
         categoryId: _categoryId,
         paymentMethodId: _paymentMethodId,
+        merchant: _merchant.text,
+        tagIds: _tagIds,
         customValues: values ?? const {},
       );
       await _staged.attachTo(
@@ -682,6 +746,8 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
         remarks: _blankToNull(_remarks.text),
         categoryId: _categoryId,
         paymentMethodId: _paymentMethodId,
+        merchant: _merchant.text,
+        tagIds: _tagIds,
         customValues: values,
       );
     }
@@ -782,6 +848,12 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
               buildCounter: quietCounter,
             ),
             const SizedBox(height: 12),
+            MerchantField(
+              controller: _merchant,
+              label: l10n.party,
+              known: ref.watch(merchantsProvider((widget.book.workspaceId, entries: true))).value ?? const [],
+            ),
+            const SizedBox(height: 12),
             SelectField<String>(
               label: l10n.category,
               icon: Icons.sell_outlined,
@@ -804,6 +876,12 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
               createLabel: l10n.newPaymentMethod,
               onCreate: (name) => repo.addPaymentMethod(widget.book, name),
               onChanged: (value) => setState(() => _paymentMethodId = value),
+            ),
+            const SizedBox(height: 12),
+            TagField(
+              workspaceId: widget.book.workspaceId,
+              value: _tagIds,
+              onChanged: (value) => setState(() => _tagIds = value),
             ),
             const SizedBox(height: 12),
             TextFormField(

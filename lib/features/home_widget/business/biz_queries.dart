@@ -22,7 +22,7 @@ class DayFlow {
 class BigOut {
   const BigOut(this.label, this.amountMinor);
 
-  /// The entry's title, else its category; null when it has neither.
+  /// The entry's title, else its party, else its category; null when it has none of them.
   final String? label;
   final int amountMinor;
 }
@@ -31,7 +31,7 @@ class BigOut {
 class RecentEntry {
   const RecentEntry({required this.title, required this.cashIn, required this.amountMinor, required this.entryDate});
 
-  /// Title, else category; null when it has neither.
+  /// Title, else party, else category; null when it has none of them.
   final String? title;
   final bool cashIn;
   final int amountMinor;
@@ -140,7 +140,7 @@ class BizWidgetQueries {
   Stream<Map<String, BigOut>> watchBiggestOut(String workspaceId, String from, String to) => db
       .customSelect(
         'SELECT book, label, amount FROM ('
-        "SELECT e.cashbook_id AS book, COALESCE(NULLIF(TRIM(e.title), ''), c.category_name) AS label, "
+        "SELECT e.cashbook_id AS book, COALESCE(NULLIF(TRIM(e.title), ''), NULLIF(e.merchant, ''), c.category_name) AS label, "
         'e.amount_minor AS amount, ROW_NUMBER() OVER (PARTITION BY e.cashbook_id '
         'ORDER BY e.amount_minor DESC, e.entry_date DESC, e.id) AS rank '
         'FROM entries e JOIN cashbooks b ON b.id = e.cashbook_id '
@@ -162,7 +162,7 @@ class BizWidgetQueries {
   Stream<Map<String, List<RecentEntry>>> watchRecent(String workspaceId, String today, {int limit = 3}) => db
       .customSelect(
         'SELECT book, label, kind, amount, day FROM ('
-        "SELECT e.cashbook_id AS book, COALESCE(NULLIF(TRIM(e.title), ''), c.category_name) AS label, "
+        "SELECT e.cashbook_id AS book, COALESCE(NULLIF(TRIM(e.title), ''), NULLIF(e.merchant, ''), c.category_name) AS label, "
         'e.entry_type AS kind, e.amount_minor AS amount, e.entry_date AS day, '
         'ROW_NUMBER() OVER (PARTITION BY e.cashbook_id ORDER BY e.entry_date DESC, e.created_at DESC, e.id) AS rank '
         'FROM entries e JOIN cashbooks b ON b.id = e.cashbook_id '

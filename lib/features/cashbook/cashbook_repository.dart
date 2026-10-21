@@ -8,6 +8,8 @@ import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/entitlements/plan_guard.dart';
 import '../../core/providers.dart';
 import '../fields/field_repository.dart';
+import '../tags/merchants.dart';
+import '../tags/tag_ids.dart';
 import 'book_access.dart';
 
 /// Seeded into every new cashbook, same lists as the server uses.
@@ -285,6 +287,8 @@ class CashbookRepository {
     String? remarks,
     String? categoryId,
     String? paymentMethodId,
+    String merchant = '',
+    List<String> tagIds = const [],
     Map<String, String> customValues = const {},
   }) async {
     // A locked book is read-only, entries included
@@ -303,6 +307,8 @@ class CashbookRepository {
         'remarks': remarks,
         'category_id': categoryId,
         'payment_method_id': paymentMethodId,
+        'merchant': tidyMerchant(merchant),
+        'tag_ids': tagIds,
         'source': 'manual',
         // With the entry itself: a contributor may add an entry but not change one after
         if (values.isNotEmpty) 'custom_values': values,
@@ -321,9 +327,12 @@ class CashbookRepository {
     String? remarks,
     String? categoryId,
     String? paymentMethodId,
+    String? merchant,
+    List<String>? tagIds,
     Map<String, String>? customValues,
   }) async {
     plan?.writable(F.businessCashbooks, original.cashbookId);
+    final party = merchant == null ? null : tidyMerchant(merchant);
     final values = customValues == null ? null : cleanValues(customValues);
     final valuesChanged = values != null && !sameValues(values, customValuesOf(original));
     if (valuesChanged) await plan?.require(F.customFields, original.workspaceId);
@@ -334,6 +343,8 @@ class CashbookRepository {
       if (remarks != original.remarks) 'remarks': remarks,
       if (categoryId != original.categoryId) 'category_id': categoryId,
       if (paymentMethodId != original.paymentMethodId) 'payment_method_id': paymentMethodId,
+      if (party != null && party != original.merchant) 'merchant': party,
+      if (tagIds != null && !sameTagIds(tagIds, decodeTagIds(original.tagIds))) 'tag_ids': tagIds,
     });
     if (valuesChanged) await store.update('entries', original.id, {'custom_values': values});
   }

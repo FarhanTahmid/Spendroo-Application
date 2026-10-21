@@ -31,6 +31,7 @@ import 'features/recurring/recurring_pages.dart';
 import 'features/settings/notification_settings_page.dart';
 import 'features/settings/settings_page.dart';
 import 'features/shell/home_shell.dart';
+import 'features/tags/tags_page.dart';
 import 'features/team/join_page.dart';
 import 'features/team/member_page.dart';
 import 'features/team/team_page.dart';
@@ -95,6 +96,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/profile', builder: (_, _) => const ProfilePage()),
       GoRoute(path: '/categories', builder: (_, _) => const CategoriesPage()),
+      GoRoute(path: '/tags', builder: (_, _) => const TagsPage()),
       GoRoute(path: '/recurring', builder: (_, _) => const RecurringPage()),
       GoRoute(path: '/inbox', builder: (_, _) => const InboxPage()),
       GoRoute(

@@ -83,6 +83,8 @@ String fieldLabel(BuildContext context, HistoryEvent event, FieldChange change) 
     'entry_date' => l10n.historyFieldDate,
     'title' => l10n.historyFieldTitle,
     'remarks' => l10n.historyFieldNote,
+    'merchant' => l10n.party,
+    'tags' => l10n.tags,
     'category' => l10n.historyFieldCategory,
     'payment_method' => l10n.historyFieldMethod,
     'book_name' || 'category_name' || 'payment_method_name' || 'name' => l10n.historyFieldName,
@@ -103,7 +105,8 @@ String? fieldValue(BuildContext context, HistoryEvent event, FieldChange change,
   final l10n = context.l10n;
   return switch (change.field) {
     FieldChange.customValue when value is String => fieldDisplay(context, change.kind ?? '', value),
-    'options' when value is List => value.join(', '),
+    // The server sends tags by name; none left reads as empty
+    'options' || 'tags' when value is List => value.isEmpty ? null : value.join(', '),
     'required' || 'show_in_list' when value is bool => value ? l10n.yes : l10n.no,
     'amount_minor' when value is num =>
       Money.format(value.toInt(), event.currency ?? 'BDT', locale: context.languageCode),

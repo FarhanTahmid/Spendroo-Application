@@ -146,6 +146,15 @@ class SettingsPage extends ConsumerWidget {
                   if (context.mounted && !changed) context.showMessage(l10n.needsConnection);
                 },
               ),
+            // Anyone may make a tag from a form; renaming and deleting them is for the people who run the workspace
+            if (workspace != null && (workspace.role == 'owner' || workspace.role == 'admin'))
+              ListTile(
+                leading: const Icon(Icons.local_offer_outlined),
+                title: Text(l10n.tags),
+                subtitle: Text(l10n.tagsHint),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => context.push('/tags'),
+              ),
             if (workspace != null && workspace.kind == 'business' && !workspace.isDemo)
               ListTile(
                 leading: const Icon(Icons.groups_2_outlined),

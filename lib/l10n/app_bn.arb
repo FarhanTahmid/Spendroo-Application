@@ -217,7 +217,7 @@
   "retry": "আবার চেষ্টা করুন",
 
   "search": "খুঁজুন",
-  "searchTransactions": "নোট, খাত বা পরিমাণ দিয়ে খুঁজুন",
+  "searchTransactions": "দোকান, নোট, ট্যাগ বা পরিমাণ দিয়ে খুঁজুন",
   "searchOrCreate": "খুঁজুন বা নতুন নাম লিখুন",
   "filterAll": "সব",
   "noResultsFor": "\"{query}\" এর সাথে কিছু মেলেনি।",
@@ -1222,5 +1222,18 @@
   "bizInsightLosingBookMasked": "এ মাসে {book}-এ ঘাটতি চলছে",
   "bizInsightQuietMonth": "এ মাসে এখনো কোনো এন্ট্রি নেই",
   "bizInsightEmptyBook": "পরামর্শ দেখতে প্রথম এন্ট্রিটি যোগ করুন",
-  "bizInsightSteady": "জমা-খরচ গত মাসের কাছাকাছি"
+  "bizInsightSteady": "জমা-খরচ গত মাসের কাছাকাছি",
+
+  "merchant": "দোকান / প্রাপক",
+  "party": "পার্টি",
+  "tags": "ট্যাগ",
+  "tagName": "ট্যাগের নাম",
+  "addTag": "ট্যাগ দিন",
+  "newTag": "নতুন ট্যাগ",
+  "editTag": "ট্যাগ সম্পাদনা",
+  "noTags": "এখনো কোনো ট্যাগ নেই। নিজের মতো করে সাজাতে লেনদেন ও এন্ট্রিতে ট্যাগ দিন।",
+  "removeTag": "{name} সরান",
+  "deleteTagConfirm": "\"{name}\" মুছবেন? {count, plural, =0{এখনো কিছুতে এটি দেওয়া নেই।} other{{count}টি লেনদেন ও এন্ট্রি থেকে এটি সরে যাবে।}}",
+  "tagsHint": "লেনদেন ও এন্ট্রির লেবেল",
+  "searchEntries": "এন্ট্রি খুঁজুন"
 }

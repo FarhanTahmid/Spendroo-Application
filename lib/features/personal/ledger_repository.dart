@@ -9,6 +9,8 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/entitlements/plan_guard.dart';
 import '../../core/providers.dart';
+import '../tags/merchants.dart';
+import '../tags/tag_ids.dart';
 import 'allocations.dart';
 
 class AccountBalance {
@@ -573,6 +575,8 @@ class LedgerRepository {
     required String occurredOn,
     String? categoryId,
     String note = '',
+    String merchant = '',
+    List<String> tagIds = const [],
     List<SplitPart> splits = const [],
     String? occurrenceId,
   }) async {
@@ -590,6 +594,8 @@ class LedgerRepository {
         'transfer_group_id': null,
         'occurred_on': occurredOn,
         'note': note,
+        'merchant': tidyMerchant(merchant),
+        'tag_ids': tagIds,
         'source': 'manual',
         if (splits.isNotEmpty) 'splits': SplitPart.encode(splits),
         // The date of a recurring rule this settles
@@ -645,9 +651,12 @@ class LedgerRepository {
     required String occurredOn,
     String? categoryId,
     String note = '',
+    String merchant = '',
+    List<String> tagIds = const [],
     List<SplitPart> splits = const [],
   }) async {
     plan?.writable(F.personalAccounts, original.accountId);
+    final cleanMerchant = tidyMerchant(merchant);
     final signed = original.amountMinor < 0 ? -amountMinor : amountMinor;
     final category = splits.isEmpty ? categoryId : null;
     final resplit = !SplitPart.same(splits, original.parts);
@@ -657,6 +666,8 @@ class LedgerRepository {
       if (occurredOn != original.occurredOn) 'occurred_on': occurredOn,
       if (category != original.categoryId) 'category_id': category,
       if (note != original.note) 'note': note,
+      if (cleanMerchant != original.merchant) 'merchant': cleanMerchant,
+      if (!sameTagIds(tagIds, decodeTagIds(original.tagIds))) 'tag_ids': tagIds,
       if (resplit || (splits.isNotEmpty && signed != original.amountMinor)) 'splits': SplitPart.encode(splits),
     });
   }

@@ -88,6 +88,12 @@ class Entries extends Table with SyncColumns {
   TextColumn get currency => text()();
   TextColumn get title => text().nullable()();
   TextColumn get remarks => text().nullable()();
+
+  /// The party paid or paid by; '' when not given (features/tags/merchants.dart).
+  TextColumn get merchant => text().withDefault(const Constant(''))();
+
+  /// JSON list of the workspace's tag ids (features/tags/tag_ids.dart).
+  TextColumn get tagIds => text().withDefault(const Constant('[]'))();
   TextColumn get entryDate => text()();
   TextColumn get source => text().withDefault(const Constant('manual'))();
   TextColumn get createdById => text().nullable()();
@@ -140,6 +146,20 @@ class Categories extends Table with SyncColumns {
   TextColumn get color => text().nullable()();
 }
 
+/// A label of the workspace, put on transactions and entries alike. Rows name
+/// theirs in `tagIds`, so a deleted tag is simply skipped where it is still named.
+/// (Not called Tags: package:test has a class of that name.)
+@DataClassName('Tag')
+class WorkspaceTags extends Table with SyncColumns {
+  @override
+  String get tableName => 'tags';
+
+  TextColumn get name => text()();
+
+  /// '#RRGGBB' the user chose; null leaves the colour to the app (categoryFill).
+  TextColumn get color => text().nullable()();
+}
+
 // The account screen reads an account newest first, a page at a time: the index
 // holds the whole sort order, so a page is a range scan with nothing to sort
 @TableIndex(name: 'transactions_account_feed', columns: {#accountId, #occurredOn, #createdAt, #id})
@@ -154,6 +174,12 @@ class Transactions extends Table with SyncColumns {
   TextColumn get transferGroupId => text().nullable()();
   TextColumn get occurredOn => text()();
   TextColumn get note => text().withDefault(const Constant(''))();
+
+  /// Who was paid, or who paid; '' when not given (features/tags/merchants.dart).
+  TextColumn get merchant => text().withDefault(const Constant(''))();
+
+  /// JSON list of the workspace's tag ids (features/tags/tag_ids.dart).
+  TextColumn get tagIds => text().withDefault(const Constant('[]'))();
   TextColumn get source => text().withDefault(const Constant('manual'))();
 
   /// Filed under several categories at once: a JSON list of parts that add up
@@ -372,7 +398,7 @@ class Settings extends Table {
 }
 
 @DriftDatabase(tables: [
-  Workspaces, Cashbooks, EntryCategories, PaymentMethods, EntryFields, Entries, EntryBills, CashbookMembers,
+  Workspaces, WorkspaceTags, Cashbooks, EntryCategories, PaymentMethods, EntryFields, Entries, EntryBills, CashbookMembers,
   Accounts, Categories, Transactions, Budgets, RecurringRules, RecurringOccurrences, InboxItems, SavingsGoals,
   Outbox, BillQueue, SyncCursors, SyncFailures, Settings,
 ])
@@ -385,7 +411,7 @@ class AppDatabase extends _$AppDatabase {
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -437,12 +463,21 @@ class AppDatabase extends _$AppDatabase {
             // Fields and values already on the server were never pulled: pull again
             await customStatement('DELETE FROM sync_cursors');
           },
+          from9To10: (m, schema) async {
+            await m.createTable(schema.tags);
+            await m.addColumn(schema.transactions, schema.transactions.merchant);
+            await m.addColumn(schema.transactions, schema.transactions.tagIds);
+            await m.addColumn(schema.entries, schema.entries.merchant);
+            await m.addColumn(schema.entries, schema.entries.tagIds);
+            // Merchants and tags already on the server were never pulled: pull again
+            await customStatement('DELETE FROM sync_cursors');
+          },
         ),
       );
 
   /// Synced tables in the order rows must be applied: parents before children.
   static const syncedTables = [
-    'cashbooks', 'entry_categories', 'payment_methods', 'entry_fields', 'entries', 'entry_bills', 'cashbook_members',
+    'tags', 'cashbooks', 'entry_categories', 'payment_methods', 'entry_fields', 'entries', 'entry_bills', 'cashbook_members',
     'accounts', 'savings_goals', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions', 'budgets',
     'inbox_items',
   ];

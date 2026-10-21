@@ -167,12 +167,15 @@ class ColorPicker extends StatelessWidget {
 }
 
 /// Name and colour of a category, new or existing. Returns null when
-/// cancelled or left without a name.
+/// cancelled or left without a name. [nameLabel] and [maxLength] suit it to
+/// other things named and coloured the same way, such as tags.
 Future<({String name, String? color})?> showCategorySheet(
   BuildContext context, {
   required String title,
   String initialName = '',
   String? initialColor,
+  String? nameLabel,
+  int? maxLength,
 }) {
   final name = TextEditingController(text: initialName);
   var color = initialColor;
@@ -194,7 +197,9 @@ Future<({String name, String? color})?> showCategorySheet(
               controller: name,
               autofocus: initialName.isEmpty,
               textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(labelText: context.l10n.categoryName),
+              decoration: InputDecoration(labelText: nameLabel ?? context.l10n.categoryName),
+              maxLength: maxLength,
+              buildCounter: quietCounter,
               onSubmitted: (_) => save(),
             ),
             const SizedBox(height: 16),

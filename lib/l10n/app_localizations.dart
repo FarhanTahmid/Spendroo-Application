@@ -1313,7 +1313,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchTransactions.
   ///
   /// In en, this message translates to:
-  /// **'Search by note, category or amount'**
+  /// **'Search by merchant, note, tag or amount'**
   String get searchTransactions;
 
   /// No description provided for @searchOrCreate.
@@ -7303,6 +7303,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cash in and out are close to last month'**
   String get bizInsightSteady;
+
+  /// No description provided for @merchant.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant / payee'**
+  String get merchant;
+
+  /// No description provided for @party.
+  ///
+  /// In en, this message translates to:
+  /// **'Party'**
+  String get party;
+
+  /// No description provided for @tags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get tags;
+
+  /// No description provided for @tagName.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag name'**
+  String get tagName;
+
+  /// No description provided for @addTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Add tag'**
+  String get addTag;
+
+  /// No description provided for @newTag.
+  ///
+  /// In en, this message translates to:
+  /// **'New tag'**
+  String get newTag;
+
+  /// No description provided for @editTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit tag'**
+  String get editTag;
+
+  /// No description provided for @noTags.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags yet. Put tags on transactions and entries to group them your own way.'**
+  String get noTags;
+
+  /// No description provided for @removeTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String removeTag(String name);
+
+  /// No description provided for @deleteTagConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"? {count, plural, =0{Nothing carries it yet.} =1{It comes off 1 transaction or entry.} other{It comes off {count} transactions and entries.}}'**
+  String deleteTagConfirm(String name, int count);
+
+  /// No description provided for @tagsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Labels for transactions and entries'**
+  String get tagsHint;
+
+  /// No description provided for @searchEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Search entries'**
+  String get searchEntries;
 }
 
 class _AppLocalizationsDelegate

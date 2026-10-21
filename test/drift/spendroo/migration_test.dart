@@ -12,6 +12,7 @@ import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
 import 'generated/schema_v8.dart' as v8;
 import 'generated/schema_v9.dart' as v9;
+import 'generated/schema_v10.dart' as v10;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -310,6 +311,67 @@ void main() {
         final entry = await newDb.select(newDb.entries).getSingle();
         expect((entry.id, entry.title, entry.amountMinor, entry.customValues), ('e1', 'Sale', 5000, '{}'));
         expect(await newDb.select(newDb.entryFields).get(), isEmpty);
+        expect(await newDb.select(newDb.syncCursors).get(), isEmpty);
+      },
+    );
+  });
+
+  // Version 10 adds merchants and tags. Rows already on the phone have neither
+  // and still read as before; the pull starts over to fetch what the server has.
+  test('migration from v9 to v10 keeps rows, with no merchant or tags yet, and pulls them again', () async {
+    await verifier.testWithDataIntegrity(
+      oldVersion: 9,
+      newVersion: 10,
+      createOld: v9.DatabaseAtV9.new,
+      createNew: v10.DatabaseAtV10.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) {
+        batch.insert(
+          oldDb.transactions,
+          const v9.TransactionsData(
+            id: 't1',
+            workspaceId: 'w1',
+            version: 1,
+            serverSeq: 12,
+            createdAt: '2026-10-01T00:00:00Z',
+            updatedAt: '2026-10-01T00:00:00Z',
+            accountId: 'a1',
+            kind: 'expense',
+            amountMinor: -500,
+            currency: 'BDT',
+            occurredOn: '2026-10-01',
+            note: 'Lunch',
+            source: 'manual',
+            splits: '[]',
+          ),
+        );
+        batch.insert(
+          oldDb.entries,
+          const v9.EntriesData(
+            id: 'e1',
+            workspaceId: 'w1',
+            version: 1,
+            serverSeq: 13,
+            createdAt: '2026-10-01T00:00:00Z',
+            updatedAt: '2026-10-01T00:00:00Z',
+            cashbookId: 'b1',
+            entryType: 'cash_out',
+            amountMinor: 900,
+            currency: 'BDT',
+            title: 'Rice',
+            entryDate: '2026-10-01',
+            source: 'manual',
+            customValues: '{}',
+          ),
+        );
+        batch.insert(oldDb.syncCursors, const v9.SyncCursorsData(workspaceId: 'w1', since: 40));
+      },
+      validateItems: (newDb) async {
+        final transaction = await newDb.select(newDb.transactions).getSingle();
+        expect((transaction.note, transaction.merchant, transaction.tagIds), ('Lunch', '', '[]'));
+        final entry = await newDb.select(newDb.entries).getSingle();
+        expect((entry.title, entry.merchant, entry.tagIds), ('Rice', '', '[]'));
+        expect(await newDb.select(newDb.tags).get(), isEmpty);
         expect(await newDb.select(newDb.syncCursors).get(), isEmpty);
       },
     );

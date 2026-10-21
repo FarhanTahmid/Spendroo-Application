@@ -14,6 +14,8 @@ import 'package:spendroo/core/db/local_store.dart';
 import 'package:spendroo/core/sync/sync_engine.dart';
 import 'package:spendroo/features/cashbook/cashbook_repository.dart';
 import 'package:spendroo/features/personal/ledger_repository.dart';
+import 'package:spendroo/features/tags/tag_ids.dart';
+import 'package:spendroo/features/tags/tag_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_support.dart';
@@ -132,4 +134,68 @@ void main() {
     expect(await phone.db.select(phone.db.cashbooks).get(), isEmpty);
     expect(await phone.db.select(phone.db.entries).get(), isEmpty);
   });
+
+  test("a merchant, a party and tags made on one device reach the other, and so do edits", skip: skip, () async {
+    HttpOverrides.global = null;
+    final phone = Device(apiUrl!);
+    final tablet = Device(apiUrl);
+    addTearDown(phone.db.close);
+    addTearDown(tablet.db.close);
+    await phone.logIn(email!, password!);
+    await tablet.logIn(email, password);
+    await phone.engine.sync();
+    await tablet.engine.sync();
+    final personal = await phone.workspace('personal');
+    final cash = (await phone.ledger.watchAccounts(personal.id).first).first.account;
+    final phoneTags = TagRepository(phone.db, phone.store);
+    final tabletTags = TagRepository(tablet.db, tablet.store);
+    final stamp = DateTime.now().microsecondsSinceEpoch;
+
+    // --- the phone makes a tag, a transaction and an entry carrying it
+    final tagId = await phoneTags.addTag(personal.id, 'Trip $stamp', color: '#3B9EE5');
+    final spentId = await phone.ledger.addTransaction(cash,
+        kind: 'expense', amountMinor: 4500, occurredOn: '2026-10-20', note: 'Dinner $stamp',
+        merchant: ' Star  Kabab ', tagIds: [tagId]);
+    final bookId = await phone.books.createCashbook(personal.id, 'Tags till $stamp', 'BDT');
+    final book = (await phone.books.watchCashbook(bookId).first)!.book;
+    final entryId = await phone.books.addEntry(book,
+        entryType: 'cash_out', amountMinor: 900, entryDate: '2026-10-20', title: 'Rice', merchant: 'Rahim Traders',
+        tagIds: [tagId]);
+    await phone.engine.sync();
+    expect(await phone.db.select(phone.db.syncFailures).get(), isEmpty);
+
+    // --- the tablet sees all of it as the phone made it
+    await tablet.engine.sync();
+    final tag = (await tabletTags.watchTags(personal.id).first).firstWhere((t) => t.id == tagId);
+    expect((tag.name, tag.color), ('Trip $stamp', '#3B9EE5'));
+    Future<Transaction> spentOn(Device device) async =>
+        (await device.ledger.watchTransactions(personal.id).first).firstWhere((v) => v.transaction.id == spentId).transaction;
+    var spent = await spentOn(tablet);
+    expect(spent.merchant, 'Star Kabab');
+    expect(decodeTagIds(spent.tagIds), [tagId]);
+    final entry = (await tablet.books.watchEntries(bookId).first).firstWhere((v) => v.entry.id == entryId).entry;
+    expect(entry.merchant, 'Rahim Traders');
+    expect(decodeTagIds(entry.tagIds), [tagId]);
+
+    // --- the tablet edits; the phone sees the edit
+    await tablet.ledger.updateTransaction(spent,
+        amountMinor: 4500, occurredOn: spent.occurredOn, note: spent.note, merchant: 'Star Kabab & Sweets');
+    await tablet.engine.sync();
+    await phone.engine.sync();
+    spent = await spentOn(phone);
+    expect(spent.merchant, 'Star Kabab & Sweets');
+    expect(decodeTagIds(spent.tagIds), isEmpty);
+
+    // --- a tag deleted on one device is gone on the other, and the entry keeps naming nothing live
+    await phoneTags.deleteTag((await phoneTags.watchTags(personal.id).first).firstWhere((t) => t.id == tagId));
+    await phone.engine.sync();
+    await tablet.engine.sync();
+    expect((await tabletTags.watchTags(personal.id).first).where((t) => t.id == tagId), isEmpty);
+
+    // Leave the account as it was
+    await phone.ledger.deleteTransaction(spent);
+    await phone.books.deleteCashbook(book.id);
+    await phone.engine.sync();
+  });
 }
+

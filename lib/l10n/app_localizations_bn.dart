@@ -688,7 +688,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get search => 'খুঁজুন';
 
   @override
-  String get searchTransactions => 'নোট, খাত বা পরিমাণ দিয়ে খুঁজুন';
+  String get searchTransactions => 'দোকান, নোট, ট্যাগ বা পরিমাণ দিয়ে খুঁজুন';
 
   @override
   String get searchOrCreate => 'খুঁজুন বা নতুন নাম লিখুন';
@@ -4307,4 +4307,51 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get bizInsightSteady => 'জমা-খরচ গত মাসের কাছাকাছি';
+
+  @override
+  String get merchant => 'দোকান / প্রাপক';
+
+  @override
+  String get party => 'পার্টি';
+
+  @override
+  String get tags => 'ট্যাগ';
+
+  @override
+  String get tagName => 'ট্যাগের নাম';
+
+  @override
+  String get addTag => 'ট্যাগ দিন';
+
+  @override
+  String get newTag => 'নতুন ট্যাগ';
+
+  @override
+  String get editTag => 'ট্যাগ সম্পাদনা';
+
+  @override
+  String get noTags =>
+      'এখনো কোনো ট্যাগ নেই। নিজের মতো করে সাজাতে লেনদেন ও এন্ট্রিতে ট্যাগ দিন।';
+
+  @override
+  String removeTag(String name) {
+    return '$name সরান';
+  }
+
+  @override
+  String deleteTagConfirm(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি লেনদেন ও এন্ট্রি থেকে এটি সরে যাবে।',
+      zero: 'এখনো কিছুতে এটি দেওয়া নেই।',
+    );
+    return '\"$name\" মুছবেন? $_temp0';
+  }
+
+  @override
+  String get tagsHint => 'লেনদেন ও এন্ট্রির লেবেল';
+
+  @override
+  String get searchEntries => 'এন্ট্রি খুঁজুন';
 }

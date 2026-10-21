@@ -229,7 +229,7 @@
   "retry": "Retry",
 
   "search": "Search",
-  "searchTransactions": "Search by note, category or amount",
+  "searchTransactions": "Search by merchant, note, tag or amount",
   "searchOrCreate": "Search or type a new name",
   "filterAll": "All",
   "noResultsFor": "Nothing matches \"{query}\".",
@@ -1472,5 +1472,20 @@
   "@bizInsightLosingBookMasked": {"placeholders": {"book": {"type": "String"}}},
   "bizInsightQuietMonth": "No entries yet this month",
   "bizInsightEmptyBook": "Add the first entry to see insights here",
-  "bizInsightSteady": "Cash in and out are close to last month"
+  "bizInsightSteady": "Cash in and out are close to last month",
+
+  "merchant": "Merchant / payee",
+  "party": "Party",
+  "tags": "Tags",
+  "tagName": "Tag name",
+  "addTag": "Add tag",
+  "newTag": "New tag",
+  "editTag": "Edit tag",
+  "noTags": "No tags yet. Put tags on transactions and entries to group them your own way.",
+  "removeTag": "Remove {name}",
+  "@removeTag": {"placeholders": {"name": {"type": "String"}}},
+  "deleteTagConfirm": "Delete \"{name}\"? {count, plural, =0{Nothing carries it yet.} =1{It comes off 1 transaction or entry.} other{It comes off {count} transactions and entries.}}",
+  "@deleteTagConfirm": {"placeholders": {"name": {"type": "String"}, "count": {"type": "int"}}},
+  "tagsHint": "Labels for transactions and entries",
+  "searchEntries": "Search entries"
 }

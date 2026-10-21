@@ -7,6 +7,8 @@ import 'package:spendroo/core/sync/sync_engine.dart';
 import 'package:spendroo/features/cashbook/cashbook_repository.dart';
 import 'package:spendroo/features/personal/allocations.dart';
 import 'package:spendroo/features/personal/ledger_repository.dart';
+import 'package:spendroo/features/tags/tag_ids.dart';
+import 'package:spendroo/features/tags/tag_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -181,6 +183,53 @@ void main() {
     expect(spent.parts, [const SplitPart(foodId, 300, note: 'Lunch'), const SplitPart(null, 200)]);
     final month = await ledger.watchMonth(shopId, DateTime(2026, 10), 'BDT').first;
     expect(month.byCategory.map((c) => (c.name, c.amountMinor)).toList(), [('Food', 300), (null, 200)]);
+  });
+
+  test("tags and a transaction's merchant are pulled as sent, and pushed back as edited", () async {
+    const accountId = '00000000-0000-0000-0000-0000000000d1';
+    const tripId = '00000000-0000-0000-0000-0000000000d2';
+    const spentId = '00000000-0000-0000-0000-0000000000d3';
+    final pushed = <Map<String, dynamic>>[];
+    respond = (request) async => switch (request.url.path) {
+          '/api/v1/workspaces/' => json(workspaces('personal')),
+          '/api/v1/sync/pull/' => json({
+              ...emptyPull(),
+              'next_since': 3,
+              'changes': {
+                'tags': [serverRow(tripId, 1, {'name': 'Cox trip', 'color': '#3B9EE5'})],
+                'accounts': [
+                  serverRow(accountId, 2, {
+                    'name': 'Cash', 'kind': 'cash', 'currency': 'BDT', 'opening_balance_minor': 0, 'is_archived': false,
+                  }),
+                ],
+                'transactions': [
+                  serverRow(spentId, 3, {
+                    'account_id': accountId, 'category_id': null, 'kind': 'expense', 'amount_minor': -500,
+                    'currency': 'BDT', 'transfer_group_id': null, 'occurred_on': '2026-10-06', 'note': '',
+                    'merchant': 'Star Kabab', 'tag_ids': [tripId], 'source': 'manual', 'splits': [],
+                  }),
+                ],
+              },
+            }),
+          '/api/v1/sync/push/' => () {
+              final mutations = (jsonDecode(request.body)['mutations'] as List).cast<Map<String, dynamic>>();
+              pushed.addAll(mutations);
+              return json({'results': [for (final m in mutations) {'id': m['id'], 'status': 'applied', 'row': null}]});
+            }(),
+          _ => json({}, 404),
+        };
+
+    await engine().sync();
+    final tag = (await TagRepository(db, store).watchTags(shopId).first).single;
+    expect((tag.id, tag.name, tag.color), (tripId, 'Cox trip', '#3B9EE5'));
+    final ledger = LedgerRepository(db, store);
+    final spent = (await ledger.watchTransactions(shopId).first).single.transaction;
+    expect(spent.merchant, 'Star Kabab');
+    expect(decodeTagIds(spent.tagIds), [tripId]);
+
+    await ledger.updateTransaction(spent, amountMinor: 500, occurredOn: spent.occurredOn, merchant: 'Star Kabab & Sweets');
+    await engine().sync();
+    expect(pushed.single['data'], {'merchant': 'Star Kabab & Sweets', 'tag_ids': []});
   });
 
   test("a book's fields and an entry's values are pulled, and leave with the book", () async {

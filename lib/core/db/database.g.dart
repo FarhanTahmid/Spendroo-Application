@@ -411,6 +411,567 @@ class WorkspacesCompanion extends UpdateCompanion<Workspace> {
   }
 }
 
+class $WorkspaceTagsTable extends WorkspaceTags
+    with TableInfo<$WorkspaceTagsTable, Tag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkspaceTagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _serverSeqMeta = const VerificationMeta(
+    'serverSeq',
+  );
+  @override
+  late final GeneratedColumn<int> serverSeq = GeneratedColumn<int>(
+    'server_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<String> updatedAt = GeneratedColumn<String>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<String> deletedAt = GeneratedColumn<String>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+    'color',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    name,
+    color,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Tag> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('server_seq')) {
+      context.handle(
+        _serverSeqMeta,
+        serverSeq.isAcceptableOrUnknown(data['server_seq']!, _serverSeqMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Tag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Tag(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      serverSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_seq'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color'],
+      ),
+    );
+  }
+
+  @override
+  $WorkspaceTagsTable createAlias(String alias) {
+    return $WorkspaceTagsTable(attachedDatabase, alias);
+  }
+}
+
+class Tag extends DataClass implements Insertable<Tag> {
+  final String id;
+  final String workspaceId;
+  final int version;
+  final int serverSeq;
+  final String createdAt;
+  final String updatedAt;
+  final String? deletedAt;
+  final String name;
+
+  /// '#RRGGBB' the user chose; null leaves the colour to the app (categoryFill).
+  final String? color;
+  const Tag({
+    required this.id,
+    required this.workspaceId,
+    required this.version,
+    required this.serverSeq,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.name,
+    this.color,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['version'] = Variable<int>(version);
+    map['server_seq'] = Variable<int>(serverSeq);
+    map['created_at'] = Variable<String>(createdAt);
+    map['updated_at'] = Variable<String>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<String>(deletedAt);
+    }
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || color != null) {
+      map['color'] = Variable<String>(color);
+    }
+    return map;
+  }
+
+  WorkspaceTagsCompanion toCompanion(bool nullToAbsent) {
+    return WorkspaceTagsCompanion(
+      id: Value(id),
+      workspaceId: Value(workspaceId),
+      version: Value(version),
+      serverSeq: Value(serverSeq),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      name: Value(name),
+      color: color == null && nullToAbsent
+          ? const Value.absent()
+          : Value(color),
+    );
+  }
+
+  factory Tag.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Tag(
+      id: serializer.fromJson<String>(json['id']),
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      version: serializer.fromJson<int>(json['version']),
+      serverSeq: serializer.fromJson<int>(json['serverSeq']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      deletedAt: serializer.fromJson<String?>(json['deletedAt']),
+      name: serializer.fromJson<String>(json['name']),
+      color: serializer.fromJson<String?>(json['color']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'version': serializer.toJson<int>(version),
+      'serverSeq': serializer.toJson<int>(serverSeq),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
+      'deletedAt': serializer.toJson<String?>(deletedAt),
+      'name': serializer.toJson<String>(name),
+      'color': serializer.toJson<String?>(color),
+    };
+  }
+
+  Tag copyWith({
+    String? id,
+    String? workspaceId,
+    int? version,
+    int? serverSeq,
+    String? createdAt,
+    String? updatedAt,
+    Value<String?> deletedAt = const Value.absent(),
+    String? name,
+    Value<String?> color = const Value.absent(),
+  }) => Tag(
+    id: id ?? this.id,
+    workspaceId: workspaceId ?? this.workspaceId,
+    version: version ?? this.version,
+    serverSeq: serverSeq ?? this.serverSeq,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    name: name ?? this.name,
+    color: color.present ? color.value : this.color,
+  );
+  Tag copyWithCompanion(WorkspaceTagsCompanion data) {
+    return Tag(
+      id: data.id.present ? data.id.value : this.id,
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      version: data.version.present ? data.version.value : this.version,
+      serverSeq: data.serverSeq.present ? data.serverSeq.value : this.serverSeq,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      name: data.name.present ? data.name.value : this.name,
+      color: data.color.present ? data.color.value : this.color,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Tag(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('name: $name, ')
+          ..write('color: $color')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    name,
+    color,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Tag &&
+          other.id == this.id &&
+          other.workspaceId == this.workspaceId &&
+          other.version == this.version &&
+          other.serverSeq == this.serverSeq &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.name == this.name &&
+          other.color == this.color);
+}
+
+class WorkspaceTagsCompanion extends UpdateCompanion<Tag> {
+  final Value<String> id;
+  final Value<String> workspaceId;
+  final Value<int> version;
+  final Value<int> serverSeq;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
+  final Value<String?> deletedAt;
+  final Value<String> name;
+  final Value<String?> color;
+  final Value<int> rowid;
+  const WorkspaceTagsCompanion({
+    this.id = const Value.absent(),
+    this.workspaceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.name = const Value.absent(),
+    this.color = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WorkspaceTagsCompanion.insert({
+    required String id,
+    required String workspaceId,
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    required String createdAt,
+    required String updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String name,
+    this.color = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workspaceId = Value(workspaceId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       name = Value(name);
+  static Insertable<Tag> custom({
+    Expression<String>? id,
+    Expression<String>? workspaceId,
+    Expression<int>? version,
+    Expression<int>? serverSeq,
+    Expression<String>? createdAt,
+    Expression<String>? updatedAt,
+    Expression<String>? deletedAt,
+    Expression<String>? name,
+    Expression<String>? color,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (version != null) 'version': version,
+      if (serverSeq != null) 'server_seq': serverSeq,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (name != null) 'name': name,
+      if (color != null) 'color': color,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WorkspaceTagsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workspaceId,
+    Value<int>? version,
+    Value<int>? serverSeq,
+    Value<String>? createdAt,
+    Value<String>? updatedAt,
+    Value<String?>? deletedAt,
+    Value<String>? name,
+    Value<String?>? color,
+    Value<int>? rowid,
+  }) {
+    return WorkspaceTagsCompanion(
+      id: id ?? this.id,
+      workspaceId: workspaceId ?? this.workspaceId,
+      version: version ?? this.version,
+      serverSeq: serverSeq ?? this.serverSeq,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (serverSeq.present) {
+      map['server_seq'] = Variable<int>(serverSeq.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<String>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<String>(deletedAt.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkspaceTagsCompanion(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $CashbooksTable extends Cashbooks
     with TableInfo<$CashbooksTable, Cashbook> {
   @override
@@ -3294,6 +3855,28 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _merchantMeta = const VerificationMeta(
+    'merchant',
+  );
+  @override
+  late final GeneratedColumn<String> merchant = GeneratedColumn<String>(
+    'merchant',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _tagIdsMeta = const VerificationMeta('tagIds');
+  @override
+  late final GeneratedColumn<String> tagIds = GeneratedColumn<String>(
+    'tag_ids',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
   static const VerificationMeta _entryDateMeta = const VerificationMeta(
     'entryDate',
   );
@@ -3355,6 +3938,8 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
     currency,
     title,
     remarks,
+    merchant,
+    tagIds,
     entryDate,
     source,
     createdById,
@@ -3484,6 +4069,18 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
         remarks.isAcceptableOrUnknown(data['remarks']!, _remarksMeta),
       );
     }
+    if (data.containsKey('merchant')) {
+      context.handle(
+        _merchantMeta,
+        merchant.isAcceptableOrUnknown(data['merchant']!, _merchantMeta),
+      );
+    }
+    if (data.containsKey('tag_ids')) {
+      context.handle(
+        _tagIdsMeta,
+        tagIds.isAcceptableOrUnknown(data['tag_ids']!, _tagIdsMeta),
+      );
+    }
     if (data.containsKey('entry_date')) {
       context.handle(
         _entryDateMeta,
@@ -3585,6 +4182,14 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
         DriftSqlType.string,
         data['${effectivePrefix}remarks'],
       ),
+      merchant: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}merchant'],
+      )!,
+      tagIds: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tag_ids'],
+      )!,
       entryDate: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}entry_date'],
@@ -3626,6 +4231,12 @@ class Entry extends DataClass implements Insertable<Entry> {
   final String currency;
   final String? title;
   final String? remarks;
+
+  /// The party paid or paid by; '' when not given (features/tags/merchants.dart).
+  final String merchant;
+
+  /// JSON list of the workspace's tag ids (features/tags/tag_ids.dart).
+  final String tagIds;
   final String entryDate;
   final String source;
   final String? createdById;
@@ -3648,6 +4259,8 @@ class Entry extends DataClass implements Insertable<Entry> {
     required this.currency,
     this.title,
     this.remarks,
+    required this.merchant,
+    required this.tagIds,
     required this.entryDate,
     required this.source,
     this.createdById,
@@ -3681,6 +4294,8 @@ class Entry extends DataClass implements Insertable<Entry> {
     if (!nullToAbsent || remarks != null) {
       map['remarks'] = Variable<String>(remarks);
     }
+    map['merchant'] = Variable<String>(merchant);
+    map['tag_ids'] = Variable<String>(tagIds);
     map['entry_date'] = Variable<String>(entryDate);
     map['source'] = Variable<String>(source);
     if (!nullToAbsent || createdById != null) {
@@ -3717,6 +4332,8 @@ class Entry extends DataClass implements Insertable<Entry> {
       remarks: remarks == null && nullToAbsent
           ? const Value.absent()
           : Value(remarks),
+      merchant: Value(merchant),
+      tagIds: Value(tagIds),
       entryDate: Value(entryDate),
       source: Value(source),
       createdById: createdById == null && nullToAbsent
@@ -3747,6 +4364,8 @@ class Entry extends DataClass implements Insertable<Entry> {
       currency: serializer.fromJson<String>(json['currency']),
       title: serializer.fromJson<String?>(json['title']),
       remarks: serializer.fromJson<String?>(json['remarks']),
+      merchant: serializer.fromJson<String>(json['merchant']),
+      tagIds: serializer.fromJson<String>(json['tagIds']),
       entryDate: serializer.fromJson<String>(json['entryDate']),
       source: serializer.fromJson<String>(json['source']),
       createdById: serializer.fromJson<String?>(json['createdById']),
@@ -3772,6 +4391,8 @@ class Entry extends DataClass implements Insertable<Entry> {
       'currency': serializer.toJson<String>(currency),
       'title': serializer.toJson<String?>(title),
       'remarks': serializer.toJson<String?>(remarks),
+      'merchant': serializer.toJson<String>(merchant),
+      'tagIds': serializer.toJson<String>(tagIds),
       'entryDate': serializer.toJson<String>(entryDate),
       'source': serializer.toJson<String>(source),
       'createdById': serializer.toJson<String?>(createdById),
@@ -3795,6 +4416,8 @@ class Entry extends DataClass implements Insertable<Entry> {
     String? currency,
     Value<String?> title = const Value.absent(),
     Value<String?> remarks = const Value.absent(),
+    String? merchant,
+    String? tagIds,
     String? entryDate,
     String? source,
     Value<String?> createdById = const Value.absent(),
@@ -3817,6 +4440,8 @@ class Entry extends DataClass implements Insertable<Entry> {
     currency: currency ?? this.currency,
     title: title.present ? title.value : this.title,
     remarks: remarks.present ? remarks.value : this.remarks,
+    merchant: merchant ?? this.merchant,
+    tagIds: tagIds ?? this.tagIds,
     entryDate: entryDate ?? this.entryDate,
     source: source ?? this.source,
     createdById: createdById.present ? createdById.value : this.createdById,
@@ -3849,6 +4474,8 @@ class Entry extends DataClass implements Insertable<Entry> {
       currency: data.currency.present ? data.currency.value : this.currency,
       title: data.title.present ? data.title.value : this.title,
       remarks: data.remarks.present ? data.remarks.value : this.remarks,
+      merchant: data.merchant.present ? data.merchant.value : this.merchant,
+      tagIds: data.tagIds.present ? data.tagIds.value : this.tagIds,
       entryDate: data.entryDate.present ? data.entryDate.value : this.entryDate,
       source: data.source.present ? data.source.value : this.source,
       createdById: data.createdById.present
@@ -3878,6 +4505,8 @@ class Entry extends DataClass implements Insertable<Entry> {
           ..write('currency: $currency, ')
           ..write('title: $title, ')
           ..write('remarks: $remarks, ')
+          ..write('merchant: $merchant, ')
+          ..write('tagIds: $tagIds, ')
           ..write('entryDate: $entryDate, ')
           ..write('source: $source, ')
           ..write('createdById: $createdById, ')
@@ -3887,7 +4516,7 @@ class Entry extends DataClass implements Insertable<Entry> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     workspaceId,
     version,
@@ -3903,11 +4532,13 @@ class Entry extends DataClass implements Insertable<Entry> {
     currency,
     title,
     remarks,
+    merchant,
+    tagIds,
     entryDate,
     source,
     createdById,
     customValues,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3927,6 +4558,8 @@ class Entry extends DataClass implements Insertable<Entry> {
           other.currency == this.currency &&
           other.title == this.title &&
           other.remarks == this.remarks &&
+          other.merchant == this.merchant &&
+          other.tagIds == this.tagIds &&
           other.entryDate == this.entryDate &&
           other.source == this.source &&
           other.createdById == this.createdById &&
@@ -3949,6 +4582,8 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
   final Value<String> currency;
   final Value<String?> title;
   final Value<String?> remarks;
+  final Value<String> merchant;
+  final Value<String> tagIds;
   final Value<String> entryDate;
   final Value<String> source;
   final Value<String?> createdById;
@@ -3970,6 +4605,8 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     this.currency = const Value.absent(),
     this.title = const Value.absent(),
     this.remarks = const Value.absent(),
+    this.merchant = const Value.absent(),
+    this.tagIds = const Value.absent(),
     this.entryDate = const Value.absent(),
     this.source = const Value.absent(),
     this.createdById = const Value.absent(),
@@ -3992,6 +4629,8 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     required String currency,
     this.title = const Value.absent(),
     this.remarks = const Value.absent(),
+    this.merchant = const Value.absent(),
+    this.tagIds = const Value.absent(),
     required String entryDate,
     this.source = const Value.absent(),
     this.createdById = const Value.absent(),
@@ -4022,6 +4661,8 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     Expression<String>? currency,
     Expression<String>? title,
     Expression<String>? remarks,
+    Expression<String>? merchant,
+    Expression<String>? tagIds,
     Expression<String>? entryDate,
     Expression<String>? source,
     Expression<String>? createdById,
@@ -4044,6 +4685,8 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
       if (currency != null) 'currency': currency,
       if (title != null) 'title': title,
       if (remarks != null) 'remarks': remarks,
+      if (merchant != null) 'merchant': merchant,
+      if (tagIds != null) 'tag_ids': tagIds,
       if (entryDate != null) 'entry_date': entryDate,
       if (source != null) 'source': source,
       if (createdById != null) 'created_by_id': createdById,
@@ -4068,6 +4711,8 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     Value<String>? currency,
     Value<String?>? title,
     Value<String?>? remarks,
+    Value<String>? merchant,
+    Value<String>? tagIds,
     Value<String>? entryDate,
     Value<String>? source,
     Value<String?>? createdById,
@@ -4090,6 +4735,8 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
       currency: currency ?? this.currency,
       title: title ?? this.title,
       remarks: remarks ?? this.remarks,
+      merchant: merchant ?? this.merchant,
+      tagIds: tagIds ?? this.tagIds,
       entryDate: entryDate ?? this.entryDate,
       source: source ?? this.source,
       createdById: createdById ?? this.createdById,
@@ -4146,6 +4793,12 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     if (remarks.present) {
       map['remarks'] = Variable<String>(remarks.value);
     }
+    if (merchant.present) {
+      map['merchant'] = Variable<String>(merchant.value);
+    }
+    if (tagIds.present) {
+      map['tag_ids'] = Variable<String>(tagIds.value);
+    }
     if (entryDate.present) {
       map['entry_date'] = Variable<String>(entryDate.value);
     }
@@ -4182,6 +4835,8 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
           ..write('currency: $currency, ')
           ..write('title: $title, ')
           ..write('remarks: $remarks, ')
+          ..write('merchant: $merchant, ')
+          ..write('tagIds: $tagIds, ')
           ..write('entryDate: $entryDate, ')
           ..write('source: $source, ')
           ..write('createdById: $createdById, ')
@@ -7251,6 +7906,28 @@ class $TransactionsTable extends Transactions
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _merchantMeta = const VerificationMeta(
+    'merchant',
+  );
+  @override
+  late final GeneratedColumn<String> merchant = GeneratedColumn<String>(
+    'merchant',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _tagIdsMeta = const VerificationMeta('tagIds');
+  @override
+  late final GeneratedColumn<String> tagIds = GeneratedColumn<String>(
+    'tag_ids',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
   static const VerificationMeta _sourceMeta = const VerificationMeta('source');
   @override
   late final GeneratedColumn<String> source = GeneratedColumn<String>(
@@ -7299,6 +7976,8 @@ class $TransactionsTable extends Transactions
     transferGroupId,
     occurredOn,
     note,
+    merchant,
+    tagIds,
     source,
     splits,
     occurrenceId,
@@ -7429,6 +8108,18 @@ class $TransactionsTable extends Transactions
         note.isAcceptableOrUnknown(data['note']!, _noteMeta),
       );
     }
+    if (data.containsKey('merchant')) {
+      context.handle(
+        _merchantMeta,
+        merchant.isAcceptableOrUnknown(data['merchant']!, _merchantMeta),
+      );
+    }
+    if (data.containsKey('tag_ids')) {
+      context.handle(
+        _tagIdsMeta,
+        tagIds.isAcceptableOrUnknown(data['tag_ids']!, _tagIdsMeta),
+      );
+    }
     if (data.containsKey('source')) {
       context.handle(
         _sourceMeta,
@@ -7519,6 +8210,14 @@ class $TransactionsTable extends Transactions
         DriftSqlType.string,
         data['${effectivePrefix}note'],
       )!,
+      merchant: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}merchant'],
+      )!,
+      tagIds: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tag_ids'],
+      )!,
       source: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}source'],
@@ -7556,6 +8255,12 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final String? transferGroupId;
   final String occurredOn;
   final String note;
+
+  /// Who was paid, or who paid; '' when not given (features/tags/merchants.dart).
+  final String merchant;
+
+  /// JSON list of the workspace's tag ids (features/tags/tag_ids.dart).
+  final String tagIds;
   final String source;
 
   /// Filed under several categories at once: a JSON list of parts that add up
@@ -7580,6 +8285,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     this.transferGroupId,
     required this.occurredOn,
     required this.note,
+    required this.merchant,
+    required this.tagIds,
     required this.source,
     required this.splits,
     this.occurrenceId,
@@ -7608,6 +8315,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     }
     map['occurred_on'] = Variable<String>(occurredOn);
     map['note'] = Variable<String>(note);
+    map['merchant'] = Variable<String>(merchant);
+    map['tag_ids'] = Variable<String>(tagIds);
     map['source'] = Variable<String>(source);
     map['splits'] = Variable<String>(splits);
     if (!nullToAbsent || occurrenceId != null) {
@@ -7639,6 +8348,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           : Value(transferGroupId),
       occurredOn: Value(occurredOn),
       note: Value(note),
+      merchant: Value(merchant),
+      tagIds: Value(tagIds),
       source: Value(source),
       splits: Value(splits),
       occurrenceId: occurrenceId == null && nullToAbsent
@@ -7668,6 +8379,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       transferGroupId: serializer.fromJson<String?>(json['transferGroupId']),
       occurredOn: serializer.fromJson<String>(json['occurredOn']),
       note: serializer.fromJson<String>(json['note']),
+      merchant: serializer.fromJson<String>(json['merchant']),
+      tagIds: serializer.fromJson<String>(json['tagIds']),
       source: serializer.fromJson<String>(json['source']),
       splits: serializer.fromJson<String>(json['splits']),
       occurrenceId: serializer.fromJson<String?>(json['occurrenceId']),
@@ -7692,6 +8405,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       'transferGroupId': serializer.toJson<String?>(transferGroupId),
       'occurredOn': serializer.toJson<String>(occurredOn),
       'note': serializer.toJson<String>(note),
+      'merchant': serializer.toJson<String>(merchant),
+      'tagIds': serializer.toJson<String>(tagIds),
       'source': serializer.toJson<String>(source),
       'splits': serializer.toJson<String>(splits),
       'occurrenceId': serializer.toJson<String?>(occurrenceId),
@@ -7714,6 +8429,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     Value<String?> transferGroupId = const Value.absent(),
     String? occurredOn,
     String? note,
+    String? merchant,
+    String? tagIds,
     String? source,
     String? splits,
     Value<String?> occurrenceId = const Value.absent(),
@@ -7735,6 +8452,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
         : this.transferGroupId,
     occurredOn: occurredOn ?? this.occurredOn,
     note: note ?? this.note,
+    merchant: merchant ?? this.merchant,
+    tagIds: tagIds ?? this.tagIds,
     source: source ?? this.source,
     splits: splits ?? this.splits,
     occurrenceId: occurrenceId.present ? occurrenceId.value : this.occurrenceId,
@@ -7766,6 +8485,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ? data.occurredOn.value
           : this.occurredOn,
       note: data.note.present ? data.note.value : this.note,
+      merchant: data.merchant.present ? data.merchant.value : this.merchant,
+      tagIds: data.tagIds.present ? data.tagIds.value : this.tagIds,
       source: data.source.present ? data.source.value : this.source,
       splits: data.splits.present ? data.splits.value : this.splits,
       occurrenceId: data.occurrenceId.present
@@ -7792,6 +8513,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           ..write('transferGroupId: $transferGroupId, ')
           ..write('occurredOn: $occurredOn, ')
           ..write('note: $note, ')
+          ..write('merchant: $merchant, ')
+          ..write('tagIds: $tagIds, ')
           ..write('source: $source, ')
           ..write('splits: $splits, ')
           ..write('occurrenceId: $occurrenceId')
@@ -7816,6 +8539,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     transferGroupId,
     occurredOn,
     note,
+    merchant,
+    tagIds,
     source,
     splits,
     occurrenceId,
@@ -7839,6 +8564,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.transferGroupId == this.transferGroupId &&
           other.occurredOn == this.occurredOn &&
           other.note == this.note &&
+          other.merchant == this.merchant &&
+          other.tagIds == this.tagIds &&
           other.source == this.source &&
           other.splits == this.splits &&
           other.occurrenceId == this.occurrenceId);
@@ -7860,6 +8587,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<String?> transferGroupId;
   final Value<String> occurredOn;
   final Value<String> note;
+  final Value<String> merchant;
+  final Value<String> tagIds;
   final Value<String> source;
   final Value<String> splits;
   final Value<String?> occurrenceId;
@@ -7880,6 +8609,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.transferGroupId = const Value.absent(),
     this.occurredOn = const Value.absent(),
     this.note = const Value.absent(),
+    this.merchant = const Value.absent(),
+    this.tagIds = const Value.absent(),
     this.source = const Value.absent(),
     this.splits = const Value.absent(),
     this.occurrenceId = const Value.absent(),
@@ -7901,6 +8632,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     this.transferGroupId = const Value.absent(),
     required String occurredOn,
     this.note = const Value.absent(),
+    this.merchant = const Value.absent(),
+    this.tagIds = const Value.absent(),
     this.source = const Value.absent(),
     this.splits = const Value.absent(),
     this.occurrenceId = const Value.absent(),
@@ -7930,6 +8663,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Expression<String>? transferGroupId,
     Expression<String>? occurredOn,
     Expression<String>? note,
+    Expression<String>? merchant,
+    Expression<String>? tagIds,
     Expression<String>? source,
     Expression<String>? splits,
     Expression<String>? occurrenceId,
@@ -7951,6 +8686,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       if (transferGroupId != null) 'transfer_group_id': transferGroupId,
       if (occurredOn != null) 'occurred_on': occurredOn,
       if (note != null) 'note': note,
+      if (merchant != null) 'merchant': merchant,
+      if (tagIds != null) 'tag_ids': tagIds,
       if (source != null) 'source': source,
       if (splits != null) 'splits': splits,
       if (occurrenceId != null) 'occurrence_id': occurrenceId,
@@ -7974,6 +8711,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     Value<String?>? transferGroupId,
     Value<String>? occurredOn,
     Value<String>? note,
+    Value<String>? merchant,
+    Value<String>? tagIds,
     Value<String>? source,
     Value<String>? splits,
     Value<String?>? occurrenceId,
@@ -7995,6 +8734,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
       transferGroupId: transferGroupId ?? this.transferGroupId,
       occurredOn: occurredOn ?? this.occurredOn,
       note: note ?? this.note,
+      merchant: merchant ?? this.merchant,
+      tagIds: tagIds ?? this.tagIds,
       source: source ?? this.source,
       splits: splits ?? this.splits,
       occurrenceId: occurrenceId ?? this.occurrenceId,
@@ -8050,6 +8791,12 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
+    if (merchant.present) {
+      map['merchant'] = Variable<String>(merchant.value);
+    }
+    if (tagIds.present) {
+      map['tag_ids'] = Variable<String>(tagIds.value);
+    }
     if (source.present) {
       map['source'] = Variable<String>(source.value);
     }
@@ -8083,6 +8830,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
           ..write('transferGroupId: $transferGroupId, ')
           ..write('occurredOn: $occurredOn, ')
           ..write('note: $note, ')
+          ..write('merchant: $merchant, ')
+          ..write('tagIds: $tagIds, ')
           ..write('source: $source, ')
           ..write('splits: $splits, ')
           ..write('occurrenceId: $occurrenceId, ')
@@ -14984,6 +15733,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $WorkspacesTable workspaces = $WorkspacesTable(this);
+  late final $WorkspaceTagsTable workspaceTags = $WorkspaceTagsTable(this);
   late final $CashbooksTable cashbooks = $CashbooksTable(this);
   late final $EntryCategoriesTable entryCategories = $EntryCategoriesTable(
     this,
@@ -15039,6 +15789,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     workspaces,
+    workspaceTags,
     cashbooks,
     entryCategories,
     paymentMethods,
@@ -15284,6 +16035,278 @@ typedef $$WorkspacesTableProcessedTableManager =
       $$WorkspacesTableUpdateCompanionBuilder,
       (Workspace, BaseReferences<_$AppDatabase, $WorkspacesTable, Workspace>),
       Workspace,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkspaceTagsTableCreateCompanionBuilder =
+    WorkspaceTagsCompanion Function({
+      required String id,
+      required String workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      required String createdAt,
+      required String updatedAt,
+      Value<String?> deletedAt,
+      required String name,
+      Value<String?> color,
+      Value<int> rowid,
+    });
+typedef $$WorkspaceTagsTableUpdateCompanionBuilder =
+    WorkspaceTagsCompanion Function({
+      Value<String> id,
+      Value<String> workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      Value<String> createdAt,
+      Value<String> updatedAt,
+      Value<String?> deletedAt,
+      Value<String> name,
+      Value<String?> color,
+      Value<int> rowid,
+    });
+
+class $$WorkspaceTagsTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkspaceTagsTable> {
+  $$WorkspaceTagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkspaceTagsTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkspaceTagsTable> {
+  $$WorkspaceTagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkspaceTagsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkspaceTagsTable> {
+  $$WorkspaceTagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<int> get serverSeq =>
+      $composableBuilder(column: $table.serverSeq, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+}
+
+class $$WorkspaceTagsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkspaceTagsTable,
+          Tag,
+          $$WorkspaceTagsTableFilterComposer,
+          $$WorkspaceTagsTableOrderingComposer,
+          $$WorkspaceTagsTableAnnotationComposer,
+          $$WorkspaceTagsTableCreateCompanionBuilder,
+          $$WorkspaceTagsTableUpdateCompanionBuilder,
+          (Tag, BaseReferences<_$AppDatabase, $WorkspaceTagsTable, Tag>),
+          Tag,
+          PrefetchHooks Function()
+        > {
+  $$WorkspaceTagsTableTableManager(_$AppDatabase db, $WorkspaceTagsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkspaceTagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkspaceTagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkspaceTagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workspaceId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> updatedAt = const Value.absent(),
+                Value<String?> deletedAt = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> color = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkspaceTagsCompanion(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                name: name,
+                color: color,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workspaceId,
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                required String createdAt,
+                required String updatedAt,
+                Value<String?> deletedAt = const Value.absent(),
+                required String name,
+                Value<String?> color = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkspaceTagsCompanion.insert(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                name: name,
+                color: color,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkspaceTagsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkspaceTagsTable,
+      Tag,
+      $$WorkspaceTagsTableFilterComposer,
+      $$WorkspaceTagsTableOrderingComposer,
+      $$WorkspaceTagsTableAnnotationComposer,
+      $$WorkspaceTagsTableCreateCompanionBuilder,
+      $$WorkspaceTagsTableUpdateCompanionBuilder,
+      (Tag, BaseReferences<_$AppDatabase, $WorkspaceTagsTable, Tag>),
+      Tag,
       PrefetchHooks Function()
     >;
 typedef $$CashbooksTableCreateCompanionBuilder =
@@ -16600,6 +17623,8 @@ typedef $$EntriesTableCreateCompanionBuilder =
       required String currency,
       Value<String?> title,
       Value<String?> remarks,
+      Value<String> merchant,
+      Value<String> tagIds,
       required String entryDate,
       Value<String> source,
       Value<String?> createdById,
@@ -16623,6 +17648,8 @@ typedef $$EntriesTableUpdateCompanionBuilder =
       Value<String> currency,
       Value<String?> title,
       Value<String?> remarks,
+      Value<String> merchant,
+      Value<String> tagIds,
       Value<String> entryDate,
       Value<String> source,
       Value<String?> createdById,
@@ -16711,6 +17738,16 @@ class $$EntriesTableFilterComposer
 
   ColumnFilters<String> get remarks => $composableBuilder(
     column: $table.remarks,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get merchant => $composableBuilder(
+    column: $table.merchant,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tagIds => $composableBuilder(
+    column: $table.tagIds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -16819,6 +17856,16 @@ class $$EntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get merchant => $composableBuilder(
+    column: $table.merchant,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tagIds => $composableBuilder(
+    column: $table.tagIds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get entryDate => $composableBuilder(
     column: $table.entryDate,
     builder: (column) => ColumnOrderings(column),
@@ -16904,6 +17951,12 @@ class $$EntriesTableAnnotationComposer
   GeneratedColumn<String> get remarks =>
       $composableBuilder(column: $table.remarks, builder: (column) => column);
 
+  GeneratedColumn<String> get merchant =>
+      $composableBuilder(column: $table.merchant, builder: (column) => column);
+
+  GeneratedColumn<String> get tagIds =>
+      $composableBuilder(column: $table.tagIds, builder: (column) => column);
+
   GeneratedColumn<String> get entryDate =>
       $composableBuilder(column: $table.entryDate, builder: (column) => column);
 
@@ -16964,6 +18017,8 @@ class $$EntriesTableTableManager
                 Value<String> currency = const Value.absent(),
                 Value<String?> title = const Value.absent(),
                 Value<String?> remarks = const Value.absent(),
+                Value<String> merchant = const Value.absent(),
+                Value<String> tagIds = const Value.absent(),
                 Value<String> entryDate = const Value.absent(),
                 Value<String> source = const Value.absent(),
                 Value<String?> createdById = const Value.absent(),
@@ -16985,6 +18040,8 @@ class $$EntriesTableTableManager
                 currency: currency,
                 title: title,
                 remarks: remarks,
+                merchant: merchant,
+                tagIds: tagIds,
                 entryDate: entryDate,
                 source: source,
                 createdById: createdById,
@@ -17008,6 +18065,8 @@ class $$EntriesTableTableManager
                 required String currency,
                 Value<String?> title = const Value.absent(),
                 Value<String?> remarks = const Value.absent(),
+                Value<String> merchant = const Value.absent(),
+                Value<String> tagIds = const Value.absent(),
                 required String entryDate,
                 Value<String> source = const Value.absent(),
                 Value<String?> createdById = const Value.absent(),
@@ -17029,6 +18088,8 @@ class $$EntriesTableTableManager
                 currency: currency,
                 title: title,
                 remarks: remarks,
+                merchant: merchant,
+                tagIds: tagIds,
                 entryDate: entryDate,
                 source: source,
                 createdById: createdById,
@@ -18438,6 +19499,8 @@ typedef $$TransactionsTableCreateCompanionBuilder =
       Value<String?> transferGroupId,
       required String occurredOn,
       Value<String> note,
+      Value<String> merchant,
+      Value<String> tagIds,
       Value<String> source,
       Value<String> splits,
       Value<String?> occurrenceId,
@@ -18460,6 +19523,8 @@ typedef $$TransactionsTableUpdateCompanionBuilder =
       Value<String?> transferGroupId,
       Value<String> occurredOn,
       Value<String> note,
+      Value<String> merchant,
+      Value<String> tagIds,
       Value<String> source,
       Value<String> splits,
       Value<String?> occurrenceId,
@@ -18547,6 +19612,16 @@ class $$TransactionsTableFilterComposer
 
   ColumnFilters<String> get note => $composableBuilder(
     column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get merchant => $composableBuilder(
+    column: $table.merchant,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tagIds => $composableBuilder(
+    column: $table.tagIds,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -18650,6 +19725,16 @@ class $$TransactionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get merchant => $composableBuilder(
+    column: $table.merchant,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tagIds => $composableBuilder(
+    column: $table.tagIds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get source => $composableBuilder(
     column: $table.source,
     builder: (column) => ColumnOrderings(column),
@@ -18730,6 +19815,12 @@ class $$TransactionsTableAnnotationComposer
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
 
+  GeneratedColumn<String> get merchant =>
+      $composableBuilder(column: $table.merchant, builder: (column) => column);
+
+  GeneratedColumn<String> get tagIds =>
+      $composableBuilder(column: $table.tagIds, builder: (column) => column);
+
   GeneratedColumn<String> get source =>
       $composableBuilder(column: $table.source, builder: (column) => column);
 
@@ -18788,6 +19879,8 @@ class $$TransactionsTableTableManager
                 Value<String?> transferGroupId = const Value.absent(),
                 Value<String> occurredOn = const Value.absent(),
                 Value<String> note = const Value.absent(),
+                Value<String> merchant = const Value.absent(),
+                Value<String> tagIds = const Value.absent(),
                 Value<String> source = const Value.absent(),
                 Value<String> splits = const Value.absent(),
                 Value<String?> occurrenceId = const Value.absent(),
@@ -18808,6 +19901,8 @@ class $$TransactionsTableTableManager
                 transferGroupId: transferGroupId,
                 occurredOn: occurredOn,
                 note: note,
+                merchant: merchant,
+                tagIds: tagIds,
                 source: source,
                 splits: splits,
                 occurrenceId: occurrenceId,
@@ -18830,6 +19925,8 @@ class $$TransactionsTableTableManager
                 Value<String?> transferGroupId = const Value.absent(),
                 required String occurredOn,
                 Value<String> note = const Value.absent(),
+                Value<String> merchant = const Value.absent(),
+                Value<String> tagIds = const Value.absent(),
                 Value<String> source = const Value.absent(),
                 Value<String> splits = const Value.absent(),
                 Value<String?> occurrenceId = const Value.absent(),
@@ -18850,6 +19947,8 @@ class $$TransactionsTableTableManager
                 transferGroupId: transferGroupId,
                 occurredOn: occurredOn,
                 note: note,
+                merchant: merchant,
+                tagIds: tagIds,
                 source: source,
                 splits: splits,
                 occurrenceId: occurrenceId,
@@ -22192,6 +23291,8 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$WorkspacesTableTableManager get workspaces =>
       $$WorkspacesTableTableManager(_db, _db.workspaces);
+  $$WorkspaceTagsTableTableManager get workspaceTags =>
+      $$WorkspaceTagsTableTableManager(_db, _db.workspaceTags);
   $$CashbooksTableTableManager get cashbooks =>
       $$CashbooksTableTableManager(_db, _db.cashbooks);
   $$EntryCategoriesTableTableManager get entryCategories =>

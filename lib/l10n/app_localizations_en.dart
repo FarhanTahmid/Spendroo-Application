@@ -696,7 +696,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search';
 
   @override
-  String get searchTransactions => 'Search by note, category or amount';
+  String get searchTransactions => 'Search by merchant, note, tag or amount';
 
   @override
   String get searchOrCreate => 'Search or type a new name';
@@ -4423,4 +4423,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bizInsightSteady => 'Cash in and out are close to last month';
+
+  @override
+  String get merchant => 'Merchant / payee';
+
+  @override
+  String get party => 'Party';
+
+  @override
+  String get tags => 'Tags';
+
+  @override
+  String get tagName => 'Tag name';
+
+  @override
+  String get addTag => 'Add tag';
+
+  @override
+  String get newTag => 'New tag';
+
+  @override
+  String get editTag => 'Edit tag';
+
+  @override
+  String get noTags =>
+      'No tags yet. Put tags on transactions and entries to group them your own way.';
+
+  @override
+  String removeTag(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String deleteTagConfirm(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'It comes off $count transactions and entries.',
+      one: 'It comes off 1 transaction or entry.',
+      zero: 'Nothing carries it yet.',
+    );
+    return 'Delete \"$name\"? $_temp0';
+  }
+
+  @override
+  String get tagsHint => 'Labels for transactions and entries';
+
+  @override
+  String get searchEntries => 'Search entries';
 }

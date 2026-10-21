@@ -204,6 +204,8 @@ void main() {
     final categoryFields = find.byWidgetPredicate((w) => w is SelectField<String> && w.label == 'Category');
     Finder amountOf(Finder field) => find.descendant(of: field, matching: find.byType(EditableText));
     Future<void> tap(Finder finder) async {
+      // The form is taller than the test screen: a field just typed into may still be scrolling into view
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.ensureVisible(finder);
       await tester.pump();
       await tester.tap(finder);

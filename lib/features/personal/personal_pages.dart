@@ -22,6 +22,10 @@ import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
 import '../recurring/recurring_pages.dart';
 import '../recurring/recurring_repository.dart';
+import '../tags/merchant_field.dart';
+import '../tags/tag_field.dart';
+import '../tags/tag_ids.dart';
+import '../tags/tag_repository.dart';
 import 'budget_widgets.dart';
 import 'allocations.dart';
 import 'ledger_repository.dart';
@@ -522,11 +526,13 @@ class TransactionTile extends StatelessWidget {
       tint: isTransfer
           ? null
           : (t.categoryId == null ? context.amountColor(isIn) : context.categoryTint(view.categoryColor, t.categoryId)),
-      title: t.note.isNotEmpty ? t.note : label,
+      // Who was paid says the most; rows from before merchants existed read as they always did
+      title: t.merchant.isNotEmpty ? t.merchant : (t.note.isNotEmpty ? t.note : label),
       detail: [
         if (showDate) formatDate(context, t.occurredOn),
         if (showAccount) view.accountName,
-        if (t.note.isNotEmpty) label,
+        if (t.merchant.isNotEmpty && t.note.isNotEmpty) t.note,
+        if (t.merchant.isNotEmpty || t.note.isNotEmpty) label,
       ].join(' · '),
       amount: context.money(t.amountMinor, t.currency),
       amountColor: isTransfer ? null : context.amountColor(isIn),
@@ -551,13 +557,16 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   String _query = '';
   String _kind = 'all';
 
-  bool _matches(TransactionView view) {
+  bool _matches(TransactionView view, Map<String, Tag> tags) {
     final t = view.transaction;
     if (_kind != 'all' && t.kind != _kind) return false;
     final query = Money.toAsciiDigits(_query.trim().toLowerCase());
     if (query.isEmpty) return true;
     return [
       t.note,
+      t.merchant,
+      // A deleted tag is not searched by its name
+      for (final id in decodeTagIds(t.tagIds)) tags[id]?.name ?? '',
       view.categoryName ?? '',
       view.accountName,
       Money.toInput(t.amountMinor.abs(), t.currency),
@@ -570,8 +579,10 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     final workspace = widget.workspace;
     final text = Theme.of(context).textTheme;
 
+    final tags = ref.watch(tagNamesProvider(workspace.id));
+
     Widget list(List<TransactionView> all) {
-      final shown = all.where(_matches).toList();
+      final shown = all.where((view) => _matches(view, tags)).toList();
       if (shown.isEmpty) {
         final searching = _query.trim().isNotEmpty;
         return ListView(children: [
@@ -728,6 +739,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
   late final _note = TextEditingController(
     text: _original?.note ?? (_rule == null ? '' : (_rule.note.isNotEmpty ? _rule.note : _rule.title)),
   );
+  late final _merchant = TextEditingController(text: _original?.merchant ?? '');
+  late List<String> _tagIds = _original == null ? const [] : decodeTagIds(_original.tagIds);
   late String _date = _original?.occurredOn ?? widget.initialDate ?? todayIso();
   late String? _accountId = _original?.accountId ?? _rule?.accountId ?? widget.initialAccountId;
   late String? _toAccountId = _rule?.toAccountId;
@@ -754,6 +767,7 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
   void dispose() {
     _amount.dispose();
     _note.dispose();
+    _merchant.dispose();
     for (final draft in _split) {
       draft.dispose();
     }
@@ -806,7 +820,13 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
     if (_kind == saveKind) return _saveToGoal(account, amount);
     if (_original != null) {
       await repo.updateTransaction(_original,
-          amountMinor: amount, occurredOn: _date, categoryId: _categoryId, note: _note.text.trim(), splits: splits);
+          amountMinor: amount,
+          occurredOn: _date,
+          categoryId: _categoryId,
+          note: _note.text.trim(),
+          merchant: _kind == 'transfer' ? _original.merchant : _merchant.text,
+          tagIds: _kind == 'transfer' ? decodeTagIds(_original.tagIds) : _tagIds,
+          splits: splits);
     } else if (_kind == 'transfer') {
       final to = accounts.firstWhere((a) => a.account.id == _toAccountId).account;
       if (to.id == account.id) return _refuse(l10n.sameAccountError);
@@ -820,6 +840,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
           occurredOn: _date,
           categoryId: _categoryId,
           note: _note.text.trim(),
+          merchant: _merchant.text,
+          tagIds: _tagIds,
           splits: splits,
           occurrenceId: widget.occurrence?.occurrence.id);
     }
@@ -1082,6 +1104,15 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
             ],
             DateField(value: _date, onChanged: (value) => setState(() => _date = value)),
             const SizedBox(height: 12),
+            // Money moved between one's own accounts was paid to nobody
+            if (!isTransfer && !saving) ...[
+              MerchantField(
+                controller: _merchant,
+                label: l10n.merchant,
+                known: ref.watch(merchantsProvider((widget.workspace.id, entries: false))).value ?? const [],
+              ),
+              const SizedBox(height: 12),
+            ],
             TextFormField(
               controller: _note,
               textCapitalization: TextCapitalization.sentences,
@@ -1092,6 +1123,15 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
               maxLength: 200,
               buildCounter: quietCounter,
             ),
+            if (!isTransfer && !saving) ...[
+              const SizedBox(height: 12),
+              TagField(
+                workspaceId: widget.workspace.id,
+                value: _tagIds,
+                onChanged: (value) => setState(() => _tagIds = value),
+              ),
+              const SizedBox(height: 4),
+            ],
             if (!editing && _rule == null)
               Align(
                 alignment: AlignmentDirectional.centerStart,

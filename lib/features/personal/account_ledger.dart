@@ -250,8 +250,12 @@ class AccountLedger {
         "t.note LIKE ? ESCAPE '\\'",
         "c.name LIKE ? ESCAPE '\\'",
         "oa.name LIKE ? ESCAPE '\\'",
+        "t.merchant LIKE ? ESCAPE '\\'",
+        // A live tag of the row's, by its name
+        "EXISTS (SELECT 1 FROM json_each(t.tag_ids) j JOIN tags g ON g.id = j.value "
+            "WHERE g.deleted_at IS NULL AND g.name LIKE ? ESCAPE '\\')",
       ];
-      variables.addAll([for (var i = 0; i < 3; i++) Variable<String>(like)]);
+      variables.addAll([for (var i = 0; i < 5; i++) Variable<String>(like)]);
       // "1,250" or "1250.50": also the amount, by its whole units
       final number = RegExp(r'^(\d+)(\.\d*)?$').firstMatch(query.replaceAll(',', ''));
       if (number != null) {
@@ -377,7 +381,7 @@ class AccountLedger {
             ...periodVariables,
             ...narrowVariables,
           ],
-          readsFrom: {db.transactions, db.accounts, db.categories},
+          readsFrom: {db.transactions, db.accounts, db.categories, db.workspaceTags},
         )
         .watchSingle()
         .map((row) {
@@ -418,7 +422,7 @@ class AccountLedger {
             ...periodVariables,
             ...narrowVariables,
           ],
-          readsFrom: {db.transactions, db.categories, db.accounts},
+          readsFrom: {db.transactions, db.categories, db.accounts, db.workspaceTags},
         )
         .watch()
         .map((rows) => [
@@ -461,7 +465,7 @@ class AccountLedger {
             Variable<String>(accountId),
             ...periodVariables,
           ],
-          readsFrom: {db.transactions, db.accounts, db.categories},
+          readsFrom: {db.transactions, db.accounts, db.categories, db.workspaceTags},
         )
         .watch()
         .map((rows) {

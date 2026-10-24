@@ -1047,7 +1047,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureCustomFields => 'Custom fields on entries';
 
   @override
-  String get featureStorage => 'Storage for bills';
+  String get featureStorage => 'Storage for bills and receipts';
 
   @override
   String get featureAiCredits => 'AI credits a month';
@@ -3737,19 +3737,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String limitStorage(String plan, String size) {
-    return 'Your $plan plan keeps up to $size of bills. Remove some, or upgrade for more room.';
+    return 'Your $plan plan keeps up to $size of bills and receipts. Remove some, or upgrade for more room.';
   }
 
   @override
   String limitBillSize(String plan, String size) {
-    return 'On your $plan plan, one bill can be up to $size.';
+    return 'On your $plan plan, one file can be up to $size.';
   }
 
   @override
-  String get featureStorageFile => 'Largest bill';
+  String get featureStorageFile => 'Largest file';
 
   @override
-  String get featureStoragePdf => 'PDF bills';
+  String get featureStoragePdf => 'Attaching PDFs';
 
   @override
   String get fieldsTitle => 'Custom fields';
@@ -4471,4 +4471,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchEntries => 'Search entries';
+
+  @override
+  String get receipts => 'Receipts';
+
+  @override
+  String get receiptsHint =>
+      'Keep a photo or PDF of the receipt with this transaction.';
+
+  @override
+  String get receiptAttach => 'Attach receipt';
+
+  @override
+  String receiptPerFile(String size) {
+    return 'Up to $size per receipt';
+  }
+
+  @override
+  String get receiptRemove => 'Remove receipt';
+
+  @override
+  String get receiptRemoveConfirm =>
+      'Remove this receipt? The file is deleted from all your devices.';
+
+  @override
+  String get receiptRemoved => 'Receipt removed';
+
+  @override
+  String get receiptAdded => 'Receipt attached. It uploads in the background.';
+
+  @override
+  String receiptCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count receipts',
+      one: '1 receipt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get receiptOpenOffline =>
+      'This receipt isn\'t saved on this phone yet. Connect to the internet to open it.';
+
+  @override
+  String get receiptGone => 'This receipt is no longer available.';
+
+  @override
+  String get receiptOpenFailed => 'The receipt couldn\'t be opened. Try again.';
+
+  @override
+  String get receiptErrorForbidden =>
+      'You can\'t add receipts to this transaction.';
+
+  @override
+  String get receiptErrorGone =>
+      'This transaction isn\'t on the server any more.';
+
+  @override
+  String get receiptErrorGeneric => 'The receipt couldn\'t be attached.';
+
+  @override
+  String get receiptErrorNotAllowed =>
+      'Only expenses and income can have a receipt.';
+
+  @override
+  String get filterReceipt => 'Receipt';
+
+  @override
+  String get filterWithReceipt => 'With receipt';
+
+  @override
+  String get filterWithoutReceipt => 'Without receipt';
 }

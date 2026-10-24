@@ -1015,7 +1015,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get featureCustomFields => 'এন্ট্রিতে নিজস্ব ঘর';
 
   @override
-  String get featureStorage => 'বিল রাখার জায়গা';
+  String get featureStorage => 'বিল ও রসিদ রাখার জায়গা';
 
   @override
   String get featureAiCredits => 'মাসে AI ক্রেডিট';
@@ -3628,19 +3628,19 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String limitStorage(String plan, String size) {
-    return 'আপনার $plan প্ল্যানে সর্বোচ্চ $size বিল রাখা যায়। কিছু সরান, বা আরও জায়গার জন্য আপগ্রেড করুন।';
+    return 'আপনার $plan প্ল্যানে সর্বোচ্চ $size বিল ও রসিদ রাখা যায়। কিছু সরান, বা আরও জায়গার জন্য আপগ্রেড করুন।';
   }
 
   @override
   String limitBillSize(String plan, String size) {
-    return 'আপনার $plan প্ল্যানে একটি বিল সর্বোচ্চ $size হতে পারে।';
+    return 'আপনার $plan প্ল্যানে একটি ফাইল সর্বোচ্চ $size হতে পারে।';
   }
 
   @override
-  String get featureStorageFile => 'সবচেয়ে বড় বিল';
+  String get featureStorageFile => 'সবচেয়ে বড় ফাইল';
 
   @override
-  String get featureStoragePdf => 'PDF বিল';
+  String get featureStoragePdf => 'PDF যুক্ত করা';
 
   @override
   String get fieldsTitle => 'নিজস্ব ঘর';
@@ -4354,4 +4354,74 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get searchEntries => 'এন্ট্রি খুঁজুন';
+
+  @override
+  String get receipts => 'রসিদ';
+
+  @override
+  String get receiptsHint => 'এই লেনদেনের সাথে রসিদের ছবি বা PDF রেখে দিন।';
+
+  @override
+  String get receiptAttach => 'রসিদ যোগ করুন';
+
+  @override
+  String receiptPerFile(String size) {
+    return 'প্রতি রসিদে সর্বোচ্চ $size';
+  }
+
+  @override
+  String get receiptRemove => 'রসিদ সরান';
+
+  @override
+  String get receiptRemoveConfirm =>
+      'এই রসিদটি সরাবেন? আপনার সব ডিভাইস থেকে ফাইলটি মুছে যাবে।';
+
+  @override
+  String get receiptRemoved => 'রসিদ সরানো হয়েছে';
+
+  @override
+  String get receiptAdded => 'রসিদ যুক্ত হয়েছে। পেছনে আপলোড হচ্ছে।';
+
+  @override
+  String receiptCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countটি রসিদ',
+      one: '১টি রসিদ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get receiptOpenOffline =>
+      'এই রসিদটি এখনো এই ফোনে রাখা হয়নি। খুলতে ইন্টারনেটে যুক্ত হোন।';
+
+  @override
+  String get receiptGone => 'এই রসিদটি আর পাওয়া যাচ্ছে না।';
+
+  @override
+  String get receiptOpenFailed => 'রসিদটি খোলা যায়নি। আবার চেষ্টা করুন।';
+
+  @override
+  String get receiptErrorForbidden =>
+      'এই লেনদেনে আপনি রসিদ যোগ করতে পারবেন না।';
+
+  @override
+  String get receiptErrorGone => 'এই লেনদেনটি আর সার্ভারে নেই।';
+
+  @override
+  String get receiptErrorGeneric => 'রসিদটি যুক্ত করা যায়নি।';
+
+  @override
+  String get receiptErrorNotAllowed => 'শুধু খরচ ও আয়ে রসিদ রাখা যায়।';
+
+  @override
+  String get filterReceipt => 'রসিদ';
+
+  @override
+  String get filterWithReceipt => 'রসিদসহ';
+
+  @override
+  String get filterWithoutReceipt => 'রসিদ ছাড়া';
 }

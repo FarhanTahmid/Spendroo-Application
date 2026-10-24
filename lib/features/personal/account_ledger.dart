@@ -13,7 +13,7 @@ import 'ledger_repository.dart';
 enum AccountPeriod { thisMonth, lastMonth, last3Months, thisYear, allTime, custom }
 
 /// What the account screen is narrowed to. The dates set the period; kind,
-/// categories and search pick rows inside it.
+/// categories, receipts and search pick rows inside it.
 class AccountFilter {
   const AccountFilter({
     this.period = AccountPeriod.allTime,
@@ -22,6 +22,7 @@ class AccountFilter {
     this.kind,
     this.categoryIds = const {},
     this.uncategorised = false,
+    this.hasReceipt,
     this.query = '',
   });
 
@@ -37,6 +38,9 @@ class AccountFilter {
 
   /// Income and expenses filed under no category, alongside [categoryIds].
   final bool uncategorised;
+
+  /// True: only those with a receipt; false: only those without; null: either.
+  final bool? hasReceipt;
   final String query;
 
   /// The dates of a preset, counted from [now].
@@ -57,6 +61,7 @@ class AccountFilter {
       kind: kind,
       categoryIds: categoryIds,
       uncategorised: uncategorised,
+      hasReceipt: hasReceipt,
       query: query,
     );
   }
@@ -65,6 +70,7 @@ class AccountFilter {
     String? Function()? kind,
     Set<String>? categoryIds,
     bool? uncategorised,
+    bool? Function()? hasReceipt,
     String? query,
   }) =>
       AccountFilter(
@@ -74,16 +80,18 @@ class AccountFilter {
         kind: kind == null ? this.kind : kind(),
         categoryIds: categoryIds ?? this.categoryIds,
         uncategorised: uncategorised ?? this.uncategorised,
+        hasReceipt: hasReceipt == null ? this.hasReceipt : hasReceipt(),
         query: query ?? this.query,
       );
 
   bool get hasCategories => categoryIds.isNotEmpty || uncategorised;
 
   /// Rows are left out inside the period, so a running balance would skip amounts.
-  bool get isNarrowed => kind != null || hasCategories || query.trim().isNotEmpty;
+  bool get isNarrowed => kind != null || hasCategories || hasReceipt != null || query.trim().isNotEmpty;
 
   /// How many choices of the filter sheet are in force.
-  int get sheetCount => (kind == null ? 0 : 1) + categoryIds.length + (uncategorised ? 1 : 0);
+  int get sheetCount =>
+      (kind == null ? 0 : 1) + categoryIds.length + (uncategorised ? 1 : 0) + (hasReceipt == null ? 0 : 1);
 
   @override
   bool operator ==(Object other) =>
@@ -93,12 +101,14 @@ class AccountFilter {
       other.to == to &&
       other.kind == kind &&
       other.uncategorised == uncategorised &&
+      other.hasReceipt == hasReceipt &&
       other.query == query &&
       other.categoryIds.length == categoryIds.length &&
       other.categoryIds.containsAll(categoryIds);
 
   @override
-  int get hashCode => Object.hash(period, from, to, kind, uncategorised, query, Object.hashAllUnordered(categoryIds));
+  int get hashCode =>
+      Object.hash(period, from, to, kind, uncategorised, hasReceipt, query, Object.hashAllUnordered(categoryIds));
 }
 
 /// One row of the account screen.
@@ -230,8 +240,8 @@ class AccountLedger {
         ],
       );
 
-  /// Kind, categories and search of [filter] as one SQL condition over `t`,
-  /// `c` and `oa`; '1' when nothing is chosen.
+  /// Kind, categories, receipts and search of [filter] as one SQL condition
+  /// over `t`, `c` and `oa`; '1' when nothing is chosen.
   (String, List<Variable>) _narrow(AccountFilter filter, String currency) {
     final parts = <String>[];
     final variables = <Variable>[];
@@ -242,6 +252,10 @@ class AccountLedger {
     if (filter.hasCategories) {
       // A split is kept when any of its parts is; _amount() says how much of it counts
       parts.add(filedUnder(filter.categoryIds, uncategorised: filter.uncategorised));
+    }
+    if (filter.hasReceipt != null) {
+      // One still on its way counts: it was attached here, and the server will have it
+      parts.add('$receiptCountSql ${filter.hasReceipt! ? '>' : '='} 0');
     }
     final query = Money.toAsciiDigits(filter.query.trim());
     if (query.isNotEmpty) {
@@ -279,6 +293,10 @@ class AccountLedger {
 
   bool _searches(AccountFilter filter) => filter.query.trim().isNotEmpty;
 
+  /// What a filtered read depends on: a receipt coming or going changes what "with a receipt" keeps.
+  Set<TableInfo> get _reads =>
+      {db.transactions, db.accounts, db.categories, db.workspaceTags, db.transactionReceipts, db.billQueue};
+
   /// The account with its balance; null once it is deleted.
   Stream<AccountBalance?> watchAccount(String accountId) => db
       .customSelect(
@@ -302,7 +320,8 @@ class AccountLedger {
     final (period, periodVariables) = _period(filter);
     final (narrow, narrowVariables) = _narrow(filter, currency);
     final rows = await db.customSelect(
-      'SELECT t.*, a.name AS a_name, c.name AS c_name, c.color AS c_color, oa.name AS o_name FROM transactions t '
+      'SELECT t.*, a.name AS a_name, c.name AS c_name, c.color AS c_color, oa.name AS o_name, '
+      '$receiptCountSql AS r_count FROM transactions t '
       'JOIN accounts a ON a.id = t.account_id $_categoryJoin$_otherLegJoin'
       'WHERE t.account_id = ? AND t.deleted_at IS NULL$period AND $narrow '
       '${cursor == null ? '' : 'AND (t.occurred_on, t.created_at, t.id) < (?, ?, ?) '}'
@@ -328,6 +347,7 @@ class AccountLedger {
               row.read<String>('a_name'),
               row.readNullable<String>('c_name'),
               categoryColor: row.readNullable<String>('c_color'),
+              receiptCount: row.read<int>('r_count'),
             ),
             otherAccountName: row.readNullable<String>('o_name'),
           ),
@@ -381,7 +401,7 @@ class AccountLedger {
             ...periodVariables,
             ...narrowVariables,
           ],
-          readsFrom: {db.transactions, db.accounts, db.categories, db.workspaceTags},
+          readsFrom: _reads,
         )
         .watchSingle()
         .map((row) {
@@ -422,7 +442,7 @@ class AccountLedger {
             ...periodVariables,
             ...narrowVariables,
           ],
-          readsFrom: {db.transactions, db.categories, db.accounts, db.workspaceTags},
+          readsFrom: _reads,
         )
         .watch()
         .map((rows) => [
@@ -465,7 +485,7 @@ class AccountLedger {
             Variable<String>(accountId),
             ...periodVariables,
           ],
-          readsFrom: {db.transactions, db.accounts, db.categories, db.workspaceTags},
+          readsFrom: _reads,
         )
         .watch()
         .map((rows) {
@@ -514,7 +534,8 @@ class AccountFilterController extends Notifier<AccountFilter> {
 
   /// Back to everything in the period.
   void clearNarrowing() =>
-      state = state.copyWith(kind: () => null, categoryIds: const {}, uncategorised: false, query: '');
+      state = state.copyWith(
+          kind: () => null, categoryIds: const {}, uncategorised: false, hasReceipt: () => null, query: '');
 }
 
 final accountFilterProvider = NotifierProvider.autoDispose
@@ -560,7 +581,8 @@ class AccountFeedController extends Notifier<AccountFeed> {
 
     final db = ref.watch(databaseProvider);
     final updates = db
-        .tableUpdates(TableUpdateQuery.onAllTables([db.transactions, db.categories, db.accounts]))
+        .tableUpdates(TableUpdateQuery.onAllTables(
+            [db.transactions, db.categories, db.accounts, db.transactionReceipts, db.billQueue]))
         .listen((_) => _reload());
     ref.onDispose(updates.cancel);
     // After build has returned: the first read looks at the state

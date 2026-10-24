@@ -780,9 +780,9 @@ class _ActiveFilters extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final categories = ref.watch(categoriesProvider(workspace.id)).value ?? const <Category>[];
-    Widget chip(String label, VoidCallback onRemove, {Color? dot}) => InputChip(
+    Widget chip(String label, VoidCallback onRemove, {Color? dot, IconData? icon}) => InputChip(
           label: Text(label),
-          avatar: dot == null ? null : Center(child: ColorDot(dot)),
+          avatar: dot != null ? Center(child: ColorDot(dot)) : (icon == null ? null : Icon(icon, size: 16)),
           visualDensity: VisualDensity.compact,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onDeleted: onRemove,
@@ -807,13 +807,19 @@ class _ActiveFilters extends ConsumerWidget {
           if (filter.uncategorised)
             chip(l10n.uncategorised, () => onChanged(filter.copyWith(uncategorised: false)),
                 dot: categoryFill(null, null)),
+          if (filter.hasReceipt case final withReceipt?)
+            chip(
+              withReceipt ? l10n.filterWithReceipt : l10n.filterWithoutReceipt,
+              () => onChanged(filter.copyWith(hasReceipt: () => null)),
+              icon: withReceipt ? Icons.attach_file_rounded : Icons.do_not_disturb_alt_rounded,
+            ),
         ],
       ),
     );
   }
 }
 
-/// Kind and categories, chosen together and applied in one go.
+/// Kind, categories and receipts, chosen together and applied in one go.
 class _FilterSheet extends ConsumerStatefulWidget {
   const _FilterSheet({required this.workspace, required this.filter});
 
@@ -867,6 +873,8 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
               kind: () => kind,
               categoryIds: kept,
               uncategorised: kind != 'transfer' && _draft.uncategorised,
+              // Money moved between one's own accounts never has a receipt
+              hasReceipt: () => kind == 'transfer' ? null : _draft.hasReceipt,
             );
           }),
         ),
@@ -899,6 +907,29 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
               ),
             ],
           ),
+          const SizedBox(height: AppSpace.xl),
+          Text(l10n.filterReceipt, style: text.titleSmall),
+          const SizedBox(height: AppSpace.sm),
+          Wrap(
+            spacing: AppSpace.sm,
+            runSpacing: AppSpace.sm,
+            children: [
+              for (final (value, label, icon) in [
+                (null, l10n.filterAll, null),
+                (true, l10n.filterWithReceipt, Icons.attach_file_rounded),
+                (false, l10n.filterWithoutReceipt, Icons.do_not_disturb_alt_rounded),
+              ])
+                SizedBox(
+                  height: 36,
+                  child: _Pill(
+                    label: label,
+                    icon: icon,
+                    selected: _draft.hasReceipt == value,
+                    onTap: () => setState(() => _draft = _draft.copyWith(hasReceipt: () => value)),
+                  ),
+                ),
+            ],
+          ),
         ],
         const SizedBox(height: AppSpace.xl),
         Row(
@@ -907,7 +938,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
               child: OutlinedButton(
                 onPressed: () => Navigator.pop(
                   context,
-                  _draft.copyWith(kind: () => null, categoryIds: const {}, uncategorised: false),
+                  _draft.copyWith(kind: () => null, categoryIds: const {}, uncategorised: false, hasReceipt: () => null),
                 ),
                 child: Text(l10n.resetFilters),
               ),

@@ -7,12 +7,14 @@ import '../api/api_client.dart';
 import '../db/database.dart';
 import '../db/local_store.dart';
 import 'bill_files.dart';
+import 'bill_target.dart';
 
-/// Sends the bills waiting in bill_queue, after each sync.
+/// Sends the bills and receipts waiting in bill_queue, after each sync.
 ///
-/// A bill goes once its entry is on the server: the entry travels in the
-/// sync outbox, the file in a request of its own. Each upload carries the id
-/// the bill was given here, so a resend after a lost answer stores nothing
+/// A file goes once the entry or transaction it belongs to is on the server:
+/// that row travels in the sync outbox, the file in a request of its own
+/// (features/bills/bill_target.dart says where). Each upload carries the id
+/// the file was given here, so a resend after a lost answer stores nothing
 /// twice. When the server cannot be reached a bill waits longer each time;
 /// when it refuses the file or the plan has no room, the bill stays on the
 /// phone, marked, for the person to retry or remove.
@@ -33,7 +35,7 @@ class BillOutbox {
   final LocalStore store;
   final BillFiles files;
 
-  /// The server's 402 body for a bill the plan has no room for.
+  /// The server's 402 body for a file the plan has no room for.
   final void Function(Map<String, dynamic> refusal)? onPlanLimit;
 
   /// The share of a bill sent so far, 0 to 1; null once it is done either way.
@@ -87,15 +89,21 @@ class BillOutbox {
     }
   }
 
-  /// True when the server now holds a bill it did not before.
+  /// True when the server now holds a file it did not before.
   Future<bool> _upload(BillQueueData job) async {
-    final entry = await (db.select(db.entries)..where((e) => e.id.equals(job.entryId))).getSingleOrNull();
-    if (entry == null || entry.deletedAt != null) {
+    final target = BillTarget.ofJob(job);
+    final owner = await db
+        .customSelect(
+          'SELECT server_seq, deleted_at FROM ${target.ownerTable} WHERE id = ?',
+          variables: [Variable<String>(target.ownerId)],
+        )
+        .getSingleOrNull();
+    if (owner == null || owner.read<String?>('deleted_at') != null) {
       await _forget(job);
       return false;
     }
-    // The entry goes first; until the server has it there is nothing to attach to
-    if (entry.serverSeq == 0 || await _entryWaiting(entry.id)) return false;
+    // The entry or transaction goes first; until the server has it there is nothing to attach to
+    if (owner.read<int>('server_seq') == 0 || await _ownerWaiting(target.ownerId)) return false;
 
     final file = job.path == null ? null : File(job.path!);
     if (file == null || !await file.exists()) {
@@ -106,12 +114,12 @@ class BillOutbox {
     final ApiResponse response;
     try {
       response = await api.upload(
-        '/api/v1/cashbooks/${job.cashbookId}/entries/${job.entryId}/add-bill/',
-        field: 'bill_file',
+        target.uploadPath,
+        field: target.fileField,
         bytes: bytes,
         filename: job.originalName.isEmpty ? '${job.id}.${BillFiles.extensionFor(job.contentType)}' : job.originalName,
         contentType: job.contentType,
-        fields: {'bill_id': job.id},
+        fields: {target.idField: job.id},
         onProgress: (sent) => onProgress?.call(job.id, sent),
       );
     } finally {
@@ -119,10 +127,11 @@ class BillOutbox {
     }
 
     final body = response.body;
-    if (response.ok && body is Map && body['bills'] is List && (body['bills'] as List).isNotEmpty) {
-      final row = ((body['bills'] as List).first as Map).cast<String, Object?>();
+    final stored = body is Map ? body[target.responseKey] : null;
+    if (response.ok && stored is List && stored.isNotEmpty) {
+      final row = (stored.first as Map).cast<String, Object?>();
       await db.transaction(() async {
-        await store.upsertRow('entry_bills', row);
+        await store.upsertRow(target.table, row);
         await (db.delete(db.billQueue)..where((q) => q.id.equals(job.id))).go();
       });
       await files.adopt(file, job.id, '${row['content_type'] ?? job.contentType}');
@@ -145,21 +154,23 @@ class BillOutbox {
   }
 
   Future<bool> _remove(BillQueueData job) async {
-    final response = await api.delete(
-      '/api/v1/cashbooks/${job.cashbookId}/entries/${job.entryId}/remove-bill/${job.id}/',
-    );
+    final target = BillTarget.ofJob(job);
+    final response = await api.delete(target.removePath(job.id));
     if (response.ok || response.statusCode == 404) {
       await db.transaction(() async {
         final now = nowIso();
-        await (db.update(db.entryBills)..where((b) => b.id.equals(job.id)))
-            .write(EntryBillsCompanion(deletedAt: Value(now), updatedAt: Value(now)));
+        await db.customUpdate(
+          'UPDATE ${target.table} SET deleted_at = ?1, updated_at = ?1 WHERE id = ?2',
+          variables: [Variable<String>(now), Variable<String>(job.id)],
+          updates: {db.tableByName(target.table)},
+        );
         await (db.delete(db.billQueue)..where((q) => q.id.equals(job.id))).go();
       });
       await files.drop([job.id]);
       return true;
     }
     if (response.statusCode == 403) {
-      // Not this person's to remove after all: the bill shows again
+      // Not this person's to remove after all: the file shows again
       await (db.delete(db.billQueue)..where((q) => q.id.equals(job.id))).go();
       return false;
     }
@@ -167,12 +178,15 @@ class BillOutbox {
     return false;
   }
 
-  Future<bool> _entryWaiting(String entryId) async =>
-      await (db.select(db.outbox)..where((o) => o.rowId.equals(entryId))..limit(1)).getSingleOrNull() != null;
+  Future<bool> _ownerWaiting(String rowId) async =>
+      await (db.select(db.outbox)..where((o) => o.rowId.equals(rowId))..limit(1)).getSingleOrNull() != null;
 
+  /// Every file the phone should keep: stored bills and receipts, and what is queued.
   Future<Set<String>> _billsOnPhone() async {
     final rows = await db.customSelect(
-      'SELECT id FROM entry_bills WHERE deleted_at IS NULL UNION SELECT id FROM bill_queue',
+      'SELECT id FROM entry_bills WHERE deleted_at IS NULL '
+      'UNION SELECT id FROM transaction_receipts WHERE deleted_at IS NULL '
+      'UNION SELECT id FROM bill_queue',
     ).get();
     return {for (final row in rows) row.read<String>('id')};
   }

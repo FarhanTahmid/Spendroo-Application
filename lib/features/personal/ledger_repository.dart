@@ -22,9 +22,15 @@ class AccountBalance {
   final int balanceMinor;
 }
 
+/// How many receipts the transaction `t` keeps, as SQL: those on the server
+/// less any being removed, and those on their way (core/sync/bill_outbox.dart).
+const receiptCountSql = '((SELECT COUNT(*) FROM transaction_receipts r WHERE r.transaction_id = t.id '
+    "AND r.deleted_at IS NULL AND r.id NOT IN (SELECT id FROM bill_queue WHERE op = 'remove')) "
+    "+ (SELECT COUNT(*) FROM bill_queue q WHERE q.transaction_id = t.id AND q.op = 'upload'))";
+
 class TransactionView {
   TransactionView(this.transaction, this.accountName, this.categoryName,
-      {this.categoryColor, this.goalId, this.goalName});
+      {this.categoryColor, this.goalId, this.goalName, this.receiptCount = 0});
 
   final Transaction transaction;
   final String accountName;
@@ -36,6 +42,9 @@ class TransactionView {
   /// The savings goal on the other side of a transfer: money put into it, or taken out of it.
   final String? goalId;
   final String? goalName;
+
+  /// Receipts kept with it, stored or on their way.
+  final int receiptCount;
 }
 
 class BudgetProgress {
@@ -244,8 +253,8 @@ class LedgerRepository {
                 : ('0000-01-01', '9999-12-31');
     return db
         .customSelect(
-          'SELECT t.*, a.name AS a_name, c.name AS c_name, c.color AS c_color, g.id AS g_id, g.name AS g_name '
-          'FROM transactions t '
+          'SELECT t.*, a.name AS a_name, c.name AS c_name, c.color AS c_color, g.id AS g_id, g.name AS g_name, '
+          '$receiptCountSql AS r_count FROM transactions t '
           'JOIN accounts a ON a.id = t.account_id LEFT JOIN categories c ON c.id = t.category_id AND c.deleted_at IS NULL '
           'LEFT JOIN transactions o ON o.transfer_group_id = t.transfer_group_id AND o.id <> t.id AND o.deleted_at IS NULL '
           'LEFT JOIN savings_goals g ON g.account_id = o.account_id '
@@ -260,7 +269,7 @@ class LedgerRepository {
             Variable<String>(last),
             if (kind != null) Variable<String>(kind),
           ],
-          readsFrom: {db.transactions, db.accounts, db.categories, db.savingsGoals},
+          readsFrom: {db.transactions, db.accounts, db.categories, db.savingsGoals, db.transactionReceipts, db.billQueue},
         )
         .watch()
         .map((rows) => [
@@ -272,6 +281,7 @@ class LedgerRepository {
                   categoryColor: row.readNullable<String>('c_color'),
                   goalId: row.readNullable<String>('g_id'),
                   goalName: row.readNullable<String>('g_name'),
+                  receiptCount: row.read<int>('r_count'),
                 ),
             ]);
   }

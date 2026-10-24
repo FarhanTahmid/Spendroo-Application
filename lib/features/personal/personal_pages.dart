@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,7 +10,10 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/money.dart';
 import '../../core/providers.dart';
+import '../../core/sync/bill_target.dart';
 import '../../core/ui.dart';
+import '../bills/bill_repository.dart';
+import '../bills/bill_widgets.dart';
 import '../goals/goal_celebration.dart';
 import '../goals/goal_math.dart';
 import '../goals/goal_style.dart';
@@ -537,13 +541,15 @@ class TransactionTile extends StatelessWidget {
       amount: context.money(t.amountMinor, t.currency),
       amountColor: isTransfer ? null : context.amountColor(isIn),
       amountDetail: balance,
+      badge: view.receiptCount == 0 ? null : BillBadge(count: view.receiptCount, receipt: true),
       onTap: onTap,
     );
   }
 }
 
-/// The month's transactions under day headings, with a search box and a
-/// filter by kind. Both work on the device, over what is already loaded.
+/// The month's transactions under day headings, with a search box, a filter
+/// by kind and one for those with a receipt. All work on the device, over
+/// what is already loaded.
 class TransactionsPage extends ConsumerStatefulWidget {
   const TransactionsPage({super.key, required this.workspace});
 
@@ -556,10 +562,12 @@ class TransactionsPage extends ConsumerStatefulWidget {
 class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   String _query = '';
   String _kind = 'all';
+  bool _withReceipt = false;
 
   bool _matches(TransactionView view, Map<String, Tag> tags) {
     final t = view.transaction;
     if (_kind != 'all' && t.kind != _kind) return false;
+    if (_withReceipt && view.receiptCount == 0) return false;
     final query = Money.toAsciiDigits(_query.trim().toLowerCase());
     if (query.isEmpty) return true;
     return [
@@ -668,15 +676,31 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.page),
-            child: SlidingSegmented<String>(
-              segments: {
-                'all': l10n.filterAll,
-                'expense': l10n.expense,
-                'income': l10n.income,
-                'transfer': l10n.transfer,
-              },
-              value: _kind,
-              onChanged: (value) => setState(() => _kind = value),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SlidingSegmented<String>(
+                    segments: {
+                      'all': l10n.filterAll,
+                      'expense': l10n.expense,
+                      'income': l10n.income,
+                      'transfer': l10n.transfer,
+                    },
+                    value: _kind,
+                    onChanged: (value) => setState(() {
+                      _kind = value;
+                      // Transfers never have one
+                      if (value == 'transfer') _withReceipt = false;
+                    }),
+                  ),
+                ),
+                const SizedBox(width: AppSpace.sm),
+                _ReceiptToggle(
+                  on: _withReceipt,
+                  enabled: _kind != 'transfer',
+                  onChanged: (value) => setState(() => _withReceipt = value),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -691,7 +715,9 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
   }
 }
 
-/// Add an expense, income or transfer; or edit the amount, date, category and note of an existing one.
+/// Add an expense, income or transfer; or edit the amount, date, category,
+/// note and receipts of an existing one. Tapping a row opens this, so it is
+/// the transaction's own page too.
 class TransactionFormPage extends ConsumerStatefulWidget {
   const TransactionFormPage({
     super.key,
@@ -755,6 +781,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
         _draft(categoryId: part.categoryId, amount: Money.toInput(part.amountMinor, _rule.currency)),
   ];
   int _refused = 0;
+  // Receipts picked before the transaction exists; queued against it on Save
+  final _staged = StagedBills(receipts: true);
 
   @override
   void initState() {
@@ -765,6 +793,7 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
 
   @override
   void dispose() {
+    _staged.dispose();
     _amount.dispose();
     _note.dispose();
     _merchant.dispose();
@@ -834,7 +863,7 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
       await repo.addTransfer(account, to,
           amountMinor: amount, occurredOn: _date, note: _note.text.trim(), occurrenceId: widget.occurrence?.occurrence.id);
     } else {
-      await repo.addTransaction(account,
+      final id = await repo.addTransaction(account,
           kind: _kind,
           amountMinor: amount,
           occurredOn: _date,
@@ -844,6 +873,10 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
           tagIds: _tagIds,
           splits: splits,
           occurrenceId: widget.occurrence?.occurrence.id);
+      await _staged.attachTo(
+        ref.read(billRepositoryProvider),
+        TransactionTarget(workspaceId: account.workspaceId, transactionId: id),
+      );
     }
     if (!mounted) return;
     final formatted = context.money(amount, account.currency);
@@ -956,6 +989,8 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
               onPressed: () async {
                 if (await confirm(context, l10n.deleteConfirm)) {
                   await ref.read(ledgerRepositoryProvider).deleteTransaction(_original);
+                  // The server takes stored receipts with the transaction; what waits here goes now
+                  await ref.read(billRepositoryProvider).forgetTransaction(_original.id);
                   if (!context.mounted) return;
                   showEventBurst(context, AppEvent.deleted);
                   Navigator.pop(context);
@@ -1130,7 +1165,14 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
                 value: _tagIds,
                 onChanged: (value) => setState(() => _tagIds = value),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpace.xl),
+              // Money moved between one's own accounts was paid to nobody: no receipt
+              BillsSection(
+                workspace: widget.workspace,
+                target: editing ? TransactionTarget.of(_original) : null,
+                staged: editing ? null : _staged,
+              ),
+              const SizedBox(height: AppSpace.sm),
             ],
             if (!editing && _rule == null)
               Align(
@@ -1420,6 +1462,63 @@ class _GoalNudge extends StatelessWidget {
               onPressed: () => onPick(needed),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// A paperclip beside the kind filter: on, the list keeps only what has a receipt.
+class _ReceiptToggle extends StatelessWidget {
+  const _ReceiptToggle({required this.on, required this.enabled, required this.onChanged});
+
+  final bool on;
+  final bool enabled;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final colors = context.colors;
+    return Tooltip(
+      message: context.l10n.filterWithReceipt,
+      child: Semantics(
+        button: true,
+        toggled: on,
+        label: context.l10n.filterWithReceipt,
+        // Dressed like the kind switch beside it: a well, and a pill inside it when on
+        child: Container(
+          width: 46,
+          height: 46,
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(color: colors.field, borderRadius: BorderRadius.circular(AppRadius.control)),
+          child: AnimatedContainer(
+            duration: context.motion(AppMotion.standard),
+            curve: AppMotion.ease,
+            decoration: BoxDecoration(
+              color: on ? scheme.primary : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: enabled
+                    ? () {
+                        HapticFeedback.selectionClick();
+                        onChanged(!on);
+                      }
+                    : null,
+                child: Center(
+                  child: Icon(
+                    Icons.attach_file_rounded,
+                    size: 20,
+                    color: on ? scheme.onPrimary : (enabled ? colors.muted : colors.muted.withValues(alpha: 0.4)),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

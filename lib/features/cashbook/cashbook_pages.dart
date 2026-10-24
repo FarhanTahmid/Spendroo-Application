@@ -7,6 +7,7 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/money.dart';
 import '../../core/providers.dart';
+import '../../core/sync/bill_target.dart';
 import '../../core/ui.dart';
 import '../bills/bill_repository.dart';
 import '../bills/bill_widgets.dart';
@@ -523,7 +524,7 @@ class _EntryTile extends StatelessWidget {
       amount: context.money(entry.amountMinor, entry.currency),
       amountColor: context.amountColor(view.isCashIn),
       onTap: onTap,
-      badge: view.billCount == 0 ? null : _BillBadge(count: view.billCount),
+      badge: view.billCount == 0 ? null : BillBadge(count: view.billCount),
     );
   }
 }
@@ -550,34 +551,6 @@ bool entryMatches(EntryView view, String query, Map<String, Tag> tags) {
 String? tagLine(String tagIds, Map<String, Tag> tags) {
   final names = [for (final id in decodeTagIds(tagIds)) if (tags[id] case final tag?) tag.name];
   return names.isEmpty ? null : names.join(', ');
-}
-
-/// A paperclip and how many bills the entry keeps.
-class _BillBadge extends StatelessWidget {
-  const _BillBadge({required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final muted = context.colors.muted;
-    return Semantics(
-      label: context.l10n.billCount(count),
-      child: ExcludeSemantics(
-        child: PopSwitcher(
-          child: Row(
-            key: ValueKey(count),
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.attach_file_rounded, size: 15, color: muted),
-              if (count > 1)
-                Text('$count', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: muted)),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 /// An entry for someone who may not change it: what it says, and its bills
@@ -631,7 +604,7 @@ Future<void> showEntryDetails(
               const SizedBox(height: AppSpace.md),
               BillsSection(
                 workspace: workspace,
-                entry: entry,
+                target: EntryTarget.of(entry),
                 canAttach: access.canEdit || (access.canAdd && mine),
                 canRemove: access.canEdit,
               ),
@@ -733,9 +706,7 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
       );
       await _staged.attachTo(
         ref.read(billRepositoryProvider),
-        workspaceId: widget.book.workspaceId,
-        cashbookId: widget.book.id,
-        entryId: entryId,
+        EntryTarget(workspaceId: widget.book.workspaceId, cashbookId: widget.book.id, entryId: entryId),
       );
     } else {
       await repo.updateEntry(
@@ -917,7 +888,11 @@ class _EntryFormPageState extends ConsumerState<EntryFormPage> {
                       : const SizedBox(width: double.infinity),
             ),
             const SizedBox(height: AppSpace.xl),
-            BillsSection(workspace: workspace, entry: widget.entry, staged: widget.entry == null ? _staged : null),
+            BillsSection(
+              workspace: workspace,
+              target: widget.entry == null ? null : EntryTarget.of(widget.entry!),
+              staged: widget.entry == null ? _staged : null,
+            ),
           ],
         ),
       ),

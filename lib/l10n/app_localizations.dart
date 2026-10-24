@@ -1883,7 +1883,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureStorage.
   ///
   /// In en, this message translates to:
-  /// **'Storage for bills'**
+  /// **'Storage for bills and receipts'**
   String get featureStorage;
 
   /// No description provided for @featureAiCredits.
@@ -6191,25 +6191,25 @@ abstract class AppLocalizations {
   /// No description provided for @limitStorage.
   ///
   /// In en, this message translates to:
-  /// **'Your {plan} plan keeps up to {size} of bills. Remove some, or upgrade for more room.'**
+  /// **'Your {plan} plan keeps up to {size} of bills and receipts. Remove some, or upgrade for more room.'**
   String limitStorage(String plan, String size);
 
   /// No description provided for @limitBillSize.
   ///
   /// In en, this message translates to:
-  /// **'On your {plan} plan, one bill can be up to {size}.'**
+  /// **'On your {plan} plan, one file can be up to {size}.'**
   String limitBillSize(String plan, String size);
 
   /// No description provided for @featureStorageFile.
   ///
   /// In en, this message translates to:
-  /// **'Largest bill'**
+  /// **'Largest file'**
   String get featureStorageFile;
 
   /// No description provided for @featureStoragePdf.
   ///
   /// In en, this message translates to:
-  /// **'PDF bills'**
+  /// **'Attaching PDFs'**
   String get featureStoragePdf;
 
   /// No description provided for @fieldsTitle.
@@ -7375,6 +7375,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search entries'**
   String get searchEntries;
+
+  /// No description provided for @receipts.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipts'**
+  String get receipts;
+
+  /// No description provided for @receiptsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a photo or PDF of the receipt with this transaction.'**
+  String get receiptsHint;
+
+  /// No description provided for @receiptAttach.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach receipt'**
+  String get receiptAttach;
+
+  /// No description provided for @receiptPerFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {size} per receipt'**
+  String receiptPerFile(String size);
+
+  /// No description provided for @receiptRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove receipt'**
+  String get receiptRemove;
+
+  /// No description provided for @receiptRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this receipt? The file is deleted from all your devices.'**
+  String get receiptRemoveConfirm;
+
+  /// No description provided for @receiptRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt removed'**
+  String get receiptRemoved;
+
+  /// No description provided for @receiptAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt attached. It uploads in the background.'**
+  String get receiptAdded;
+
+  /// No description provided for @receiptCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 receipt} other{{count} receipts}}'**
+  String receiptCount(int count);
+
+  /// No description provided for @receiptOpenOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'This receipt isn\'t saved on this phone yet. Connect to the internet to open it.'**
+  String get receiptOpenOffline;
+
+  /// No description provided for @receiptGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This receipt is no longer available.'**
+  String get receiptGone;
+
+  /// No description provided for @receiptOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The receipt couldn\'t be opened. Try again.'**
+  String get receiptOpenFailed;
+
+  /// No description provided for @receiptErrorForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t add receipts to this transaction.'**
+  String get receiptErrorForbidden;
+
+  /// No description provided for @receiptErrorGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This transaction isn\'t on the server any more.'**
+  String get receiptErrorGone;
+
+  /// No description provided for @receiptErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'The receipt couldn\'t be attached.'**
+  String get receiptErrorGeneric;
+
+  /// No description provided for @receiptErrorNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Only expenses and income can have a receipt.'**
+  String get receiptErrorNotAllowed;
+
+  /// No description provided for @filterReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt'**
+  String get filterReceipt;
+
+  /// No description provided for @filterWithReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'With receipt'**
+  String get filterWithReceipt;
+
+  /// No description provided for @filterWithoutReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Without receipt'**
+  String get filterWithoutReceipt;
 }
 
 class _AppLocalizationsDelegate

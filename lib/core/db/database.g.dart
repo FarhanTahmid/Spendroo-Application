@@ -8841,6 +8841,875 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   }
 }
 
+class $TransactionReceiptsTable extends TransactionReceipts
+    with TableInfo<$TransactionReceiptsTable, TransactionReceipt> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TransactionReceiptsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _serverSeqMeta = const VerificationMeta(
+    'serverSeq',
+  );
+  @override
+  late final GeneratedColumn<int> serverSeq = GeneratedColumn<int>(
+    'server_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<String> updatedAt = GeneratedColumn<String>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<String> deletedAt = GeneratedColumn<String>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _transactionIdMeta = const VerificationMeta(
+    'transactionId',
+  );
+  @override
+  late final GeneratedColumn<String> transactionId = GeneratedColumn<String>(
+    'transaction_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdByIdMeta = const VerificationMeta(
+    'createdById',
+  );
+  @override
+  late final GeneratedColumn<String> createdById = GeneratedColumn<String>(
+    'created_by_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contentTypeMeta = const VerificationMeta(
+    'contentType',
+  );
+  @override
+  late final GeneratedColumn<String> contentType = GeneratedColumn<String>(
+    'content_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _originalNameMeta = const VerificationMeta(
+    'originalName',
+  );
+  @override
+  late final GeneratedColumn<String> originalName = GeneratedColumn<String>(
+    'original_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sizeBytesMeta = const VerificationMeta(
+    'sizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> sizeBytes = GeneratedColumn<int>(
+    'size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _pageCountMeta = const VerificationMeta(
+    'pageCount',
+  );
+  @override
+  late final GeneratedColumn<int> pageCount = GeneratedColumn<int>(
+    'page_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    transactionId,
+    createdById,
+    contentType,
+    originalName,
+    sizeBytes,
+    pageCount,
+    width,
+    height,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'transaction_receipts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TransactionReceipt> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('server_seq')) {
+      context.handle(
+        _serverSeqMeta,
+        serverSeq.isAcceptableOrUnknown(data['server_seq']!, _serverSeqMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('transaction_id')) {
+      context.handle(
+        _transactionIdMeta,
+        transactionId.isAcceptableOrUnknown(
+          data['transaction_id']!,
+          _transactionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_transactionIdMeta);
+    }
+    if (data.containsKey('created_by_id')) {
+      context.handle(
+        _createdByIdMeta,
+        createdById.isAcceptableOrUnknown(
+          data['created_by_id']!,
+          _createdByIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('content_type')) {
+      context.handle(
+        _contentTypeMeta,
+        contentType.isAcceptableOrUnknown(
+          data['content_type']!,
+          _contentTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contentTypeMeta);
+    }
+    if (data.containsKey('original_name')) {
+      context.handle(
+        _originalNameMeta,
+        originalName.isAcceptableOrUnknown(
+          data['original_name']!,
+          _originalNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('size_bytes')) {
+      context.handle(
+        _sizeBytesMeta,
+        sizeBytes.isAcceptableOrUnknown(data['size_bytes']!, _sizeBytesMeta),
+      );
+    }
+    if (data.containsKey('page_count')) {
+      context.handle(
+        _pageCountMeta,
+        pageCount.isAcceptableOrUnknown(data['page_count']!, _pageCountMeta),
+      );
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TransactionReceipt map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TransactionReceipt(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      serverSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_seq'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      transactionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}transaction_id'],
+      )!,
+      createdById: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_id'],
+      ),
+      contentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_type'],
+      )!,
+      originalName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}original_name'],
+      )!,
+      sizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size_bytes'],
+      )!,
+      pageCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}page_count'],
+      ),
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      ),
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
+    );
+  }
+
+  @override
+  $TransactionReceiptsTable createAlias(String alias) {
+    return $TransactionReceiptsTable(attachedDatabase, alias);
+  }
+}
+
+class TransactionReceipt extends DataClass
+    implements Insertable<TransactionReceipt> {
+  final String id;
+  final String workspaceId;
+  final int version;
+  final int serverSeq;
+  final String createdAt;
+  final String updatedAt;
+  final String? deletedAt;
+  final String transactionId;
+  final String? createdById;
+
+  /// What the server found the file to be: image/jpeg, image/png or application/pdf.
+  final String contentType;
+  final String originalName;
+  final int sizeBytes;
+  final int? pageCount;
+  final int? width;
+  final int? height;
+  const TransactionReceipt({
+    required this.id,
+    required this.workspaceId,
+    required this.version,
+    required this.serverSeq,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.transactionId,
+    this.createdById,
+    required this.contentType,
+    required this.originalName,
+    required this.sizeBytes,
+    this.pageCount,
+    this.width,
+    this.height,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['version'] = Variable<int>(version);
+    map['server_seq'] = Variable<int>(serverSeq);
+    map['created_at'] = Variable<String>(createdAt);
+    map['updated_at'] = Variable<String>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<String>(deletedAt);
+    }
+    map['transaction_id'] = Variable<String>(transactionId);
+    if (!nullToAbsent || createdById != null) {
+      map['created_by_id'] = Variable<String>(createdById);
+    }
+    map['content_type'] = Variable<String>(contentType);
+    map['original_name'] = Variable<String>(originalName);
+    map['size_bytes'] = Variable<int>(sizeBytes);
+    if (!nullToAbsent || pageCount != null) {
+      map['page_count'] = Variable<int>(pageCount);
+    }
+    if (!nullToAbsent || width != null) {
+      map['width'] = Variable<int>(width);
+    }
+    if (!nullToAbsent || height != null) {
+      map['height'] = Variable<int>(height);
+    }
+    return map;
+  }
+
+  TransactionReceiptsCompanion toCompanion(bool nullToAbsent) {
+    return TransactionReceiptsCompanion(
+      id: Value(id),
+      workspaceId: Value(workspaceId),
+      version: Value(version),
+      serverSeq: Value(serverSeq),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      transactionId: Value(transactionId),
+      createdById: createdById == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdById),
+      contentType: Value(contentType),
+      originalName: Value(originalName),
+      sizeBytes: Value(sizeBytes),
+      pageCount: pageCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pageCount),
+      width: width == null && nullToAbsent
+          ? const Value.absent()
+          : Value(width),
+      height: height == null && nullToAbsent
+          ? const Value.absent()
+          : Value(height),
+    );
+  }
+
+  factory TransactionReceipt.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TransactionReceipt(
+      id: serializer.fromJson<String>(json['id']),
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      version: serializer.fromJson<int>(json['version']),
+      serverSeq: serializer.fromJson<int>(json['serverSeq']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      deletedAt: serializer.fromJson<String?>(json['deletedAt']),
+      transactionId: serializer.fromJson<String>(json['transactionId']),
+      createdById: serializer.fromJson<String?>(json['createdById']),
+      contentType: serializer.fromJson<String>(json['contentType']),
+      originalName: serializer.fromJson<String>(json['originalName']),
+      sizeBytes: serializer.fromJson<int>(json['sizeBytes']),
+      pageCount: serializer.fromJson<int?>(json['pageCount']),
+      width: serializer.fromJson<int?>(json['width']),
+      height: serializer.fromJson<int?>(json['height']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'version': serializer.toJson<int>(version),
+      'serverSeq': serializer.toJson<int>(serverSeq),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
+      'deletedAt': serializer.toJson<String?>(deletedAt),
+      'transactionId': serializer.toJson<String>(transactionId),
+      'createdById': serializer.toJson<String?>(createdById),
+      'contentType': serializer.toJson<String>(contentType),
+      'originalName': serializer.toJson<String>(originalName),
+      'sizeBytes': serializer.toJson<int>(sizeBytes),
+      'pageCount': serializer.toJson<int?>(pageCount),
+      'width': serializer.toJson<int?>(width),
+      'height': serializer.toJson<int?>(height),
+    };
+  }
+
+  TransactionReceipt copyWith({
+    String? id,
+    String? workspaceId,
+    int? version,
+    int? serverSeq,
+    String? createdAt,
+    String? updatedAt,
+    Value<String?> deletedAt = const Value.absent(),
+    String? transactionId,
+    Value<String?> createdById = const Value.absent(),
+    String? contentType,
+    String? originalName,
+    int? sizeBytes,
+    Value<int?> pageCount = const Value.absent(),
+    Value<int?> width = const Value.absent(),
+    Value<int?> height = const Value.absent(),
+  }) => TransactionReceipt(
+    id: id ?? this.id,
+    workspaceId: workspaceId ?? this.workspaceId,
+    version: version ?? this.version,
+    serverSeq: serverSeq ?? this.serverSeq,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    transactionId: transactionId ?? this.transactionId,
+    createdById: createdById.present ? createdById.value : this.createdById,
+    contentType: contentType ?? this.contentType,
+    originalName: originalName ?? this.originalName,
+    sizeBytes: sizeBytes ?? this.sizeBytes,
+    pageCount: pageCount.present ? pageCount.value : this.pageCount,
+    width: width.present ? width.value : this.width,
+    height: height.present ? height.value : this.height,
+  );
+  TransactionReceipt copyWithCompanion(TransactionReceiptsCompanion data) {
+    return TransactionReceipt(
+      id: data.id.present ? data.id.value : this.id,
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      version: data.version.present ? data.version.value : this.version,
+      serverSeq: data.serverSeq.present ? data.serverSeq.value : this.serverSeq,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      transactionId: data.transactionId.present
+          ? data.transactionId.value
+          : this.transactionId,
+      createdById: data.createdById.present
+          ? data.createdById.value
+          : this.createdById,
+      contentType: data.contentType.present
+          ? data.contentType.value
+          : this.contentType,
+      originalName: data.originalName.present
+          ? data.originalName.value
+          : this.originalName,
+      sizeBytes: data.sizeBytes.present ? data.sizeBytes.value : this.sizeBytes,
+      pageCount: data.pageCount.present ? data.pageCount.value : this.pageCount,
+      width: data.width.present ? data.width.value : this.width,
+      height: data.height.present ? data.height.value : this.height,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TransactionReceipt(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('transactionId: $transactionId, ')
+          ..write('createdById: $createdById, ')
+          ..write('contentType: $contentType, ')
+          ..write('originalName: $originalName, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('pageCount: $pageCount, ')
+          ..write('width: $width, ')
+          ..write('height: $height')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    workspaceId,
+    version,
+    serverSeq,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    transactionId,
+    createdById,
+    contentType,
+    originalName,
+    sizeBytes,
+    pageCount,
+    width,
+    height,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TransactionReceipt &&
+          other.id == this.id &&
+          other.workspaceId == this.workspaceId &&
+          other.version == this.version &&
+          other.serverSeq == this.serverSeq &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.transactionId == this.transactionId &&
+          other.createdById == this.createdById &&
+          other.contentType == this.contentType &&
+          other.originalName == this.originalName &&
+          other.sizeBytes == this.sizeBytes &&
+          other.pageCount == this.pageCount &&
+          other.width == this.width &&
+          other.height == this.height);
+}
+
+class TransactionReceiptsCompanion extends UpdateCompanion<TransactionReceipt> {
+  final Value<String> id;
+  final Value<String> workspaceId;
+  final Value<int> version;
+  final Value<int> serverSeq;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
+  final Value<String?> deletedAt;
+  final Value<String> transactionId;
+  final Value<String?> createdById;
+  final Value<String> contentType;
+  final Value<String> originalName;
+  final Value<int> sizeBytes;
+  final Value<int?> pageCount;
+  final Value<int?> width;
+  final Value<int?> height;
+  final Value<int> rowid;
+  const TransactionReceiptsCompanion({
+    this.id = const Value.absent(),
+    this.workspaceId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.transactionId = const Value.absent(),
+    this.createdById = const Value.absent(),
+    this.contentType = const Value.absent(),
+    this.originalName = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.pageCount = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TransactionReceiptsCompanion.insert({
+    required String id,
+    required String workspaceId,
+    this.version = const Value.absent(),
+    this.serverSeq = const Value.absent(),
+    required String createdAt,
+    required String updatedAt,
+    this.deletedAt = const Value.absent(),
+    required String transactionId,
+    this.createdById = const Value.absent(),
+    required String contentType,
+    this.originalName = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.pageCount = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       workspaceId = Value(workspaceId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       transactionId = Value(transactionId),
+       contentType = Value(contentType);
+  static Insertable<TransactionReceipt> custom({
+    Expression<String>? id,
+    Expression<String>? workspaceId,
+    Expression<int>? version,
+    Expression<int>? serverSeq,
+    Expression<String>? createdAt,
+    Expression<String>? updatedAt,
+    Expression<String>? deletedAt,
+    Expression<String>? transactionId,
+    Expression<String>? createdById,
+    Expression<String>? contentType,
+    Expression<String>? originalName,
+    Expression<int>? sizeBytes,
+    Expression<int>? pageCount,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (version != null) 'version': version,
+      if (serverSeq != null) 'server_seq': serverSeq,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (transactionId != null) 'transaction_id': transactionId,
+      if (createdById != null) 'created_by_id': createdById,
+      if (contentType != null) 'content_type': contentType,
+      if (originalName != null) 'original_name': originalName,
+      if (sizeBytes != null) 'size_bytes': sizeBytes,
+      if (pageCount != null) 'page_count': pageCount,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TransactionReceiptsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? workspaceId,
+    Value<int>? version,
+    Value<int>? serverSeq,
+    Value<String>? createdAt,
+    Value<String>? updatedAt,
+    Value<String?>? deletedAt,
+    Value<String>? transactionId,
+    Value<String?>? createdById,
+    Value<String>? contentType,
+    Value<String>? originalName,
+    Value<int>? sizeBytes,
+    Value<int?>? pageCount,
+    Value<int?>? width,
+    Value<int?>? height,
+    Value<int>? rowid,
+  }) {
+    return TransactionReceiptsCompanion(
+      id: id ?? this.id,
+      workspaceId: workspaceId ?? this.workspaceId,
+      version: version ?? this.version,
+      serverSeq: serverSeq ?? this.serverSeq,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      transactionId: transactionId ?? this.transactionId,
+      createdById: createdById ?? this.createdById,
+      contentType: contentType ?? this.contentType,
+      originalName: originalName ?? this.originalName,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      pageCount: pageCount ?? this.pageCount,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (serverSeq.present) {
+      map['server_seq'] = Variable<int>(serverSeq.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<String>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<String>(deletedAt.value);
+    }
+    if (transactionId.present) {
+      map['transaction_id'] = Variable<String>(transactionId.value);
+    }
+    if (createdById.present) {
+      map['created_by_id'] = Variable<String>(createdById.value);
+    }
+    if (contentType.present) {
+      map['content_type'] = Variable<String>(contentType.value);
+    }
+    if (originalName.present) {
+      map['original_name'] = Variable<String>(originalName.value);
+    }
+    if (sizeBytes.present) {
+      map['size_bytes'] = Variable<int>(sizeBytes.value);
+    }
+    if (pageCount.present) {
+      map['page_count'] = Variable<int>(pageCount.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TransactionReceiptsCompanion(')
+          ..write('id: $id, ')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('version: $version, ')
+          ..write('serverSeq: $serverSeq, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('transactionId: $transactionId, ')
+          ..write('createdById: $createdById, ')
+          ..write('contentType: $contentType, ')
+          ..write('originalName: $originalName, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('pageCount: $pageCount, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -14062,6 +14931,17 @@ class $BillQueueTable extends BillQueue
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _transactionIdMeta = const VerificationMeta(
+    'transactionId',
+  );
+  @override
+  late final GeneratedColumn<String> transactionId = GeneratedColumn<String>(
+    'transaction_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _pathMeta = const VerificationMeta('path');
   @override
   late final GeneratedColumn<String> path = GeneratedColumn<String>(
@@ -14185,6 +15065,7 @@ class $BillQueueTable extends BillQueue
     workspaceId,
     cashbookId,
     entryId,
+    transactionId,
     path,
     contentType,
     originalName,
@@ -14245,6 +15126,15 @@ class $BillQueueTable extends BillQueue
       );
     } else if (isInserting) {
       context.missing(_entryIdMeta);
+    }
+    if (data.containsKey('transaction_id')) {
+      context.handle(
+        _transactionIdMeta,
+        transactionId.isAcceptableOrUnknown(
+          data['transaction_id']!,
+          _transactionIdMeta,
+        ),
+      );
     }
     if (data.containsKey('path')) {
       context.handle(
@@ -14349,6 +15239,10 @@ class $BillQueueTable extends BillQueue
         DriftSqlType.string,
         data['${effectivePrefix}entry_id'],
       )!,
+      transactionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}transaction_id'],
+      ),
       path: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}path'],
@@ -14409,8 +15303,13 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
   /// 'upload' or 'remove'.
   final String op;
   final String workspaceId;
+
+  /// The bill's entry and its book; '' for a receipt.
   final String cashbookId;
   final String entryId;
+
+  /// The receipt's transaction; null for a bill (features/bills/bill_target.dart).
+  final String? transactionId;
 
   /// The file waiting to go, for an upload.
   final String? path;
@@ -14437,6 +15336,7 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
     required this.workspaceId,
     required this.cashbookId,
     required this.entryId,
+    this.transactionId,
     this.path,
     required this.contentType,
     required this.originalName,
@@ -14457,6 +15357,9 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
     map['workspace_id'] = Variable<String>(workspaceId);
     map['cashbook_id'] = Variable<String>(cashbookId);
     map['entry_id'] = Variable<String>(entryId);
+    if (!nullToAbsent || transactionId != null) {
+      map['transaction_id'] = Variable<String>(transactionId);
+    }
     if (!nullToAbsent || path != null) {
       map['path'] = Variable<String>(path);
     }
@@ -14488,6 +15391,9 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
       workspaceId: Value(workspaceId),
       cashbookId: Value(cashbookId),
       entryId: Value(entryId),
+      transactionId: transactionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transactionId),
       path: path == null && nullToAbsent ? const Value.absent() : Value(path),
       contentType: Value(contentType),
       originalName: Value(originalName),
@@ -14521,6 +15427,7 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
       workspaceId: serializer.fromJson<String>(json['workspaceId']),
       cashbookId: serializer.fromJson<String>(json['cashbookId']),
       entryId: serializer.fromJson<String>(json['entryId']),
+      transactionId: serializer.fromJson<String?>(json['transactionId']),
       path: serializer.fromJson<String?>(json['path']),
       contentType: serializer.fromJson<String>(json['contentType']),
       originalName: serializer.fromJson<String>(json['originalName']),
@@ -14543,6 +15450,7 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
       'workspaceId': serializer.toJson<String>(workspaceId),
       'cashbookId': serializer.toJson<String>(cashbookId),
       'entryId': serializer.toJson<String>(entryId),
+      'transactionId': serializer.toJson<String?>(transactionId),
       'path': serializer.toJson<String?>(path),
       'contentType': serializer.toJson<String>(contentType),
       'originalName': serializer.toJson<String>(originalName),
@@ -14563,6 +15471,7 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
     String? workspaceId,
     String? cashbookId,
     String? entryId,
+    Value<String?> transactionId = const Value.absent(),
     Value<String?> path = const Value.absent(),
     String? contentType,
     String? originalName,
@@ -14580,6 +15489,9 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
     workspaceId: workspaceId ?? this.workspaceId,
     cashbookId: cashbookId ?? this.cashbookId,
     entryId: entryId ?? this.entryId,
+    transactionId: transactionId.present
+        ? transactionId.value
+        : this.transactionId,
     path: path.present ? path.value : this.path,
     contentType: contentType ?? this.contentType,
     originalName: originalName ?? this.originalName,
@@ -14603,6 +15515,9 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
           ? data.cashbookId.value
           : this.cashbookId,
       entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      transactionId: data.transactionId.present
+          ? data.transactionId.value
+          : this.transactionId,
       path: data.path.present ? data.path.value : this.path,
       contentType: data.contentType.present
           ? data.contentType.value
@@ -14629,6 +15544,7 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
           ..write('workspaceId: $workspaceId, ')
           ..write('cashbookId: $cashbookId, ')
           ..write('entryId: $entryId, ')
+          ..write('transactionId: $transactionId, ')
           ..write('path: $path, ')
           ..write('contentType: $contentType, ')
           ..write('originalName: $originalName, ')
@@ -14651,6 +15567,7 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
     workspaceId,
     cashbookId,
     entryId,
+    transactionId,
     path,
     contentType,
     originalName,
@@ -14672,6 +15589,7 @@ class BillQueueData extends DataClass implements Insertable<BillQueueData> {
           other.workspaceId == this.workspaceId &&
           other.cashbookId == this.cashbookId &&
           other.entryId == this.entryId &&
+          other.transactionId == this.transactionId &&
           other.path == this.path &&
           other.contentType == this.contentType &&
           other.originalName == this.originalName &&
@@ -14691,6 +15609,7 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
   final Value<String> workspaceId;
   final Value<String> cashbookId;
   final Value<String> entryId;
+  final Value<String?> transactionId;
   final Value<String?> path;
   final Value<String> contentType;
   final Value<String> originalName;
@@ -14709,6 +15628,7 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
     this.workspaceId = const Value.absent(),
     this.cashbookId = const Value.absent(),
     this.entryId = const Value.absent(),
+    this.transactionId = const Value.absent(),
     this.path = const Value.absent(),
     this.contentType = const Value.absent(),
     this.originalName = const Value.absent(),
@@ -14728,6 +15648,7 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
     required String workspaceId,
     required String cashbookId,
     required String entryId,
+    this.transactionId = const Value.absent(),
     this.path = const Value.absent(),
     this.contentType = const Value.absent(),
     this.originalName = const Value.absent(),
@@ -14752,6 +15673,7 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
     Expression<String>? workspaceId,
     Expression<String>? cashbookId,
     Expression<String>? entryId,
+    Expression<String>? transactionId,
     Expression<String>? path,
     Expression<String>? contentType,
     Expression<String>? originalName,
@@ -14771,6 +15693,7 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
       if (workspaceId != null) 'workspace_id': workspaceId,
       if (cashbookId != null) 'cashbook_id': cashbookId,
       if (entryId != null) 'entry_id': entryId,
+      if (transactionId != null) 'transaction_id': transactionId,
       if (path != null) 'path': path,
       if (contentType != null) 'content_type': contentType,
       if (originalName != null) 'original_name': originalName,
@@ -14792,6 +15715,7 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
     Value<String>? workspaceId,
     Value<String>? cashbookId,
     Value<String>? entryId,
+    Value<String?>? transactionId,
     Value<String?>? path,
     Value<String>? contentType,
     Value<String>? originalName,
@@ -14811,6 +15735,7 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
       workspaceId: workspaceId ?? this.workspaceId,
       cashbookId: cashbookId ?? this.cashbookId,
       entryId: entryId ?? this.entryId,
+      transactionId: transactionId ?? this.transactionId,
       path: path ?? this.path,
       contentType: contentType ?? this.contentType,
       originalName: originalName ?? this.originalName,
@@ -14843,6 +15768,9 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
     }
     if (entryId.present) {
       map['entry_id'] = Variable<String>(entryId.value);
+    }
+    if (transactionId.present) {
+      map['transaction_id'] = Variable<String>(transactionId.value);
     }
     if (path.present) {
       map['path'] = Variable<String>(path.value);
@@ -14891,6 +15819,7 @@ class BillQueueCompanion extends UpdateCompanion<BillQueueData> {
           ..write('workspaceId: $workspaceId, ')
           ..write('cashbookId: $cashbookId, ')
           ..write('entryId: $entryId, ')
+          ..write('transactionId: $transactionId, ')
           ..write('path: $path, ')
           ..write('contentType: $contentType, ')
           ..write('originalName: $originalName, ')
@@ -15748,6 +16677,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AccountsTable accounts = $AccountsTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
+  late final $TransactionReceiptsTable transactionReceipts =
+      $TransactionReceiptsTable(this);
   late final $BudgetsTable budgets = $BudgetsTable(this);
   late final $RecurringRulesTable recurringRules = $RecurringRulesTable(this);
   late final $RecurringOccurrencesTable recurringOccurrences =
@@ -15779,6 +16710,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'transactions_transfer_group',
     'CREATE INDEX transactions_transfer_group ON transactions (transfer_group_id)',
   );
+  late final Index transactionReceiptsTransaction = Index(
+    'transaction_receipts_transaction',
+    'CREATE INDEX transaction_receipts_transaction ON transaction_receipts (transaction_id)',
+  );
   late final Index recurringOccurrencesDue = Index(
     'recurring_occurrences_due',
     'CREATE INDEX recurring_occurrences_due ON recurring_occurrences (workspace_id, status, due_on)',
@@ -15800,6 +16735,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     accounts,
     categories,
     transactions,
+    transactionReceipts,
     budgets,
     recurringRules,
     recurringOccurrences,
@@ -15815,6 +16751,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     entryBillsEntry,
     transactionsAccountFeed,
     transactionsTransferGroup,
+    transactionReceiptsTransaction,
     recurringOccurrencesDue,
   ];
 }
@@ -19979,6 +20916,422 @@ typedef $$TransactionsTableProcessedTableManager =
       Transaction,
       PrefetchHooks Function()
     >;
+typedef $$TransactionReceiptsTableCreateCompanionBuilder =
+    TransactionReceiptsCompanion Function({
+      required String id,
+      required String workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      required String createdAt,
+      required String updatedAt,
+      Value<String?> deletedAt,
+      required String transactionId,
+      Value<String?> createdById,
+      required String contentType,
+      Value<String> originalName,
+      Value<int> sizeBytes,
+      Value<int?> pageCount,
+      Value<int?> width,
+      Value<int?> height,
+      Value<int> rowid,
+    });
+typedef $$TransactionReceiptsTableUpdateCompanionBuilder =
+    TransactionReceiptsCompanion Function({
+      Value<String> id,
+      Value<String> workspaceId,
+      Value<int> version,
+      Value<int> serverSeq,
+      Value<String> createdAt,
+      Value<String> updatedAt,
+      Value<String?> deletedAt,
+      Value<String> transactionId,
+      Value<String?> createdById,
+      Value<String> contentType,
+      Value<String> originalName,
+      Value<int> sizeBytes,
+      Value<int?> pageCount,
+      Value<int?> width,
+      Value<int?> height,
+      Value<int> rowid,
+    });
+
+class $$TransactionReceiptsTableFilterComposer
+    extends Composer<_$AppDatabase, $TransactionReceiptsTable> {
+  $$TransactionReceiptsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get transactionId => $composableBuilder(
+    column: $table.transactionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdById => $composableBuilder(
+    column: $table.createdById,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pageCount => $composableBuilder(
+    column: $table.pageCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TransactionReceiptsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TransactionReceiptsTable> {
+  $$TransactionReceiptsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverSeq => $composableBuilder(
+    column: $table.serverSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get transactionId => $composableBuilder(
+    column: $table.transactionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdById => $composableBuilder(
+    column: $table.createdById,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pageCount => $composableBuilder(
+    column: $table.pageCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TransactionReceiptsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TransactionReceiptsTable> {
+  $$TransactionReceiptsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<int> get serverSeq =>
+      $composableBuilder(column: $table.serverSeq, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get transactionId => $composableBuilder(
+    column: $table.transactionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get createdById => $composableBuilder(
+    column: $table.createdById,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sizeBytes =>
+      $composableBuilder(column: $table.sizeBytes, builder: (column) => column);
+
+  GeneratedColumn<int> get pageCount =>
+      $composableBuilder(column: $table.pageCount, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+}
+
+class $$TransactionReceiptsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TransactionReceiptsTable,
+          TransactionReceipt,
+          $$TransactionReceiptsTableFilterComposer,
+          $$TransactionReceiptsTableOrderingComposer,
+          $$TransactionReceiptsTableAnnotationComposer,
+          $$TransactionReceiptsTableCreateCompanionBuilder,
+          $$TransactionReceiptsTableUpdateCompanionBuilder,
+          (
+            TransactionReceipt,
+            BaseReferences<
+              _$AppDatabase,
+              $TransactionReceiptsTable,
+              TransactionReceipt
+            >,
+          ),
+          TransactionReceipt,
+          PrefetchHooks Function()
+        > {
+  $$TransactionReceiptsTableTableManager(
+    _$AppDatabase db,
+    $TransactionReceiptsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TransactionReceiptsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TransactionReceiptsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$TransactionReceiptsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> workspaceId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> updatedAt = const Value.absent(),
+                Value<String?> deletedAt = const Value.absent(),
+                Value<String> transactionId = const Value.absent(),
+                Value<String?> createdById = const Value.absent(),
+                Value<String> contentType = const Value.absent(),
+                Value<String> originalName = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<int?> pageCount = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TransactionReceiptsCompanion(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                transactionId: transactionId,
+                createdById: createdById,
+                contentType: contentType,
+                originalName: originalName,
+                sizeBytes: sizeBytes,
+                pageCount: pageCount,
+                width: width,
+                height: height,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String workspaceId,
+                Value<int> version = const Value.absent(),
+                Value<int> serverSeq = const Value.absent(),
+                required String createdAt,
+                required String updatedAt,
+                Value<String?> deletedAt = const Value.absent(),
+                required String transactionId,
+                Value<String?> createdById = const Value.absent(),
+                required String contentType,
+                Value<String> originalName = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<int?> pageCount = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TransactionReceiptsCompanion.insert(
+                id: id,
+                workspaceId: workspaceId,
+                version: version,
+                serverSeq: serverSeq,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                transactionId: transactionId,
+                createdById: createdById,
+                contentType: contentType,
+                originalName: originalName,
+                sizeBytes: sizeBytes,
+                pageCount: pageCount,
+                width: width,
+                height: height,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TransactionReceiptsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TransactionReceiptsTable,
+      TransactionReceipt,
+      $$TransactionReceiptsTableFilterComposer,
+      $$TransactionReceiptsTableOrderingComposer,
+      $$TransactionReceiptsTableAnnotationComposer,
+      $$TransactionReceiptsTableCreateCompanionBuilder,
+      $$TransactionReceiptsTableUpdateCompanionBuilder,
+      (
+        TransactionReceipt,
+        BaseReferences<
+          _$AppDatabase,
+          $TransactionReceiptsTable,
+          TransactionReceipt
+        >,
+      ),
+      TransactionReceipt,
+      PrefetchHooks Function()
+    >;
 typedef $$BudgetsTableCreateCompanionBuilder =
     BudgetsCompanion Function({
       required String id,
@@ -22382,6 +23735,7 @@ typedef $$BillQueueTableCreateCompanionBuilder =
       required String workspaceId,
       required String cashbookId,
       required String entryId,
+      Value<String?> transactionId,
       Value<String?> path,
       Value<String> contentType,
       Value<String> originalName,
@@ -22402,6 +23756,7 @@ typedef $$BillQueueTableUpdateCompanionBuilder =
       Value<String> workspaceId,
       Value<String> cashbookId,
       Value<String> entryId,
+      Value<String?> transactionId,
       Value<String?> path,
       Value<String> contentType,
       Value<String> originalName,
@@ -22447,6 +23802,11 @@ class $$BillQueueTableFilterComposer
 
   ColumnFilters<String> get entryId => $composableBuilder(
     column: $table.entryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get transactionId => $composableBuilder(
+    column: $table.transactionId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -22540,6 +23900,11 @@ class $$BillQueueTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get transactionId => $composableBuilder(
+    column: $table.transactionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get path => $composableBuilder(
     column: $table.path,
     builder: (column) => ColumnOrderings(column),
@@ -22624,6 +23989,11 @@ class $$BillQueueTableAnnotationComposer
   GeneratedColumn<String> get entryId =>
       $composableBuilder(column: $table.entryId, builder: (column) => column);
 
+  GeneratedColumn<String> get transactionId => $composableBuilder(
+    column: $table.transactionId,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get path =>
       $composableBuilder(column: $table.path, builder: (column) => column);
 
@@ -22698,6 +24068,7 @@ class $$BillQueueTableTableManager
                 Value<String> workspaceId = const Value.absent(),
                 Value<String> cashbookId = const Value.absent(),
                 Value<String> entryId = const Value.absent(),
+                Value<String?> transactionId = const Value.absent(),
                 Value<String?> path = const Value.absent(),
                 Value<String> contentType = const Value.absent(),
                 Value<String> originalName = const Value.absent(),
@@ -22716,6 +24087,7 @@ class $$BillQueueTableTableManager
                 workspaceId: workspaceId,
                 cashbookId: cashbookId,
                 entryId: entryId,
+                transactionId: transactionId,
                 path: path,
                 contentType: contentType,
                 originalName: originalName,
@@ -22736,6 +24108,7 @@ class $$BillQueueTableTableManager
                 required String workspaceId,
                 required String cashbookId,
                 required String entryId,
+                Value<String?> transactionId = const Value.absent(),
                 Value<String?> path = const Value.absent(),
                 Value<String> contentType = const Value.absent(),
                 Value<String> originalName = const Value.absent(),
@@ -22754,6 +24127,7 @@ class $$BillQueueTableTableManager
                 workspaceId: workspaceId,
                 cashbookId: cashbookId,
                 entryId: entryId,
+                transactionId: transactionId,
                 path: path,
                 contentType: contentType,
                 originalName: originalName,
@@ -23313,6 +24687,8 @@ class $AppDatabaseManager {
       $$CategoriesTableTableManager(_db, _db.categories);
   $$TransactionsTableTableManager get transactions =>
       $$TransactionsTableTableManager(_db, _db.transactions);
+  $$TransactionReceiptsTableTableManager get transactionReceipts =>
+      $$TransactionReceiptsTableTableManager(_db, _db.transactionReceipts);
   $$BudgetsTableTableManager get budgets =>
       $$BudgetsTableTableManager(_db, _db.budgets);
   $$RecurringRulesTableTableManager get recurringRules =>

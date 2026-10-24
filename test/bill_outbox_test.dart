@@ -10,15 +10,23 @@ import 'package:spendroo/core/db/local_store.dart';
 import 'package:spendroo/core/entitlements/entitlements.dart';
 import 'package:spendroo/core/sync/bill_files.dart';
 import 'package:spendroo/core/sync/bill_outbox.dart';
+import 'package:spendroo/core/sync/bill_target.dart';
 import 'package:spendroo/features/bills/bill_picker.dart';
 import 'package:spendroo/features/bills/bill_repository.dart';
 import 'package:spendroo/features/bills/bill_text.dart';
+import 'package:spendroo/l10n/app_localizations_en.dart';
 
 import 'test_support.dart';
 
 const shopId = '00000000-0000-0000-0000-0000000000b1';
 const bookId = '00000000-0000-0000-0000-0000000000b2';
 const entryId = '00000000-0000-0000-0000-0000000000b3';
+const homeId = '00000000-0000-0000-0000-0000000000c1';
+const cashId = '00000000-0000-0000-0000-0000000000c2';
+const lunchId = '00000000-0000-0000-0000-0000000000c3';
+
+const entryTarget = EntryTarget(workspaceId: shopId, cashbookId: bookId, entryId: entryId);
+const lunchTarget = TransactionTarget(workspaceId: homeId, transactionId: lunchId);
 
 /// The first bytes of each kind of bill; the rest does not matter to the phone.
 final jpegBytes = [0xFF, 0xD8, 0xFF, 0xE0, ...List.filled(400, 7)];
@@ -38,6 +46,24 @@ Map<String, Object?> storedRow(String id, {String? deletedAt, int size = 1200, S
       'height': 300,
       'version': 1,
       'server_seq': 40,
+      'created_at': '2026-10-02T00:00:00Z',
+      'updated_at': '2026-10-02T00:00:00Z',
+      'deleted_at': deletedAt,
+    };
+
+Map<String, Object?> receiptRow(String id, {String? deletedAt}) => {
+      'id': id,
+      'workspace_id': homeId,
+      'transaction_id': lunchId,
+      'created_by_id': 'u1',
+      'content_type': 'image/jpeg',
+      'original_name': 'lunch.jpg',
+      'size_bytes': 900,
+      'page_count': null,
+      'width': 400,
+      'height': 300,
+      'version': 1,
+      'server_seq': 41,
       'created_at': '2026-10-02T00:00:00Z',
       'updated_at': '2026-10-02T00:00:00Z',
       'deleted_at': deletedAt,
@@ -98,6 +124,21 @@ void main() {
         'source': 'manual',
       });
 
+  Future<void> addLunch({int serverSeq = 9, bool deleted = false}) => store.upsertRow('transactions', {
+        'id': lunchId,
+        'workspace_id': homeId,
+        'version': 1,
+        'server_seq': serverSeq,
+        'created_at': '2026-10-01T00:00:00Z',
+        'updated_at': '2026-10-01T00:00:00Z',
+        'deleted_at': deleted ? '2026-10-03T00:00:00Z' : null,
+        'account_id': cashId,
+        'kind': 'expense',
+        'amount_minor': -25000,
+        'currency': 'BDT',
+        'occurred_on': '2026-10-01',
+      });
+
   Future<PickedBill> pick(List<int> bytes, {String name = 'receipt.jpg'}) async {
     final picked = File('${folder.path}/picked-$name');
     await picked.writeAsBytes(bytes);
@@ -118,8 +159,9 @@ void main() {
         onProgress: (_, sent) => progress.add(sent),
       );
 
-  Future<String> queueBill([List<int>? bytes]) async =>
-      repository().attach(await pick(bytes ?? jpegBytes), workspaceId: shopId, cashbookId: bookId, entryId: entryId);
+  Future<String> queueBill([List<int>? bytes]) async => repository().attach(await pick(bytes ?? jpegBytes), entryTarget);
+
+  Future<String> queueReceipt() async => repository().attach(await pick(jpegBytes, name: 'lunch.jpg'), lunchTarget);
 
   Future<BillQueueData?> job(String id) =>
       (db.select(db.billQueue)..where((q) => q.id.equals(id))).getSingleOrNull();
@@ -308,10 +350,10 @@ void main() {
       final cached = await files.cached('b1', jpegType);
       await cached.writeAsBytes(jpegBytes);
       final repo = repository();
-      expect((await repo.watchForEntry(entryId).first).map((b) => b.id), ['b1']);
+      expect((await repo.watchFor(entryTarget).first).map((b) => b.id), ['b1']);
 
-      await repo.remove((await repo.watchForEntry(entryId).first).single);
-      expect(await repo.watchForEntry(entryId).first, isEmpty, reason: 'hidden while the removal waits');
+      await repo.remove((await repo.watchFor(entryTarget).first).single);
+      expect(await repo.watchFor(entryTarget).first, isEmpty, reason: 'hidden while the removal waits');
 
       respond = (_) async => json({'message': 'Bill removed successfully'});
       await outbox().run();
@@ -343,7 +385,7 @@ void main() {
       await addEntry();
       await store.upsertRow('entry_bills', storedRow('b1'));
       final waiting = await queueBill();
-      final bills = await repository().watchForEntry(entryId).first;
+      final bills = await repository().watchFor(entryTarget).first;
       expect(bills.map((b) => (b.id, b.status)), [('b1', BillStatus.stored), (waiting, BillStatus.waiting)]);
     });
 
@@ -357,7 +399,7 @@ void main() {
         return http.Response.bytes(jpegBytes, 200, headers: {'content-type': 'image/jpeg'});
       };
       final repo = repository();
-      final bill = (await repo.watchForEntry(entryId).first).single;
+      final bill = (await repo.watchFor(entryTarget).first).single;
       final file = await repo.open(bill);
       expect(await file.readAsBytes(), jpegBytes);
       expect(requests.map((r) => r.url.path),
@@ -377,7 +419,7 @@ void main() {
           ? json({'url': 'https://files.example.com/b2.jpg?signature=abc', 'expires_at': '2026-10-19T12:05:00Z'})
           : http.Response.bytes(jpegBytes, 200);
       final repo = repository();
-      await repo.open((await repo.watchForEntry(entryId).first).single);
+      await repo.open((await repo.watchFor(entryTarget).first).single);
       expect(requests.last.url.host, 'files.example.com');
       expect(requests.last.headers.containsKey('X-Session-Token'), isFalse);
     });
@@ -388,9 +430,195 @@ void main() {
       respond = (_) async => throw const SocketException('down');
       final repo = repository();
       await expectLater(
-        repo.open((await repo.watchForEntry(entryId).first).single),
+        repo.open((await repo.watchFor(entryTarget).first).single),
         throwsA(isA<BillUnavailable>().having((e) => e.offline, 'offline', isTrue)),
       );
+    });
+  });
+
+  group('the receipts of a transaction', () {
+    test('wait for the transaction, then go to the receipt address with the id made here', () async {
+      await addLunch(serverSeq: 0);
+      final id = await queueReceipt();
+      expect((await job(id))!.transactionId, lunchId);
+      respond = (_) async => json({'receipts': [receiptRow(id)]}, 201);
+
+      await outbox().run();
+      expect(requests, isEmpty, reason: 'the transaction is not on the server yet');
+
+      await addLunch();
+      await outbox().run();
+      expect(requests.single.url.path, '/api/v1/ledger/transactions/$lunchId/receipts/');
+      expect(uploadedFields.single, contains('name="receipt_file"'));
+      expect(uploadedFields.single, contains('name="receipt_id"'));
+      expect(uploadedFields.single, contains(id));
+      expect(await job(id), isNull);
+      final stored = await (db.select(db.transactionReceipts)..where((r) => r.id.equals(id))).getSingle();
+      expect((stored.transactionId, stored.sizeBytes, stored.deletedAt), (lunchId, 900, null));
+      expect(await (await files.cached(id, jpegType)).exists(), isTrue, reason: 'kept to open offline');
+    });
+
+    test('a transaction still waiting in the sync outbox holds its receipts back', () async {
+      await addLunch();
+      await db.into(db.outbox).insert(OutboxCompanion.insert(
+          mutationId: 'm1', workspaceId: homeId, tableName_: 'transactions', op: 'upsert', rowId: lunchId, data: '{}'));
+      await queueReceipt();
+      await outbox().run();
+      expect(requests, isEmpty);
+    });
+
+    test('no room on the plan: kept, marked, and the sheet is raised', () async {
+      await addLunch();
+      final id = await queueReceipt();
+      respond = (_) async =>
+          json({'code': 'plan_limit', 'feature': F.storagePdf, 'reason': 'feature', 'upgrade_to': 'plus'}, 402);
+      await outbox().run();
+      final refused = (await job(id))!;
+      expect((refused.state, refused.error), (BillOutbox.refused, F.storagePdf));
+      expect(refusals.last['feature'], F.storagePdf);
+      expect(BillView.queued(refused).status, BillStatus.refused);
+      expect(BillView.queued(refused).receipt, isTrue);
+    });
+
+    test('the server\'s other refusals are marked with their reasons', () async {
+      await addLunch();
+      for (final (status, body, error) in [
+        (400, {'code': 'receipt_not_allowed', 'detail': 'transfer'}, 'receipt_not_allowed'),
+        (403, <String, Object?>{}, 'bill_forbidden'),
+        (404, <String, Object?>{}, 'bill_gone'),
+      ]) {
+        final id = await queueReceipt();
+        respond = (_) async => json(body, status);
+        await outbox().run();
+        expect((await job(id))!.error, error, reason: '$status');
+        await repository().remove(BillView.queued((await job(id))!));
+        expect(await job(id), isNull);
+      }
+    });
+
+    test('a transaction deleted here takes its waiting receipts with it', () async {
+      await addLunch();
+      final id = await queueReceipt();
+      await addLunch(deleted: true);
+      await outbox().run();
+      expect(await job(id), isNull);
+      expect(requests, isEmpty);
+    });
+
+    test('removing a stored receipt hides it at once and tells the receipt address', () async {
+      await addLunch();
+      await store.upsertRow('transaction_receipts', receiptRow('r1'));
+      final cached = await files.cached('r1', jpegType);
+      await cached.writeAsBytes(jpegBytes);
+      final repo = repository();
+      final shown = (await repo.watchFor(lunchTarget).first).single;
+      expect((shown.id, shown.status, shown.receipt, shown.target), ('r1', BillStatus.stored, true, lunchTarget));
+
+      await repo.remove(shown);
+      expect(await repo.watchFor(lunchTarget).first, isEmpty, reason: 'hidden while the removal waits');
+      expect((await job('r1'))!.transactionId, lunchId);
+
+      respond = (_) async => http.Response('', 204);
+      await outbox().run();
+      expect((requests.single.method, requests.single.url.path),
+          ('DELETE', '/api/v1/ledger/transactions/$lunchId/receipts/r1/'));
+      final row = await (db.select(db.transactionReceipts)..where((r) => r.id.equals('r1'))).getSingle();
+      expect(row.deletedAt, isNotNull);
+      expect(await cached.exists(), isFalse);
+    });
+
+    test('a removal the server forbids shows the receipt again', () async {
+      await addLunch();
+      await store.upsertRow('transaction_receipts', receiptRow('r1'));
+      final repo = repository();
+      await repo.remove((await repo.watchFor(lunchTarget).first).single);
+      respond = (_) async => json({}, 403);
+      await outbox().run();
+      expect((await repo.watchFor(lunchTarget).first).single.id, 'r1');
+    });
+
+    test('files of stored receipts are kept when the phone sweeps', () async {
+      await store.upsertRow('transaction_receipts', receiptRow('kept'));
+      final kept = await files.cached('kept', jpegType);
+      await kept.writeAsBytes(jpegBytes);
+      await kept.setLastModified(DateTime.now().subtract(const Duration(hours: 1)));
+      await outbox().run();
+      expect(await kept.exists(), isTrue);
+    });
+
+    test('stored and waiting receipts together, and a stored one opens through its own link', () async {
+      await addLunch();
+      await store.upsertRow('transaction_receipts', receiptRow('r1'));
+      final waiting = await queueReceipt();
+      final repo = repository();
+      final receipts = await repo.watchFor(lunchTarget).first;
+      expect(receipts.map((b) => (b.id, b.status)), [('r1', BillStatus.stored), (waiting, BillStatus.waiting)]);
+      // Bills of an entry are not mixed in, nor the other way round
+      expect(await repo.watchFor(entryTarget).first, isEmpty);
+
+      respond = (request) async => request.url.path.endsWith('/link/')
+          ? json({'url': '/api/v1/bills/file/signed/', 'expires_at': '2026-10-19T12:05:00Z'})
+          : http.Response.bytes(jpegBytes, 200);
+      await repo.open(receipts.first);
+      expect(requests.first.url.path, '/api/v1/ledger/transactions/$lunchId/receipts/r1/link/');
+    });
+
+    test('forgetting a transaction drops only its waiting receipts', () async {
+      await addEntry();
+      await addLunch();
+      final bill = await queueBill();
+      final receipt = await queueReceipt();
+      final repo = repository();
+      await repo.forgetEntry(entryId);
+      expect((await job(bill), await job(receipt) != null), (null, true));
+      // Nor does a book going take receipts, which belong to no book
+      await repo.forgetCashbook(bookId);
+      expect(await job(receipt), isNotNull);
+      await repo.forgetTransaction(lunchId);
+      expect(await job(receipt), isNull);
+    });
+  });
+
+  group('what a file is attached to', () {
+    test('a queued job says its target, and targets compare by what they point at', () async {
+      await addEntry();
+      await addLunch();
+      final bill = (await job(await queueBill()))!;
+      final receipt = (await job(await queueReceipt()))!;
+      expect(BillTarget.ofJob(bill), entryTarget);
+      expect(BillTarget.ofJob(receipt), lunchTarget);
+      expect(BillTarget.ofJob(bill).hashCode, entryTarget.hashCode);
+      expect(BillTarget.ofJob(receipt).hashCode, lunchTarget.hashCode);
+      expect(entryTarget == lunchTarget, isFalse);
+      expect((entryTarget.isReceipt, lunchTarget.isReceipt), (false, true));
+      expect((entryTarget.ownerTable, lunchTarget.ownerTable), ('entries', 'transactions'));
+      expect(entryTarget.linkPath('b1'), '/api/v1/cashbooks/$bookId/entries/$entryId/bills/b1/link/');
+    });
+
+    test('bills and receipts are worded each their own way', () {
+      final l10n = AppLocalizationsEn();
+      final bill = BillWording(l10n, receipt: false), receipt = BillWording(l10n, receipt: true);
+      expect((bill.title, receipt.title), ('Bills', 'Receipts'));
+      expect((bill.attach, receipt.attach), ('Attach bill', 'Attach receipt'));
+      expect(receipt.hint, contains('transaction'));
+      expect((bill.remove, receipt.remove), ('Remove bill', 'Remove receipt'));
+      expect(receipt.removeConfirm, contains('receipt'));
+      expect((bill.removed, receipt.removed), ('Bill removed', 'Receipt removed'));
+      expect(receipt.added, startsWith('Receipt attached'));
+      expect(receipt.openOffline, contains('receipt'));
+      expect((bill.gone, receipt.gone), ('This bill is no longer available.', 'This receipt is no longer available.'));
+      expect(receipt.openFailed, contains('receipt'));
+      expect((bill.perFile('2 MB'), receipt.perFile('2 MB')), ('Up to 2 MB per bill', 'Up to 2 MB per receipt'));
+      expect((bill.count(2), receipt.count(1)), ('2 bills', '1 receipt'));
+      expect(receipt.error('bill_forbidden'), "You can't add receipts to this transaction.");
+      expect(bill.error('bill_forbidden'), "You can't add bills to this entry.");
+      expect(receipt.error('bill_gone'), contains('transaction'));
+      expect(bill.error('bill_gone'), contains('entry'));
+      expect(receipt.error('receipt_not_allowed'), 'Only expenses and income can have a receipt.');
+      for (final code in ['bill_type', 'bill_unsafe', 'bill_corrupt', 'bill_too_large', BillOutbox.missing]) {
+        expect(receipt.error(code), bill.error(code), reason: code);
+      }
+      expect((bill.error(null), receipt.error('odd')), ("The bill couldn't be attached.", "The receipt couldn't be attached."));
     });
   });
 }

@@ -11,6 +11,7 @@ import '../../core/db/local_store.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/entitlements/entitlements_controller.dart';
 import '../../core/providers.dart';
+import '../../core/sync/bill_target.dart';
 import '../../core/ui.dart';
 import '../plan/plan_text.dart';
 import '../plan/upgrade_sheet.dart';
@@ -21,9 +22,15 @@ import 'bill_viewer_page.dart';
 
 const _tileSize = Size(78, 104);
 
-/// Bills picked in the form of an entry that is not saved yet. The form keeps
-/// them until Save, then [attachTo] queues them against the new entry.
+/// Bills (or receipts) picked in the form of an entry (or transaction) that is
+/// not saved yet. The form keeps them until Save, then [attachTo] queues them
+/// against the new row.
 class StagedBills extends ChangeNotifier {
+  StagedBills({this.receipts = false});
+
+  /// Receipts of a personal transaction rather than bills of an entry.
+  final bool receipts;
+
   final _bills = <BillView>[];
   final _picked = <String, PickedBill>{};
 
@@ -33,7 +40,7 @@ class StagedBills extends ChangeNotifier {
   void add(PickedBill picked) {
     final id = newId();
     _picked[id] = picked;
-    _bills.add(BillView.staged(picked, id));
+    _bills.add(BillView.staged(picked, id, receipt: receipts));
     notifyListeners();
   }
 
@@ -43,28 +50,29 @@ class StagedBills extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> attachTo(BillRepository repo, {required String workspaceId, required String cashbookId, required String entryId}) async {
+  Future<void> attachTo(BillRepository repo, BillTarget target) async {
     for (final bill in _bills) {
-      await repo.attach(_picked[bill.id]!, workspaceId: workspaceId, cashbookId: cashbookId, entryId: entryId, id: bill.id);
+      await repo.attach(_picked[bill.id]!, target, id: bill.id);
     }
   }
 }
 
-/// The bills of one entry: a strip of tiles that fly open into the viewer,
-/// with a dashed tile to attach another. Without [entry] the bills are the
-/// [staged] ones of a form not saved yet; otherwise every change is queued at once.
+/// The bills of one entry, or the receipts of one transaction: a strip of
+/// tiles that fly open into the viewer, with a dashed tile to attach another.
+/// Without [target] the files are the [staged] ones of a form not saved yet;
+/// otherwise every change is queued at once.
 class BillsSection extends ConsumerStatefulWidget {
   const BillsSection({
     super.key,
     required this.workspace,
-    this.entry,
+    this.target,
     this.staged,
     this.canAttach = true,
     this.canRemove = true,
-  }) : assert(entry != null || staged != null);
+  }) : assert(target != null || staged != null);
 
   final Workspace? workspace;
-  final Entry? entry;
+  final BillTarget? target;
   final StagedBills? staged;
   final bool canAttach;
   final bool canRemove;
@@ -77,6 +85,8 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
   BillRepository get _repo => ref.read(billRepositoryProvider);
 
   BillRules get _rules => BillRules.of(ref.read(entitlementsProvider).value, widget.workspace);
+
+  BillWording get _words => BillWording(context.l10n, receipt: widget.target?.isReceipt ?? widget.staged!.receipts);
 
   @override
   void initState() {
@@ -105,19 +115,19 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
     // Back from the sheet or the camera, the keyboard should not jump up again
     FocusManager.instance.primaryFocus?.unfocus();
     final rules = _rules;
-    final picked = await showAttachBillSheet(context, rules);
+    final picked = await showAttachBillSheet(context, rules, words: _words);
     if (picked == null || !mounted) return;
-    final entry = widget.entry;
+    final target = widget.target;
     await guarded(context, () async {
       await _repo.check(picked, rules, alsoStaged: widget.staged?.bytes ?? 0);
-      if (entry == null) {
+      if (target == null) {
         widget.staged!.add(picked);
         HapticFeedback.selectionClick();
         return;
       }
-      await _repo.attach(picked, workspaceId: entry.workspaceId, cashbookId: entry.cashbookId, entryId: entry.id);
+      await _repo.attach(picked, target);
       HapticFeedback.selectionClick();
-      if (mounted) context.showMessage(context.l10n.billAdded);
+      if (mounted) context.showMessage(_words.added);
     });
   }
 
@@ -126,7 +136,7 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
     await _repo.remove(bill);
     if (!mounted) return;
     showEventBurst(context, AppEvent.deleted);
-    context.showMessage(context.l10n.billRemoved);
+    context.showMessage(_words.removed);
   }
 
   Future<void> _open(List<BillView> bills, BillView bill) async {
@@ -142,9 +152,10 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
     if (removed != null && mounted) await _remove(removed);
   }
 
-  /// A bill the server or the plan would not take: why, and what can be done.
+  /// A file the server or the plan would not take: why, and what can be done.
   Future<void> _explain(BillView bill) async {
     final l10n = context.l10n;
+    final words = _words;
     final refused = bill.status == BillStatus.refused;
     final action = await showAppSheet<String>(
       context,
@@ -154,7 +165,7 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
         final plan = ref.read(entitlementsProvider).value?.plan.nameIn(sheet.languageCode) ?? '';
         final message = refused
             ? planLimitText(l10n, PlanLimitException(bill.error ?? F.storageMb, limit: _limitFor(bill.error)), plan)
-            : billErrorText(l10n, bill.error);
+            : words.error(bill.error);
         final canRetry = refused || const {'bill_forbidden', 'bill_gone', null}.contains(bill.error);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -189,7 +200,7 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
             TextButton.icon(
               style: TextButton.styleFrom(foregroundColor: Theme.of(sheet).colorScheme.error),
               icon: const Icon(Icons.delete_outline_rounded),
-              label: Text(l10n.billRemove),
+              label: Text(words.remove),
               onPressed: () => Navigator.pop(sheet, 'remove'),
             ),
           ],
@@ -213,10 +224,9 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
-    final entry = widget.entry;
-    final bills = entry == null
-        ? widget.staged!.bills
-        : ref.watch(entryBillsProvider(entry.id)).value ?? const <BillView>[];
+    final words = _words;
+    final target = widget.target;
+    final bills = target == null ? widget.staged!.bills : ref.watch(billsProvider(target)).value ?? const <BillView>[];
     if (bills.isEmpty && !widget.canAttach) return const SizedBox.shrink();
     final rules = BillRules.of(ref.watch(entitlementsProvider).value, widget.workspace);
 
@@ -227,7 +237,7 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
           children: [
             Icon(Icons.receipt_long_rounded, size: 18, color: context.colors.muted),
             const SizedBox(width: 6),
-            Text(l10n.bills, style: text.titleSmall),
+            Text(words.title, style: text.titleSmall),
             const SizedBox(width: 6),
             PopSwitcher(
               child: bills.isEmpty
@@ -242,13 +252,13 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
           curve: AppMotion.ease,
           alignment: Alignment.topCenter,
           child: bills.isEmpty
-              ? _AttachCard(onTap: _attach)
+              ? _AttachCard(words: words, onTap: _attach)
               : SizedBox(
                   height: _tileSize.height + 8,
                   child: _BillStrip(
                     bills: bills,
                     tile: (bill) => BillTile(bill: bill, onTap: () => _open(bills, bill)),
-                    trailing: widget.canAttach ? _AttachTile(onTap: _attach) : null,
+                    trailing: widget.canAttach ? _AttachTile(words: words, onTap: _attach) : null,
                   ),
                 ),
         ),
@@ -257,7 +267,7 @@ class _BillsSectionState extends ConsumerState<BillsSection> {
             padding: const EdgeInsets.only(top: AppSpace.xs),
             child: Text(l10n.billViewOnly, style: text.bodySmall),
           ),
-        if (widget.canAttach && rules.known && rules.totalMb != null) _StorageLine(rules: rules),
+        if (widget.canAttach && rules.known && rules.totalMb != null) _StorageLine(rules: rules, words: words),
       ],
     );
   }
@@ -286,11 +296,12 @@ class _CountChip extends StatelessWidget {
       );
 }
 
-/// How much of the owner's storage bills use, and the most one bill may be.
+/// How much of the owner's storage bills and receipts use, and the most one file may be.
 class _StorageLine extends StatelessWidget {
-  const _StorageLine({required this.rules});
+  const _StorageLine({required this.rules, required this.words});
 
   final BillRules rules;
+  final BillWording words;
 
   @override
   Widget build(BuildContext context) {
@@ -312,7 +323,7 @@ class _StorageLine extends StatelessWidget {
                   style: style,
                 ),
               ),
-              if (rules.fileMb != null) Text(l10n.billPerFile(formatMegabytes(rules.fileMb!, language)), style: style),
+              if (rules.fileMb != null) Text(words.perFile(formatMegabytes(rules.fileMb!, language)), style: style),
             ],
           ),
         ],
@@ -321,7 +332,7 @@ class _StorageLine extends StatelessWidget {
   }
 }
 
-/// One bill: its photo or first page, with what is happening to it on top.
+/// One bill or receipt: its photo or first page, with what is happening to it on top.
 class BillTile extends ConsumerWidget {
   const BillTile({super.key, required this.bill, this.onTap});
 
@@ -341,7 +352,7 @@ class BillTile extends ConsumerWidget {
     };
     return Semantics(
       button: true,
-      label: '${bill.isPdf ? 'PDF' : l10n.bills}: $semantics',
+      label: '${bill.isPdf ? 'PDF' : BillWording(l10n, receipt: bill.receipt).title}: $semantics',
       child: Pressable(
         onTap: onTap,
         child: Hero(
@@ -690,8 +701,9 @@ class _ArriveState extends State<_Arrive> with SingleTickerProviderStateMixin {
 
 /// The dashed tile at the end of the strip.
 class _AttachTile extends StatelessWidget {
-  const _AttachTile({required this.onTap});
+  const _AttachTile({required this.words, required this.onTap});
 
+  final BillWording words;
   final VoidCallback onTap;
 
   @override
@@ -699,7 +711,7 @@ class _AttachTile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Semantics(
       button: true,
-      label: context.l10n.billAttach,
+      label: words.attach,
       child: Pressable(
         onTap: onTap,
         child: CustomPaint(
@@ -714,7 +726,7 @@ class _AttachTile extends StatelessWidget {
                 const SizedBox(height: 6),
                 ExcludeSemantics(
                   child: Text(
-                    context.l10n.billAttach,
+                    words.attach,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.primary),
                   ),
@@ -728,10 +740,11 @@ class _AttachTile extends StatelessWidget {
   }
 }
 
-/// What the section shows before the first bill: an invitation, not a gap.
+/// What the section shows before the first file: an invitation, not a gap.
 class _AttachCard extends StatelessWidget {
-  const _AttachCard({required this.onTap});
+  const _AttachCard({required this.words, required this.onTap});
 
+  final BillWording words;
   final VoidCallback onTap;
 
   @override
@@ -755,8 +768,8 @@ class _AttachCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(context.l10n.billAttach, style: text.titleSmall?.copyWith(color: scheme.primary)),
-                      Text(context.l10n.billsHint, style: text.bodySmall),
+                      Text(words.attach, style: text.titleSmall?.copyWith(color: scheme.primary)),
+                      Text(words.hint, style: text.bodySmall),
                     ],
                   ),
                 ),
@@ -796,16 +809,18 @@ class _DashedBorder extends CustomPainter {
 
 /// Camera, gallery or a PDF. Returns the chosen file, checked to be a photo
 /// or a PDF; a locked PDF choice opens the upgrade sheet instead.
-Future<PickedBill?> showAttachBillSheet(BuildContext context, BillRules rules) => showAppSheet<PickedBill>(
+Future<PickedBill?> showAttachBillSheet(BuildContext context, BillRules rules, {required BillWording words}) =>
+    showAppSheet<PickedBill>(
       context,
-      title: context.l10n.billAttach,
-      builder: (_) => _AttachSheet(rules: rules, host: context),
+      title: words.attach,
+      builder: (_) => _AttachSheet(rules: rules, words: words, host: context),
     );
 
 class _AttachSheet extends ConsumerStatefulWidget {
-  const _AttachSheet({required this.rules, required this.host});
+  const _AttachSheet({required this.rules, required this.words, required this.host});
 
   final BillRules rules;
+  final BillWording words;
 
   /// The screen under the sheet, which shows the upgrade sheet once this one is gone.
   final BuildContext host;
@@ -832,7 +847,7 @@ class _AttachSheetState extends ConsumerState<_AttachSheet> {
       if (mounted) setState(() => _error = context.l10n.billErrorType);
     } on PlatformException {
       // Camera or files refused by the system, or no app to pick with
-      if (mounted) setState(() => _error = context.l10n.billErrorGeneric);
+      if (mounted) setState(() => _error = widget.words.errorGeneric);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -906,7 +921,7 @@ class _AttachSheetState extends ConsumerState<_AttachSheet> {
                 Expanded(
                   child: Text(
                     [
-                      l10n.billPerFile(formatMegabytes(rules.fileMb!, language)),
+                      widget.words.perFile(formatMegabytes(rules.fileMb!, language)),
                       if (room != null) l10n.billRoomLeft(formatBytes(room, language)),
                     ].join(' · '),
                     style: Theme.of(context).textTheme.bodySmall,
@@ -966,6 +981,35 @@ class _Choice extends StatelessWidget {
                 if (locked) const LockedTag() else Icon(Icons.chevron_right_rounded, color: context.colors.muted),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A paperclip on a row, and how many bills or receipts it keeps.
+class BillBadge extends StatelessWidget {
+  const BillBadge({super.key, required this.count, this.receipt = false});
+
+  final int count;
+  final bool receipt;
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = context.colors.muted;
+    return Semantics(
+      label: BillWording(context.l10n, receipt: receipt).count(count),
+      child: ExcludeSemantics(
+        child: PopSwitcher(
+          child: Row(
+            key: ValueKey(count),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.attach_file_rounded, size: 15, color: muted),
+              if (count > 1)
+                Text('$count', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: muted)),
+            ],
           ),
         ),
       ),

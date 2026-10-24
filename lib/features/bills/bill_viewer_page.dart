@@ -67,7 +67,9 @@ class _BillViewerPageState extends ConsumerState<BillViewerPage> {
     try {
       return await ref.read(billFileProvider(_bill).future);
     } on BillUnavailable catch (problem) {
-      if (mounted) context.showMessage(problem.offline ? context.l10n.billOpenOffline : context.l10n.billGone);
+      if (!mounted) return null;
+      final words = BillWording(context.l10n, receipt: _bill.receipt);
+      context.showMessage(problem.offline ? words.openOffline : words.gone);
       return null;
     }
   }
@@ -84,13 +86,14 @@ class _BillViewerPageState extends ConsumerState<BillViewerPage> {
   }
 
   Future<void> _remove() async {
-    if (!await confirm(context, context.l10n.billRemoveConfirm)) return;
+    if (!await confirm(context, BillWording(context.l10n, receipt: _bill.receipt).removeConfirm)) return;
     if (mounted) Navigator.pop(context, _bill);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final words = BillWording(l10n, receipt: _bill.receipt);
     final total = widget.bills.length;
     final fade = (1 - (_drag.abs() / 400)).clamp(0.0, 1.0);
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -154,7 +157,7 @@ class _BillViewerPageState extends ConsumerState<BillViewerPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            _bill.originalName.isEmpty ? l10n.bills : _bill.originalName,
+                            _bill.originalName.isEmpty ? words.title : _bill.originalName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
@@ -178,7 +181,7 @@ class _BillViewerPageState extends ConsumerState<BillViewerPage> {
                         if (widget.canRemove)
                           PopupMenuItem(
                             value: 'remove',
-                            child: Text(l10n.billRemove, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                            child: Text(words.remove, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                           ),
                       ],
                     ),
@@ -341,7 +344,9 @@ class _BillPageState extends ConsumerState<_BillPage> with SingleTickerProviderS
           ),
         ),
       AsyncError(:final error) => _Problem(
-          message: error is BillUnavailable && error.offline ? context.l10n.billOpenOffline : context.l10n.billOpenFailed,
+          message: error is BillUnavailable && error.offline
+              ? BillWording(context.l10n, receipt: bill.receipt).openOffline
+              : BillWording(context.l10n, receipt: bill.receipt).openFailed,
           onRetry: () => ref.invalidate(billFileProvider(bill)),
         ),
       // While it downloads: the thumbnail, already on screen, holds the place

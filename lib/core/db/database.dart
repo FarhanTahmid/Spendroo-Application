@@ -190,6 +190,24 @@ class Transactions extends Table with SyncColumns {
   TextColumn get occurrenceId => text().nullable()();
 }
 
+/// A photo or PDF of the receipt of a personal expense or income. Rows arrive
+/// by sync only (the server checks each file), like EntryBills; the file is
+/// fetched when opened and cached (core/sync/bill_files.dart).
+@DataClassName('TransactionReceipt')
+@TableIndex(name: 'transaction_receipts_transaction', columns: {#transactionId})
+class TransactionReceipts extends Table with SyncColumns {
+  TextColumn get transactionId => text()();
+  TextColumn get createdById => text().nullable()();
+
+  /// What the server found the file to be: image/jpeg, image/png or application/pdf.
+  TextColumn get contentType => text()();
+  TextColumn get originalName => text().withDefault(const Constant(''))();
+  IntColumn get sizeBytes => integer().withDefault(const Constant(0))();
+  IntColumn get pageCount => integer().nullable()();
+  IntColumn get width => integer().nullable()();
+  IntColumn get height => integer().nullable()();
+}
+
 /// Money put aside for something. It sits in an account of its own (kind
 /// 'goal'), so putting money in or taking it out is a transfer.
 class SavingsGoals extends Table with SyncColumns {
@@ -305,9 +323,10 @@ class Outbox extends Table {
   TextColumn get data => text()();
 }
 
-/// Bills waiting for the server: files to send, and bills to take away. Apart
-/// from the outbox because a file travels in a request of its own, once its
-/// entry is on the server (core/sync/bill_outbox.dart). Never synced.
+/// Bills and receipts waiting for the server: files to send, and ones to take
+/// away. Apart from the outbox because a file travels in a request of its own,
+/// once the row it belongs to is on the server (core/sync/bill_outbox.dart).
+/// Never synced.
 class BillQueue extends Table {
   /// The bill's id, made here; the server keeps it, so a resend is recognised.
   TextColumn get id => text()();
@@ -315,8 +334,13 @@ class BillQueue extends Table {
   /// 'upload' or 'remove'.
   TextColumn get op => text()();
   TextColumn get workspaceId => text()();
+
+  /// The bill's entry and its book; '' for a receipt.
   TextColumn get cashbookId => text()();
   TextColumn get entryId => text()();
+
+  /// The receipt's transaction; null for a bill (features/bills/bill_target.dart).
+  TextColumn get transactionId => text().nullable()();
 
   /// The file waiting to go, for an upload.
   TextColumn get path => text().nullable()();
@@ -399,7 +423,7 @@ class Settings extends Table {
 
 @DriftDatabase(tables: [
   Workspaces, WorkspaceTags, Cashbooks, EntryCategories, PaymentMethods, EntryFields, Entries, EntryBills, CashbookMembers,
-  Accounts, Categories, Transactions, Budgets, RecurringRules, RecurringOccurrences, InboxItems, SavingsGoals,
+  Accounts, Categories, Transactions, TransactionReceipts, Budgets, RecurringRules, RecurringOccurrences, InboxItems, SavingsGoals,
   Outbox, BillQueue, SyncCursors, SyncFailures, Settings,
 ])
 class AppDatabase extends _$AppDatabase {
@@ -411,7 +435,7 @@ class AppDatabase extends _$AppDatabase {
   // Every change: bump this, run `dart run drift_dev make-migrations`, add the
   // step below. The generated tests in test/drift/ check each step.
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -472,14 +496,20 @@ class AppDatabase extends _$AppDatabase {
             // Merchants and tags already on the server were never pulled: pull again
             await customStatement('DELETE FROM sync_cursors');
           },
+          from10To11: (m, schema) async {
+            // No receipt was on any server before this version: nothing to pull again
+            await m.createTable(schema.transactionReceipts);
+            await m.createIndex(schema.transactionReceiptsTransaction);
+            await m.addColumn(schema.billQueue, schema.billQueue.transactionId);
+          },
         ),
       );
 
   /// Synced tables in the order rows must be applied: parents before children.
   static const syncedTables = [
     'tags', 'cashbooks', 'entry_categories', 'payment_methods', 'entry_fields', 'entries', 'entry_bills', 'cashbook_members',
-    'accounts', 'savings_goals', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions', 'budgets',
-    'inbox_items',
+    'accounts', 'savings_goals', 'categories', 'recurring_rules', 'recurring_occurrences', 'transactions',
+    'transaction_receipts', 'budgets', 'inbox_items',
   ];
 
   TableInfo<Table, dynamic> tableByName(String name) => allTables.firstWhere((t) => t.actualTableName == name);

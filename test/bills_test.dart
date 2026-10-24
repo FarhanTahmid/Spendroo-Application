@@ -166,7 +166,7 @@ void main() {
 
     await tester.tap(find.text('Choose a PDF'));
     await h.settle();
-    expect(find.text('PDF bills is not part of your Free plan.'), findsOneWidget);
+    expect(find.text('Attaching PDFs is not part of your Free plan.'), findsOneWidget);
     await h.stop();
   });
 
@@ -178,7 +178,7 @@ void main() {
     await h.settle();
     await tester.tap(find.text('Take a photo'));
     await h.settle();
-    expect(find.text('On your Free plan, one bill can be up to 2 MB.'), findsOneWidget);
+    expect(find.text('On your Free plan, one file can be up to 2 MB.'), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp('Attached when you save')), findsNothing);
     await h.stop();
   });
@@ -190,7 +190,7 @@ void main() {
     await h.settle();
     await tester.tap(find.text('Choose a photo'));
     await h.settle();
-    expect(find.text('Your Free plan keeps up to 10 MB of bills. Remove some, or upgrade for more room.'), findsOneWidget);
+    expect(find.text('Your Free plan keeps up to 10 MB of bills and receipts. Remove some, or upgrade for more room.'), findsOneWidget);
     await h.stop();
   });
 

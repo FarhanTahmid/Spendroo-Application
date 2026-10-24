@@ -52,12 +52,13 @@ class FixedEntitlements extends EntitlementsController {
 /// A personal screen on an in-memory database, with the month fixed to October 2026.
 /// Without [plan] nobody is signed in, so no plan limits anything.
 class ScreenHarness {
-  ScreenHarness(this.tester, {Entitlements? plan, List<Override> overrides = const []}) {
+  /// [retry] false: a provider that fails stays failed, as it does once its retries run out.
+  ScreenHarness(this.tester, {Entitlements? plan, List<Override> overrides = const [], bool retry = true}) {
     useHostSqlite();
     db = AppDatabase(DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true));
     store = LocalStore(db);
     ledger = LedgerRepository(db, store);
-    container = ProviderContainer(overrides: [
+    container = ProviderContainer(retry: retry ? null : (_, _) => null, overrides: [
       databaseProvider.overrideWithValue(db),
       localStoreProvider.overrideWithValue(store),
       tokenStoreProvider.overrideWithValue(MemoryTokenStore()),

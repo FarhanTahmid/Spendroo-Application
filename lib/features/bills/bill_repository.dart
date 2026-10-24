@@ -10,6 +10,7 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/providers.dart';
 import '../../core/sync/bill_files.dart';
 import '../../core/sync/bill_outbox.dart';
+import '../../core/sync/bill_target.dart';
 import 'bill_picker.dart';
 import 'bill_text.dart';
 
@@ -17,7 +18,7 @@ enum BillStatus {
   /// On the server.
   stored,
 
-  /// Picked for an entry that is not saved yet.
+  /// Picked in a form whose entry or transaction is not saved yet.
   staged,
 
   /// On its way to the server.
@@ -30,14 +31,14 @@ enum BillStatus {
   refused,
 }
 
-/// A bill as the app shows it: on the server already, or still on its way.
+/// A bill or receipt as the app shows it: on the server already, or still on its way.
 class BillView {
   const BillView({
     required this.id,
     required this.contentType,
     required this.status,
-    this.entryId = '',
-    this.cashbookId = '',
+    this.target,
+    this.receipt = false,
     this.originalName = '',
     this.sizeBytes = 0,
     this.pageCount,
@@ -48,8 +49,7 @@ class BillView {
 
   factory BillView.stored(EntryBill bill) => BillView(
         id: bill.id,
-        entryId: bill.entryId,
-        cashbookId: bill.cashbookId,
+        target: EntryTarget(workspaceId: bill.workspaceId, cashbookId: bill.cashbookId, entryId: bill.entryId),
         contentType: bill.contentType,
         originalName: bill.originalName,
         sizeBytes: bill.sizeBytes,
@@ -58,10 +58,22 @@ class BillView {
         status: BillStatus.stored,
       );
 
+  factory BillView.receipt(TransactionReceipt receipt) => BillView(
+        id: receipt.id,
+        target: TransactionTarget(workspaceId: receipt.workspaceId, transactionId: receipt.transactionId),
+        receipt: true,
+        contentType: receipt.contentType,
+        originalName: receipt.originalName,
+        sizeBytes: receipt.sizeBytes,
+        pageCount: receipt.pageCount,
+        createdAt: receipt.createdAt,
+        status: BillStatus.stored,
+      );
+
   factory BillView.queued(BillQueueData job) => BillView(
         id: job.id,
-        entryId: job.entryId,
-        cashbookId: job.cashbookId,
+        target: BillTarget.ofJob(job),
+        receipt: job.transactionId != null,
         contentType: job.contentType,
         originalName: job.originalName,
         sizeBytes: job.sizeBytes,
@@ -75,9 +87,10 @@ class BillView {
         },
       );
 
-  /// Picked in a form whose entry is not saved yet; its id is made already.
-  factory BillView.staged(PickedBill picked, String id) => BillView(
+  /// Picked in a form whose entry or transaction is not saved yet; its id is made already.
+  factory BillView.staged(PickedBill picked, String id, {bool receipt = false}) => BillView(
         id: id,
+        receipt: receipt,
         contentType: picked.contentType,
         originalName: picked.name,
         sizeBytes: picked.sizeBytes,
@@ -86,8 +99,12 @@ class BillView {
       );
 
   final String id;
-  final String entryId;
-  final String cashbookId;
+
+  /// What it is attached to; null while staged in a form not saved yet.
+  final BillTarget? target;
+
+  /// A receipt of a personal transaction rather than a bill of an entry: only the words differ.
+  final bool receipt;
   final String contentType;
   final String originalName;
   final int sizeBytes;
@@ -153,9 +170,10 @@ class BillRules {
   int get fileCapBytes => (fileMb == null || fileMb! > hardCapMb ? hardCapMb : fileMb!) * megabyte;
 }
 
-/// Bills of business entries: offline first, like everything else. A picked
-/// file is copied in and queued at once (core/sync/bill_outbox.dart sends it
-/// after its entry); removing one hides it at once and queues the removal.
+/// Bills of business entries and receipts of personal transactions: offline
+/// first, like everything else. A picked file is copied in and queued at once
+/// (core/sync/bill_outbox.dart sends it after the row it belongs to);
+/// removing one hides it at once and queues the removal.
 class BillRepository {
   BillRepository(this.db, this.api, this.files, {this.onQueued});
 
@@ -166,38 +184,52 @@ class BillRepository {
   /// Called after something was queued, so sync runs soon.
   final void Function()? onQueued;
 
-  /// The entry's bills, oldest first: stored ones (less any being removed) and ones on their way.
-  Stream<List<BillView>> watchForEntry(String entryId) => db
-      .customSelect(
-        'SELECT * FROM ('
-        "  SELECT 's' AS kind, b.id, b.created_at FROM entry_bills b "
-        '  WHERE b.entry_id = ?1 AND b.deleted_at IS NULL '
-        "  AND b.id NOT IN (SELECT id FROM bill_queue WHERE op = 'remove') "
-        '  UNION ALL '
-        "  SELECT 'q' AS kind, q.id, q.created_at FROM bill_queue q WHERE q.entry_id = ?1 AND q.op = 'upload'"
-        ') ORDER BY created_at, id',
-        variables: [Variable<String>(entryId)],
-        readsFrom: {db.entryBills, db.billQueue},
-      )
-      .watch()
-      .asyncMap((rows) async {
-        final stored = {
-          for (final bill in await (db.select(db.entryBills)..where((b) => b.entryId.equals(entryId))).get()) bill.id: bill,
-        };
-        final queued = {
-          for (final job in await (db.select(db.billQueue)..where((q) => q.entryId.equals(entryId))).get()) job.id: job,
-        };
-        final bills = [
-          for (final row in rows)
-            if (row.read<String>('kind') == 's')
-              BillView.stored(stored[row.read<String>('id')]!)
-            else
-              BillView.queued(queued[row.read<String>('id')]!),
-        ];
-        // The server and the phone write times differently: order by the moment, not the text
-        DateTime moment(BillView bill) => DateTime.tryParse(bill.createdAt ?? '') ?? DateTime(9999);
-        return bills..sort((a, b) => moment(a).compareTo(moment(b)));
-      });
+  /// The target's files, oldest first: stored ones (less any being removed) and ones on their way.
+  Stream<List<BillView>> watchFor(BillTarget target) {
+    final queuedColumn = target.isReceipt ? 'transaction_id' : 'entry_id';
+    return db
+        .customSelect(
+          'SELECT * FROM ('
+          "  SELECT 's' AS kind, b.id, b.created_at FROM ${target.table} b "
+          '  WHERE b.${target.ownerColumn} = ?1 AND b.deleted_at IS NULL '
+          "  AND b.id NOT IN (SELECT id FROM bill_queue WHERE op = 'remove') "
+          '  UNION ALL '
+          "  SELECT 'q' AS kind, q.id, q.created_at FROM bill_queue q WHERE q.$queuedColumn = ?1 AND q.op = 'upload'"
+          ') ORDER BY created_at, id',
+          variables: [Variable<String>(target.ownerId)],
+          readsFrom: {db.tableByName(target.table), db.billQueue},
+        )
+        .watch()
+        .asyncMap((rows) async {
+      final stored = await _stored(target);
+      final queued = {
+        for (final job in await (db.select(db.billQueue)..where((q) => target.queued(q))).get()) job.id: job,
+      };
+      final bills = [
+        for (final row in rows)
+          if (row.read<String>('kind') == 's')
+            stored[row.read<String>('id')]!
+          else
+            BillView.queued(queued[row.read<String>('id')]!),
+      ];
+      // The server and the phone write times differently: order by the moment, not the text
+      DateTime moment(BillView bill) => DateTime.tryParse(bill.createdAt ?? '') ?? DateTime(9999);
+      return bills..sort((a, b) => moment(a).compareTo(moment(b)));
+    });
+  }
+
+  Future<Map<String, BillView>> _stored(BillTarget target) async => switch (target) {
+        EntryTarget(:final entryId) => {
+            for (final bill in await (db.select(db.entryBills)..where((b) => b.entryId.equals(entryId))).get())
+              bill.id: BillView.stored(bill),
+          },
+        TransactionTarget(:final transactionId) => {
+            for (final receipt in await (db.select(db.transactionReceipts)
+                  ..where((r) => r.transactionId.equals(transactionId)))
+                .get())
+              receipt.id: BillView.receipt(receipt),
+          },
+      };
 
   /// Bytes waiting to be sent from this phone, counted against the room left before the server has them.
   Future<int> waitingBytes() async {
@@ -231,34 +263,22 @@ class BillRepository {
     }
   }
 
-  /// Keeps [picked] as a bill of the entry and queues it. Returns the bill's id.
-  Future<String> attach(
-    PickedBill picked, {
-    required String workspaceId,
-    required String cashbookId,
-    required String entryId,
-    String? id,
-  }) async {
+  /// Keeps [picked] as a file of [target] and queues it. Returns its id.
+  Future<String> attach(PickedBill picked, BillTarget target, {String? id}) async {
     final billId = id ?? newId();
     final copy = await files.pending(billId, picked.contentType);
     await File(picked.path).copy(copy.path);
-    await db.into(db.billQueue).insert(BillQueueCompanion.insert(
-          id: billId,
-          op: BillOutbox.upload,
-          workspaceId: workspaceId,
-          cashbookId: cashbookId,
-          entryId: entryId,
+    await db.into(db.billQueue).insert(target.queueRow(billId, BillOutbox.upload, createdAt: nowIso()).copyWith(
           path: Value(copy.path),
           contentType: Value(picked.contentType),
           originalName: Value(picked.name),
           sizeBytes: Value(picked.sizeBytes),
-          createdAt: nowIso(),
         ));
     onQueued?.call();
     return billId;
   }
 
-  /// Takes the bill away. One not on the server yet simply goes; a stored one
+  /// Takes the file away. One not on the server yet simply goes; a stored one
   /// is hidden at once and its removal queued.
   Future<void> remove(BillView bill) async {
     if (!bill.isStored) {
@@ -266,16 +286,9 @@ class BillRepository {
       await files.drop([bill.id]);
       return;
     }
-    final stored = await (db.select(db.entryBills)..where((b) => b.id.equals(bill.id))).getSingleOrNull();
-    if (stored == null) return;
-    await db.into(db.billQueue).insertOnConflictUpdate(BillQueueCompanion.insert(
-          id: bill.id,
-          op: BillOutbox.remove,
-          workspaceId: stored.workspaceId,
-          cashbookId: stored.cashbookId,
-          entryId: stored.entryId,
-          createdAt: nowIso(),
-        ));
+    await db
+        .into(db.billQueue)
+        .insertOnConflictUpdate(bill.target!.queueRow(bill.id, BillOutbox.remove, createdAt: nowIso()));
     onQueued?.call();
   }
 
@@ -292,9 +305,14 @@ class BillRepository {
 
   /// The entry is gone: what of its bills is still on the phone goes too. The
   /// server takes the stored ones with the entry.
-  Future<void> forgetEntry(String entryId) => _forget(db.billQueue.entryId.equals(entryId));
+  Future<void> forgetEntry(String entryId) =>
+      _forget(db.billQueue.entryId.equals(entryId) & db.billQueue.transactionId.isNull());
 
-  Future<void> forgetCashbook(String bookId) => _forget(db.billQueue.cashbookId.equals(bookId));
+  /// The transaction is gone: the same for its receipts.
+  Future<void> forgetTransaction(String transactionId) => _forget(db.billQueue.transactionId.equals(transactionId));
+
+  Future<void> forgetCashbook(String bookId) =>
+      _forget(db.billQueue.cashbookId.equals(bookId) & db.billQueue.transactionId.isNull());
 
   Future<void> _forget(Expression<bool> which) async {
     final jobs = await (db.select(db.billQueue)..where((_) => which)).get();
@@ -308,14 +326,14 @@ class BillRepository {
     return files.find(bill.id, bill.contentType);
   }
 
-  /// The bill's file, from this phone when it has a copy, else fetched once
+  /// The file, from this phone when it has a copy, else fetched once
   /// through a short-lived link and kept. Throws BillUnavailable.
   Future<File> open(BillView bill) async {
     final here = await local(bill);
     if (here != null) return here;
     if (!bill.isStored) throw const BillUnavailable(offline: false);
     try {
-      final link = await api.get('/api/v1/cashbooks/${bill.cashbookId}/entries/${bill.entryId}/bills/${bill.id}/link/');
+      final link = await api.get(bill.target!.linkPath(bill.id));
       if (!link.ok || link.body is! Map) throw const BillUnavailable(offline: false);
       final response = await api.fetchFile('${link.json['url']}');
       if (response.statusCode != 200) throw const BillUnavailable(offline: false);
@@ -337,8 +355,9 @@ final billRepositoryProvider = Provider<BillRepository>(
   ),
 );
 
-final entryBillsProvider = StreamProvider.family<List<BillView>, String>(
-  (ref, entryId) => ref.watch(billRepositoryProvider).watchForEntry(entryId),
+/// The files of one entry or transaction.
+final billsProvider = StreamProvider.family<List<BillView>, BillTarget>(
+  (ref, target) => ref.watch(billRepositoryProvider).watchFor(target),
 );
 
 /// The bill's file if this phone has it, for previews that should not download (a PDF's first page).

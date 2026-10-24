@@ -13,6 +13,7 @@ import 'generated/schema_v4.dart' as v4;
 import 'generated/schema_v8.dart' as v8;
 import 'generated/schema_v9.dart' as v9;
 import 'generated/schema_v10.dart' as v10;
+import 'generated/schema_v11.dart' as v11;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -373,6 +374,43 @@ void main() {
         expect((entry.title, entry.merchant, entry.tagIds), ('Rice', '', '[]'));
         expect(await newDb.select(newDb.tags).get(), isEmpty);
         expect(await newDb.select(newDb.syncCursors).get(), isEmpty);
+      },
+    );
+  });
+
+  // Version 11 adds receipts of transactions. Bills waiting to be sent stay
+  // bills of their entry; nothing was on any server, so the pull goes on.
+  test('migration from v10 to v11 keeps waiting bills as bills and the pull where it was', () async {
+    await verifier.testWithDataIntegrity(
+      oldVersion: 10,
+      newVersion: 11,
+      createOld: v10.DatabaseAtV10.new,
+      createNew: v11.DatabaseAtV11.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) {
+        batch.insert(
+          oldDb.billQueue,
+          const v10.BillQueueData(
+            id: 'q1',
+            op: 'upload',
+            workspaceId: 'w1',
+            cashbookId: 'b1',
+            entryId: 'e1',
+            contentType: 'image/jpeg',
+            originalName: 'rice.jpg',
+            sizeBytes: 900,
+            state: 'queued',
+            attempts: 0,
+            createdAt: '2026-10-01T00:00:00Z',
+          ),
+        );
+        batch.insert(oldDb.syncCursors, const v10.SyncCursorsData(workspaceId: 'w1', since: 40));
+      },
+      validateItems: (newDb) async {
+        final job = await newDb.select(newDb.billQueue).getSingle();
+        expect((job.entryId, job.cashbookId, job.transactionId), ('e1', 'b1', null));
+        expect(await newDb.select(newDb.transactionReceipts).get(), isEmpty);
+        expect((await newDb.select(newDb.syncCursors).getSingle()).since, 40);
       },
     );
   });
